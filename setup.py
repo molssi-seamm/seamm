@@ -12,7 +12,11 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'networkx>=2.0',
+    'PyYAML>=3.11',
+    'stevedore>=1.27',
+    'bitmath>=1.3',
+    'pyuca>=1.2',
 ]
 
 setup_requirements = [
@@ -34,17 +38,21 @@ setup(
     author_email='psaxe@molssi.org',
     url='https://github.com/paulsaxe/molssi_workflow',
     packages=find_packages(include=['molssi_workflow']),
+    entry_points={
+        'console_scripts': [
+            'molssi_workflow=molssi_workflow.__main__:flowchart',
+            'run_workflow=molssi_workflow.run_workflow:run'
+        ]
+    },
     include_package_data=True,
     install_requires=requirements,
+    license="GNU Lesser General Public License v3",
     zip_safe=False,
     keywords='molssi_workflow',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',

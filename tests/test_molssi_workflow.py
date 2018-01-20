@@ -4,9 +4,7 @@
 """Tests for `molssi_workflow` package."""
 
 import pytest
-
-
-from molssi_workflow import molssi_workflow
+from molssi_workflow import molssi_workflow  # nopep8
 
 
 @pytest.fixture

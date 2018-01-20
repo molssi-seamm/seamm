@@ -72,7 +72,7 @@ Ready to contribute? Here's how to set up `molssi_workflow` for local developmen
 
 4. Create a branch for local development::
 
-    $ git checkout -b name-of-your-bugfix-or-feature
+    $ git checkout -b name-of-your-bugfix-or-feature develop
 
    Now you can make your changes locally.
 
