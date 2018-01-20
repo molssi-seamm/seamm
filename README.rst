@@ -6,8 +6,8 @@ MolSSI Workflow
 .. image:: https://img.shields.io/pypi/v/molssi_workflow.svg
         :target: https://pypi.python.org/pypi/molssi_workflow
 
-.. image:: https://img.shields.io/travis/paulsaxe/molssi_workflow.svg
-        :target: https://travis-ci.org/paulsaxe/molssi_workflow
+.. image:: https://img.shields.io/travis/paulsaxe/molssi_eex.svg
+        :target: https://travis-ci.org/paulsaxe/molssi_eex
 
 .. image:: https://readthedocs.org/projects/molssi-workflow/badge/?version=latest
         :target: https://molssi-workflow.readthedocs.io/en/latest/?badge=latest
