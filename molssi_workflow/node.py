@@ -25,6 +25,7 @@ class Node(object):
         """
 
         self._uuid = uuid.uuid4().int
+        self.parent = None
         self.workflow = workflow
         self._title = title
         self._gui_data = {}
@@ -174,6 +175,8 @@ class Node(object):
             if key == 'gui_object':
                 continue
             if key == 'workflow':
+                continue
+            if key == 'parent':
                 continue
             if 'workflow' in key:
                 # Have a subworkflow!

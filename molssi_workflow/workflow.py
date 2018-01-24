@@ -24,6 +24,7 @@ class Workflow(networkx.MultiDiGraph):
     graphics = 'Tk'
 
     def __init__(self,
+                 parent=None,
                  data=None,
                  extension_namespace='molssi.workflow.tk',
                  gui_object=None,
@@ -37,6 +38,7 @@ class Workflow(networkx.MultiDiGraph):
         super().__init__(data, **kwargs)
 
         self.gui_object = gui_object
+        self.parent = parent
         # Setup the extension handling
         self.extension_namespace = extension_namespace
         self.extension_manager = None
@@ -100,6 +102,7 @@ class Workflow(networkx.MultiDiGraph):
             extension=extension_name
         )
         self.add_node(node)
+        node.parent = self.parent
         return node
 
     def add_node(self, n, **attr):
@@ -205,6 +208,7 @@ class Workflow(networkx.MultiDiGraph):
                 workflow=self,
                 extension=node['extension']
             )
+            new_node.parent = self.parent
             # set uuid to correct value
             new_node._uuid = node['attributes']['_uuid']
 
