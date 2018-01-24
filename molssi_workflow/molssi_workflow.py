@@ -63,6 +63,7 @@ def grey(value):
 class Flowchart(object):
     def __init__(self,
                  master=None,
+                 parent=None,
                  extension_namespace='molssi.workflow.tk',
                  main=True,
                  workflow=None):
@@ -73,6 +74,7 @@ class Flowchart(object):
 
         self.toplevel = None
         self.master = master
+        self.parent = parent
         self.is_main = main
 
         if workflow:

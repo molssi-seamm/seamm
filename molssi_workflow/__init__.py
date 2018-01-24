@@ -11,6 +11,7 @@ __version__ = '0.1.0'
 units = pint.UnitRegistry(auto_reduce_dimensions=True)
 pint.set_application_registry(units)
 Q_ = units.Quantity
+units_class = units('1 km').__class__
 
 _d = pint.Context('chemistry')
 _d.add_transformation('[mass]/[substance]', '[mass]',

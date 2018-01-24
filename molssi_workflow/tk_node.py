@@ -60,6 +60,8 @@ class TkNode(object):
         self._selected = False
         self.popup_menu = None
         self._tmp = None
+        self._widget = {}
+        self.dialog = None
         self.previous_grab = None
 
     def __hash__(self):
