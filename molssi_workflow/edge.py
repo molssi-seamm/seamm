@@ -50,19 +50,19 @@ class Edge(collections.abc.MutableMapping):
         if gui_object is not None:
             self.gui_object = gui_object
 
-        if self.workflow.has_edge(start_node, end_node, key=edge_type):
-            self.data = self.workflow[start_node][end_node][edge_type]
+        if self.workflow.graph.has_edge(start_node, end_node, key=edge_type):
+            self.data = self.workflow.graph[start_node][end_node][edge_type]
         else:
             self.data = {}
             logger.debug('Adding edge {} - {}, {}'.format(
                 start_node, end_node, edge_type))
             logger.debug('first node is in workflow'
-                         if start_node in self.workflow else
+                         if start_node in self.workflow.graph else
                          'first node is not in the workflow')
             logger.debug('second node is in workflow'
-                         if end_node in self.workflow else
+                         if end_node in self.workflow.graph else
                          'second node is not in the workflow')
-            self.workflow.add_edge(start_node, end_node, edge_type)
+            self.workflow.graph.add_edge(start_node, end_node, edge_type)
             self['start_point'] = start_point
             self['end_point'] = end_point
 
@@ -76,14 +76,14 @@ class Edge(collections.abc.MutableMapping):
     def __setitem__(self, key, value):
         """Allow x[key] access to the data"""
         self.data[key] = value
-        self.workflow.add_edge(self.start_node, self.end_node,
-                               self.edge_type, **self.data)
+        self.workflow.graph.add_edge(self.start_node, self.end_node,
+                                     self.edge_type, **self.data)
 
     def __delitem__(self, key):
         """Allow deletion of keys"""
         del self.data[key]
-        self.workflow.add_edge(self.start_node, self.end_node,
-                               self.edge_type, **self.data)
+        self.workflow.graph.add_edge(self.start_node, self.end_node,
+                                     self.edge_type, **self.data)
 
     def __iter__(self):
         """Allow iteration over the object"""

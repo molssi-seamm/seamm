@@ -100,10 +100,12 @@ class Node(object):
 
         result = []
         # outgoing edges
-        for me, neighbor, obj in self.workflow.out_edges(self, data='object'):
+        for me, neighbor, obj in self.workflow.graph.out_edges(
+                self, data='object'):
             result.append(('out', obj))
         # incoming edges
-        for neighbor, me, obj in self.workflow.in_edges(self, data='object'):
+        for neighbor, me, obj in self.workflow.graph.in_edges(
+                self, data='object'):
             result.append(('in', obj))
         return result
 
@@ -115,8 +117,8 @@ class Node(object):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.workflow.remove_edge(edge.start_node, edge.end_node,
-                                      edge.edge_type)
+            self.workflow.graph.remove_edge(edge.start_node, edge.end_node,
+                                            edge.edge_type)
 
     def run(self):
         """Do whatever we need to do! The base class does nothing except

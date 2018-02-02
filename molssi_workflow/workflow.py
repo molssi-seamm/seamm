@@ -3,7 +3,6 @@
 import molssi_workflow
 import json
 import logging
-import networkx
 import pprint
 import stevedore
 """A workflow, which is a set of nodes. There must be a single
@@ -15,7 +14,7 @@ so isolated nodes and fragments will not be executed."""
 logger = logging.getLogger(__name__)
 
 
-class Workflow(networkx.MultiDiGraph):
+class Workflow(object):
     """The class variable 'graphics' gives
     the default graphics to use for display, if needed. It defaults to
     'Tk' for the tkinter GUI.
@@ -35,7 +34,8 @@ class Workflow(networkx.MultiDiGraph):
         '''
 
         # Initialize the parent classes
-        super().__init__(data, **kwargs)
+        # super().__init__(data, **kwargs)
+        self.graph = molssi_workflow.Graph()
 
         self.gui_object = gui_object
         self.parent = parent
@@ -47,6 +47,9 @@ class Workflow(networkx.MultiDiGraph):
 
         # and make sure that the start node exists
         self.add_node(molssi_workflow.StartNode(workflow=self))
+
+    def __iter__(self):
+        return self.graph.__iter__()
 
     def tag_exists(self, tag):
         """Check if the node with a given tag exists"""
@@ -108,7 +111,7 @@ class Workflow(networkx.MultiDiGraph):
     def add_node(self, n, **attr):
         """Add a single node n, ensuring that it knows the workflow"""
         n.workflow = self
-        networkx.MultiDiGraph.add_node(self, n, **attr)
+        self.graph.add_node(n)
 
     def get_node(self, tag):
         """Return the node with a given tag"""
@@ -126,9 +129,11 @@ class Workflow(networkx.MultiDiGraph):
         if isinstance(node, str):
             node = self.get_node(node)
 
-        for n0, neighbor, edge_type in self.out_edges(node, keys=True):
-            if edge_type == "execution":
-                return self.last_node(neighbor)
+        # for n0, neighbor, edge_type in self.graph.out_edges(node,
+        #      direction='out'):
+        for edge in self.graph.edges(node, direction='out'):
+            if edge.edge_type == "execution":
+                return self.last_node(edge.node2)
 
         return node
 
@@ -144,7 +149,7 @@ class Workflow(networkx.MultiDiGraph):
         node.remove_edge('all')
 
         # and the node
-        super().remove_node(node)
+        self.graph.remove_node(node)
 
     def to_json(self):
         """Ufff. Turn ourselves into JSON"""
@@ -166,16 +171,16 @@ class Workflow(networkx.MultiDiGraph):
             nodes.append(node.to_dict())
 
         edges = data['edges'] = []
-        for node1, node2, key, edge_data in self.edges(keys=True, data=True):
+        for edge in self.graph.edges():
             data_edge = {}
-            for data_key in edge_data:
+            for data_key in edge:
                 if data_key != 'object':
-                    data_edge[data_key] = edge_data[data_key]
+                    data_edge[data_key] = edge[data_key]
             edges.append({
                 'item': 'edge',
-                'start_node': node1.uuid,
-                'end_node': node2.uuid,
-                'edge_type': key,
+                'start_node': edge.node1.uuid,
+                'end_node': edge.node2.uuid,
+                'edge_type': edge.edge_type,
                 'data': data_edge
                 })
 
@@ -253,7 +258,7 @@ class Workflow(networkx.MultiDiGraph):
     def clear(self):
         """Override the underlying clear() to ensure that the start node is present
         """
-        super().clear()
+        self.graph.clear()
 
         # and make sure that the start node exists
         start_node = molssi_workflow.StartNode(workflow=self)
