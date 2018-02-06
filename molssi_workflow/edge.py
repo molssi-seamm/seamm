@@ -50,7 +50,8 @@ class Edge(collections.abc.MutableMapping):
         if gui_object is not None:
             self.gui_object = gui_object
 
-        if self.workflow.graph.has_edge(start_node, end_node, key=edge_type):
+        if self.workflow.graph.has_edge(start_node, end_node,
+                                        edge_type=edge_type):
             self.data = self.workflow.graph[start_node][end_node][edge_type]
         else:
             self.data = {}

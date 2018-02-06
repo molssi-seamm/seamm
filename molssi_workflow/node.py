@@ -98,15 +98,7 @@ class Node(object):
         for this node, giving the anchor points and other node
         """
 
-        result = []
-        # outgoing edges
-        for me, neighbor, obj in self.workflow.graph.out_edges(
-                self, data='object'):
-            result.append(('out', obj))
-        # incoming edges
-        for neighbor, me, obj in self.workflow.graph.in_edges(
-                self, data='object'):
-            result.append(('in', obj))
+        result = self.workflow.graph.edges(self)
         return result
 
     def remove_edge(self, edge):

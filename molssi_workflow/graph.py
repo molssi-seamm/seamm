@@ -43,8 +43,6 @@ class Graph(object):
         self._edge = {}
 
     def add_edge(self, u, v, edge_type=None, **attr):
-        print('u = {}'.format(u))
-        print('v = {}'.format(v))
 
         if u not in self:
             self.add_node(u)
@@ -54,8 +52,6 @@ class Graph(object):
 
         key = (u.__hash__(), v.__hash__(), edge_type)
         self._edge[key] = self.Edge(self, u, v, edge_type=edge_type, **attr)
-        print('key = ' + str(key))
-        print(self._edge[key])
         return self._edge[key]
 
     def remove_edge(self, u, v, edge_type=None):
