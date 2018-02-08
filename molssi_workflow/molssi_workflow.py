@@ -120,8 +120,7 @@ class Flowchart(object):
         self.pw.add(self.canvas)
 
         # background image
-        # datapath = os.path.join(os.path.dirname(__file__), 'data')
-        datapath = '/Users/psaxe/Work/Workflow/molssi_workflow/data'
+        datapath = os.path.join(os.path.dirname(__name__), 'data')
         filepath = os.path.join(datapath, 'framework.png')
         self.image = Image.open(filepath)
         self.prepared_image = Image.eval(self.image.convert("RGB"), grey)
