@@ -275,3 +275,6 @@ class Workflow(object):
         for node in self:
             result.append(node.__class__.__name__ + " {}".format(node))
         return result
+
+    def add_edge(self, u, v, edge_type=None, **attr):
+        return self.graph.add_edge(u, v, edge_type, **attr)

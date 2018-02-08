@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import molssi_workflow
+import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 

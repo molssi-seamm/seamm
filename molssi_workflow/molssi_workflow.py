@@ -77,7 +77,7 @@ class Flowchart(object):
         self.parent = parent
         self.is_main = main
 
-        if workflow:
+        if workflow is not None:
             self.workflow = workflow
         else:
             self.workflow = molssi_workflow.Workflow(
@@ -529,8 +529,7 @@ class Flowchart(object):
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
-        edge_object = molssi_workflow.Edge(
-            self.workflow,
+        edge_object = self.workflow.add_edge(
             last_node,
             node,
             edge_type='execution',
@@ -742,8 +741,7 @@ class Flowchart(object):
         if result is not None and result[0] == 'node':
             other_node, point = result[1:]
             if node != other_node and point is not None:
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
+                edge_object = self.workflow.add_edge(
                     node,
                     other_node,
                     edge_type='execution',
@@ -844,8 +842,7 @@ class Flowchart(object):
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
+                edge_object = self.workflow.add_edge(
                     node,
                     end_node,
                     start_point=point,
@@ -920,8 +917,7 @@ class Flowchart(object):
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
+                edge_object = self.workflow.add_edge(
                     start_node,
                     node,
                     start_point=start_point,

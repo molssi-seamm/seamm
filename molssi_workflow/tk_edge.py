@@ -29,9 +29,9 @@ class TkEdge(collections.abc.MutableMapping):
         self.edge = edge_object
         self.edge.gui_object = self
 
-        x0, y0 = self.edge.start_node.gui_object.anchor_point(
+        x0, y0 = self.edge.node1.gui_object.anchor_point(
             self.edge['start_point'])
-        x1, y1 = self.edge.end_node.gui_object.anchor_point(
+        x1, y1 = self.edge.node2.gui_object.anchor_point(
             self.edge['end_point'])
         self.edge['coords'] = [x0, y0, x1, y1]
 
@@ -101,9 +101,9 @@ class TkEdge(collections.abc.MutableMapping):
     def move(self):
         """Redraw the arrow when the nodes have moved"""
 
-        x0, y0 = self.edge.start_node.gui_object.anchor_point(
+        x0, y0 = self.edge.node1.gui_object.anchor_point(
             self['start_point'])
-        x1, y1 = self.edge.end_node.gui_object.anchor_point(self['end_point'])
+        x1, y1 = self.edge.node2.gui_object.anchor_point(self['end_point'])
         coords = self.edge['coords']
         coords[0] = x0
         coords[1] = y0

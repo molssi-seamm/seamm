@@ -107,14 +107,10 @@ class Graph(object):
         def __setitem__(self, key, value):
             """Allow x[key] access to the data"""
             self._data[key] = value
-            self.workflow.graph.add_edge(self.start_node, self.end_node,
-                                         self.edge_type, **self._data)
 
         def __delitem__(self, key):
             """Allow deletion of keys"""
             del self._data[key]
-            self.workflow.graph.add_edge(self.start_node, self.end_node,
-                                         self.edge_type, **self._data)
 
         def __iter__(self):
             """Allow iteration over the object"""

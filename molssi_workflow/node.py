@@ -129,8 +129,8 @@ class Node(object):
         """Return the next node in the flow
         """
 
-        for me, next_node, edge_type in self.workflow.out_edges(self,
-                                                                keys=True):
+        for me, next_node, edge_type in self.workflow.edges(self,
+                                                            direction='out'):
             if edge_type == 'execution':
                 return next_node
 

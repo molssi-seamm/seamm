@@ -25,7 +25,6 @@ units.enable_contexts('chemistry')
 from molssi_workflow.workflow import Workflow  # nopep8
 from molssi_workflow.molssi_workflow import Flowchart  # nopep8
 from molssi_workflow.graph import Graph  # nopep8
-from molssi_workflow.edge import Edge  # nopep8
 from molssi_workflow.exec_workflow import ExecWorkflow  # nopep8
 from molssi_workflow.node import Node  # nopep8
 from molssi_workflow.start_node import StartNode  # nopep8
