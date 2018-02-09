@@ -143,6 +143,9 @@ class TkWorkflow(object):
         else:
             self.canvas.bind('<ButtonPress-3>', self.right_click)
 
+    def __iter__(self):
+        return self.graph.__iter__()
+
     @property
     def workflow(self):
         """The workflow, which holds the nodes"""
@@ -162,6 +165,38 @@ class TkWorkflow(object):
         if value:
             self.toplevel = value.winfo_toplevel()
         self._master = value
+
+    def tag_exists(self, tag):
+        """Check if the node with a given tag exists"""
+        for node in self:
+            if node.tag == tag:
+                return True
+        return False
+
+    def get_node(self, tag):
+        """Return the node with a given tag"""
+        if isinstance(tag, int):
+            tag = str(tag)
+        for node in self:
+            if str(node.uuid) == tag:
+                return node
+        return None
+
+    def last_node(self, node='1'):
+        """Find the last node walking down the main execution path
+        from the given node, which defaults to the start node"""
+
+        if isinstance(node, str):
+            node = self.get_node(node)
+
+        for edge in self.graph.edges(node, direction='out'):
+            if edge.edge_type == "execution":
+                return self.last_node(edge.node2)
+
+        return node
+
+    def edges(self, node=None, direction='both'):
+        return self.graph.edges(node, direction)
 
     def new_file(self, event=None):
         print("Create a new file!")
@@ -220,7 +255,7 @@ class TkWorkflow(object):
     def create_start_node(self, start_node):
         """Create the start node"""
         start_node = molssi_workflow.StartNode()
-        tk_start_node= molssi_workflow.TkStartNode(
+        tk_start_node = molssi_workflow.TkStartNode(
             canvas=self.canvas, node=start_node)
         self.graph.add_node(tk_start_node)
 
