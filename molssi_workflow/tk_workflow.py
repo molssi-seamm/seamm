@@ -60,13 +60,10 @@ def grey(value):
     return 255 - (255 - value) * 0.1
 
 
-class Flowchart(object):
+class TkWorkflow(object):
     def __init__(self,
-                 master=None,
-                 parent=None,
-                 extension_namespace='molssi.workflow.tk',
-                 main=True,
-                 workflow=None):
+                 master,
+                 namespace='org.molssi.workflow.tk'):
         '''Initialize a Flowchart object
 
         Keyword arguments:
@@ -74,15 +71,11 @@ class Flowchart(object):
 
         self.toplevel = None
         self.master = master
-        self.parent = parent
-        self.is_main = main
 
-        if workflow is not None:
-            self.workflow = workflow
-        else:
-            self.workflow = molssi_workflow.Workflow(
-                name='Workflow', extension_namespace=extension_namespace)
-        self.workflow.gui_object = self
+        self.graph = molssi_workflow.Graph()
+        
+        # Setup the plugin handling
+        self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
         self.canvas_width = 500
         self.canvas_height = 500
@@ -97,8 +90,6 @@ class Flowchart(object):
         self.canvas_after_callback = None
         self.popup_menu = None
 
-        # Make the window large and centered
-
         # Create the panedwindow
         self.pw = tk.PanedWindow(self.master, orient=tk.HORIZONTAL)
         self.pw.pack(fill=tk.BOTH, expand=1)
@@ -106,11 +97,11 @@ class Flowchart(object):
         # On the left put the tree of nodes
         self.tree = ttk.Treeview(self.pw)
         self.pw.add(self.tree)
-        for group in sorted(self.workflow.extensions):
+        for group in self.plugin_manager.groups():
             self.tree.insert("", "end", group, text=group)
-            for extension in sorted(self.workflow.extensions[group]):
+            for plugin in self.plugin_manager.plugins(group):
                 self.tree.insert(
-                    group, "end", extension, text=extension, tags="node")
+                    group, "end", plugin, text=plugin, tags="node")
         self.tree.tag_bind(
             "node", sequence="<ButtonPress-1>", callback=self.create_node)
 
@@ -140,7 +131,7 @@ class Flowchart(object):
             anchor='center')
 
         # The gui partner for the start node...
-        self.create_start_node(self.workflow.get_node('1'))
+        self.create_start_node()
 
         # Set up the bindings
         self.canvas.bind('<Configure>', self.canvas_configure)
@@ -149,70 +140,8 @@ class Flowchart(object):
         self.canvas.bind('<Double-ButtonPress-1>', self.double_click)
         if sys.platform.startswith('darwin'):
             self.canvas.bind('<ButtonPress-2>', self.right_click)
-            CmdKey = 'Command-'
         else:
             self.canvas.bind('<ButtonPress-3>', self.right_click)
-            CmdKey = 'Control-'
-
-        if self.is_main:
-            global app_name
-            app_name = 'MolSSI Workflow'
-
-            menu = tk.Menu(self.toplevel)
-
-            # Set the about and preferences menu items on Mac
-            if sys.platform.startswith('darwin'):
-                app_menu = tk.Menu(menu, name='apple')
-                menu.add_cascade(menu=app_menu)
-
-                app_menu.add_command(label='About ' + app_name,
-                                     command=self.about)
-                app_menu.add_separator()
-                self.toplevel.createcommand('tk::mac::ShowPreferences',
-                                            self.preferences)
-                self.toplevel.createcommand('tk::mac::OpenDocument',
-                                            self.open_file)
-
-            self.toplevel.config(menu=menu)
-            filemenu = tk.Menu(menu)
-            menu.add_cascade(label="File", menu=filemenu)
-            filemenu.add_command(label="New",
-                                 command=self.new_file,
-                                 accelerator=CmdKey + 'N')
-            filemenu.add_command(label="Save...",
-                                 command=self.save_file,
-                                 accelerator=CmdKey + 'S')
-            filemenu.add_command(label="Open...",
-                                 command=self.open_ask,
-                                 accelerator=CmdKey + 'O')
-            filemenu.add_separator()
-            filemenu.add_command(label="Run", command=self.run)
-            filemenu.add_separator()
-            filemenu.add_command(label="Exit", command=self.toplevel.quit)
-
-            helpmenu = tk.Menu(menu)
-            menu.add_cascade(label="Help", menu=helpmenu)
-            self.toplevel.createcommand('tk::mac::ShowHelp',
-                                        self.help)
-            # helpmenu.add_command(
-            #     label="About...",
-            #     command=lambda: self.about("This is an example of a menu"))
-
-            self.toplevel.bind_all('<'+CmdKey+'N>', self.new_file)
-            self.toplevel.bind_all('<'+CmdKey+'n>', self.new_file)
-            self.toplevel.bind_all('<'+CmdKey+'O>', self.open_ask)
-            self.toplevel.bind_all('<'+CmdKey+'o>', self.open_ask)
-            self.toplevel.bind_all('<'+CmdKey+'S>', self.save_file)
-            self.toplevel.bind_all('<'+CmdKey+'s>', self.save_file)
-
-            sw = self.toplevel.winfo_screenwidth()
-            sh = self.toplevel.winfo_screenheight()
-            w = int(0.9 * sw)
-            h = int(0.8 * sh)
-            x = int(0.1 * sw / 2)
-            y = int(0.2 * sh / 2)
-
-            self.toplevel.geometry('{}x{}+{}+{}'.format(w, h, x, y))
 
     @property
     def workflow(self):
@@ -289,14 +218,16 @@ class Flowchart(object):
                 self.canvas.delete(item)
 
     def create_start_node(self, start_node):
-        """Create the graphical start node"""
-        start_node.gui_object = molssi_workflow.TkStartNode(
+        """Create the start node"""
+        start_node = molssi_workflow.StartNode()
+        tk_start_node= molssi_workflow.TkStartNode(
             canvas=self.canvas, node=start_node)
+        self.graph.add_node(tk_start_node)
 
-    def create_graphics_node(self, node, extension):
+    def create_graphics_node(self, node, plugin):
         """Create the graphics node counterpart for node"""
-        node.gui_object = extension.factory(
-            graphical=True, canvas=self.canvas, node=node)
+        node.gui_object = plugin.create_tk_node(
+            canvas=self.canvas, node=node)
 
     def save_file(self, event=None):
         name = tk_filedialog.asksaveasfilename()
@@ -315,8 +246,8 @@ class Flowchart(object):
         print('In preferences')
 
     def draw(self):
-        for node in self.workflow:
-            node.gui_object.draw()
+        for tk_node in self:
+            tk_node.draw()
 
     def canvas_configure(self, event):
         """Redraw the background as the canvas changes size
@@ -397,7 +328,7 @@ class Flowchart(object):
                 node = tags['node']
                 if tags['type'] == 'active_anchor':
                     # Connecting from an anchor to another node
-                    x, y = node.gui_object.anchor_point(tags['anchor'])
+                    x, y = node.anchor_point(tags['anchor'])
                     self.mouse_op = 'Connect'
                     arrow = self.canvas.create_line(
                         x,
@@ -410,16 +341,16 @@ class Flowchart(object):
                     self.canvas.bind('<B1-Motion>', self.drag_arrow)
                     self.canvas.bind('<ButtonRelease-1>', self.drop_arrow)
                 else:
-                    if node.gui_object.is_inside(event.x, event.y, self.halo):
+                    if node.is_inside(event.x, event.y, self.halo):
                         self.selection.append(node)
-                        node.gui_object.selected = True
+                        node.selected = True
                         self._x0 = event.x
                         self._y0 = event.y
                         self.mouse_op = 'Move'
                         self.canvas.bind('<B1-Motion>', self.move)
                         self.canvas.bind('<ButtonRelease-1>', self.end_move)
                     else:
-                        node.gui_object.selected = False
+                        node.selected = False
 
     def double_click(self, event):
         """Handle a double-click on the canvas by finding out what the
@@ -508,24 +439,20 @@ class Flowchart(object):
         """
 
         item = self.tree.identify_row(event.y)
-        extension_name = self.tree.item(item, option="text")
+        plugin_name = self.tree.item(item, option="text")
 
         (last_node, x, y) = self.next_position()
 
-        logger.debug('creating {} node'.format(extension_name))
-        extension = self.workflow.extension_manager[extension_name].obj
-        logger.debug('  extension object: {}'.format(extension))
+        logger.debug('creating {} node'.format(plugin_name))
 
         # The node.
-        node = self.workflow.create_node(extension_name)
+        # node = self.workflow.create_node(plugin_name)
 
         # The graphics partner
-        gui_object = extension.factory(
-            graphical=True, canvas=self.canvas, x=x, y=y, w=200, h=50,
-            node=node)
-
-        # Set the GUI partner for the node
-        node.gui_object = gui_object
+        plugin = self.plugin_manager.get(plugin_name)
+        logger.debug('  plugin object: {}'.format(plugin))
+        plugin.create_tk_node(canvas=self.canvas, x=x, y=y, w=200, h=50,
+                              node=node)
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -627,7 +554,7 @@ class Flowchart(object):
                         node.gui_object.activate()
                         self.active_nodes.append(node)
                     # are we close to any anchor points?
-                    point = node.gui_object.check_anchor_points(
+                    point = node.check_anchor_points(
                         event.x, event.y, self.halo)
                     if point is None:
                         self.canvas.delete('type=active_anchor')

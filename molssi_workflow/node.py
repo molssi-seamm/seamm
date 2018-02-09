@@ -4,16 +4,37 @@
 
 """
 
+import abc
+# from abc import ABC, abstractmethod
 import molssi_workflow
 import json
 import logging
 import molssi_util
 import uuid
 
+anchor_points = {
+    's': (0, 1),
+    'sse': (0.25, 1),
+    'se': (0.5, 1),
+    'ese': (0.5, 0.75),
+    'e': (0.5, 0.5),
+    'ene': (0.5, 0.25),
+    'ne': (0.5, 0),
+    'nne': (0.25, 0),
+    'n': (0, 0),
+    'nnw': (-0.25, 0),
+    'nw': (-0.5, 0),
+    'wnw': (-0.5, 0.25),
+    'w': (-0.5, 0.5),
+    'wsw': (-0.5, 0.75),
+    'sw': (-0.5, 1),
+    'ssw': (-0.25, 1)
+}
+
 logger = logging.getLogger(__name__)
 
 
-class Node(object):
+class Node(abc.ABC):
     def __init__(self,
                  workflow=None,
                  title='',
@@ -29,10 +50,12 @@ class Node(object):
         self.workflow = workflow
         self._title = title
         self._gui_data = {}
-        self.gui_object = None
-        if gui_object is not None:
-            self.gui_object = gui_object
         self.extension = extension
+
+        self.x = 0.0
+        self.y = 0.0
+        self.w = 100
+        self.h = 100
 
     def __hash__(self):
         """Make iterable!"""
@@ -98,7 +121,7 @@ class Node(object):
         for this node, giving the anchor points and other node
         """
 
-        result = self.workflow.graph.edges(self)
+        result = self.workflow.edges(self)
         return result
 
     def remove_edge(self, edge):
@@ -129,10 +152,9 @@ class Node(object):
         """Return the next node in the flow
         """
 
-        for me, next_node, edge_type in self.workflow.edges(self,
-                                                            direction='out'):
-            if edge_type == 'execution':
-                return next_node
+        for edge in self.workflow.edges(self, direction='out'):
+            if edge.edge_type == 'execution':
+                return edge.node2
 
         return None
 
@@ -140,10 +162,9 @@ class Node(object):
         """Return the previous node in the flow
         """
 
-        for previous_node, me, edge_type in self.workflow.in_edges(self,
-                                                                   keys=True):
-            if edge_type == 'execution':
-                return previous_node
+        for edge in self.workflow.edges(self, direction='in'):
+            if edge.edge_type == 'execution':
+                return edge.node1
 
         return None
 
@@ -151,7 +172,7 @@ class Node(object):
         """Return the input from this subnode, usually used for
         building up the input for the executable."""
 
-        return None
+        return ''
 
     def to_json(self):
         return json.dumps(self.to_dict(), cls=molssi_util.JSONEncoder)
@@ -166,8 +187,6 @@ class Node(object):
         }
         data['attributes'] = {}
         for key in self.__dict__:
-            if key == 'gui_object':
-                continue
             if key == 'workflow':
                 continue
             if key == 'parent':
@@ -194,3 +213,43 @@ class Node(object):
                     self.__dict__[key] = attributes[key]
             elif 'workflow' in key:
                 self.__dict__[key].from_dict(data[key])
+
+    def anchor_point(self, anchor="all"):
+        """Where the anchor points are located. If "all" is given
+        a dictionary of all points is returned"""
+
+        if anchor == "all":
+            result = []
+            for pt in anchor_points:
+                a, b = anchor_points[pt]
+                result.append((pt, int(self.x + a * self.w),
+                               int(self.y + b * self.h)))
+            return result
+
+        if anchor in anchor_points:
+            a, b = anchor_points[anchor]
+            return (int(self.x + a * self.w), int(self.y + b * self.h))
+
+        raise NotImplementedError(
+            "anchor position '{}' not implemented".format(anchor))
+
+    def check_anchor_points(self, x, y, halo):
+        """If the position x, y is within halo or one of the anchor points
+        activate the point and return the name of the anchor point
+        """
+
+        points = []
+        for direction, edge in self.connections():
+            if direction == 'out':
+                points.append(edge.gui_object['start_point'])
+            else:
+                points.append(edge.gui_object['end_point'])
+
+        for point, x0, y0 in self.anchor_point():
+            if x >= x0 - halo and x <= x0 + halo and \
+               y >= y0 - halo and y <= y0 + halo:
+                if point in points:
+                    return None
+                else:
+                    return point
+        return None

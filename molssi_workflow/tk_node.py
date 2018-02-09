@@ -1,36 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import abc
 import molssi_workflow
 import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 
-anchor_points = {
-    's': (0, 1),
-    'sse': (0.25, 1),
-    'se': (0.5, 1),
-    'ese': (0.5, 0.75),
-    'e': (0.5, 0.5),
-    'ene': (0.5, 0.25),
-    'ne': (0.5, 0),
-    'nne': (0.25, 0),
-    'n': (0, 0),
-    'nnw': (-0.25, 0),
-    'nw': (-0.5, 0),
-    'wnw': (-0.5, 0.25),
-    'w': (-0.5, 0.5),
-    'wsw': (-0.5, 0.75),
-    'sw': (-0.5, 1),
-    'ssw': (-0.25, 1)
-}
 
-
-class TkNode(object):
-    """The node_class is the class of the 'real' node that this
-    class is the Tk graphics partner for
-    """
-
-    node_class = molssi_workflow.Node
+class TkNode(abc.ABC):
+    """The abstract base class for all Tk-based nodes"""
 
     def __init__(self, node=None, canvas=None, x=None, y=None, w=None, h=None):
         """Initialize a node
@@ -38,23 +16,15 @@ class TkNode(object):
         Keyword arguments:
         """
 
-        self._node = node
+        self.node = node
         self.toplevel = None
         self.canvas = canvas
-        self._tmp_gui_data = {
-            "x": None,
-            "y": None,
-            "w": None,
-            "h": None,
-        }
-        if x is not None:
-            self.x = x
-        if y is not None:
-            self.y = y
-        if w is not None:
-            self.w = w
-        if h is not None:
-            self.h = h
+
+        if self.node is not None:
+            self.node.x = x
+            self.node.y = y
+            self.node.w = w
+            self.node.h = h
 
         self._border = None
         self.title_label = None
@@ -102,79 +72,39 @@ class TkNode(object):
 
     @property
     def x(self):
-        """The x coordinate of the top center of the node"""
-        if self._node is None:
-            return self._tmp_gui_data['x']
-        else:
-            return self._node.get_gui_data('x', gui='Tk')
+        """The x-position of the center of the graphical node"""
+        return self.node.x
 
     @x.setter
     def x(self, value):
-        if self._node is None:
-            self._tmp_gui_data['x'] = value
-        else:
-            self._node.set_gui_data('x', value, gui='Tk')
+        self.node.x = value
 
     @property
     def y(self):
-        """The y coordinate of the top center of the node"""
-        if self._node is None:
-            return self._tmp_gui_data['y']
-        else:
-            return self._node.get_gui_data('y', gui='Tk')
+        """The y-position of the center of the graphical node"""
+        return self.node.y
 
     @y.setter
     def y(self, value):
-        if self._node is None:
-            self._tmp_gui_data['y'] = value
-        else:
-            self._node.set_gui_data('y', value, gui='Tk')
+        self.node.y = value
 
     @property
     def w(self):
         """The width of the graphical node"""
-        if self._node is None:
-            return self._tmp_gui_data['w']
-        else:
-            return self._node.get_gui_data('w', gui='Tk')
+        return self.node.w
 
     @w.setter
     def w(self, value):
-        if self._node is None:
-            self._tmp_gui_data['w'] = value
-        else:
-            self._node.set_gui_data('w', value, gui='Tk')
+        self.node.w = value
 
     @property
     def h(self):
         """The height of the graphical node"""
-        if self._node is None:
-            return self._tmp_gui_data['h']
-        else:
-            return self._node.get_gui_data('h', gui='Tk')
+        return self.node.h
 
     @h.setter
     def h(self, value):
-        if self._node is None:
-            self._tmp_gui_data['h'] = value
-        else:
-            self._node.set_gui_data('h', value, gui='Tk')
-
-    @property
-    def node(self):
-        """The non-graphical node we represent"""
-        return self._node
-
-    @node.setter
-    def node(self, node):
-        if self._node is None:
-            self._node = node
-            for key in self._tmp_gui_data:
-                node.set_gui_data(key, self._tmp_gui_data[key],
-                                  gui='Tk')
-            self._tmp_gui_data = {}
-        else:
-            self._node = node
+        self.node.h = value
 
     def set_uuid(self):
         self.node.set_uuid()
@@ -218,46 +148,6 @@ class TkNode(object):
     @border.setter
     def border(self, value):
         self._border = value
-
-    def anchor_point(self, anchor="all"):
-        """Where the anchor points are located. If "all" is given
-        a dictionary of all points is returned"""
-
-        if anchor == "all":
-            result = []
-            for pt in anchor_points:
-                a, b = anchor_points[pt]
-                result.append((pt, int(self.x + a * self.w),
-                               int(self.y + b * self.h)))
-            return result
-
-        if anchor in anchor_points:
-            a, b = anchor_points[anchor]
-            return (int(self.x + a * self.w), int(self.y + b * self.h))
-
-        raise NotImplementedError(
-            "anchor position '{}' not implemented".format(anchor))
-
-    def check_anchor_points(self, x, y, halo):
-        """If the position x, y is within halo or one of the anchor points
-        activate the point and return the name of the anchor point
-        """
-
-        points = []
-        for direction, edge in self.connections():
-            if direction == 'out':
-                points.append(edge.gui_object['start_point'])
-            else:
-                points.append(edge.gui_object['end_point'])
-
-        for point, x0, y0 in self.anchor_point():
-            if x >= x0 - halo and x <= x0 + halo and \
-               y >= y0 - halo and y <= y0 + halo:
-                if point in points:
-                    return None
-                else:
-                    return point
-        return None
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
@@ -341,7 +231,8 @@ class TkNode(object):
         """
 
         self.canvas.delete(self.tag + ' && type=anchor')
-        for pt, x, y in self.anchor_point("all"):
+        print(self.node)
+        for pt, x, y in self.node.anchor_point("all"):
             x0 = x - 2
             y0 = y - 2
             x1 = x + 2
@@ -383,7 +274,7 @@ class TkNode(object):
         active
         """
 
-        x, y = self.anchor_point(point)
+        x, y = self.node.anchor_point(point)
         self.canvas.create_oval(
             x - halo,
             y - halo,

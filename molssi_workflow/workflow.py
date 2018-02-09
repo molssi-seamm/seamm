@@ -3,8 +3,8 @@
 import molssi_workflow
 import json
 import logging
-import pprint
-import stevedore
+import pprint  # nopep8
+
 """A workflow, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe
 the workflow. There may be isolated nodes or groups of connected nodes;
@@ -25,7 +25,7 @@ class Workflow(object):
     def __init__(self,
                  parent=None,
                  data=None,
-                 extension_namespace='molssi.workflow.tk',
+                 namespace='org.molssi.workflow',
                  gui_object=None,
                  **kwargs):
         '''Initialize the workflow
@@ -33,17 +33,12 @@ class Workflow(object):
         Keyword arguments:
         '''
 
-        # Initialize the parent classes
-        # super().__init__(data, **kwargs)
         self.graph = molssi_workflow.Graph()
 
         self.gui_object = gui_object
         self.parent = parent
-        # Setup the extension handling
-        self.extension_namespace = extension_namespace
-        self.extension_manager = None
-        self.extensions = {}
-        self.initialize_extensions()
+        # Setup the plugin handling
+        self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
         # and make sure that the start node exists
         self.add_node(molssi_workflow.StartNode(workflow=self))
@@ -58,50 +53,11 @@ class Workflow(object):
                 return True
         return False
 
-    def initialize_extensions(self):
-        """Get all available extensions
-        """
-        logger.info('Initializing extensions for {}'.format(
-            self.extension_namespace))
-
-        self.extension_manager = stevedore.extension.ExtensionManager(
-            namespace=self.extension_namespace,
-            invoke_on_load=True,
-            on_load_failure_callback=self.load_failure,
-        )
-
-        logger.info("Found {:d} extensions in '{:s}': {}".format(
-            len(self.extension_manager.names()), self.extension_namespace,
-            self.extension_manager.names()))
-
-        logger.debug('Processing extensions')
-        self.extensions = {}
-        for name in self.extension_manager.names():
-            logger.debug('    extension name: {}'.format(
-                self.extension_manager[name]))
-            extension = self.extension_manager[name].obj
-            logger.debug('  extension object: {}'.format(extension))
-            data = extension.description()
-            logger.debug('    extension data:')
-            logger.debug(pprint.pformat(data))
-            logger.debug('')
-            group = data['group']
-            if group in self.extensions:
-                self.extensions[group].append(name)
-            else:
-                self.extensions[group] = [name]
-
-    def load_failure(self, mgr, ep, err):
-        """Called when the extension manager can't load an extension
-        """
-        logger.warning('Could not load %r: %s', ep.name, err)
-
     def create_node(self, extension_name, gui_object=None):
         """Create a new node given the extension name"""
-        extension = self.extension_manager[extension_name].obj
-        node = extension.factory(
+        plugin = self.plugin_manager.get(extension_name)
+        node = plugin.create_node(
             workflow=self,
-            gui_object=gui_object,
             extension=extension_name
         )
         self.add_node(node)
@@ -111,7 +67,7 @@ class Workflow(object):
     def add_node(self, n, **attr):
         """Add a single node n, ensuring that it knows the workflow"""
         n.workflow = self
-        self.graph.add_node(n)
+        self.graph.add_node(n, **attr)
 
     def get_node(self, tag):
         """Return the node with a given tag"""
@@ -129,8 +85,6 @@ class Workflow(object):
         if isinstance(node, str):
             node = self.get_node(node)
 
-        # for n0, neighbor, edge_type in self.graph.out_edges(node,
-        #      direction='out'):
         for edge in self.graph.edges(node, direction='out'):
             if edge.edge_type == "execution":
                 return self.last_node(edge.node2)
@@ -150,6 +104,9 @@ class Workflow(object):
 
         # and the node
         self.graph.remove_node(node)
+
+    def edges(self, node=None, direction='both'):
+        return self.graph.edges(node, direction)
 
     def to_json(self):
         """Ufff. Turn ourselves into JSON"""
@@ -205,11 +162,11 @@ class Workflow(object):
                 continue
 
             logger.debug('creating {} node'.format(node['extension']))
-            extension = self.extension_manager[node['extension']].obj
-            logger.debug('  extension object: {}'.format(extension))
+            plugin = self.plugin_manager.get(node['extension'])
+            logger.debug('  plugin object: {}'.format(plugin))
 
             # Recreate the node
-            new_node = extension.factory(
+            new_node = plugin.create_node(
                 workflow=self,
                 extension=node['extension']
             )
@@ -219,12 +176,6 @@ class Workflow(object):
 
             # and add to the workflow
             self.add_node(new_node)
-
-            # if we have graphics, create the graphics node. This needs to
-            # be done *before* deserializing the node because it might have
-            # a sub-flowchart.
-            if self.gui_object is not None:
-                self.gui_object.create_graphics_node(new_node, extension)
 
             new_node.from_dict(node)
 

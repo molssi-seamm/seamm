@@ -22,8 +22,9 @@ units.enable_contexts('chemistry')
 # Bring up the classes so that they appear to be directly in
 # the molssi_workflow package.
 
+from molssi_workflow.plugin_manager import PluginManager  # nopep8
 from molssi_workflow.workflow import Workflow  # nopep8
-from molssi_workflow.molssi_workflow import Flowchart  # nopep8
+from molssi_workflow.tk_workflow import TkWorkflow  # nopep8
 from molssi_workflow.graph import Graph  # nopep8
 from molssi_workflow.exec_workflow import ExecWorkflow  # nopep8
 from molssi_workflow.node import Node  # nopep8
