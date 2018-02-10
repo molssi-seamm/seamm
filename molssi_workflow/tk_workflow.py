@@ -63,6 +63,7 @@ def grey(value):
 class TkWorkflow(object):
     def __init__(self,
                  master,
+                 workflow=None,
                  namespace='org.molssi.workflow.tk'):
         '''Initialize a Flowchart object
 
@@ -71,9 +72,10 @@ class TkWorkflow(object):
 
         self.toplevel = None
         self.master = master
+        self._workflow = workflow
 
         self.graph = molssi_workflow.Graph()
-        
+
         # Setup the plugin handling
         self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
@@ -195,6 +197,12 @@ class TkWorkflow(object):
 
         return node
 
+    def add_edge(self, u, v, edge_type=None, **attr):
+        tk_edge = molssi_workflow.TkEdge(self.canvas)
+        edge = self.graph.add_edge(u, v, edge_type, tk_edge=tk_edge, **attr)
+        tk_edge.edge = edge
+        return edge
+
     def edges(self, node=None, direction='both'):
         return self.graph.edges(node, direction)
 
@@ -252,12 +260,13 @@ class TkWorkflow(object):
             if item != self.background:
                 self.canvas.delete(item)
 
-    def create_start_node(self, start_node):
+    def create_start_node(self):
         """Create the start node"""
         start_node = molssi_workflow.StartNode()
         tk_start_node = molssi_workflow.TkStartNode(
             canvas=self.canvas, node=start_node)
         self.graph.add_node(tk_start_node)
+        return tk_start_node
 
     def create_graphics_node(self, node, plugin):
         """Create the graphics node counterpart for node"""
@@ -481,23 +490,24 @@ class TkWorkflow(object):
         logger.debug('creating {} node'.format(plugin_name))
 
         # The node.
-        # node = self.workflow.create_node(plugin_name)
+        node = self.workflow.create_node(plugin_name)
 
         # The graphics partner
         plugin = self.plugin_manager.get(plugin_name)
         logger.debug('  plugin object: {}'.format(plugin))
-        plugin.create_tk_node(canvas=self.canvas, x=x, y=y, w=200, h=50,
-                              node=node)
+        tk_node = plugin.create_tk_node(canvas=self.canvas, x=x, y=y,
+                                        w=200, h=50, node=node)
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
-        edge_object = self.workflow.add_edge(
+
+        self.add_edge(
             last_node,
-            node,
+            tk_node,
             edge_type='execution',
             start_point='s',
-            end_point='n')
-        self.create_edge(edge_object)
+            end_point='n'
+        )
 
         # And update the picture on screen
         self.draw()
@@ -506,9 +516,9 @@ class TkWorkflow(object):
         """Find a reasonable place to position the next step
         in the flowchart."""
 
-        last_node = self.workflow.last_node()
-        x0 = last_node.gui_object.x
-        y0 = last_node.gui_object.y + last_node.gui_object.h + self.gap
+        last_node = self.last_node()
+        x0 = last_node.x
+        y0 = last_node.y + last_node.h + self.gap
 
         return (last_node, x0, y0)
 
@@ -660,7 +670,7 @@ class TkWorkflow(object):
             if '=' in x:
                 key, value = x.split('=')
                 if 'node' in key:
-                    tags[key] = self.workflow.get_node(value)
+                    tags[key] = self.get_node(value)
                 elif 'edge' == key:
                     tags[key] = molssi_workflow.TkEdge.str_to_object[value]
                 else:
@@ -703,13 +713,13 @@ class TkWorkflow(object):
         if result is not None and result[0] == 'node':
             other_node, point = result[1:]
             if node != other_node and point is not None:
-                edge_object = self.workflow.add_edge(
+                self.add_edge(
                     node,
                     other_node,
                     edge_type='execution',
                     start_point=anchor,
-                    end_point=point)
-                self.create_edge(edge_object)
+                    end_point=point
+                )
 
         self.data = None
         self.mouse_op = None
@@ -804,13 +814,13 @@ class TkWorkflow(object):
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = self.workflow.add_edge(
+                self.add_edge(
                     node,
                     end_node,
                     start_point=point,
                     end_point=end_point,
-                    edge_type='execution')
-                self.create_edge(edge_object)
+                    edge_type='execution'
+                )
 
         self.data = None
         self.mouse_op = None
@@ -879,13 +889,13 @@ class TkWorkflow(object):
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = self.workflow.add_edge(
+                self.add_edge(
                     start_node,
                     node,
                     start_point=start_point,
                     end_point=point,
-                    edge_type='execution')
-                self.create_edge(edge_object)
+                    edge_type='execution'
+                )
 
         self.data = None
         self.mouse_op = None
@@ -909,8 +919,8 @@ class TkWorkflow(object):
 
         tags = self.get_tags(item)
         edge = tags['edge'].edge
-        self.workflow.remove_edge(edge.start_node, edge.end_node,
-                                  edge.edge_type)
+        self.graph.remove_edge(edge.start_node, edge.end_node,
+                               edge.edge_type)
 
         self.canvas.delete(item)
         self.canvas.delete('type=arrow_base')
@@ -920,10 +930,14 @@ class TkWorkflow(object):
         '''Print all the edges. Useful for debugging!
         '''
 
-        for u, v, k, data in self.workflow.edges(keys=True, data=True):
-            print('{} {} {} {} {} {}'.format(u, data['start_point'], v,
-                                             data['end_point'], k,
-                                             data['object'].tag()))
+        for edge in self.edges():
+            print('{} {} {} {} {}'.format(
+                edge.node1.tag(),
+                edge['start_point'],
+                edge.node2.tag(),
+                edge['end_point']
+            )
+            )
 
     def print_items(self):
         """Print all the items on the canvas, for debugging
@@ -938,10 +952,3 @@ class TkWorkflow(object):
 
         exec = molssi_workflow.ExecWorkflow(self.workflow)
         exec.run()
-
-    def create_edge(self, edge_object):
-        """Create the graphical counterpart to the edge"""
-        molssi_workflow.TkEdge(
-            self.canvas,
-            edge_object
-        )

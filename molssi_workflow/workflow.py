@@ -60,7 +60,7 @@ class Workflow(object):
             workflow=self,
             extension=extension_name
         )
-        self.add_node(node)
+        # self.add_node(node)
         node.parent = self.parent
         return node
 

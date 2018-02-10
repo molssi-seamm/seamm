@@ -15,7 +15,7 @@ import weakref
 class TkEdge(collections.abc.MutableMapping):
     str_to_object = weakref.WeakValueDictionary()
 
-    def __init__(self, canvas, edge_object):
+    def __init__(self, canvas, edge_object=None):
         """Initialize the edge, ensuring that it is
         in the graph.
 

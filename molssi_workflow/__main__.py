@@ -45,8 +45,8 @@ def flowchart():
     # and the data
     ##############################################################
 
-    # workflow = molssi_workflow.Workflow()
-    tk_workflow = molssi_workflow.TkWorkflow(master=root)
+    workflow = molssi_workflow.Workflow()
+    tk_workflow = molssi_workflow.TkWorkflow(master=root, workflow=workflow)
     # The data is implicitly initialized to none...
 
     ##################################################
