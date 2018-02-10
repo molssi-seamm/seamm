@@ -6,16 +6,37 @@ import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 
+anchor_points = {
+    's': (0, 1),
+    'sse': (0.25, 1),
+    'se': (0.5, 1),
+    'ese': (0.5, 0.75),
+    'e': (0.5, 0.5),
+    'ene': (0.5, 0.25),
+    'ne': (0.5, 0),
+    'nne': (0.25, 0),
+    'n': (0, 0),
+    'nnw': (-0.25, 0),
+    'nw': (-0.5, 0),
+    'wnw': (-0.5, 0.25),
+    'w': (-0.5, 0.5),
+    'wsw': (-0.5, 0.75),
+    'sw': (-0.5, 1),
+    'ssw': (-0.25, 1)
+}
+
 
 class TkNode(abc.ABC):
     """The abstract base class for all Tk-based nodes"""
 
-    def __init__(self, node=None, canvas=None, x=None, y=None, w=None, h=None):
+    def __init__(self, tk_workflow=None, node=None, canvas=None,
+                 x=None, y=None, w=None, h=None):
         """Initialize a node
 
         Keyword arguments:
         """
 
+        self.tk_workflow = tk_workflow
         self.node = node
         self.toplevel = None
         self.canvas = canvas
@@ -114,7 +135,7 @@ class TkNode(abc.ABC):
         for this node, giving the anchor points and other node
         """
 
-        return self.node.connections()
+        return self.tk_workflow.edges(self)
 
     @property
     def selected(self):
@@ -189,7 +210,7 @@ class TkNode(abc.ABC):
 
         for connection in self._tmp:
             direction, edge = connection
-            edge.gui_object.move()
+            edge.move()
 
     def end_move(self, deltax, deltay):
         self.move(deltax, deltay)
@@ -211,7 +232,7 @@ class TkNode(abc.ABC):
 
         self.popup_menu = tk.Menu(self.canvas, tearoff=0)
         self.popup_menu.add_command(
-            label="Delete", command=lambda: self.workflow.remove_node(self))
+            label="Delete", command=lambda: self.tk_workflow.remove_node(self))
 
         if type(self) is molssi_workflow.tk_node.TkNode:
             self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
@@ -232,7 +253,7 @@ class TkNode(abc.ABC):
 
         self.canvas.delete(self.tag + ' && type=anchor')
         print(self.node)
-        for pt, x, y in self.node.anchor_point("all"):
+        for pt, x, y in self.anchor_point("all"):
             x0 = x - 2
             y0 = y - 2
             x1 = x + 2
@@ -252,6 +273,46 @@ class TkNode(abc.ABC):
 
         self.canvas.delete(self.tag + ' && type=anchor')
         self.canvas.delete(self.tag + ' && type=active_anchor')
+
+    def anchor_point(self, anchor="all"):
+        """Where the anchor points are located. If "all" is given
+        a dictionary of all points is returned"""
+
+        if anchor == "all":
+            result = []
+            for pt in anchor_points:
+                a, b = anchor_points[pt]
+                result.append((pt, int(self.x + a * self.w),
+                               int(self.y + b * self.h)))
+            return result
+
+        if anchor in anchor_points:
+            a, b = anchor_points[anchor]
+            return (int(self.x + a * self.w), int(self.y + b * self.h))
+
+        raise NotImplementedError(
+            "anchor position '{}' not implemented".format(anchor))
+
+    def check_anchor_points(self, x, y, halo):
+        """If the position x, y is within halo or one of the anchor points
+        activate the point and return the name of the anchor point
+        """
+
+        points = []
+        for direction, edge in self.connections():
+            if direction == 'out':
+                points.append(edge['start_point'])
+            else:
+                points.append(edge['end_point'])
+
+        for point, x0, y0 in self.anchor_point():
+            if x >= x0 - halo and x <= x0 + halo and \
+               y >= y0 - halo and y <= y0 + halo:
+                if point in points:
+                    return None
+                else:
+                    return point
+        return None
 
     def is_inside(self, x, y, halo=0):
         """Return a boolean indicating whether the point x, y is inside
@@ -274,7 +335,7 @@ class TkNode(abc.ABC):
         active
         """
 
-        x, y = self.node.anchor_point(point)
+        x, y = self.anchor_point(point)
         self.canvas.create_oval(
             x - halo,
             y - halo,
@@ -292,7 +353,7 @@ class TkNode(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.canvas.delete(edge.gui_object.tag())
+            self.canvas.delete(edge.tag())
             self.node.remove_edge(edge)
 
     def edit(self):

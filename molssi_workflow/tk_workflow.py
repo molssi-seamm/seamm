@@ -201,6 +201,7 @@ class TkWorkflow(object):
         tk_edge = molssi_workflow.TkEdge(self.canvas)
         edge = self.graph.add_edge(u, v, edge_type, tk_edge=tk_edge, **attr)
         tk_edge.edge = edge
+        tk_edge.draw()
         return edge
 
     def edges(self, node=None, direction='both'):
@@ -264,14 +265,9 @@ class TkWorkflow(object):
         """Create the start node"""
         start_node = molssi_workflow.StartNode()
         tk_start_node = molssi_workflow.TkStartNode(
-            canvas=self.canvas, node=start_node)
+            tk_workflow=self, canvas=self.canvas, node=start_node)
         self.graph.add_node(tk_start_node)
         return tk_start_node
-
-    def create_graphics_node(self, node, plugin):
-        """Create the graphics node counterpart for node"""
-        node.gui_object = plugin.create_tk_node(
-            canvas=self.canvas, node=node)
 
     def save_file(self, event=None):
         name = tk_filedialog.asksaveasfilename()
@@ -410,8 +406,8 @@ class TkWorkflow(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.gui_object.is_inside(event.x, event.y):
-                node.gui_object.double_click(event)
+            if node.is_inside(event.x, event.y):
+                node.double_click(event)
                 return
 
         if result[0] == 'item':
@@ -435,8 +431,8 @@ class TkWorkflow(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.gui_object.is_inside(event.x, event.y):
-                node.gui_object.right_click(event)
+            if node.is_inside(event.x, event.y):
+                node.right_click(event)
                 return
 
         if result[0] == 'item':
@@ -456,7 +452,7 @@ class TkWorkflow(object):
         self._y0 = event.y
 
         for item in self.selection:
-            item.gui_object.move(deltax, deltay)
+            item.move(deltax, deltay)
 
     def end_move(self, event):
         '''End the move of selected items
@@ -468,8 +464,8 @@ class TkWorkflow(object):
         deltay = event.y - self._y0
 
         for item in self.selection:
-            item.gui_object.end_move(deltax, deltay)
-            item.gui_object.selected = False
+            item.end_move(deltax, deltay)
+            item.selected = False
 
         self._x0 = None
         self._y0 = None
@@ -495,8 +491,10 @@ class TkWorkflow(object):
         # The graphics partner
         plugin = self.plugin_manager.get(plugin_name)
         logger.debug('  plugin object: {}'.format(plugin))
-        tk_node = plugin.create_tk_node(canvas=self.canvas, x=x, y=y,
-                                        w=200, h=50, node=node)
+        tk_node = plugin.create_tk_node(
+            tk_workflow=self, canvas=self.canvas, x=x, y=y,
+            w=200, h=50, node=node
+        )
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -593,10 +591,10 @@ class TkWorkflow(object):
                 break
             if 'node' in tags:
                 node = tags['node']
-                if node.gui_object.is_inside(event.x, event.y, self.halo):
+                if node.is_inside(event.x, event.y, self.halo):
                     active.append(node)
                     if node not in self.active_nodes:
-                        node.gui_object.activate()
+                        node.activate()
                         self.active_nodes.append(node)
                     # are we close to any anchor points?
                     point = node.check_anchor_points(
@@ -604,14 +602,14 @@ class TkWorkflow(object):
                     if point is None:
                         self.canvas.delete('type=active_anchor')
                     else:
-                        node.gui_object.activate_anchor_point(point, self.halo)
+                        node.activate_anchor_point(point, self.halo)
                         result = (node, point)
                     break
 
         # deactivate any previously active nodes
         for node in self.active_nodes:
             if node not in active:
-                node.gui_object.deactivate()
+                node.deactivate()
         self.active_nodes = active
 
         self.in_callback = False
@@ -651,9 +649,9 @@ class TkWorkflow(object):
             tags = self.get_tags(item)
             if 'node' in tags:
                 node = tags['node']
-                if node.gui_object.is_inside(x, y, self.halo):
+                if node.is_inside(x, y, self.halo):
                     # are we close to any anchor points?
-                    point = node.gui_object.check_anchor_points(
+                    point = node.check_anchor_points(
                         x, y, self.halo)
                     return ('node', node, point)
             return ('item', item)
@@ -690,7 +688,7 @@ class TkWorkflow(object):
         if result is not None and result[0] == 'node':
             if node == result[1]:
                 self.canvas.delete('type=active_anchor')
-                result[1].gui_object.deactivate()
+                result[1].deactivate()
             else:
                 self.activate_node(result[1], result[2])
 
@@ -762,21 +760,21 @@ class TkWorkflow(object):
         active = []
         if node in exclude:
             self.canvas.delete('type=active_anchor')
-            node.gui_object.deactivate()
+            node.deactivate()
         else:
             active.append(node)
             if node not in self.active_nodes:
-                node.gui_object.activate()
+                node.activate()
                 self.active_nodes.append(node)
             if point is None:
                 self.canvas.delete('type=active_anchor')
             else:
-                node.gui_object.activate_anchor_point(point, self.halo)
+                node.activate_anchor_point(point, self.halo)
 
         # deactivate any previously active nodes
         for node in self.active_nodes:
             if node not in active:
-                node.gui_object.deactivate()
+                node.deactivate()
         self.active_nodes = active
 
     def drop_arrow_base(self, event):

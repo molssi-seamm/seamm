@@ -12,25 +12,6 @@ import logging
 import molssi_util
 import uuid
 
-anchor_points = {
-    's': (0, 1),
-    'sse': (0.25, 1),
-    'se': (0.5, 1),
-    'ese': (0.5, 0.75),
-    'e': (0.5, 0.5),
-    'ene': (0.5, 0.25),
-    'ne': (0.5, 0),
-    'nne': (0.25, 0),
-    'n': (0, 0),
-    'nnw': (-0.25, 0),
-    'nw': (-0.5, 0),
-    'wnw': (-0.5, 0.25),
-    'w': (-0.5, 0.5),
-    'wsw': (-0.5, 0.75),
-    'sw': (-0.5, 1),
-    'ssw': (-0.25, 1)
-}
-
 logger = logging.getLogger(__name__)
 
 
@@ -38,7 +19,6 @@ class Node(abc.ABC):
     def __init__(self,
                  workflow=None,
                  title='',
-                 gui_object=None,
                  extension=None):
         """Initialize a node
 
@@ -213,43 +193,3 @@ class Node(abc.ABC):
                     self.__dict__[key] = attributes[key]
             elif 'workflow' in key:
                 self.__dict__[key].from_dict(data[key])
-
-    def anchor_point(self, anchor="all"):
-        """Where the anchor points are located. If "all" is given
-        a dictionary of all points is returned"""
-
-        if anchor == "all":
-            result = []
-            for pt in anchor_points:
-                a, b = anchor_points[pt]
-                result.append((pt, int(self.x + a * self.w),
-                               int(self.y + b * self.h)))
-            return result
-
-        if anchor in anchor_points:
-            a, b = anchor_points[anchor]
-            return (int(self.x + a * self.w), int(self.y + b * self.h))
-
-        raise NotImplementedError(
-            "anchor position '{}' not implemented".format(anchor))
-
-    def check_anchor_points(self, x, y, halo):
-        """If the position x, y is within halo or one of the anchor points
-        activate the point and return the name of the anchor point
-        """
-
-        points = []
-        for direction, edge in self.connections():
-            if direction == 'out':
-                points.append(edge.gui_object['start_point'])
-            else:
-                points.append(edge.gui_object['end_point'])
-
-        for point, x0, y0 in self.anchor_point():
-            if x >= x0 - halo and x <= x0 + halo and \
-               y >= y0 - halo and y <= y0 + halo:
-                if point in points:
-                    return None
-                else:
-                    return point
-        return None

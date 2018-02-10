@@ -3,16 +3,24 @@
 
 import molssi_workflow
 
+anchor_points = {
+    's': (0, 1),
+    'e': (0.5, 0.5),
+    'w': (-0.5, 0.5),
+}
+
 
 class TkStartNode(molssi_workflow.TkNode):
     """The Tk-based graphical representation of a Start node"""
 
-    def __init__(self, node=None, canvas=None, x=120, y=20, w=200, h=70):
+    def __init__(self, tk_workflow=None, node=None,
+                 canvas=None, x=120, y=20, w=200, h=70):
         '''Initialize a node
 
         Keyword arguments:
         '''
-        super().__init__(node=node, canvas=canvas, x=x, y=y, w=w, h=h)
+        super().__init__(tk_workflow=tk_workflow, node=node,
+                         canvas=canvas, x=x, y=y, w=w, h=h)
 
     def right_click(self, event):
         """At the moment, since we shouldn't delete the start node

@@ -26,7 +26,6 @@ class Workflow(object):
                  parent=None,
                  data=None,
                  namespace='org.molssi.workflow',
-                 gui_object=None,
                  **kwargs):
         '''Initialize the workflow
 
@@ -35,7 +34,6 @@ class Workflow(object):
 
         self.graph = molssi_workflow.Graph()
 
-        self.gui_object = gui_object
         self.parent = parent
         # Setup the plugin handling
         self.plugin_manager = molssi_workflow.PluginManager(namespace)
@@ -53,7 +51,7 @@ class Workflow(object):
                 return True
         return False
 
-    def create_node(self, extension_name, gui_object=None):
+    def create_node(self, extension_name):
         """Create a new node given the extension name"""
         plugin = self.plugin_manager.get(extension_name)
         node = plugin.create_node(
@@ -195,16 +193,8 @@ class Workflow(object):
             for key in edge['data']:
                 edge_object[key] = edge['data'][key]
 
-            # if we have graphics, create the graphical edge
-            if self.gui_object is not None:
-                self.gui_object.create_edge(edge_object)
-
             logger.debug("Adding edges, nodes:\n\t" +
                          "\n\t".join(self.list_nodes()))
-
-        # if we have graphics, draw
-        if self.gui_object is not None:
-            self.gui_object.draw()
 
     def clear(self):
         """Override the underlying clear() to ensure that the start node is present
@@ -214,11 +204,6 @@ class Workflow(object):
         # and make sure that the start node exists
         start_node = molssi_workflow.StartNode(workflow=self)
         self.add_node(start_node)
-
-        # handle the graphics, if it exists
-        if self.gui_object is not None:
-            self.gui_object.clear()
-            self.gui_object.create_start_node(start_node)
 
     def list_nodes(self):
         """List the nodes, for debugging"""

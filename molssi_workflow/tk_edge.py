@@ -28,17 +28,10 @@ class TkEdge(collections.abc.MutableMapping):
         self.canvas = canvas
         self.edge = edge_object
 
-        x0, y0 = self.edge.node1.anchor_point(self.edge['start_point'])
-        x1, y1 = self.edge.node2.anchor_point(self.edge['end_point'])
-        self.edge['coords'] = [x0, y0, x1, y1]
-
         # Arrange that the graphics are deleted when we are
         self._finalizer = weakref.finalize(self, self.canvas.delete,
                                            self.tag())
         self._finalizer.atexit = False
-
-        # and draw the arrow!
-        self.draw()
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -81,6 +74,18 @@ class TkEdge(collections.abc.MutableMapping):
     def copy(self):
         """Return a shallow copy of the dictionary"""
         return self.edge.copy()
+
+    @property
+    def edge(self):
+        return self._edge
+
+    @edge.setter
+    def edge(self, value):
+        self._edge = value
+        if self._edge is not None:
+            x0, y0 = self.edge.node1.anchor_point(self.edge['start_point'])
+            x1, y1 = self.edge.node2.anchor_point(self.edge['end_point'])
+            self.edge['coords'] = [x0, y0, x1, y1]
 
     def tag(self):
         """Return a string tag for self"""

@@ -4,12 +4,6 @@
 
 import molssi_workflow
 
-anchor_points = {
-    's': (0, 1),
-    'e': (0.5, 0.5),
-    'w': (-0.5, 0.5),
-}
-
 
 class StartNode(molssi_workflow.Node):
     def __init__(self, workflow=None):
