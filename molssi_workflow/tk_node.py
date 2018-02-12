@@ -6,28 +6,28 @@ import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 
-anchor_points = {
-    's': (0, 1),
-    'sse': (0.25, 1),
-    'se': (0.5, 1),
-    'ese': (0.5, 0.75),
-    'e': (0.5, 0.5),
-    'ene': (0.5, 0.25),
-    'ne': (0.5, 0),
-    'nne': (0.25, 0),
-    'n': (0, 0),
-    'nnw': (-0.25, 0),
-    'nw': (-0.5, 0),
-    'wnw': (-0.5, 0.25),
-    'w': (-0.5, 0.5),
-    'wsw': (-0.5, 0.75),
-    'sw': (-0.5, 1),
-    'ssw': (-0.25, 1)
-}
-
 
 class TkNode(abc.ABC):
     """The abstract base class for all Tk-based nodes"""
+
+    anchor_points = {
+        's': (0, 1),
+        'sse': (0.25, 1),
+        'se': (0.5, 1),
+        'ese': (0.5, 0.75),
+        'e': (0.5, 0.5),
+        'ene': (0.5, 0.25),
+        'ne': (0.5, 0),
+        'nne': (0.25, 0),
+        'n': (0, 0),
+        'nnw': (-0.25, 0),
+        'nw': (-0.5, 0),
+        'wnw': (-0.5, 0.25),
+        'w': (-0.5, 0.5),
+        'wsw': (-0.5, 0.75),
+        'sw': (-0.5, 1),
+        'ssw': (-0.25, 1)
+    }
 
     def __init__(self, tk_workflow=None, node=None, canvas=None,
                  x=None, y=None, w=None, h=None):
@@ -252,7 +252,6 @@ class TkNode(abc.ABC):
         """
 
         self.canvas.delete(self.tag + ' && type=anchor')
-        print(self.node)
         for pt, x, y in self.anchor_point("all"):
             x0 = x - 2
             y0 = y - 2
@@ -280,14 +279,14 @@ class TkNode(abc.ABC):
 
         if anchor == "all":
             result = []
-            for pt in anchor_points:
-                a, b = anchor_points[pt]
+            for pt in type(self).anchor_points:
+                a, b = type(self).anchor_points[pt]
                 result.append((pt, int(self.x + a * self.w),
                                int(self.y + b * self.h)))
             return result
 
-        if anchor in anchor_points:
-            a, b = anchor_points[anchor]
+        if anchor in type(self).anchor_points:
+            a, b = type(self).anchor_points[anchor]
             return (int(self.x + a * self.w), int(self.y + b * self.h))
 
         raise NotImplementedError(
@@ -301,9 +300,9 @@ class TkNode(abc.ABC):
         points = []
         for direction, edge in self.connections():
             if direction == 'out':
-                points.append(edge['start_point'])
+                points.append(edge.anchor1)
             else:
-                points.append(edge['end_point'])
+                points.append(edge.anchor2)
 
         for point, x0, y0 in self.anchor_point():
             if x >= x0 - halo and x <= x0 + halo and \

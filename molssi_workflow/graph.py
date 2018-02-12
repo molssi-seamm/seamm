@@ -2,6 +2,7 @@
 
 import collections.abc
 import logging
+import molssi_workflow
 import pprint
 
 """A simple graph structure for holding the workflow. This handles a
@@ -32,6 +33,7 @@ class Graph(object):
         if node in self:
             raise RuntimeError('node is already in the graph')
         self._node[node.__hash__()] = node
+        return node
 
     def remove_node(self, node):
         if node not in self:
@@ -42,7 +44,8 @@ class Graph(object):
         self._node = {}
         self._edge = {}
 
-    def add_edge(self, u, v, edge_type=None, **attr):
+    def add_edge(self, u, v, edge_type=None,
+                 edge_class=None, **attr):
 
         if u not in self:
             self.add_node(u)
@@ -51,7 +54,12 @@ class Graph(object):
             self.add_node(v)
 
         key = (u.__hash__(), v.__hash__(), edge_type)
-        self._edge[key] = self.Edge(self, u, v, edge_type=edge_type, **attr)
+        if edge_class is None:
+            self._edge[key] = molssi_workflow.Edge(self, u, v,
+                                                   edge_type=edge_type, **attr)
+        else:
+            self._edge[key] = edge_class(self, u, v,
+                                         edge_type=edge_type, **attr)
         return self._edge[key]
 
     def remove_edge(self, u, v, edge_type=None):
@@ -93,66 +101,68 @@ class Graph(object):
         key = (u.__hash__(), v.__hash__(), edge_type)
         return key in self._edge
 
-    class Edge(collections.abc.MutableMapping):
-        def __init__(self, graph, node1, node2, **kwargs):
-            self.graph = graph
-            self._data = dict(**kwargs)
-            self._data['node1'] = node1
-            self._data['node2'] = node2
 
-        def __getitem__(self, key):
-            """Allow [] access to the dictionary!"""
-            return self._data[key]
+class Edge(collections.abc.MutableMapping):
+    def __init__(self, graph, node1, node2, edge_type='execution', **kwargs):
+        self.graph = graph
+        self._data = dict(**kwargs)
+        self._data['node1'] = node1
+        self._data['node2'] = node2
+        self._data['edge_type'] = edge_type
 
-        def __setitem__(self, key, value):
-            """Allow x[key] access to the data"""
-            self._data[key] = value
+    def __getitem__(self, key):
+        """Allow [] access to the dictionary!"""
+        return self._data[key]
 
-        def __delitem__(self, key):
-            """Allow deletion of keys"""
-            del self._data[key]
+    def __setitem__(self, key, value):
+        """Allow x[key] access to the data"""
+        self._data[key] = value
 
-        def __iter__(self):
-            """Allow iteration over the object"""
-            return iter(self._data)
+    def __delitem__(self, key):
+        """Allow deletion of keys"""
+        del self._data[key]
 
-        def __len__(self):
-            """The len() command"""
-            return len(self._data)
+    def __iter__(self):
+        """Allow iteration over the object"""
+        return iter(self._data)
 
-        def __repr__(self):
-            """The string representation of this object"""
-            return repr(self._data)
+    def __len__(self):
+        """The len() command"""
+        return len(self._data)
 
-        def __str__(self):
-            """The pretty string representation of this object"""
-            return pprint.pformat(self._data)
+    def __repr__(self):
+        """The string representation of this object"""
+        return repr(self._data)
 
-        def __contains__(self, item):
-            """Return a boolean indicating if a key exists."""
-            if item in self._data:
-                return True
-            return False
+    def __str__(self):
+        """The pretty string representation of this object"""
+        return pprint.pformat(self._data)
 
-        def __eq__(self, other):
-            """Return a boolean if this object is equal to another"""
-            return self._data == other._data
+    def __contains__(self, item):
+        """Return a boolean indicating if a key exists."""
+        if item in self._data:
+            return True
+        return False
 
-        def copy(self):
-            """Return a shallow copy of the dictionary"""
-            return self._data.copy()
+    def __eq__(self, other):
+        """Return a boolean if this object is equal to another"""
+        return self._data == other._data
 
-        @property
-        def node1(self):
-            return self._data['node1']
+    def copy(self):
+        """Return a shallow copy of the dictionary"""
+        return self._data.copy()
 
-        @property
-        def node2(self):
-            return self._data['node2']
+    @property
+    def node1(self):
+        return self._data['node1']
 
-        @property
-        def edge_type(self):
-            return self._data['edge_type']
+    @property
+    def node2(self):
+        return self._data['node2']
+
+    @property
+    def edge_type(self):
+        return self._data['edge_type']
 
 
 if __name__ == "__main__":

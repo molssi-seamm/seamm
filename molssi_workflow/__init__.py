@@ -26,6 +26,7 @@ from molssi_workflow.plugin_manager import PluginManager  # nopep8
 from molssi_workflow.workflow import Workflow  # nopep8
 from molssi_workflow.tk_workflow import TkWorkflow  # nopep8
 from molssi_workflow.graph import Graph  # nopep8
+from molssi_workflow.graph import Edge  # nopep8
 from molssi_workflow.exec_workflow import ExecWorkflow  # nopep8
 from molssi_workflow.node import Node  # nopep8
 from molssi_workflow.start_node import StartNode  # nopep8

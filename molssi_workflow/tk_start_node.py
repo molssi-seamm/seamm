@@ -3,15 +3,15 @@
 
 import molssi_workflow
 
-anchor_points = {
-    's': (0, 1),
-    'e': (0.5, 0.5),
-    'w': (-0.5, 0.5),
-}
-
 
 class TkStartNode(molssi_workflow.TkNode):
     """The Tk-based graphical representation of a Start node"""
+
+    anchor_points = {
+        's': (0, 1),
+        'e': (0.5, 0.5),
+        'w': (-0.5, 0.5),
+    }
 
     def __init__(self, tk_workflow=None, node=None,
                  canvas=None, x=120, y=20, w=200, h=70):

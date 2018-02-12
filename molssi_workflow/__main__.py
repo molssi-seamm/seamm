@@ -84,10 +84,12 @@ def flowchart():
                          command=tk_workflow.new_file,
                          accelerator=CmdKey + 'N')
     filemenu.add_command(label="Save...",
-                         command=tk_workflow.save_file,
+                         command=tk_workflow.save,
                          accelerator=CmdKey + 'S')
+    filemenu.add_command(label="Save as...",
+                         command=tk_workflow.save_file)
     filemenu.add_command(label="Open...",
-                         command=tk_workflow.open_ask,
+                         command=tk_workflow.open_file,
                          accelerator=CmdKey + 'O')
     filemenu.add_separator()
     filemenu.add_command(label="Run", command=tk_workflow.run)
@@ -100,8 +102,8 @@ def flowchart():
                        tk_workflow.help)
     root.bind_all('<'+CmdKey+'N>', tk_workflow.new_file)
     root.bind_all('<'+CmdKey+'n>', tk_workflow.new_file)
-    root.bind_all('<'+CmdKey+'O>', tk_workflow.open_ask)
-    root.bind_all('<'+CmdKey+'o>', tk_workflow.open_ask)
+    root.bind_all('<'+CmdKey+'O>', tk_workflow.open_file)
+    root.bind_all('<'+CmdKey+'o>', tk_workflow.open_file)
     root.bind_all('<'+CmdKey+'S>', tk_workflow.save_file)
     root.bind_all('<'+CmdKey+'s>', tk_workflow.save_file)
 

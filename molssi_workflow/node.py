@@ -112,7 +112,7 @@ class Node(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.workflow.graph.remove_edge(edge.start_node, edge.end_node,
+            self.workflow.graph.remove_edge(edge.node1, edge.node2,
                                             edge.edge_type)
 
     def run(self):

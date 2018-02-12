@@ -39,19 +39,16 @@ same node as the tail/head for head/tail!). If the arrow is dropped
 anywhere else it just snaps back to its original place.
 """
 
-import json
+import copy
 import logging
-import molssi_util
+import molssi_workflow
 import os.path
 from PIL import ImageTk, Image
 # import PIL
 import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
-import tkinter.messagebox as tk_messagebox
 import tkinter.ttk as ttk
-
-import molssi_workflow
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +70,7 @@ class TkWorkflow(object):
         self.toplevel = None
         self.master = master
         self._workflow = workflow
+        self.filename = None
 
         self.graph = molssi_workflow.Graph()
 
@@ -197,18 +195,20 @@ class TkWorkflow(object):
 
         return node
 
-    def add_edge(self, u, v, edge_type=None, **attr):
-        tk_edge = molssi_workflow.TkEdge(self.canvas)
-        edge = self.graph.add_edge(u, v, edge_type, tk_edge=tk_edge, **attr)
-        tk_edge.edge = edge
-        tk_edge.draw()
+    def add_edge(self, u, v, edge_type='execution', **attr):
+        edge = self.graph.add_edge(
+            u, v, edge_type, edge_class=molssi_workflow.TkEdge,
+            canvas=self.canvas, **attr
+        )
+        edge.draw()
         return edge
 
     def edges(self, node=None, direction='both'):
         return self.graph.edges(node, direction)
 
     def new_file(self, event=None):
-        print("Create a new file!")
+        self.filename = None
+        self.clear()
 
     def help(self, event=None):
         print("Help!!!!")
@@ -216,50 +216,34 @@ class TkWorkflow(object):
     def debug(self, event):
         print(event)
 
-    def open_ask(self, event=None):
-        filename = tk_filedialog.askopenfilename()
+    def open_file(self, event=None):
+        filename = tk_filedialog.askopenfilename(
+            defaultextension='.flow'
+        )
         if filename == '':
             return
-        self.open_file(filename)
+        self.open(filename)
 
-    def open_file(self, filename):
+    def open(self, filename):
         if isinstance(filename, list):
             filename = filename[0]
 
-        with open(filename, 'r') as fd:
-            line = fd.readline(256)
-            # There may be exec magic as first line
-            if line[0:2] == '#!':
-                line = fd.readline(256)
-            if line[0:7] != '!MolSSI':
-                raise RuntimeError('File is not a MolSSI file! -- ' + line)
-            tmp = line.split()
-            if len(tmp) < 3:
-                raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line)
-            if tmp[1] != 'workflow':
-                raise RuntimeError('File is not a workflow! -- ' + line)
-            workflow_version = tmp[2]
-            logger.info('Reading workflow version {} from file {}'.format(
-                workflow_version, filename))
+        self.workflow.read(filename)
+        self.from_workflow()
+        self.filename = filename
 
-            data = json.load(fd, cls=molssi_util.JSONDecoder)
-
-        if data['class'] != 'Workflow':
-            tk_messagebox.showwarning(
-                'Open file',
-                'File {} does not contain a workflow!'.format(filename))
-            return
-
-        # Restore the workflow
-        self.workflow.from_dict(data)
-
-    def clear(self):
+    def clear(self, all=False):
         """Clear our graphics"""
-        # self.canvas.delete('all')
         for item in self.canvas.find_all():
             if item != self.background:
                 self.canvas.delete(item)
+        # and the graph
+        self.graph.clear()
+
+        # recreate the start node
+        if not all:
+            self.create_start_node()
+            self.draw()
 
     def create_start_node(self):
         """Create the start node"""
@@ -269,15 +253,24 @@ class TkWorkflow(object):
         self.graph.add_node(tk_start_node)
         return tk_start_node
 
+    def save(self, event=None):
+        if self.filename is None:
+            self.save_file()
+        else:
+            self.update_workflow()
+            self.workflow.write(self.filename)
+            self.workflow.clear()
+
     def save_file(self, event=None):
-        name = tk_filedialog.asksaveasfilename()
-        if name != '':
-            with open(name, 'w') as fd:
-                fd.write('#!/usr/bin/env run_workflow\n')
-                fd.write('!MolSSI workflow 1.0\n')
-                json.dump(self.workflow.to_dict(), fd, indent=4,
-                          cls=molssi_util.JSONEncoder)
-        logger.info('Wrote json to {}'.format(name))
+        filename = tk_filedialog.asksaveasfilename(
+            defaultextension='.flow'
+        )
+        if filename != '':
+            # suffixes = pathlib.Path(filename).suffixes
+            # if len(suffixes) == 0 or '.flow' not in suffixes:
+            #     filename = filename + '.flow'
+            self.filename = filename
+            self.save()
 
     def about(self, text='In about'):
         print(text)
@@ -337,7 +330,8 @@ class TkWorkflow(object):
         self.selection = []
         for item in items:
             tags = self.get_tags(item)
-            if tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head':
+            if 'type' in tags and \
+               (tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head'):
                 arrow = int(tags['arrow'])
                 x0, y0, x1, y1 = self.canvas.coords(arrow)
                 self.data = self.get_tags(arrow)
@@ -502,9 +496,9 @@ class TkWorkflow(object):
         self.add_edge(
             last_node,
             tk_node,
-            edge_type='execution',
-            start_point='s',
-            end_point='n'
+            'execution',
+            anchor1='s',
+            anchor2='n'
         )
 
         # And update the picture on screen
@@ -714,9 +708,9 @@ class TkWorkflow(object):
                 self.add_edge(
                     node,
                     other_node,
-                    edge_type='execution',
-                    start_point=anchor,
-                    end_point=point
+                    'execution',
+                    anchor1=anchor,
+                    anchor2=point
                 )
 
         self.data = None
@@ -749,7 +743,7 @@ class TkWorkflow(object):
             self.activate_node(
                 result[1],
                 result[2],
-                exclude=(self.data['edge'].edge.end_node, ))
+                exclude=(self.data['edge'].node2, ))
 
     def activate_node(self, node, point=None, exclude=()):
         '''Activate a node, i.e. display the anchor points,
@@ -799,25 +793,26 @@ class TkWorkflow(object):
             edge.draw()
         elif result[0] == 'node':
             # dropped on another node
-            node, point = result[1:]
-            if edge.edge.end_node == node:
+            node1, anchor1 = result[1:]
+            if edge.node1 == node1:
+                edge.anchor1 = anchor1
                 edge.draw()
             else:
                 # remove current connection and create new, in
                 # that order -- otherwise tend to remove edge
                 # completely if it is moved on same node.
 
-                end_node = edge.edge.end_node
-                end_point = edge['end_point']
+                node2 = edge.node2
+                anchor2 = edge.anchor2
 
                 self.remove_edge(self.data['arrow'])
 
                 self.add_edge(
-                    node,
-                    end_node,
-                    start_point=point,
-                    end_point=end_point,
-                    edge_type='execution'
+                    node1,
+                    node2,
+                    'execution',
+                    anchor1=anchor1,
+                    anchor2=anchor2
                 )
 
         self.data = None
@@ -850,7 +845,7 @@ class TkWorkflow(object):
             self.activate_node(
                 result[1],
                 result[2],
-                exclude=(self.data['edge'].edge.start_node, ))
+                exclude=(self.data['edge'].node1, ))
 
     def drop_arrow_head(self, event):
         '''The user has dropped the arrow somewhere!
@@ -874,25 +869,26 @@ class TkWorkflow(object):
             edge.draw()
         elif result[0] == 'node':
             # dropped on another node
-            node, point = result[1:]
-            if edge.edge.start_node == node:
+            node2, anchor2 = result[1:]
+            if edge.node2 == node2:
+                edge.anchor2 = anchor2
                 edge.draw()
             else:
                 # remove current connection and create new, in
                 # that order -- otherwise tend to remove edge
                 # completely if it is moved on same node.
 
-                start_node = edge.edge.start_node
-                start_point = edge['start_point']
+                node1 = edge.node1
+                anchor1 = edge.anchor1
 
                 self.remove_edge(self.data['arrow'])
 
                 self.add_edge(
-                    start_node,
-                    node,
-                    start_point=start_point,
-                    end_point=point,
-                    edge_type='execution'
+                    node1,
+                    node2,
+                    'execution',
+                    anchor1=anchor1,
+                    anchor2=anchor2
                 )
 
         self.data = None
@@ -916,8 +912,8 @@ class TkWorkflow(object):
         '''
 
         tags = self.get_tags(item)
-        edge = tags['edge'].edge
-        self.graph.remove_edge(edge.start_node, edge.end_node,
+        edge = tags['edge']
+        self.graph.remove_edge(edge.node1, edge.node2,
                                edge.edge_type)
 
         self.canvas.delete(item)
@@ -931,9 +927,9 @@ class TkWorkflow(object):
         for edge in self.edges():
             print('{} {} {} {} {}'.format(
                 edge.node1.tag(),
-                edge['start_point'],
+                edge.anchor1,
                 edge.node2.tag(),
-                edge['end_point']
+                edge.anchor2
             )
             )
 
@@ -950,3 +946,31 @@ class TkWorkflow(object):
 
         exec = molssi_workflow.ExecWorkflow(self.workflow)
         exec.run()
+
+    def update_workflow(self):
+        """Update the non-graphical workflow"""
+        wf = self.workflow
+
+        # Make sure the is nothing in the workflow
+        wf.clear(all=True)
+
+        # Add all the non-graphical nodes, except Start
+        translate = {}
+        for node in self:
+            translate[node] = wf.add_node(copy.copy(node.node))
+
+        # And the edges
+        for edge in self.edges():
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                    attr[key] = edge[key]
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            wf.add_edge(node1, node2, edge.edge_type, **attr)
+
+    def from_workflow(self):
+        """Recreate the graphics from the non-graphical workflow"""
+        wf = self.workflow
+
+        self.clear()
