@@ -27,10 +27,9 @@ class PluginManager(object):
             self.manager.names()))
 
         logger.debug('Processing extensions')
-        self.extensions = {}
+
         for name in self.manager.names():
-            logger.debug('    extension name: {}'.format(
-                self.manager[name]))
+            logger.debug('    extension name: {}'.format(name))
             extension = self.manager[name].obj
             logger.debug('  extension object: {}'.format(extension))
             data = extension.description()
@@ -38,7 +37,7 @@ class PluginManager(object):
             logger.debug(pprint.pformat(data))
             logger.debug('')
             group = data['group']
-            if group in self.extensions:
+            if group in self._plugins:
                 self._plugins[group].append(name)
             else:
                 self._plugins[group] = [name]

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import copy
+import logging
 import molssi_workflow
 import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
+
+logger = logging.getLogger(__name__)
 
 
 class TkNode(abc.ABC):
@@ -369,3 +373,71 @@ class TkNode(abc.ABC):
         }
 
         return data
+
+    def update_workflow(self, tk_workflow=None, workflow=None):
+        """Update the nongraphical workflow. Only used in nodes that contain
+        workflows"""
+        if tk_workflow is None or workflow is None:
+            return
+
+        # Make sure there is nothing in the workflow
+        workflow.clear(all=True)
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in tk_workflow:
+            print(node)
+            translate[node] = workflow.add_node(copy.copy(node.node))
+            node.update_workflow()
+
+        # And the edges
+        for edge in tk_workflow.edges():
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                    attr[key] = edge[key]
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            workflow.add_edge(node1, node2, edge.edge_type, **attr)
+
+    def from_workflow(self, tk_workflow=None, workflow=None):
+        """Recreate the graphics from the non-graphical workflow.
+        Only used in nodes that contain workflow"""
+
+        if tk_workflow is None or workflow is None:
+            return
+
+        tk_workflow.clear()
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in workflow:
+            extension = node.extension
+            if extension is None:
+                # Start node
+                translate[node] = tk_workflow.get_node('1')
+            else:
+                new_node = copy.copy(node)
+                logger.debug('creating {} node'.format(extension))
+                plugin = tk_workflow.plugin_manager.get(extension)
+                logger.debug('  plugin object: {}'.format(plugin))
+                tk_node = plugin.create_tk_node(
+                    tk_workflow=tk_workflow, canvas=tk_workflow.canvas,
+                    node=new_node
+                )
+                translate[node] = tk_node
+                tk_node.from_workflow()
+                tk_workflow.graph.add_node(tk_node)
+                tk_node.draw()
+
+        # And the edges
+        for edge in workflow.edges():
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2'):
+                    attr[key] = edge[key]
+            tk_workflow.add_edge(node1, node2, **attr)

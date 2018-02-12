@@ -960,6 +960,7 @@ class TkWorkflow(object):
         translate = {}
         for node in self:
             translate[node] = wf.add_node(copy.copy(node.node))
+            node.update_workflow()
 
         # And the edges
         for edge in self.edges():
@@ -994,6 +995,7 @@ class TkWorkflow(object):
                     tk_workflow=self, canvas=self.canvas, node=new_node
                 )
                 translate[node] = tk_node
+                tk_node.from_workflow()
                 self.graph.add_node(tk_node)
                 tk_node.draw()
 
