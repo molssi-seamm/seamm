@@ -44,7 +44,7 @@ import logging
 import molssi_workflow
 import os.path
 from PIL import ImageTk, Image
-# import PIL
+import pprint  # nopep8
 import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
@@ -489,6 +489,7 @@ class TkWorkflow(object):
             tk_workflow=self, canvas=self.canvas, x=x, y=y,
             w=200, h=50, node=node
         )
+        self.graph.add_node(tk_node)
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -951,10 +952,11 @@ class TkWorkflow(object):
         """Update the non-graphical workflow"""
         wf = self.workflow
 
-        # Make sure the is nothing in the workflow
+        # Make sure there is nothing in the workflow
         wf.clear(all=True)
 
-        # Add all the non-graphical nodes, except Start
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
         translate = {}
         for node in self:
             translate[node] = wf.add_node(copy.copy(node.node))
@@ -974,3 +976,33 @@ class TkWorkflow(object):
         wf = self.workflow
 
         self.clear()
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in wf:
+            extension = node.extension
+            if extension is None:
+                # Start node
+                translate[node] = self.get_node('1')
+            else:
+                new_node = copy.copy(node)
+                logger.debug('creating {} node'.format(extension))
+                plugin = self.plugin_manager.get(extension)
+                logger.debug('  plugin object: {}'.format(plugin))
+                tk_node = plugin.create_tk_node(
+                    tk_workflow=self, canvas=self.canvas, node=new_node
+                )
+                translate[node] = tk_node
+                self.graph.add_node(tk_node)
+                tk_node.draw()
+
+        # And the edges
+        for edge in wf.edges():
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2'):
+                    attr[key] = edge[key]
+            self.add_edge(node1, node2, **attr)

@@ -29,13 +29,12 @@ class Node(abc.ABC):
         self.parent = None
         self.workflow = workflow
         self._title = title
-        self._gui_data = {}
         self.extension = extension
 
-        self.x = 0.0
-        self.y = 0.0
-        self.w = 100
-        self.h = 100
+        self.x = None
+        self.y = None
+        self.w = None
+        self.h = None
 
     def __hash__(self):
         """Make iterable!"""
@@ -45,18 +44,6 @@ class Node(abc.ABC):
     def uuid(self):
         """The uuid of the node"""
         return self._uuid
-
-    @property
-    def gui_data(self):
-        """The current GUI data"""
-        if molssi_workflow.Workflow.graphics in self._gui:
-            return self._gui_data[molssi_workflow.Workflow.graphics]
-        else:
-            return None
-
-    @gui_data.setter
-    def gui_data(self, data):
-        self._gui_data[molssi_workflow.Workflow.graphics] = data
 
     @property
     def title(self):

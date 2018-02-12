@@ -41,7 +41,7 @@ class TkNode(abc.ABC):
         self.toplevel = None
         self.canvas = canvas
 
-        if self.node is not None:
+        if self.node is not None and self.node.x is None:
             self.node.x = x
             self.node.y = y
             self.node.w = w
