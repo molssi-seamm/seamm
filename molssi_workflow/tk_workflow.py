@@ -39,19 +39,16 @@ same node as the tail/head for head/tail!). If the arrow is dropped
 anywhere else it just snaps back to its original place.
 """
 
-import json
+import copy
 import logging
-import molssi_util
+import molssi_workflow
 import os.path
 from PIL import ImageTk, Image
-# import PIL
+import pprint  # nopep8
 import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
-import tkinter.messagebox as tk_messagebox
 import tkinter.ttk as ttk
-
-import molssi_workflow
 
 logger = logging.getLogger(__name__)
 
@@ -60,13 +57,11 @@ def grey(value):
     return 255 - (255 - value) * 0.1
 
 
-class Flowchart(object):
+class TkWorkflow(object):
     def __init__(self,
                  master=None,
-                 parent=None,
-                 extension_namespace='molssi.workflow.tk',
-                 main=True,
-                 workflow=None):
+                 workflow=None,
+                 namespace='org.molssi.workflow.tk'):
         '''Initialize a Flowchart object
 
         Keyword arguments:
@@ -74,15 +69,13 @@ class Flowchart(object):
 
         self.toplevel = None
         self.master = master
-        self.parent = parent
-        self.is_main = main
+        self._workflow = workflow
+        self.filename = None
 
-        if workflow:
-            self.workflow = workflow
-        else:
-            self.workflow = molssi_workflow.Workflow(
-                name='Workflow', extension_namespace=extension_namespace)
-        self.workflow.gui_object = self
+        self.graph = molssi_workflow.Graph()
+
+        # Setup the plugin handling
+        self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
         self.canvas_width = 500
         self.canvas_height = 500
@@ -97,8 +90,6 @@ class Flowchart(object):
         self.canvas_after_callback = None
         self.popup_menu = None
 
-        # Make the window large and centered
-
         # Create the panedwindow
         self.pw = tk.PanedWindow(self.master, orient=tk.HORIZONTAL)
         self.pw.pack(fill=tk.BOTH, expand=1)
@@ -106,11 +97,11 @@ class Flowchart(object):
         # On the left put the tree of nodes
         self.tree = ttk.Treeview(self.pw)
         self.pw.add(self.tree)
-        for group in sorted(self.workflow.extensions):
+        for group in self.plugin_manager.groups():
             self.tree.insert("", "end", group, text=group)
-            for extension in sorted(self.workflow.extensions[group]):
+            for plugin in self.plugin_manager.plugins(group):
                 self.tree.insert(
-                    group, "end", extension, text=extension, tags="node")
+                    group, "end", plugin, text=plugin, tags="node")
         self.tree.tag_bind(
             "node", sequence="<ButtonPress-1>", callback=self.create_node)
 
@@ -139,7 +130,7 @@ class Flowchart(object):
             anchor='center')
 
         # The gui partner for the start node...
-        self.create_start_node(self.workflow.get_node('1'))
+        self.create_start_node()
 
         # Set up the bindings
         self.canvas.bind('<Configure>', self.canvas_configure)
@@ -148,70 +139,11 @@ class Flowchart(object):
         self.canvas.bind('<Double-ButtonPress-1>', self.double_click)
         if sys.platform.startswith('darwin'):
             self.canvas.bind('<ButtonPress-2>', self.right_click)
-            CmdKey = 'Command-'
         else:
             self.canvas.bind('<ButtonPress-3>', self.right_click)
-            CmdKey = 'Control-'
 
-        if self.is_main:
-            global app_name
-            app_name = 'MolSSI Workflow'
-
-            menu = tk.Menu(self.toplevel)
-
-            # Set the about and preferences menu items on Mac
-            if sys.platform.startswith('darwin'):
-                app_menu = tk.Menu(menu, name='apple')
-                menu.add_cascade(menu=app_menu)
-
-                app_menu.add_command(label='About ' + app_name,
-                                     command=self.about)
-                app_menu.add_separator()
-                self.toplevel.createcommand('tk::mac::ShowPreferences',
-                                            self.preferences)
-                self.toplevel.createcommand('tk::mac::OpenDocument',
-                                            self.open_file)
-
-            self.toplevel.config(menu=menu)
-            filemenu = tk.Menu(menu)
-            menu.add_cascade(label="File", menu=filemenu)
-            filemenu.add_command(label="New",
-                                 command=self.new_file,
-                                 accelerator=CmdKey + 'N')
-            filemenu.add_command(label="Save...",
-                                 command=self.save_file,
-                                 accelerator=CmdKey + 'S')
-            filemenu.add_command(label="Open...",
-                                 command=self.open_ask,
-                                 accelerator=CmdKey + 'O')
-            filemenu.add_separator()
-            filemenu.add_command(label="Run", command=self.run)
-            filemenu.add_separator()
-            filemenu.add_command(label="Exit", command=self.toplevel.quit)
-
-            helpmenu = tk.Menu(menu)
-            menu.add_cascade(label="Help", menu=helpmenu)
-            self.toplevel.createcommand('tk::mac::ShowHelp',
-                                        self.help)
-            # helpmenu.add_command(
-            #     label="About...",
-            #     command=lambda: self.about("This is an example of a menu"))
-
-            self.toplevel.bind_all('<'+CmdKey+'N>', self.new_file)
-            self.toplevel.bind_all('<'+CmdKey+'n>', self.new_file)
-            self.toplevel.bind_all('<'+CmdKey+'O>', self.open_ask)
-            self.toplevel.bind_all('<'+CmdKey+'o>', self.open_ask)
-            self.toplevel.bind_all('<'+CmdKey+'S>', self.save_file)
-            self.toplevel.bind_all('<'+CmdKey+'s>', self.save_file)
-
-            sw = self.toplevel.winfo_screenwidth()
-            sh = self.toplevel.winfo_screenheight()
-            w = int(0.9 * sw)
-            h = int(0.8 * sh)
-            x = int(0.1 * sw / 2)
-            y = int(0.2 * sh / 2)
-
-            self.toplevel.geometry('{}x{}+{}+{}'.format(w, h, x, y))
+    def __iter__(self):
+        return self.graph.__iter__()
 
     @property
     def workflow(self):
@@ -233,8 +165,49 @@ class Flowchart(object):
             self.toplevel = value.winfo_toplevel()
         self._master = value
 
+    def tag_exists(self, tag):
+        """Check if the node with a given tag exists"""
+        for node in self:
+            if node.tag == tag:
+                return True
+        return False
+
+    def get_node(self, tag):
+        """Return the node with a given tag"""
+        if isinstance(tag, int):
+            tag = str(tag)
+        for node in self:
+            if str(node.uuid) == tag:
+                return node
+        return None
+
+    def last_node(self, node='1'):
+        """Find the last node walking down the main execution path
+        from the given node, which defaults to the start node"""
+
+        if isinstance(node, str):
+            node = self.get_node(node)
+
+        for edge in self.graph.edges(node, direction='out'):
+            if edge.edge_type == "execution":
+                return self.last_node(edge.node2)
+
+        return node
+
+    def add_edge(self, u, v, edge_type='execution', **attr):
+        edge = self.graph.add_edge(
+            u, v, edge_type, edge_class=molssi_workflow.TkEdge,
+            canvas=self.canvas, **attr
+        )
+        edge.draw()
+        return edge
+
+    def edges(self, node=None, direction='both'):
+        return self.graph.edges(node, direction)
+
     def new_file(self, event=None):
-        print("Create a new file!")
+        self.filename = None
+        self.clear()
 
     def help(self, event=None):
         print("Help!!!!")
@@ -242,70 +215,61 @@ class Flowchart(object):
     def debug(self, event):
         print(event)
 
-    def open_ask(self, event=None):
-        filename = tk_filedialog.askopenfilename()
+    def open_file(self, event=None):
+        filename = tk_filedialog.askopenfilename(
+            defaultextension='.flow'
+        )
         if filename == '':
             return
-        self.open_file(filename)
+        self.open(filename)
 
-    def open_file(self, filename):
+    def open(self, filename):
         if isinstance(filename, list):
             filename = filename[0]
 
-        with open(filename, 'r') as fd:
-            line = fd.readline(256)
-            # There may be exec magic as first line
-            if line[0:2] == '#!':
-                line = fd.readline(256)
-            if line[0:7] != '!MolSSI':
-                raise RuntimeError('File is not a MolSSI file! -- ' + line)
-            tmp = line.split()
-            if len(tmp) < 3:
-                raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line)
-            if tmp[1] != 'workflow':
-                raise RuntimeError('File is not a workflow! -- ' + line)
-            workflow_version = tmp[2]
-            logger.info('Reading workflow version {} from file {}'.format(
-                workflow_version, filename))
+        self.workflow.read(filename)
+        self.from_workflow()
+        self.filename = filename
 
-            data = json.load(fd, cls=molssi_util.JSONDecoder)
-
-        if data['class'] != 'Workflow':
-            tk_messagebox.showwarning(
-                'Open file',
-                'File {} does not contain a workflow!'.format(filename))
-            return
-
-        # Restore the workflow
-        self.workflow.from_dict(data)
-
-    def clear(self):
+    def clear(self, all=False):
         """Clear our graphics"""
-        # self.canvas.delete('all')
         for item in self.canvas.find_all():
             if item != self.background:
                 self.canvas.delete(item)
+        # and the graph
+        self.graph.clear()
 
-    def create_start_node(self, start_node):
-        """Create the graphical start node"""
-        start_node.gui_object = molssi_workflow.TkStartNode(
-            canvas=self.canvas, node=start_node)
+        # recreate the start node
+        if not all:
+            self.create_start_node()
+            self.draw()
 
-    def create_graphics_node(self, node, extension):
-        """Create the graphics node counterpart for node"""
-        node.gui_object = extension.factory(
-            graphical=True, canvas=self.canvas, node=node)
+    def create_start_node(self):
+        """Create the start node"""
+        start_node = molssi_workflow.StartNode()
+        tk_start_node = molssi_workflow.TkStartNode(
+            tk_workflow=self, canvas=self.canvas, node=start_node)
+        self.graph.add_node(tk_start_node)
+        return tk_start_node
+
+    def save(self, event=None):
+        if self.filename is None:
+            self.save_file()
+        else:
+            self.update_workflow()
+            self.workflow.write(self.filename)
+            self.workflow.clear()
 
     def save_file(self, event=None):
-        name = tk_filedialog.asksaveasfilename()
-        if name != '':
-            with open(name, 'w') as fd:
-                fd.write('#!/usr/bin/env run_workflow\n')
-                fd.write('!MolSSI workflow 1.0\n')
-                json.dump(self.workflow.to_dict(), fd, indent=4,
-                          cls=molssi_util.JSONEncoder)
-        logger.info('Wrote json to {}'.format(name))
+        filename = tk_filedialog.asksaveasfilename(
+            defaultextension='.flow'
+        )
+        if filename != '':
+            # suffixes = pathlib.Path(filename).suffixes
+            # if len(suffixes) == 0 or '.flow' not in suffixes:
+            #     filename = filename + '.flow'
+            self.filename = filename
+            self.save()
 
     def about(self, text='In about'):
         print(text)
@@ -314,8 +278,8 @@ class Flowchart(object):
         print('In preferences')
 
     def draw(self):
-        for node in self.workflow:
-            node.gui_object.draw()
+        for tk_node in self:
+            tk_node.draw()
 
     def canvas_configure(self, event):
         """Redraw the background as the canvas changes size
@@ -365,7 +329,8 @@ class Flowchart(object):
         self.selection = []
         for item in items:
             tags = self.get_tags(item)
-            if tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head':
+            if 'type' in tags and \
+               (tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head'):
                 arrow = int(tags['arrow'])
                 x0, y0, x1, y1 = self.canvas.coords(arrow)
                 self.data = self.get_tags(arrow)
@@ -396,7 +361,7 @@ class Flowchart(object):
                 node = tags['node']
                 if tags['type'] == 'active_anchor':
                     # Connecting from an anchor to another node
-                    x, y = node.gui_object.anchor_point(tags['anchor'])
+                    x, y = node.anchor_point(tags['anchor'])
                     self.mouse_op = 'Connect'
                     arrow = self.canvas.create_line(
                         x,
@@ -409,16 +374,16 @@ class Flowchart(object):
                     self.canvas.bind('<B1-Motion>', self.drag_arrow)
                     self.canvas.bind('<ButtonRelease-1>', self.drop_arrow)
                 else:
-                    if node.gui_object.is_inside(event.x, event.y, self.halo):
+                    if node.is_inside(event.x, event.y, self.halo):
                         self.selection.append(node)
-                        node.gui_object.selected = True
+                        node.selected = True
                         self._x0 = event.x
                         self._y0 = event.y
                         self.mouse_op = 'Move'
                         self.canvas.bind('<B1-Motion>', self.move)
                         self.canvas.bind('<ButtonRelease-1>', self.end_move)
                     else:
-                        node.gui_object.selected = False
+                        node.selected = False
 
     def double_click(self, event):
         """Handle a double-click on the canvas by finding out what the
@@ -434,8 +399,8 @@ class Flowchart(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.gui_object.is_inside(event.x, event.y):
-                node.gui_object.double_click(event)
+            if node.is_inside(event.x, event.y):
+                node.double_click(event)
                 return
 
         if result[0] == 'item':
@@ -459,8 +424,8 @@ class Flowchart(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.gui_object.is_inside(event.x, event.y):
-                node.gui_object.right_click(event)
+            if node.is_inside(event.x, event.y):
+                node.right_click(event)
                 return
 
         if result[0] == 'item':
@@ -480,7 +445,7 @@ class Flowchart(object):
         self._y0 = event.y
 
         for item in self.selection:
-            item.gui_object.move(deltax, deltay)
+            item.move(deltax, deltay)
 
     def end_move(self, event):
         '''End the move of selected items
@@ -492,8 +457,8 @@ class Flowchart(object):
         deltay = event.y - self._y0
 
         for item in self.selection:
-            item.gui_object.end_move(deltax, deltay)
-            item.gui_object.selected = False
+            item.end_move(deltax, deltay)
+            item.selected = False
 
         self._x0 = None
         self._y0 = None
@@ -507,35 +472,34 @@ class Flowchart(object):
         """
 
         item = self.tree.identify_row(event.y)
-        extension_name = self.tree.item(item, option="text")
+        plugin_name = self.tree.item(item, option="text")
 
         (last_node, x, y) = self.next_position()
 
-        logger.debug('creating {} node'.format(extension_name))
-        extension = self.workflow.extension_manager[extension_name].obj
-        logger.debug('  extension object: {}'.format(extension))
+        logger.debug('creating {} node'.format(plugin_name))
 
         # The node.
-        node = self.workflow.create_node(extension_name)
+        node = self.workflow.create_node(plugin_name)
 
         # The graphics partner
-        gui_object = extension.factory(
-            graphical=True, canvas=self.canvas, x=x, y=y, w=200, h=50,
-            node=node)
-
-        # Set the GUI partner for the node
-        node.gui_object = gui_object
+        plugin = self.plugin_manager.get(plugin_name)
+        logger.debug('  plugin object: {}'.format(plugin))
+        tk_node = plugin.create_tk_node(
+            tk_workflow=self, canvas=self.canvas, x=x, y=y,
+            w=200, h=50, node=node
+        )
+        self.graph.add_node(tk_node)
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
-        edge_object = molssi_workflow.Edge(
-            self.workflow,
+
+        self.add_edge(
             last_node,
-            node,
-            edge_type='execution',
-            start_point='s',
-            end_point='n')
-        self.create_edge(edge_object)
+            tk_node,
+            'execution',
+            anchor1='s',
+            anchor2='n'
+        )
 
         # And update the picture on screen
         self.draw()
@@ -544,9 +508,9 @@ class Flowchart(object):
         """Find a reasonable place to position the next step
         in the flowchart."""
 
-        last_node = self.workflow.last_node()
-        x0 = last_node.gui_object.x
-        y0 = last_node.gui_object.y + last_node.gui_object.h + self.gap
+        last_node = self.last_node()
+        x0 = last_node.x
+        y0 = last_node.y + last_node.h + self.gap
 
         return (last_node, x0, y0)
 
@@ -621,25 +585,25 @@ class Flowchart(object):
                 break
             if 'node' in tags:
                 node = tags['node']
-                if node.gui_object.is_inside(event.x, event.y, self.halo):
+                if node.is_inside(event.x, event.y, self.halo):
                     active.append(node)
                     if node not in self.active_nodes:
-                        node.gui_object.activate()
+                        node.activate()
                         self.active_nodes.append(node)
                     # are we close to any anchor points?
-                    point = node.gui_object.check_anchor_points(
+                    point = node.check_anchor_points(
                         event.x, event.y, self.halo)
                     if point is None:
                         self.canvas.delete('type=active_anchor')
                     else:
-                        node.gui_object.activate_anchor_point(point, self.halo)
+                        node.activate_anchor_point(point, self.halo)
                         result = (node, point)
                     break
 
         # deactivate any previously active nodes
         for node in self.active_nodes:
             if node not in active:
-                node.gui_object.deactivate()
+                node.deactivate()
         self.active_nodes = active
 
         self.in_callback = False
@@ -679,9 +643,9 @@ class Flowchart(object):
             tags = self.get_tags(item)
             if 'node' in tags:
                 node = tags['node']
-                if node.gui_object.is_inside(x, y, self.halo):
+                if node.is_inside(x, y, self.halo):
                     # are we close to any anchor points?
-                    point = node.gui_object.check_anchor_points(
+                    point = node.check_anchor_points(
                         x, y, self.halo)
                     return ('node', node, point)
             return ('item', item)
@@ -698,7 +662,7 @@ class Flowchart(object):
             if '=' in x:
                 key, value = x.split('=')
                 if 'node' in key:
-                    tags[key] = self.workflow.get_node(value)
+                    tags[key] = self.get_node(value)
                 elif 'edge' == key:
                     tags[key] = molssi_workflow.TkEdge.str_to_object[value]
                 else:
@@ -718,7 +682,7 @@ class Flowchart(object):
         if result is not None and result[0] == 'node':
             if node == result[1]:
                 self.canvas.delete('type=active_anchor')
-                result[1].gui_object.deactivate()
+                result[1].deactivate()
             else:
                 self.activate_node(result[1], result[2])
 
@@ -741,14 +705,13 @@ class Flowchart(object):
         if result is not None and result[0] == 'node':
             other_node, point = result[1:]
             if node != other_node and point is not None:
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
+                self.add_edge(
                     node,
                     other_node,
-                    edge_type='execution',
-                    start_point=anchor,
-                    end_point=point)
-                self.create_edge(edge_object)
+                    'execution',
+                    anchor1=anchor,
+                    anchor2=point
+                )
 
         self.data = None
         self.mouse_op = None
@@ -780,7 +743,7 @@ class Flowchart(object):
             self.activate_node(
                 result[1],
                 result[2],
-                exclude=(self.data['edge'].edge.end_node, ))
+                exclude=(self.data['edge'].node2, ))
 
     def activate_node(self, node, point=None, exclude=()):
         '''Activate a node, i.e. display the anchor points,
@@ -791,21 +754,21 @@ class Flowchart(object):
         active = []
         if node in exclude:
             self.canvas.delete('type=active_anchor')
-            node.gui_object.deactivate()
+            node.deactivate()
         else:
             active.append(node)
             if node not in self.active_nodes:
-                node.gui_object.activate()
+                node.activate()
                 self.active_nodes.append(node)
             if point is None:
                 self.canvas.delete('type=active_anchor')
             else:
-                node.gui_object.activate_anchor_point(point, self.halo)
+                node.activate_anchor_point(point, self.halo)
 
         # deactivate any previously active nodes
         for node in self.active_nodes:
             if node not in active:
-                node.gui_object.deactivate()
+                node.deactivate()
         self.active_nodes = active
 
     def drop_arrow_base(self, event):
@@ -830,27 +793,27 @@ class Flowchart(object):
             edge.draw()
         elif result[0] == 'node':
             # dropped on another node
-            node, point = result[1:]
-            if edge.edge.end_node == node:
+            node1, anchor1 = result[1:]
+            if edge.node1 == node1:
+                edge.anchor1 = anchor1
                 edge.draw()
             else:
                 # remove current connection and create new, in
                 # that order -- otherwise tend to remove edge
                 # completely if it is moved on same node.
 
-                end_node = edge.edge.end_node
-                end_point = edge['end_point']
+                node2 = edge.node2
+                anchor2 = edge.anchor2
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
-                    node,
-                    end_node,
-                    start_point=point,
-                    end_point=end_point,
-                    edge_type='execution')
-                self.create_edge(edge_object)
+                self.add_edge(
+                    node1,
+                    node2,
+                    'execution',
+                    anchor1=anchor1,
+                    anchor2=anchor2
+                )
 
         self.data = None
         self.mouse_op = None
@@ -882,7 +845,7 @@ class Flowchart(object):
             self.activate_node(
                 result[1],
                 result[2],
-                exclude=(self.data['edge'].edge.start_node, ))
+                exclude=(self.data['edge'].node1, ))
 
     def drop_arrow_head(self, event):
         '''The user has dropped the arrow somewhere!
@@ -906,27 +869,27 @@ class Flowchart(object):
             edge.draw()
         elif result[0] == 'node':
             # dropped on another node
-            node, point = result[1:]
-            if edge.edge.start_node == node:
+            node2, anchor2 = result[1:]
+            if edge.node2 == node2:
+                edge.anchor2 = anchor2
                 edge.draw()
             else:
                 # remove current connection and create new, in
                 # that order -- otherwise tend to remove edge
                 # completely if it is moved on same node.
 
-                start_node = edge.edge.start_node
-                start_point = edge['start_point']
+                node1 = edge.node1
+                anchor1 = edge.anchor1
 
                 self.remove_edge(self.data['arrow'])
 
-                edge_object = molssi_workflow.Edge(
-                    self.workflow,
-                    start_node,
-                    node,
-                    start_point=start_point,
-                    end_point=point,
-                    edge_type='execution')
-                self.create_edge(edge_object)
+                self.add_edge(
+                    node1,
+                    node2,
+                    'execution',
+                    anchor1=anchor1,
+                    anchor2=anchor2
+                )
 
         self.data = None
         self.mouse_op = None
@@ -949,9 +912,9 @@ class Flowchart(object):
         '''
 
         tags = self.get_tags(item)
-        edge = tags['edge'].edge
-        self.workflow.remove_edge(edge.start_node, edge.end_node,
-                                  edge.edge_type)
+        edge = tags['edge']
+        self.graph.remove_edge(edge.node1, edge.node2,
+                               edge.edge_type)
 
         self.canvas.delete(item)
         self.canvas.delete('type=arrow_base')
@@ -961,10 +924,14 @@ class Flowchart(object):
         '''Print all the edges. Useful for debugging!
         '''
 
-        for u, v, k, data in self.workflow.edges(keys=True, data=True):
-            print('{} {} {} {} {} {}'.format(u, data['start_point'], v,
-                                             data['end_point'], k,
-                                             data['object'].tag()))
+        for edge in self.edges():
+            print('{} {} {} {} {}'.format(
+                edge.node1.tag(),
+                edge.anchor1,
+                edge.node2.tag(),
+                edge.anchor2
+            )
+            )
 
     def print_items(self):
         """Print all the items on the canvas, for debugging
@@ -977,12 +944,68 @@ class Flowchart(object):
     def run(self):
         """Run the current workflow"""
 
+        self.update_workflow()
         exec = molssi_workflow.ExecWorkflow(self.workflow)
         exec.run()
+        self.update_workflow()
 
-    def create_edge(self, edge_object):
-        """Create the graphical counterpart to the edge"""
-        molssi_workflow.TkEdge(
-            self.canvas,
-            edge_object
-        )
+    def update_workflow(self):
+        """Update the non-graphical workflow"""
+        wf = self.workflow
+
+        # Make sure there is nothing in the workflow
+        wf.clear(all=True)
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in self:
+            translate[node] = wf.add_node(copy.copy(node.node))
+            node.update_workflow()
+
+        # And the edges
+        for edge in self.edges():
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                    attr[key] = edge[key]
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            wf.add_edge(node1, node2, edge.edge_type, **attr)
+
+    def from_workflow(self):
+        """Recreate the graphics from the non-graphical workflow"""
+        wf = self.workflow
+
+        self.clear()
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in wf:
+            extension = node.extension
+            if extension is None:
+                # Start node
+                translate[node] = self.get_node('1')
+            else:
+                new_node = copy.copy(node)
+                logger.debug('creating {} node'.format(extension))
+                plugin = self.plugin_manager.get(extension)
+                logger.debug('  plugin object: {}'.format(plugin))
+                tk_node = plugin.create_tk_node(
+                    tk_workflow=self, canvas=self.canvas, node=new_node
+                )
+                translate[node] = tk_node
+                tk_node.from_workflow()
+                self.graph.add_node(tk_node)
+                tk_node.draw()
+
+        # And the edges
+        for edge in wf.edges():
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2'):
+                    attr[key] = edge[key]
+            self.add_edge(node1, node2, **attr)

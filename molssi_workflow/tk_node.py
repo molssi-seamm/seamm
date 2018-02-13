@@ -1,59 +1,55 @@
 # -*- coding: utf-8 -*-
 
+import abc
+import copy
+import logging
 import molssi_workflow
+import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 
-anchor_points = {
-    's': (0, 1),
-    'sse': (0.25, 1),
-    'se': (0.5, 1),
-    'ese': (0.5, 0.75),
-    'e': (0.5, 0.5),
-    'ene': (0.5, 0.25),
-    'ne': (0.5, 0),
-    'nne': (0.25, 0),
-    'n': (0, 0),
-    'nnw': (-0.25, 0),
-    'nw': (-0.5, 0),
-    'wnw': (-0.5, 0.25),
-    'w': (-0.5, 0.5),
-    'wsw': (-0.5, 0.75),
-    'sw': (-0.5, 1),
-    'ssw': (-0.25, 1)
-}
+logger = logging.getLogger(__name__)
 
 
-class TkNode(object):
-    """The node_class is the class of the 'real' node that this
-    class is the Tk graphics partner for
-    """
+class TkNode(abc.ABC):
+    """The abstract base class for all Tk-based nodes"""
 
-    node_class = molssi_workflow.Node
+    anchor_points = {
+        's': (0, 1),
+        'sse': (0.25, 1),
+        'se': (0.5, 1),
+        'ese': (0.5, 0.75),
+        'e': (0.5, 0.5),
+        'ene': (0.5, 0.25),
+        'ne': (0.5, 0),
+        'nne': (0.25, 0),
+        'n': (0, 0),
+        'nnw': (-0.25, 0),
+        'nw': (-0.5, 0),
+        'wnw': (-0.5, 0.25),
+        'w': (-0.5, 0.5),
+        'wsw': (-0.5, 0.75),
+        'sw': (-0.5, 1),
+        'ssw': (-0.25, 1)
+    }
 
-    def __init__(self, node=None, canvas=None, x=None, y=None, w=None, h=None):
+    def __init__(self, tk_workflow=None, node=None, canvas=None,
+                 x=None, y=None, w=None, h=None):
         """Initialize a node
 
         Keyword arguments:
         """
 
-        self._node = node
+        self.tk_workflow = tk_workflow
+        self.node = node
         self.toplevel = None
         self.canvas = canvas
-        self._tmp_gui_data = {
-            "x": None,
-            "y": None,
-            "w": None,
-            "h": None,
-        }
-        if x is not None:
-            self.x = x
-        if y is not None:
-            self.y = y
-        if w is not None:
-            self.w = w
-        if h is not None:
-            self.h = h
+
+        if self.node is not None and self.node.x is None:
+            self.node.x = x
+            self.node.y = y
+            self.node.w = w
+            self.node.h = h
 
         self._border = None
         self.title_label = None
@@ -101,79 +97,39 @@ class TkNode(object):
 
     @property
     def x(self):
-        """The x coordinate of the top center of the node"""
-        if self._node is None:
-            return self._tmp_gui_data['x']
-        else:
-            return self._node.get_gui_data('x', gui='Tk')
+        """The x-position of the center of the graphical node"""
+        return self.node.x
 
     @x.setter
     def x(self, value):
-        if self._node is None:
-            self._tmp_gui_data['x'] = value
-        else:
-            self._node.set_gui_data('x', value, gui='Tk')
+        self.node.x = value
 
     @property
     def y(self):
-        """The y coordinate of the top center of the node"""
-        if self._node is None:
-            return self._tmp_gui_data['y']
-        else:
-            return self._node.get_gui_data('y', gui='Tk')
+        """The y-position of the center of the graphical node"""
+        return self.node.y
 
     @y.setter
     def y(self, value):
-        if self._node is None:
-            self._tmp_gui_data['y'] = value
-        else:
-            self._node.set_gui_data('y', value, gui='Tk')
+        self.node.y = value
 
     @property
     def w(self):
         """The width of the graphical node"""
-        if self._node is None:
-            return self._tmp_gui_data['w']
-        else:
-            return self._node.get_gui_data('w', gui='Tk')
+        return self.node.w
 
     @w.setter
     def w(self, value):
-        if self._node is None:
-            self._tmp_gui_data['w'] = value
-        else:
-            self._node.set_gui_data('w', value, gui='Tk')
+        self.node.w = value
 
     @property
     def h(self):
         """The height of the graphical node"""
-        if self._node is None:
-            return self._tmp_gui_data['h']
-        else:
-            return self._node.get_gui_data('h', gui='Tk')
+        return self.node.h
 
     @h.setter
     def h(self, value):
-        if self._node is None:
-            self._tmp_gui_data['h'] = value
-        else:
-            self._node.set_gui_data('h', value, gui='Tk')
-
-    @property
-    def node(self):
-        """The non-graphical node we represent"""
-        return self._node
-
-    @node.setter
-    def node(self, node):
-        if self._node is None:
-            self._node = node
-            for key in self._tmp_gui_data:
-                node.set_gui_data(key, self._tmp_gui_data[key],
-                                  gui='Tk')
-            self._tmp_gui_data = {}
-        else:
-            self._node = node
+        self.node.h = value
 
     def set_uuid(self):
         self.node.set_uuid()
@@ -183,7 +139,7 @@ class TkNode(object):
         for this node, giving the anchor points and other node
         """
 
-        return self.node.connections()
+        return self.tk_workflow.edges(self)
 
     @property
     def selected(self):
@@ -217,46 +173,6 @@ class TkNode(object):
     @border.setter
     def border(self, value):
         self._border = value
-
-    def anchor_point(self, anchor="all"):
-        """Where the anchor points are located. If "all" is given
-        a dictionary of all points is returned"""
-
-        if anchor == "all":
-            result = []
-            for pt in anchor_points:
-                a, b = anchor_points[pt]
-                result.append((pt, int(self.x + a * self.w),
-                               int(self.y + b * self.h)))
-            return result
-
-        if anchor in anchor_points:
-            a, b = anchor_points[anchor]
-            return (int(self.x + a * self.w), int(self.y + b * self.h))
-
-        raise NotImplementedError(
-            "anchor position '{}' not implemented".format(anchor))
-
-    def check_anchor_points(self, x, y, halo):
-        """If the position x, y is within halo or one of the anchor points
-        activate the point and return the name of the anchor point
-        """
-
-        points = []
-        for direction, edge in self.connections():
-            if direction == 'out':
-                points.append(edge.gui_object['start_point'])
-            else:
-                points.append(edge.gui_object['end_point'])
-
-        for point, x0, y0 in self.anchor_point():
-            if x >= x0 - halo and x <= x0 + halo and \
-               y >= y0 - halo and y <= y0 + halo:
-                if point in points:
-                    return None
-                else:
-                    return point
-        return None
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
@@ -298,7 +214,7 @@ class TkNode(object):
 
         for connection in self._tmp:
             direction, edge = connection
-            edge.gui_object.move()
+            edge.move()
 
     def end_move(self, deltax, deltay):
         self.move(deltax, deltay)
@@ -320,7 +236,7 @@ class TkNode(object):
 
         self.popup_menu = tk.Menu(self.canvas, tearoff=0)
         self.popup_menu.add_command(
-            label="Delete", command=lambda: self.workflow.remove_node(self))
+            label="Delete", command=lambda: self.tk_workflow.remove_node(self))
 
         if type(self) is molssi_workflow.tk_node.TkNode:
             self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
@@ -361,6 +277,46 @@ class TkNode(object):
         self.canvas.delete(self.tag + ' && type=anchor')
         self.canvas.delete(self.tag + ' && type=active_anchor')
 
+    def anchor_point(self, anchor="all"):
+        """Where the anchor points are located. If "all" is given
+        a dictionary of all points is returned"""
+
+        if anchor == "all":
+            result = []
+            for pt in type(self).anchor_points:
+                a, b = type(self).anchor_points[pt]
+                result.append((pt, int(self.x + a * self.w),
+                               int(self.y + b * self.h)))
+            return result
+
+        if anchor in type(self).anchor_points:
+            a, b = type(self).anchor_points[anchor]
+            return (int(self.x + a * self.w), int(self.y + b * self.h))
+
+        raise NotImplementedError(
+            "anchor position '{}' not implemented".format(anchor))
+
+    def check_anchor_points(self, x, y, halo):
+        """If the position x, y is within halo or one of the anchor points
+        activate the point and return the name of the anchor point
+        """
+
+        points = []
+        for direction, edge in self.connections():
+            if direction == 'out':
+                points.append(edge.anchor1)
+            else:
+                points.append(edge.anchor2)
+
+        for point, x0, y0 in self.anchor_point():
+            if x >= x0 - halo and x <= x0 + halo and \
+               y >= y0 - halo and y <= y0 + halo:
+                if point in points:
+                    return None
+                else:
+                    return point
+        return None
+
     def is_inside(self, x, y, halo=0):
         """Return a boolean indicating whether the point x, y is inside
         this node, using halo as a size around the point
@@ -400,7 +356,7 @@ class TkNode(object):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.canvas.delete(edge.gui_object.tag())
+            self.canvas.delete(edge.tag())
             self.node.remove_edge(edge)
 
     def edit(self):
@@ -417,3 +373,71 @@ class TkNode(object):
         }
 
         return data
+
+    def update_workflow(self, tk_workflow=None, workflow=None):
+        """Update the nongraphical workflow. Only used in nodes that contain
+        workflows"""
+        if tk_workflow is None or workflow is None:
+            return
+
+        # Make sure there is nothing in the workflow
+        workflow.clear(all=True)
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in tk_workflow:
+            print(node)
+            translate[node] = workflow.add_node(copy.copy(node.node))
+            node.update_workflow()
+
+        # And the edges
+        for edge in tk_workflow.edges():
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                    attr[key] = edge[key]
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            workflow.add_edge(node1, node2, edge.edge_type, **attr)
+
+    def from_workflow(self, tk_workflow=None, workflow=None):
+        """Recreate the graphics from the non-graphical workflow.
+        Only used in nodes that contain workflow"""
+
+        if tk_workflow is None or workflow is None:
+            return
+
+        tk_workflow.clear()
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the workflow is cleared our objects still exist
+        translate = {}
+        for node in workflow:
+            extension = node.extension
+            if extension is None:
+                # Start node
+                translate[node] = tk_workflow.get_node('1')
+            else:
+                new_node = copy.copy(node)
+                logger.debug('creating {} node'.format(extension))
+                plugin = tk_workflow.plugin_manager.get(extension)
+                logger.debug('  plugin object: {}'.format(plugin))
+                tk_node = plugin.create_tk_node(
+                    tk_workflow=tk_workflow, canvas=tk_workflow.canvas,
+                    node=new_node
+                )
+                translate[node] = tk_node
+                tk_node.from_workflow()
+                tk_workflow.graph.add_node(tk_node)
+                tk_node.draw()
+
+        # And the edges
+        for edge in workflow.edges():
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2'):
+                    attr[key] = edge[key]
+            tk_workflow.add_edge(node1, node2, **attr)
