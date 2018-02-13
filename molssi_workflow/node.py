@@ -4,6 +4,8 @@
 
 """
 
+import abc
+# from abc import ABC, abstractmethod
 import molssi_workflow
 import json
 import logging
@@ -13,11 +15,10 @@ import uuid
 logger = logging.getLogger(__name__)
 
 
-class Node(object):
+class Node(abc.ABC):
     def __init__(self,
                  workflow=None,
                  title='',
-                 gui_object=None,
                  extension=None):
         """Initialize a node
 
@@ -28,11 +29,12 @@ class Node(object):
         self.parent = None
         self.workflow = workflow
         self._title = title
-        self._gui_data = {}
-        self.gui_object = None
-        if gui_object is not None:
-            self.gui_object = gui_object
         self.extension = extension
+
+        self.x = None
+        self.y = None
+        self.w = None
+        self.h = None
 
     def __hash__(self):
         """Make iterable!"""
@@ -42,18 +44,6 @@ class Node(object):
     def uuid(self):
         """The uuid of the node"""
         return self._uuid
-
-    @property
-    def gui_data(self):
-        """The current GUI data"""
-        if molssi_workflow.Workflow.graphics in self._gui:
-            return self._gui_data[molssi_workflow.Workflow.graphics]
-        else:
-            return None
-
-    @gui_data.setter
-    def gui_data(self, data):
-        self._gui_data[molssi_workflow.Workflow.graphics] = data
 
     @property
     def title(self):
@@ -98,13 +88,7 @@ class Node(object):
         for this node, giving the anchor points and other node
         """
 
-        result = []
-        # outgoing edges
-        for me, neighbor, obj in self.workflow.out_edges(self, data='object'):
-            result.append(('out', obj))
-        # incoming edges
-        for neighbor, me, obj in self.workflow.in_edges(self, data='object'):
-            result.append(('in', obj))
+        result = self.workflow.edges(self)
         return result
 
     def remove_edge(self, edge):
@@ -115,8 +99,8 @@ class Node(object):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.workflow.remove_edge(edge.start_node, edge.end_node,
-                                      edge.edge_type)
+            self.workflow.graph.remove_edge(edge.node1, edge.node2,
+                                            edge.edge_type)
 
     def run(self):
         """Do whatever we need to do! The base class does nothing except
@@ -135,10 +119,9 @@ class Node(object):
         """Return the next node in the flow
         """
 
-        for me, next_node, edge_type in self.workflow.out_edges(self,
-                                                                keys=True):
-            if edge_type == 'execution':
-                return next_node
+        for edge in self.workflow.edges(self, direction='out'):
+            if edge.edge_type == 'execution':
+                return edge.node2
 
         return None
 
@@ -146,10 +129,9 @@ class Node(object):
         """Return the previous node in the flow
         """
 
-        for previous_node, me, edge_type in self.workflow.in_edges(self,
-                                                                   keys=True):
-            if edge_type == 'execution':
-                return previous_node
+        for edge in self.workflow.edges(self, direction='in'):
+            if edge.edge_type == 'execution':
+                return edge.node1
 
         return None
 
@@ -157,7 +139,7 @@ class Node(object):
         """Return the input from this subnode, usually used for
         building up the input for the executable."""
 
-        return None
+        return ''
 
     def to_json(self):
         return json.dumps(self.to_dict(), cls=molssi_util.JSONEncoder)
@@ -172,8 +154,6 @@ class Node(object):
         }
         data['attributes'] = {}
         for key in self.__dict__:
-            if key == 'gui_object':
-                continue
             if key == 'workflow':
                 continue
             if key == 'parent':

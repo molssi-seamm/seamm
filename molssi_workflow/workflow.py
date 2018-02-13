@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import molssi_workflow
 import json
 import logging
-import networkx
-import pprint
-import stevedore
+import molssi_util
+import molssi_workflow
+import os
+import pprint  # nopep8
+import stat
+
 """A workflow, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe
 the workflow. There may be isolated nodes or groups of connected nodes;
@@ -15,7 +17,7 @@ so isolated nodes and fragments will not be executed."""
 logger = logging.getLogger(__name__)
 
 
-class Workflow(networkx.MultiDiGraph):
+class Workflow(object):
     """The class variable 'graphics' gives
     the default graphics to use for display, if needed. It defaults to
     'Tk' for the tkinter GUI.
@@ -26,27 +28,24 @@ class Workflow(networkx.MultiDiGraph):
     def __init__(self,
                  parent=None,
                  data=None,
-                 extension_namespace='molssi.workflow.tk',
-                 gui_object=None,
+                 namespace='org.molssi.workflow',
                  **kwargs):
         '''Initialize the workflow
 
         Keyword arguments:
         '''
 
-        # Initialize the parent classes
-        super().__init__(data, **kwargs)
+        self.graph = molssi_workflow.Graph()
 
-        self.gui_object = gui_object
         self.parent = parent
-        # Setup the extension handling
-        self.extension_namespace = extension_namespace
-        self.extension_manager = None
-        self.extensions = {}
-        self.initialize_extensions()
+        # Setup the plugin handling
+        self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
         # and make sure that the start node exists
         self.add_node(molssi_workflow.StartNode(workflow=self))
+
+    def __iter__(self):
+        return self.graph.__iter__()
 
     def tag_exists(self, tag):
         """Check if the node with a given tag exists"""
@@ -55,60 +54,20 @@ class Workflow(networkx.MultiDiGraph):
                 return True
         return False
 
-    def initialize_extensions(self):
-        """Get all available extensions
-        """
-        logger.info('Initializing extensions for {}'.format(
-            self.extension_namespace))
-
-        self.extension_manager = stevedore.extension.ExtensionManager(
-            namespace=self.extension_namespace,
-            invoke_on_load=True,
-            on_load_failure_callback=self.load_failure,
-        )
-
-        logger.info("Found {:d} extensions in '{:s}': {}".format(
-            len(self.extension_manager.names()), self.extension_namespace,
-            self.extension_manager.names()))
-
-        logger.debug('Processing extensions')
-        self.extensions = {}
-        for name in self.extension_manager.names():
-            logger.debug('    extension name: {}'.format(
-                self.extension_manager[name]))
-            extension = self.extension_manager[name].obj
-            logger.debug('  extension object: {}'.format(extension))
-            data = extension.description()
-            logger.debug('    extension data:')
-            logger.debug(pprint.pformat(data))
-            logger.debug('')
-            group = data['group']
-            if group in self.extensions:
-                self.extensions[group].append(name)
-            else:
-                self.extensions[group] = [name]
-
-    def load_failure(self, mgr, ep, err):
-        """Called when the extension manager can't load an extension
-        """
-        logger.warning('Could not load %r: %s', ep.name, err)
-
-    def create_node(self, extension_name, gui_object=None):
+    def create_node(self, extension_name):
         """Create a new node given the extension name"""
-        extension = self.extension_manager[extension_name].obj
-        node = extension.factory(
+        plugin = self.plugin_manager.get(extension_name)
+        node = plugin.create_node(
             workflow=self,
-            gui_object=gui_object,
             extension=extension_name
         )
-        self.add_node(node)
         node.parent = self.parent
         return node
 
     def add_node(self, n, **attr):
         """Add a single node n, ensuring that it knows the workflow"""
         n.workflow = self
-        networkx.MultiDiGraph.add_node(self, n, **attr)
+        return self.graph.add_node(n, **attr)
 
     def get_node(self, tag):
         """Return the node with a given tag"""
@@ -126,9 +85,9 @@ class Workflow(networkx.MultiDiGraph):
         if isinstance(node, str):
             node = self.get_node(node)
 
-        for n0, neighbor, edge_type in self.out_edges(node, keys=True):
-            if edge_type == "execution":
-                return self.last_node(neighbor)
+        for edge in self.graph.edges(node, direction='out'):
+            if edge.edge_type == "execution":
+                return self.last_node(edge.node2)
 
         return node
 
@@ -144,11 +103,52 @@ class Workflow(networkx.MultiDiGraph):
         node.remove_edge('all')
 
         # and the node
-        super().remove_node(node)
+        self.graph.remove_node(node)
+
+    def edges(self, node=None, direction='both'):
+        return self.graph.edges(node, direction)
 
     def to_json(self):
         """Ufff. Turn ourselves into JSON"""
         return json.dumps(self.to_dict())
+
+    def write(self, filename):
+        """Write the serialized form to disk"""
+        with open(filename, 'w') as fd:
+            fd.write('#!/usr/bin/env run_workflow\n')
+            fd.write('!MolSSI workflow 1.0\n')
+            json.dump(self.to_dict(), fd, indent=4,
+                      cls=molssi_util.JSONEncoder)
+            logger.info('Wrote json to {}'.format(filename))
+
+        permissions = stat.S_IMODE(os.lstat(filename).st_mode)
+        os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
+
+    def read(self, filename):
+        """Recreate the workflow from the serialized form on disk"""
+        with open(filename, 'r') as fd:
+            line = fd.readline(256)
+            # There may be exec magic as first line
+            if line[0:2] == '#!':
+                line = fd.readline(256)
+            if line[0:7] != '!MolSSI':
+                raise RuntimeError('File is not a MolSSI file! -- ' + line)
+            tmp = line.split()
+            if len(tmp) < 3:
+                raise RuntimeError(
+                    'File is not a proper MolSSI file! -- ' + line)
+            if tmp[1] != 'workflow':
+                raise RuntimeError('File is not a workflow! -- ' + line)
+            workflow_version = tmp[2]
+            logger.info('Reading workflow version {} from file {}'.format(
+                workflow_version, filename))
+
+            data = json.load(fd, cls=molssi_util.JSONDecoder)
+
+        if data['class'] != 'Workflow':
+            raise RuntimeError(filename + ' does not contain a workflow')
+
+        self.from_dict(data)
 
     def to_dict(self):
         """Serialize the graph and everything it contains in a dict"""
@@ -159,24 +159,23 @@ class Workflow(networkx.MultiDiGraph):
             'class': self.__class__.__name__,
             'extension': None
         }
-        data['attributes'] = {'graph': self.__dict__['graph']}
 
         nodes = data['nodes'] = []
         for node in self:
             nodes.append(node.to_dict())
 
         edges = data['edges'] = []
-        for node1, node2, key, edge_data in self.edges(keys=True, data=True):
-            data_edge = {}
-            for data_key in edge_data:
-                if data_key != 'object':
-                    data_edge[data_key] = edge_data[data_key]
+        for edge in self.graph.edges():
+            attr = {}
+            for key in edge:
+                if key not in ('node1', 'node2', 'edge_type'):
+                    attr[key] = edge[key]
             edges.append({
                 'item': 'edge',
-                'start_node': node1.uuid,
-                'end_node': node2.uuid,
-                'edge_type': key,
-                'data': data_edge
+                'node1': edge.node1.uuid,
+                'node2': edge.node2.uuid,
+                'edge_type': edge.edge_type,
+                'attributes': attr
                 })
 
         return data
@@ -191,35 +190,27 @@ class Workflow(networkx.MultiDiGraph):
 
         self.clear()
 
-        for key in data['attributes']:
-            self.__dict__[key] = data['attributes'][key]
-
         # Recreate the nodes
         for node in data['nodes']:
             if node['class'] == 'StartNode':
                 continue
 
             logger.debug('creating {} node'.format(node['extension']))
-            extension = self.extension_manager[node['extension']].obj
-            logger.debug('  extension object: {}'.format(extension))
+            plugin = self.plugin_manager.get(node['extension'])
+            logger.debug('  plugin object: {}'.format(plugin))
 
             # Recreate the node
-            new_node = extension.factory(
+            new_node = plugin.create_node(
                 workflow=self,
                 extension=node['extension']
             )
             new_node.parent = self.parent
+
             # set uuid to correct value
             new_node._uuid = node['attributes']['_uuid']
 
             # and add to the workflow
             self.add_node(new_node)
-
-            # if we have graphics, create the graphics node. This needs to
-            # be done *before* deserializing the node because it might have
-            # a sub-flowchart.
-            if self.gui_object is not None:
-                self.gui_object.create_graphics_node(new_node, extension)
 
             new_node.from_dict(node)
 
@@ -228,41 +219,23 @@ class Workflow(networkx.MultiDiGraph):
 
         # and the edges connecting them
         for edge in data['edges']:
-            start_node = self.get_node(edge['start_node'])
-            end_node = self.get_node(edge['end_node'])
-            edge_object = molssi_workflow.Edge(
-                self,
-                start_node,
-                end_node,
-                edge['edge_type']
-            )
-            for key in edge['data']:
-                edge_object[key] = edge['data'][key]
-
-            # if we have graphics, create the graphical edge
-            if self.gui_object is not None:
-                self.gui_object.create_edge(edge_object)
+            node1 = self.get_node(edge['node1'])
+            node2 = self.get_node(edge['node2'])
+            self.add_edge(node1, node2, edge_type=edge['edge_type'],
+                          **edge['attributes'])
 
             logger.debug("Adding edges, nodes:\n\t" +
                          "\n\t".join(self.list_nodes()))
 
-        # if we have graphics, draw
-        if self.gui_object is not None:
-            self.gui_object.draw()
-
-    def clear(self):
+    def clear(self, all=False):
         """Override the underlying clear() to ensure that the start node is present
         """
-        super().clear()
+        self.graph.clear()
 
         # and make sure that the start node exists
-        start_node = molssi_workflow.StartNode(workflow=self)
-        self.add_node(start_node)
-
-        # handle the graphics, if it exists
-        if self.gui_object is not None:
-            self.gui_object.clear()
-            self.gui_object.create_start_node(start_node)
+        if not all:
+            start_node = molssi_workflow.StartNode(workflow=self)
+            self.add_node(start_node)
 
     def list_nodes(self):
         """List the nodes, for debugging"""
@@ -270,3 +243,6 @@ class Workflow(networkx.MultiDiGraph):
         for node in self:
             result.append(node.__class__.__name__ + " {}".format(node))
         return result
+
+    def add_edge(self, u, v, edge_type=None, **attr):
+        return self.graph.add_edge(u, v, edge_type, **attr)

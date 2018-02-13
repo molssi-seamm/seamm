@@ -17,6 +17,7 @@ requirements = [
     'stevedore>=1.27',
     'bitmath>=1.3',
     'pyuca>=1.2',
+    'Pmw',
 ]
 
 setup_requirements = [
