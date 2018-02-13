@@ -14,17 +14,18 @@ def run():
 
     parser = argparse.ArgumentParser(description='Execute a MolSSI workflow')
 
-    parser.add_argument(
-        "--log", default='WARNING', help='the level of logging')
+    parser.add_argument("-v", "--verbose", dest="verbose_count",
+                        action="count", default=0,
+                        help="increases log verbosity for each occurence.")
     parser.add_argument("filename", help='the filename of the workflow')
     args = parser.parse_args()
 
-    numeric_level = getattr(logging, args.log.upper(), None)
-    if not isinstance(numeric_level, int):
-        raise ValueError('Invalid log level: %s' % args.log)
+    # Sets log level to WARN going more verbose for each new -v.
+    numeric_level = max(3 - args.verbose_count, 0) * 10
     logging.basicConfig(level=numeric_level)
 
-    workflow = open_workflow(args.filename)
+    workflow = molssi_workflow.Workflow()
+    workflow.read(args.filename)
     exec = molssi_workflow.ExecWorkflow(workflow)
     exec.run()
 

@@ -59,7 +59,7 @@ def grey(value):
 
 class TkWorkflow(object):
     def __init__(self,
-                 master,
+                 master=None,
                  workflow=None,
                  namespace='org.molssi.workflow.tk'):
         '''Initialize a Flowchart object
@@ -945,8 +945,10 @@ class TkWorkflow(object):
     def run(self):
         """Run the current workflow"""
 
+        self.update_workflow()
         exec = molssi_workflow.ExecWorkflow(self.workflow)
         exec.run()
+        self.update_workflow()
 
     def update_workflow(self):
         """Update the non-graphical workflow"""
