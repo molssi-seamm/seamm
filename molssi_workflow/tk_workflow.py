@@ -42,8 +42,8 @@ anywhere else it just snaps back to its original place.
 import copy
 import logging
 import molssi_workflow
-import os.path
 from PIL import ImageTk, Image
+import pkg_resources
 import pprint  # nopep8
 import sys
 import tkinter as tk
@@ -111,8 +111,10 @@ class TkWorkflow(object):
         self.pw.add(self.canvas)
 
         # background image
-        datapath = os.path.join(os.path.dirname(__name__), 'data')
-        filepath = os.path.join(datapath, 'framework.png')
+        filepath = pkg_resources.resource_filename(
+            __name__, 'data/framework.png')
+        print(filepath)
+
         self.image = Image.open(filepath)
         self.prepared_image = Image.eval(self.image.convert("RGB"), grey)
         w, h = self.image.size
