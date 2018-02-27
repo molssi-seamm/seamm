@@ -18,6 +18,7 @@ requirements = [
     'bitmath>=1.3',
     'pyuca>=1.2',
     'Pmw',
+    'pint',
 ]
 
 setup_requirements = [
