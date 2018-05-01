@@ -86,4 +86,4 @@ install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
 uninstall: clean ## uninstall the package
-	pip uninstall molssi_workflow
+	pip uninstall --yes molssi_workflow
