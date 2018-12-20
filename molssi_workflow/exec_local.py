@@ -3,6 +3,7 @@
 runs, an executable locally."""
 
 import bitmath
+import glob
 import grp
 import logging
 import os
@@ -98,26 +99,30 @@ class ExecLocal(object):
         result['listing'] = listing
 
         # capture the requested files
-        for filename in return_files:
-            path = os.path.join(tmpdir, filename)
-            data = None
-            exception = None
-            try:
-                with open(path, "r") as fd:
-                    data = fd.read()
-            except IOError as e:
-                exception = sys.exc_info()
-                logging.warning(
-                    "An I/O error occured reading file '{}'".format(filename),
-                    exc_info=exception)
-            except:  # nopep8
-                exception = sys.exc_info()
-                logging.warning(
-                    "An unexpected error occured reading file '{}'".format(
-                        filename),
-                    exc_info=exception)
-            finally:
-                result[filename] = {'exception': exception, 'data': data}
+        result['files'] = []
+        for pattern in return_files:
+            filenames = glob.glob(os.path.join(tmpdir, pattern))
+            for path in filenames:
+                filename = os.path.basename(path)
+                data = None
+                exception = None
+                result['files'].append(filename)
+                try:
+                    with open(path, "r") as fd:
+                        data = fd.read()
+                except IOError as e:
+                    exception = sys.exc_info()
+                    logging.warning(
+                        "An I/O error occured reading file '{}'"
+                        .format(filename), exc_info=exception)
+                except:  # nopep8
+                    exception = sys.exc_info()
+                    logging.warning(
+                        "An unexpected error occured reading file '{}'"
+                        .format(filename),
+                        exc_info=exception)
+                finally:
+                    result[filename] = {'exception': exception, 'data': data}
 
         # Clean up the temporary directory
         shutil.rmtree(tmpdir)
