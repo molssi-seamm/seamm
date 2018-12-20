@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import json
+from datetime import datetime
 import logging
 import molssi_util
 import molssi_workflow
 import os
+import os.path
 import pprint  # nopep8
 import stat
 
@@ -29,7 +31,8 @@ class Workflow(object):
                  parent=None,
                  data=None,
                  namespace='org.molssi.workflow',
-                 **kwargs):
+                 name=None,
+                 directory=None):
         '''Initialize the workflow
 
         Keyword arguments:
@@ -37,6 +40,7 @@ class Workflow(object):
 
         self.graph = molssi_workflow.Graph()
 
+        self.name = name
         self.parent = parent
         # Setup the plugin handling
         self.plugin_manager = molssi_workflow.PluginManager(namespace)
@@ -44,8 +48,25 @@ class Workflow(object):
         # and make sure that the start node exists
         self.add_node(molssi_workflow.StartNode(workflow=self))
 
+        # And the root directory
+        self.root_directory = directory
+
     def __iter__(self):
         return self.graph.__iter__()
+
+    @property
+    def root_directory(self):
+        """The root directory for files, etc for this workflow"""
+        if self._root_directory is None:
+            self._root_directory = os.path.join(
+                os.getcwd(),
+                datetime.now().isoformat(sep='_', timespec='seconds')
+            )
+        return self._root_directory
+
+    @root_directory.setter
+    def root_directory(self, value):
+        self._root_directory = value
 
     def tag_exists(self, tag):
         """Check if the node with a given tag exists"""
@@ -237,6 +258,16 @@ class Workflow(object):
             start_node = molssi_workflow.StartNode(workflow=self)
             self.add_node(start_node)
 
+    def set_ids(self, node_id=()):
+        """Sequentially number all nodes, and subnodes"""
+        # Get the start node
+        next_node = self.get_node('1')
+
+        n = 0
+        while next_node:
+            next_node = next_node.set_id((*node_id, n))
+            n += 1
+        
     def list_nodes(self):
         """List the nodes, for debugging"""
         result = []
