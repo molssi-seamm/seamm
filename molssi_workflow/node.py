@@ -10,6 +10,7 @@ import molssi_workflow
 import json
 import logging
 import molssi_util
+import os.path
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ class Node(abc.ABC):
         self.parent = None
         self.workflow = workflow
         self._title = title
+        self._id = ()
         self.extension = extension
 
         self.x = None
@@ -59,11 +61,24 @@ class Node(abc.ABC):
         """The string representation of the uuid of the node"""
         return 'node=' + str(self._uuid)
 
+    @property
+    def directory(self):
+        """Return the directory we should write output to"""
+        return os.path.join(
+            self.workflow.root_directory,
+            '.'.join(str(e) for e in self._id)
+        )
+
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
 
         # Need to correct all edges to other nodes
         raise NotImplementedError('set_uuid not implemented yet!')
+
+    def set_id(self, node_id):
+        """Set the id for node to a given tuple"""
+        self._id = node_id
+        return self.next()
 
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
@@ -102,10 +117,24 @@ class Node(abc.ABC):
             self.workflow.graph.remove_edge(edge.node1, edge.node2,
                                             edge.edge_type)
 
+    def describe(self, json_dict=None):
+        """Write out information about what this node will do
+        If json_dict is passed in, add information to that dictionary
+        so that it can be written out by the controller as appropriate.
+        """
+
+        self.job_output('Step ' + '.'.join(str(e) for e in self._id) +
+                 ': ' + self.title)
+        next_node = self.next()
+        return next_node
+
     def run(self):
         """Do whatever we need to do! The base class does nothing except
         return the next node.
         """
+
+        self.log('Step ' + '.'.join(str(e) for e in self._id) +
+                 ': ' + self.title)
 
         next_node = self.next()
         if next_node:
@@ -180,3 +209,17 @@ class Node(abc.ABC):
                     self.__dict__[key] = attributes[key]
             elif 'workflow' in key:
                 self.__dict__[key].from_dict(data[key])
+
+    def log(self, *objects, sep=' ', end='\n', flush=False):
+        """Write the main output to the correct file"""
+        os.makedirs(self.directory, exist_ok=True)
+        filename = os.path.join(self.directory, 'out.txt')
+        with open(filename, mode='a') as fd:
+            print(*objects, sep=sep, end=end, file=fd, flush=flush)
+
+    def job_output(self, *objects, sep=' ', end='\n', flush=False):
+        """Write the main job output to the correct file"""
+        os.makedirs(self.workflow.root_directory, exist_ok=True)
+        filename = os.path.join(self.workflow.root_directory, 'job.txt')
+        with open(filename, mode='a') as fd:
+            print(*objects, sep=sep, end=end, file=fd, flush=flush)
