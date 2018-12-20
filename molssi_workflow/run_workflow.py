@@ -1,9 +1,13 @@
+from datetime import datetime
 import argparse
-import molssi_workflow
 import json
 import locale
 import logging
 import molssi_util
+import molssi_workflow
+import os
+import os.path
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +21,28 @@ def run():
     parser.add_argument("-v", "--verbose", dest="verbose_count",
                         action="count", default=0,
                         help="increases log verbosity for each occurence.")
+    parser.add_argument("--directory", dest="directory",
+                        default=None, action="store",
+                        help="Directory to write output and other files.")
+    parser.add_argument("--force", dest="force", action='store_true')
     parser.add_argument("filename", help='the filename of the workflow')
     args = parser.parse_args()
+
+    if args.directory is None:
+        wdir = os.path.join(
+            os.getcwd(),
+            datetime.now().isoformat(sep='_', timespec='seconds')
+        )
+    else:
+        wdir = args.directory
+    print("Working directory is '{}'".format(wdir))
+
+    if os.path.exists(wdir):
+        if args.force:
+            shutil.rmtree(wdir)
+        else:
+            print('Directory {} exists, us --force to overwrite'.format(wdir))
+            exit()
 
     # Sets log level to WARN going more verbose for each new -v.
     numeric_level = max(3 - args.verbose_count, 0) * 10
@@ -27,7 +51,7 @@ def run():
     workflow = molssi_workflow.Workflow()
     workflow.read(args.filename)
     exec = molssi_workflow.ExecWorkflow(workflow)
-    exec.run()
+    exec.run(root=wdir)
 
 
 def open_workflow(name):
