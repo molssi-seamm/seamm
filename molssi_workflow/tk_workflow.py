@@ -506,6 +506,10 @@ class TkWorkflow(object):
         # And update the picture on screen
         self.draw()
 
+    def remove_node(self, node):
+        """Remove the given node"""
+        self.workflow.remove_node(node)
+
     def next_position(self):
         """Find a reasonable place to position the next step
         in the flowchart."""
