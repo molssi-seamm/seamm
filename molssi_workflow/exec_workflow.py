@@ -21,12 +21,23 @@ class ExecWorkflow(object):
 
         self._workflow = workflow
 
-    def run(self):
+    def run(self, root=None):
         if not self._workflow:
             raise RuntimeError('There is no workflow to run!')
+
+        self._workflow.root_directory = root
+
+        # Correctly number the nodes
+        self._workflow.set_ids()
 
         # Get the start node
         next_node = self._workflow.get_node('1')
 
+        # Write out an initial summary of the workflow before doing anything
+        while next_node:
+            next_node = next_node.describe()
+
+        # And actually run it!
+        next_node = self._workflow.get_node('1')
         while next_node:
             next_node = next_node.run()
