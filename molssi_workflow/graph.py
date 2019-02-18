@@ -45,7 +45,7 @@ class Graph(object):
         self._edge = {}
 
     def add_edge(self, u, v, edge_type=None,
-                 edge_class=None, **attr):
+                 edge_class=None, **kwargs):
 
         if u not in self:
             self.add_node(u)
@@ -55,11 +55,12 @@ class Graph(object):
 
         key = (u.__hash__(), v.__hash__(), edge_type)
         if edge_class is None:
-            self._edge[key] = molssi_workflow.Edge(self, u, v,
-                                                   edge_type=edge_type, **attr)
+            self._edge[key] = molssi_workflow.Edge(
+                self, u, v, edge_type=edge_type, **kwargs
+            )
         else:
             self._edge[key] = edge_class(self, u, v,
-                                         edge_type=edge_type, **attr)
+                                         edge_type=edge_type, **kwargs)
         return self._edge[key]
 
     def remove_edge(self, u, v, edge_type=None):

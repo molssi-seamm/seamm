@@ -30,8 +30,9 @@ class Node(abc.ABC):
         self.parent = None
         self.workflow = workflow
         self._title = title
-        self._id = ()
+        self._id = None
         self.extension = extension
+        self._visited = False
 
         self.x = None
         self.y = None
@@ -66,8 +67,17 @@ class Node(abc.ABC):
         """Return the directory we should write output to"""
         return os.path.join(
             self.workflow.root_directory,
-            '.'.join(str(e) for e in self._id)
+            *self._id
         )
+
+    @property
+    def visited(self):
+        """Whether this node has been visited in a traversal"""
+        return self._visited
+
+    @visited.setter
+    def visited(self, value):
+        self._visited = bool(value)
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
@@ -77,8 +87,16 @@ class Node(abc.ABC):
 
     def set_id(self, node_id):
         """Set the id for node to a given tuple"""
-        self._id = node_id
-        return self.next()
+        if self.visited:
+            return None
+        else:
+            self.visited = True
+            self._id = node_id
+            return self.next()
+
+    def reset_id(self):
+        """Reset the id for node"""
+        self._id = None
 
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
@@ -117,16 +135,20 @@ class Node(abc.ABC):
             self.workflow.graph.remove_edge(edge.node1, edge.node2,
                                             edge.edge_type)
 
-    def describe(self, json_dict=None):
+    def describe(self, indent='', json_dict=None):
         """Write out information about what this node will do
         If json_dict is passed in, add information to that dictionary
         so that it can be written out by the controller as appropriate.
         """
 
-        self.job_output('Step ' + '.'.join(str(e) for e in self._id) +
-                 ': ' + self.title)
+        self.visited = True
+        self.job_output(indent + 'Step ' + '.'.join(str(e) for e in self._id) +
+                        ': ' + self.title)
         next_node = self.next()
-        return next_node
+        if next_node is None or next_node.visited:
+            return None
+        else:
+            return next_node
 
     def run(self):
         """Do whatever we need to do! The base class does nothing except
@@ -149,9 +171,11 @@ class Node(abc.ABC):
         """
 
         for edge in self.workflow.edges(self, direction='out'):
-            if edge.edge_type == 'execution':
+            if edge['label'] == '' or edge['label'] == 'exit':
+                logger.debug('Next node is: {}'.format(edge.node2))
                 return edge.node2
 
+        logger.debug('Reached the end of the workflow')
         return None
 
     def previous(self):
@@ -223,3 +247,29 @@ class Node(abc.ABC):
         filename = os.path.join(self.workflow.root_directory, 'job.txt')
         with open(filename, mode='a') as fd:
             print(*objects, sep=sep, end=end, file=fd, flush=flush)
+
+    def default_edge_label(self):
+        """Return the default label of the edge. Usually this is ''
+        but for nodes with two or more edges leaving them, such as a loop, this
+        method will return an appropriate default for the current edge. For
+        example, by default the first edge emanating from a loop-node is the
+        'loop' edge; the second, the 'exit' edge.
+
+        A return value of 'too many' indicates that the node exceeds the number
+        of allowed exit edges.
+        """
+
+        # how many outgoing edges are there?
+        n_edges = len(self.workflow.edges(self, direction='out'))
+
+        logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
+
+        if n_edges == 0:
+            return ""
+        else:
+            return "too many"
+
+    def analyze(self, lines=[]):
+        """Analyze the output of the calculation
+        """
+        return

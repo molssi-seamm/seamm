@@ -4,9 +4,12 @@ import locale
 import logging
 import os
 import platform
+import Pmw
 import subprocess
 import sys
 import tkinter as tk
+
+logger = logging.getLogger(__name__)
 
 
 def raise_app(root: tk):
@@ -39,6 +42,7 @@ def flowchart():
     # Initialize Tk
     ##################################################
     root = tk.Tk()
+    Pmw.initialise(root)
 
     ##############################################################
     # Create the various objects that we need: the model, the view
@@ -50,8 +54,10 @@ def flowchart():
     # The data is implicitly initialized to none...
 
     ##################################################
-    # Initialize the rest of teh GUI, such as menus
+    # Initialize the rest of the GUI, such as menus
     ##################################################
+    logger.debug('Initializing the rest of the GUI')
+
     root.title(app_name)
 
     # The menus
@@ -92,7 +98,8 @@ def flowchart():
                          command=tk_workflow.open_file,
                          accelerator=CmdKey + 'O')
     filemenu.add_separator()
-    filemenu.add_command(label="Run", command=tk_workflow.run)
+    filemenu.add_command(label="Run", command=tk_workflow.run,
+                         accelerator=CmdKey + 'R')
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=root.quit)
 
@@ -104,8 +111,12 @@ def flowchart():
     root.bind_all('<'+CmdKey+'n>', tk_workflow.new_file)
     root.bind_all('<'+CmdKey+'O>', tk_workflow.open_file)
     root.bind_all('<'+CmdKey+'o>', tk_workflow.open_file)
+    root.bind_all('<'+CmdKey+'R>', tk_workflow.run)
+    root.bind_all('<'+CmdKey+'r>', tk_workflow.run)
     root.bind_all('<'+CmdKey+'S>', tk_workflow.save_file)
     root.bind_all('<'+CmdKey+'s>', tk_workflow.save_file)
+
+    root.bind_all('<'+CmdKey+'`>', tk_workflow.print_edges)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()
@@ -117,12 +128,18 @@ def flowchart():
 
     root.geometry('{}x{}+{}+{}'.format(w, h, x, y))
 
+    logger.debug('Finished initializing the rest of the GUI, drawing window')
+
     # Draw the flowchart
     tk_workflow.draw()
+
+    logger.debug('Workflow has been drawn. Now raise it to the top')
 
     # bring it to the top of all windows
     root.lift()
     raise_app(root)
+
+    logger.debug('and now enter the event loop')
 
     # enter the event loop
     root.mainloop()

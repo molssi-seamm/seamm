@@ -10,6 +10,7 @@ import os.path
 import shutil
 
 logger = logging.getLogger(__name__)
+variables = molssi_workflow.Variables()
 
 
 def run():

@@ -6,24 +6,35 @@ The information is stored in the graph object as attributes of the
 edge so that the graphical representation can be restored as needed.
 """
 
+import logging
+import math
 import molssi_workflow
 import pprint  # nopep8
+from tkinter import font
 import tkinter as tk
 import weakref
+
+logger = logging.getLogger(__name__)
 
 
 class TkEdge(molssi_workflow.Edge):
     str_to_object = weakref.WeakValueDictionary()
 
     def __init__(self, graph, node1, node2, edge_type='execution',
-                 canvas=None, anchor1='s', anchor2='n', coords=None):
+                 canvas=None, anchor1='s', anchor2='n', coords=None,
+                 **kwargs):
         """Initialize the edge, ensuring that it is
         in the graph.
 
         Keyword arguments:
         """
+        self._data = []
+        logger.debug('Creating TkEdge {}'.format(self))
+        logger.debug('\tnode1 = {}'.format(node1))
+        logger.debug('\tnode2 = {}'.format(node2))
+
         # Initialize the parent class
-        super().__init__(graph, node1, node2, edge_type)
+        super().__init__(graph, node1, node2, edge_type, **kwargs)
 
         self._data['canvas'] = canvas
         self.anchor1 = anchor1
@@ -71,6 +82,18 @@ class TkEdge(molssi_workflow.Edge):
     def coords(self, value):
         self._data['coords'] = value
 
+    @property
+    def has_label(self):
+        return 'label_id' in self._data
+
+    @property
+    def label_id(self):
+        return self._data['label_id']
+
+    @property
+    def label_bg_id(self):
+        return self._data['label_bg_id']
+    
     def tag(self):
         """Return a string tag for self"""
         return 'edge=' + str(id(self))
@@ -86,13 +109,54 @@ class TkEdge(molssi_workflow.Edge):
         x1, y1 = self.node2.anchor_point(self.anchor2)
         self.coords[0] = x0
         self.coords[1] = y0
-        self.coords[-1] = y1
         self.coords[-2] = x1
+        self.coords[-1] = y1
 
+        # the arrow
         self.canvas.delete(self.tag() + '&& type=arrow')
-        self.canvas.create_line(
+        arrow_id = self.canvas.create_line(
             self.coords, arrow=tk.LAST, tags=[self.tag(), 'type=arrow'])
+        self._data['arrow_id'] = arrow_id
 
+        # and the label
+        if self["label"] != "":
+            self.canvas.delete(self.tag() + '&& type=label')
+            text = self.canvas.create_text(
+                self.label_position(x0, y0, x1, y1),
+                text=self["label"],
+                font=font.Font(family='Helvetica', size=8),
+                tags=[self.tag(), 'type=label']
+            )
+            self._data['label_id'] = text
+            self.canvas.delete(self.tag() + '&& type=label_bg')
+            bg = self.canvas.create_rectangle(
+                self.canvas.bbox(text),
+                outline="white", fill="white",
+                tags=[self.tag(), 'type=label_bg']
+            )
+            self._data['label_bg_id'] = bg
+            self.canvas.tag_lower(bg, text)
+
+    def label_position(self, x0, y0, x1, y1, offset=15):
+        """Work out the position for the label on an edge"""
+        dx = x1 - x0
+        dy = y1 - y0
+        length = math.sqrt(dx*dx + dy*dy)
+        if length < 2*offset:
+            offset = int(length/2)
+        xy = [
+            x0 if dx == 0.0 else x0 + dx/length * offset,
+            y0 if dy == 0.0 else y0 + dy/length * offset
+        ]
+        return xy
+        
     def undraw(self):
         """Remove any graphics"""
         self.canvas.delete(self.tag())
+        if 'arrow_id' in self._data:
+            del self._data['arrow_id']
+        if 'label_id' in self._data:
+            del self._data['label_id']
+        if 'label_bg_id' in self._data:
+            del self._data['label_bg_id']
+            

@@ -45,11 +45,15 @@ class TkNode(abc.ABC):
         self.toplevel = None
         self.canvas = canvas
 
-        if self.node is not None and self.node.x is None:
-            self.node.x = x
-            self.node.y = y
-            self.node.w = w
-            self.node.h = h
+        if self.node is not None:
+            if self.node.x is None:
+                self.node.x = x
+            if self.node.y is None:
+                self.node.y = y
+            if self.node.w is None:
+                self.node.w = w
+            if self.node.h is None:
+                self.node.h = h
 
         self._border = None
         self.title_label = None
@@ -441,3 +445,24 @@ class TkNode(abc.ABC):
                 if key not in ('node1', 'node2'):
                     attr[key] = edge[key]
             tk_workflow.add_edge(node1, node2, **attr)
+
+    def default_edge_label(self):
+        """Return the default label of the edge. Usually this is ''
+        but for nodes with two or more edges leaving them, such as a loop, this
+        method will return an appropriate default for the current edge. For
+        example, by default the first edge emanating from a loop-node is the
+        'loop' edge; the second, the 'exit' edge.
+
+        A return value of 'too many' indicates that the node exceeds the number
+        of allowed exit edges.
+        """
+
+        # how many outgoing edges are there?
+        n_edges = len(self.tk_workflow.edges(self, direction='out'))
+
+        logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
+
+        if n_edges == 0:
+            return ""
+        else:
+            return "too many"

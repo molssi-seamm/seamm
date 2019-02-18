@@ -10,6 +10,7 @@ specialization is contained in the Workflow and the nodes that it
 contains."""
 
 import logging
+import molssi_workflow
 
 logger = logging.getLogger(__name__)
 
@@ -25,15 +26,22 @@ class ExecWorkflow(object):
         if not self._workflow:
             raise RuntimeError('There is no workflow to run!')
 
+        logger.debug('Creating global variables space')
+        molssi_workflow.workflow_variables = molssi_workflow.Variables()
+        
         self._workflow.root_directory = root
 
         # Correctly number the nodes
         self._workflow.set_ids()
 
+        # Write out an initial summary of the workflow before doing anything
+        # Reset the visited flag for traversal
+        self._workflow.reset_visited()
+
         # Get the start node
         next_node = self._workflow.get_node('1')
 
-        # Write out an initial summary of the workflow before doing anything
+        # describe ourselves
         while next_node:
             next_node = next_node.describe()
 

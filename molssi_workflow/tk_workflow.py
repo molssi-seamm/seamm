@@ -144,6 +144,8 @@ class TkWorkflow(object):
         else:
             self.canvas.bind('<ButtonPress-3>', self.right_click)
 
+        logger.debug('Finished initializing tk_workflow')
+
     def __iter__(self):
         return self.graph.__iter__()
 
@@ -187,19 +189,63 @@ class TkWorkflow(object):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
+        # Handle loops!
+        for tmp in self._workflow:
+            tmp.reset_visit()
+
+        return self.last_node_helper(node)
+
+    def last_node_helper(self, node):
+        """Helper routine to handle the recursion"""
+
+        # get the node to start the traversal
+        logger.debug('last node helper:')
         if isinstance(node, str):
             node = self.get_node(node)
+        print('\tnode = {}'.format(node))
 
+        node.node.visit()
+        next_node = None
         for edge in self.graph.edges(node, direction='out'):
             if edge.edge_type == "execution":
-                return self.last_node(edge.node2)
 
+                if edge.node2.node.has_been_visited():
+                    logger.debug('\tnode {} has been visited'
+                                 .format(edge.node2))
+                    next_node = edge.node2
+                else:
+                    logger.debug('\trecursing to node {}'.format(edge.node2))
+                    return self.last_node_helper(edge.node2)
+
+        if next_node is not None:
+            node = next_node
+            logger.debug('\tchecking visited node {} for new nodes'
+                         .format(node))
+            if node.title == "Split":
+                logger.debug('\t  node is a splitter node, so look at next')
+                for edge in self.graph.edges(node, direction='out'):
+                    if edge.edge_type == "execution":
+                        logger.debug('\tnode after split is {}'
+                                     .format(edge.node2))
+                        node = edge.node2
+
+            for edge in self.graph.edges(node, direction='out'):
+                if edge.edge_type == "execution":
+                    if edge.node2.node.has_been_visited():
+                        logger.debug('\tnode {} has been visited'
+                                     .format(edge.node2))
+                    else:
+                        logger.debug('\trecursing to node {}'
+                                     .format(edge.node2))
+                        return self.last_node_helper(edge.node2)
+            
+        logger.debug('\treturning {}'.format(node))
         return node
 
-    def add_edge(self, u, v, edge_type='execution', **attr):
+    def add_edge(self, u, v, edge_type='execution', **kwargs):
         edge = self.graph.add_edge(
             u, v, edge_type, edge_class=molssi_workflow.TkEdge,
-            canvas=self.canvas, **attr
+            canvas=self.canvas, **kwargs
         )
         edge.draw()
         return edge
@@ -248,10 +294,17 @@ class TkWorkflow(object):
 
     def create_start_node(self):
         """Create the start node"""
-        start_node = molssi_workflow.StartNode()
+        # Check if the start node exists
+        start_node = self.workflow.get_node('1')
+        if start_node is None:
+            start_node = molssi_workflow.StartNode()
+
         tk_start_node = molssi_workflow.TkStartNode(
             tk_workflow=self, canvas=self.canvas, node=start_node)
+
         self.graph.add_node(tk_start_node)
+        logger.debug('Created start node {} at {}, {}'.
+                     format(tk_start_node, start_node.x, start_node.y))
         return tk_start_node
 
     def save(self, event=None):
@@ -334,7 +387,11 @@ class TkWorkflow(object):
             if 'type' in tags and \
                (tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head'):
                 arrow = int(tags['arrow'])
-                x0, y0, x1, y1 = self.canvas.coords(arrow)
+                xys = self.canvas.coords(item)
+                x0 = xys[0]
+                y0 = xys[1]
+                x1 = xys[-2]
+                y1 = xys[-1]
                 self.data = self.get_tags(arrow)
                 self.data['arrow'] = arrow
                 self.data.update(self.get_tags(arrow))
@@ -344,6 +401,10 @@ class TkWorkflow(object):
                 self.data['y1'] = y1
                 self._x0 = event.x
                 self._y0 = event.y
+
+                logger.debug('self.data for dragging arrow head or base')
+                logger.debug('{}'.format(self.data))
+
                 if tags['type'] == 'arrow_base':
                     self.data['arrow_base'] = item
                     self.data['arrow_head'] = \
@@ -477,6 +538,7 @@ class TkWorkflow(object):
         plugin_name = self.tree.item(item, option="text")
 
         (last_node, x, y) = self.next_position()
+        edge_label = last_node.default_edge_label()
 
         logger.debug('creating {} node'.format(plugin_name))
 
@@ -488,7 +550,7 @@ class TkWorkflow(object):
         logger.debug('  plugin object: {}'.format(plugin))
         tk_node = plugin.create_tk_node(
             tk_workflow=self, canvas=self.canvas, x=x, y=y,
-            w=200, h=50, node=node
+            node=node
         )
         self.graph.add_node(tk_node)
 
@@ -500,7 +562,8 @@ class TkWorkflow(object):
             tk_node,
             'execution',
             anchor1='s',
-            anchor2='n'
+            anchor2='n',
+            label=edge_label
         )
 
         # And update the picture on screen
@@ -515,7 +578,11 @@ class TkWorkflow(object):
         in the flowchart."""
 
         last_node = self.last_node()
+        logger.debug('next_position, last_node = {}'.format(last_node))
+        logger.debug('\tx0 = {}'.format(last_node.x))
         x0 = last_node.x
+        logger.debug('\ty0 = {} + {} + {}'
+                     .format(last_node.y, last_node.h, self.gap))
         y0 = last_node.y + last_node.h + self.gap
 
         return (last_node, x0, y0)
@@ -528,7 +595,7 @@ class TkWorkflow(object):
         the topmost item, so we cannot loop through items.
 
         Instead we use find_overlapping, which does return a list. However,
-        if the mouse is e.g. inside a rectangle bat far enough from the edges
+        if the mouse is e.g. inside a rectangle but far enough from the edges
         find_overlapping does not find it. In this case we use the current
         tag to find the object.
         """
@@ -565,7 +632,11 @@ class TkWorkflow(object):
 
             # on an arrow?
             if 'type' in tags and tags['type'] == 'arrow':
-                x0, y0, x1, y1 = self.canvas.coords(item)
+                xys = self.canvas.coords(item)
+                x0 = xys[0]
+                y0 = xys[1]
+                x1 = xys[-2]
+                y1 = xys[-1]
                 self.canvas.create_rectangle(
                     x0 - self.halo / 2,
                     y0 - self.halo / 2,
@@ -679,6 +750,7 @@ class TkWorkflow(object):
 
     def drag_arrow(self, event):
         '''Drag an arrow from the anchor on the node to the mouse
+        Used when creating a new edge.
         '''
 
         node, anchor, x, y, arrow = self.data
@@ -693,7 +765,7 @@ class TkWorkflow(object):
                 self.activate_node(result[1], result[2])
 
     def drop_arrow(self, event):
-        '''The user has dropped the arrow somewhere!
+        '''The user has dropped a new arrow somewhere!
         If it is on another node, make the connection.
         If it is in empty space or on the original node,
         just cancel the operation.
@@ -711,19 +783,21 @@ class TkWorkflow(object):
         if result is not None and result[0] == 'node':
             other_node, point = result[1:]
             if node != other_node and point is not None:
+                edge_label = node.default_edge_label()
                 self.add_edge(
                     node,
                     other_node,
                     'execution',
                     anchor1=anchor,
-                    anchor2=point
+                    anchor2=point,
+                    label=edge_label
                 )
 
         self.data = None
         self.mouse_op = None
 
     def drag_arrow_base(self, event):
-        '''Drag the base of an arrow
+        '''Drag the base of an exisiting arrow
         '''
 
         # move arrow
@@ -738,6 +812,16 @@ class TkWorkflow(object):
         self._y0 = event.y
 
         self.canvas.move(self.data['arrow_base'], deltax, deltay)
+
+        # move the label if there is one
+        edge = self.data['edge']
+        if edge.has_label:
+            self.canvas.coords(edge.label_id,
+                               edge.label_position(event.x, event.y,
+                                                   self.data['x1'],
+                                                   self.data['y1']))
+            self.canvas.coords(edge.label_bg_id,
+                               self.canvas.bbox(edge.label_id))
 
         # Check for being near another nodes anchor point
         result = self.find_items(
@@ -810,6 +894,7 @@ class TkWorkflow(object):
 
                 node2 = edge.node2
                 anchor2 = edge.anchor2
+                edge_label = edge['label']
 
                 self.remove_edge(self.data['arrow'])
 
@@ -818,7 +903,8 @@ class TkWorkflow(object):
                     node2,
                     'execution',
                     anchor1=anchor1,
-                    anchor2=anchor2
+                    anchor2=anchor2,
+                    label=edge_label
                 )
 
         self.data = None
@@ -840,6 +926,16 @@ class TkWorkflow(object):
         self._y0 = event.y
 
         self.canvas.move(self.data['arrow_head'], deltax, deltay)
+
+        # move the label if there is one
+        edge = self.data['edge']
+        if edge.has_label:
+            self.canvas.coords(edge.label_id,
+                               edge.label_position(self.data['x0'],
+                                                   self.data['y0'],
+                                                   event.x, event.y))
+            self.canvas.coords(edge.label_bg_id,
+                               self.canvas.bbox(edge.label_id))
 
         # Check for being near another nodes anchor point
         result = self.find_items(
@@ -919,23 +1015,28 @@ class TkWorkflow(object):
 
         tags = self.get_tags(item)
         edge = tags['edge']
+        tag = edge.tag()
         self.graph.remove_edge(edge.node1, edge.node2,
                                edge.edge_type)
 
-        self.canvas.delete(item)
+        # Delete the tag, not item, so that we get all labels, etc.
+        self.canvas.delete(tag)
         self.canvas.delete('type=arrow_base')
         self.canvas.delete('type=arrow_head')
 
-    def print_edges(self):
+    def print_edges(self, event=None):
         '''Print all the edges. Useful for debugging!
         '''
 
+        print('All edges in tk_workflow')
         for edge in self.edges():
-            print('{} {} {} {} {}'.format(
-                edge.node1.tag(),
+            # print('   {}'.format(edge))
+            print('   {} {} {} {} {}'.format(
+                edge.node1.tag,
                 edge.anchor1,
-                edge.node2.tag(),
-                edge.anchor2
+                edge.node2.tag,
+                edge.anchor2,
+                edge['label']
             )
             )
 
@@ -947,7 +1048,7 @@ class TkWorkflow(object):
         for item in self.canvas.find_withtag('type=arrow'):
             print('{}: {}'.format(item, self.canvas.gettags(item)))
 
-    def run(self):
+    def run(self, event=None):
         """Run the current workflow"""
 
         self.update_workflow()

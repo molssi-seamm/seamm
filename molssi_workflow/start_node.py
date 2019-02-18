@@ -3,6 +3,9 @@
 """The start node in a workflow"""
 
 import molssi_workflow
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class StartNode(molssi_workflow.Node):
@@ -13,6 +16,7 @@ class StartNode(molssi_workflow.Node):
 
         Keyword arguments:
         '''
+        logger.debug('Constructing start node {}'.format(self))
         super().__init__(workflow=workflow, title='Start')
 
         self._uuid = 1

@@ -68,12 +68,9 @@ class Workflow(object):
     def root_directory(self, value):
         self._root_directory = value
 
-    def tag_exists(self, tag):
-        """Check if the node with a given tag exists"""
-        for node in self:
-            if node.tag == tag:
-                return True
-        return False
+    # -------------------------------------------------------------------------
+    # Node creation and deletion
+    # -------------------------------------------------------------------------
 
     def create_node(self, extension_name):
         """Create a new node given the extension name"""
@@ -90,12 +87,40 @@ class Workflow(object):
         n.workflow = self
         return self.graph.add_node(n, **attr)
 
-    def get_node(self, tag):
-        """Return the node with a given tag"""
-        if isinstance(tag, int):
-            tag = str(tag)
+    def remove_node(self, node):
+        """Delete a node from the workflow, and from the graphics if
+        necessary
+        """
+
+        # Remove the drawing of the node
+        node.undraw()
+
+        # and any edges, including graphics if appropriate
+        node.remove_edge('all')
+
+        # and the node
+        self.graph.remove_node(node)
+
+    # -------------------------------------------------------------------------
+    # Finding nodes
+    # -------------------------------------------------------------------------
+
+    def tag_exists(self, tag):
+        """Check if the node with a given tag exists. A tag is a string like
+        'node=<uuid>', where <uuid> is the unique integer id for the node.
+        """
+
         for node in self:
-            if str(node.uuid) == tag:
+            if node.tag == tag:
+                return True
+        return False
+
+    def get_node(self, uuid):
+        """Return the node with a given uuid"""
+        if isinstance(uuid, int):
+            uuid = str(uuid)
+        for node in self:
+            if str(node.uuid) == uuid:
                 return node
         return None
 
@@ -112,64 +137,63 @@ class Workflow(object):
 
         return node
 
-    def remove_node(self, node):
-        """Delete a node from the workflow, and from the graphics if
-        necessary
+    def clear(self, all=False):
+        """Override the underlying clear() to ensure that the start node is present
         """
+        self.graph.clear()
 
-        # Remove the drawing of the node
-        node.undraw()
+        # and make sure that the start node exists
+        if not all:
+            start_node = molssi_workflow.StartNode(workflow=self)
+            self.add_node(start_node)
+        
+    def list_nodes(self):
+        """List the nodes, for debugging"""
+        result = []
+        for node in self:
+            result.append(node.__class__.__name__ + " {}".format(node))
+        return result
 
-        # and any edges, including graphics if appropriate
-        node.remove_edge('all')
+    # -------------------------------------------------------------------------
+    # Taversal
+    # -------------------------------------------------------------------------
 
-        # and the node
-        self.graph.remove_node(node)
+    def reset_visited(self):
+        """Reset the 'visited' flag, which is used to detect
+        loops during traversals
+        """
+        
+        for tmp in self:
+            tmp.visited = False
 
-    def edges(self, node=None, direction='both'):
-        return self.graph.edges(node, direction)
+    def set_ids(self, node_id=()):
+        """Sequentially number all nodes, and subnodes"""
+        logger.debug('Setting ids')
+
+        # Clear all ids
+        for node in self:
+            node.reset_id()
+
+        # Reset the visited flag to check for loops
+        self.reset_visited()
+
+        # Get the start node
+        next_node = self.get_node('1')
+
+        # And traverse the nodes.
+        n = 0
+        while next_node:
+            next_node = next_node.set_id((*node_id, str(n)))
+            n += 1
+        logger.debug('Finished setting ids')
+
+    # -------------------------------------------------------------------------
+    # Strings, reading and writing
+    # -------------------------------------------------------------------------
 
     def to_json(self):
         """Ufff. Turn ourselves into JSON"""
         return json.dumps(self.to_dict())
-
-    def write(self, filename):
-        """Write the serialized form to disk"""
-        with open(filename, 'w') as fd:
-            fd.write('#!/usr/bin/env run_workflow\n')
-            fd.write('!MolSSI workflow 1.0\n')
-            json.dump(self.to_dict(), fd, indent=4,
-                      cls=molssi_util.JSONEncoder)
-            logger.info('Wrote json to {}'.format(filename))
-
-        permissions = stat.S_IMODE(os.lstat(filename).st_mode)
-        os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
-
-    def read(self, filename):
-        """Recreate the workflow from the serialized form on disk"""
-        with open(filename, 'r') as fd:
-            line = fd.readline(256)
-            # There may be exec magic as first line
-            if line[0:2] == '#!':
-                line = fd.readline(256)
-            if line[0:7] != '!MolSSI':
-                raise RuntimeError('File is not a MolSSI file! -- ' + line)
-            tmp = line.split()
-            if len(tmp) < 3:
-                raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line)
-            if tmp[1] != 'workflow':
-                raise RuntimeError('File is not a workflow! -- ' + line)
-            workflow_version = tmp[2]
-            logger.info('Reading workflow version {} from file {}'.format(
-                workflow_version, filename))
-
-            data = json.load(fd, cls=molssi_util.JSONDecoder)
-
-        if data['class'] != 'Workflow':
-            raise RuntimeError(filename + ' does not contain a workflow')
-
-        self.from_dict(data)
 
     def to_dict(self):
         """Serialize the graph and everything it contains in a dict"""
@@ -214,6 +238,8 @@ class Workflow(object):
         # Recreate the nodes
         for node in data['nodes']:
             if node['class'] == 'StartNode':
+                new_node = self.get_node('1')
+                new_node.from_dict(node)
                 continue
 
             logger.debug('creating {} node'.format(node['extension']))
@@ -248,32 +274,66 @@ class Workflow(object):
             logger.debug("Adding edges, nodes:\n\t" +
                          "\n\t".join(self.list_nodes()))
 
-    def clear(self, all=False):
-        """Override the underlying clear() to ensure that the start node is present
-        """
-        self.graph.clear()
+    def write(self, filename):
+        """Write the serialized form to disk"""
+        with open(filename, 'w') as fd:
+            fd.write('#!/usr/bin/env run_workflow\n')
+            fd.write('!MolSSI workflow 1.0\n')
+            json.dump(self.to_dict(), fd, indent=4,
+                      cls=molssi_util.JSONEncoder)
+            logger.info('Wrote json to {}'.format(filename))
 
-        # and make sure that the start node exists
-        if not all:
-            start_node = molssi_workflow.StartNode(workflow=self)
-            self.add_node(start_node)
+        permissions = stat.S_IMODE(os.lstat(filename).st_mode)
+        os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
 
-    def set_ids(self, node_id=()):
-        """Sequentially number all nodes, and subnodes"""
-        # Get the start node
-        next_node = self.get_node('1')
+    def read(self, filename):
+        """Recreate the workflow from the serialized form on disk"""
+        with open(filename, 'r') as fd:
+            line = fd.readline(256)
+            # There may be exec magic as first line
+            if line[0:2] == '#!':
+                line = fd.readline(256)
+            if line[0:7] != '!MolSSI':
+                raise RuntimeError('File is not a MolSSI file! -- ' + line)
+            tmp = line.split()
+            if len(tmp) < 3:
+                raise RuntimeError(
+                    'File is not a proper MolSSI file! -- ' + line)
+            if tmp[1] != 'workflow':
+                raise RuntimeError('File is not a workflow! -- ' + line)
+            workflow_version = tmp[2]
+            logger.info('Reading workflow version {} from file {}'.format(
+                workflow_version, filename))
 
-        n = 0
-        while next_node:
-            next_node = next_node.set_id((*node_id, n))
-            n += 1
-        
-    def list_nodes(self):
-        """List the nodes, for debugging"""
-        result = []
-        for node in self:
-            result.append(node.__class__.__name__ + " {}".format(node))
-        return result
+            data = json.load(fd, cls=molssi_util.JSONDecoder)
+
+        if data['class'] != 'Workflow':
+            raise RuntimeError(filename + ' does not contain a workflow')
+
+        self.from_dict(data)
+
+    # -------------------------------------------------------------------------
+    # Edges between nodes
+    # -------------------------------------------------------------------------
+
+    def edges(self, node=None, direction='both'):
+        return self.graph.edges(node, direction)
 
     def add_edge(self, u, v, edge_type=None, **attr):
         return self.graph.add_edge(u, v, edge_type, **attr)
+
+    def print_edges(self, event=None):
+        '''Print all the edges. Useful for debugging!
+        '''
+
+        print('All edges in workflow')
+        for edge in self.edges():
+            # print('   {}'.format(edge))
+            print('   {} {} {} {} {}'.format(
+                edge.node1.tag,
+                edge.anchor1,
+                edge.node2.tag,
+                edge.anchor2,
+                edge['label']
+            )
+            )

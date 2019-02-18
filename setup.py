@@ -44,7 +44,19 @@ setup(
         'console_scripts': [
             'molssi_workflow=molssi_workflow.__main__:flowchart',
             'run_workflow=molssi_workflow.run_workflow:run'
-        ]
+        ],
+        'org.molssi.workflow': [
+            'Split = molssi_workflow:SplitStep',
+        ],
+        'org.molssi.workflow.tk': [
+            'Split = molssi_workflow:SplitStep',
+        ],
+        'org.molssi.workflow': [
+            'Join = molssi_workflow:JoinStep',
+        ],
+        'org.molssi.workflow.tk': [
+            'Join = molssi_workflow:JoinStep',
+        ],
     },
     include_package_data=True,
     install_requires=requirements,
