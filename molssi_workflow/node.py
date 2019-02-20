@@ -269,7 +269,7 @@ class Node(abc.ABC):
         else:
             return "too many"
 
-    def analyze(self, lines=[]):
+    def analyze(self, indent='', **kwargs):
         """Analyze the output of the calculation
         """
         return
