@@ -49,7 +49,7 @@ def run():
     numeric_level = max(3 - args.verbose_count, 0) * 10
     logging.basicConfig(level=numeric_level)
 
-    workflow = molssi_workflow.Workflow()
+    workflow = molssi_workflow.Workflow(directory=wdir)
     workflow.read(args.filename)
     exec = molssi_workflow.ExecWorkflow(workflow)
     exec.run(root=wdir)
