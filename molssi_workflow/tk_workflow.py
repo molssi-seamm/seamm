@@ -191,7 +191,7 @@ class TkWorkflow(object):
 
         # Handle loops!
         for tmp in self._workflow:
-            tmp.reset_visit()
+            tmp.visited = False
 
         return self.last_node_helper(node)
 
@@ -204,12 +204,12 @@ class TkWorkflow(object):
             node = self.get_node(node)
         print('\tnode = {}'.format(node))
 
-        node.node.visit()
+        node.node.visited
         next_node = None
         for edge in self.graph.edges(node, direction='out'):
             if edge.edge_type == "execution":
 
-                if edge.node2.node.has_been_visited():
+                if edge.node2.node.visited:
                     logger.debug('\tnode {} has been visited'
                                  .format(edge.node2))
                     next_node = edge.node2
@@ -231,7 +231,7 @@ class TkWorkflow(object):
 
             for edge in self.graph.edges(node, direction='out'):
                 if edge.edge_type == "execution":
-                    if edge.node2.node.has_been_visited():
+                    if edge.node2.node.visited:
                         logger.debug('\tnode {} has been visited'
                                      .format(edge.node2))
                     else:
