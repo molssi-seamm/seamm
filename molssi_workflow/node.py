@@ -157,6 +157,7 @@ class Node(abc.ABC):
 
         self.log('Step ' + '.'.join(str(e) for e in self._id) +
                  ': ' + self.title)
+        self.log('')
 
         next_node = self.next()
         if next_node:
