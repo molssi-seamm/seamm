@@ -30,6 +30,7 @@ class Node(abc.ABC):
         self.parent = None
         self.workflow = workflow
         self._title = title
+        self._description = ''
         self._id = None
         self.extension = extension
         self._visited = False
@@ -78,6 +79,15 @@ class Node(abc.ABC):
     @visited.setter
     def visited(self, value):
         self._visited = bool(value)
+
+    @property
+    def description(self):
+        """A textual description of this node"""
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        self._description = value
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
@@ -144,7 +154,9 @@ class Node(abc.ABC):
         self.visited = True
         self.job_output(indent + 'Step ' + '.'.join(str(e) for e in self._id) +
                         ': ' + self.title)
+
         next_node = self.next()
+
         if next_node is None or next_node.visited:
             return None
         else:
@@ -274,3 +286,42 @@ class Node(abc.ABC):
         """Analyze the output of the calculation
         """
         return
+
+    def get_value(self, variable_or_value):
+        """Return the value of the workspace variable is <variable_or_value>
+        is the name of a variable. Otherwise, simply return the value of
+        <variable_or_value>.
+
+        This provides a convenient way to handle both values and variables
+        in widgets. A reference to a variable is $<name> or ${name}, and is
+        replaced by the contents of the variable. If the text is not a
+        reference to a variable then the value passed in is returned
+        unchanged.
+        """
+
+        return molssi_workflow.workflow_variables.value(variable_or_value)
+
+    def get_variable(self, variable):
+        """Get the value of a variable, which must exist
+        """
+
+        return molssi_workflow.workflow_variables.get_variable(variable)
+
+    def set_variable(self, variable, value):
+        """Set the value of a variable in the workspace. The name of the
+        variable maybe a plain string, or be $<name> or ${<name>}
+        """
+
+        molssi_workflow.workflow_variables.set_variable(variable, value)
+
+    def variable_exists(self, variable):
+        """Return whether a varable exists in the workspace
+        """
+
+        return molssi_workflow.workflow_variables.exists(variable)
+
+    def delete_variable(self, variable):
+        """Delete a variable in the workspace
+        """
+
+        molssi_workflow.workflow_variables.delete(variable)

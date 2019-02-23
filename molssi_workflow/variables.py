@@ -69,17 +69,92 @@ class Variables(collections.abc.MutableMapping):
         """
 
         if string[0] == '$':
-            if string[1] == '{':
-                if string[-1] != '}':
-                    raise RuntimeError("'" + string +
-                                       "'is not a valid variable name")
-                else:
-                    name = string[2:-2]
-            else:
-                name = string[1:]
+            name = self.variable(string)
             if name in self._data:
                 return self._data[name]
             else:
                 raise RuntimeError("Variable '" + string + "' does not exist")
         else:
             return string
+
+    def set_variable(self, variable, value):
+        """Set the value of the variable. The variable may be a simple string
+        or start with a $ and optionally have braces around it, i.e.
+
+            <name>
+            $<name>
+        or
+            ${<name>}
+        """
+
+        name = self.variable(variable)
+        self._data[name] = value
+
+    def get_variable(self, variable):
+        """Get the value of the variable. The variable may be a simple string
+        or start with a $ and optionally have braces around it, i.e.
+
+            <name>
+            $<name>
+        or
+            ${<name>}
+        """
+
+        name = self.variable(variable)
+        if name not in self._data:
+            raise RuntimeError(
+                "Workspace variable '{}' does not exist.".format(name)
+            )
+        return self._data[name]
+
+    def exists(self, variable):
+        """Return whether a variable exists. The variable may be specified
+        as a simple string or start with a $ and optionally have braces
+        around it, i.e.
+
+            <name>
+            $<name>
+        or
+            ${<name>}
+        """
+
+        return self.variable(variable) in self._data
+
+    def delete(self, variable):
+        """Return whether a variable exists. The variable may be specified
+        as a simple string or start with a $ and optionally have braces
+        around it, i.e.
+
+            <name>
+            $<name>
+        or
+            ${<name>}
+        """
+
+        name = self.variable(variable)
+        if name in self._data:
+            del self._data[name]
+
+    def variable(self, string):
+        """Return the name of a variable. The variable may be specified
+        as a simple string or start with a $ and optionally have braces
+        around it, i.e.
+
+            <string>
+            $<string>
+        or
+            ${<string>}
+        """
+
+        if string[0] == '$':
+            if string[1] == '{':
+                if string[-1] != '}':
+                    raise RuntimeError("'" + string +
+                                       "'is not a valid string name")
+                else:
+                    return string[2:-1]
+            else:
+                return string[1:]
+        else:
+            return string
+
