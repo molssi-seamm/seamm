@@ -186,7 +186,7 @@ class TkWorkflow(object):
                 return node
         return None
 
-    def last_node(self, node='1'):
+    def last_node(self, tk_node='1'):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
@@ -194,54 +194,56 @@ class TkWorkflow(object):
         for tmp in self._workflow:
             tmp.visited = False
 
-        return self.last_node_helper(node)
+        return self.last_node_helper(tk_node)
 
-    def last_node_helper(self, node):
+    def last_node_helper(self, tk_node):
         """Helper routine to handle the recursion"""
 
         # get the node to start the traversal
-        logger.debug('last node helper:')
-        if isinstance(node, str):
-            node = self.get_node(node)
-        print('\tnode = {}'.format(node))
+        logger.debug('last tk_node helper:')
+        if isinstance(tk_node, str):
+            tk_node = self.get_node(tk_node)
+        print('\ttk_node = {}'.format(tk_node))
 
-        node.node.visited
-        next_node = None
-        for edge in self.graph.edges(node, direction='out'):
+        tk_node.node.visited = True
+        next_tk_node = None
+        for edge in self.graph.edges(tk_node, direction='out'):
             if edge.edge_type == "execution":
 
                 if edge.node2.node.visited:
-                    logger.debug('\tnode {} has been visited'
+                    logger.debug('\ttk_node {} has been visited'
                                  .format(edge.node2))
-                    next_node = edge.node2
+                    next_tk_node = edge.node2
                 else:
-                    logger.debug('\trecursing to node {}'.format(edge.node2))
+                    logger.debug(
+                        '\trecursing to tk_node {}'.format(edge.node2)
+                    )
                     return self.last_node_helper(edge.node2)
 
-        if next_node is not None:
-            node = next_node
-            logger.debug('\tchecking visited node {} for new nodes'
-                         .format(node))
-            if node.title == "Split":
-                logger.debug('\t  node is a splitter node, so look at next')
-                for edge in self.graph.edges(node, direction='out'):
+        if next_tk_node is not None:
+            tk_node = next_tk_node
+            logger.debug('\tchecking visited tk_node {} for new nodes'
+                         .format(tk_node))
+            if tk_node.node.extension == "Join":
+                logger.debug('\t  tk_node is a join node, so look at next')
+                for edge in self.graph.edges(tk_node, direction='out'):
                     if edge.edge_type == "execution":
-                        logger.debug('\tnode after split is {}'
+                        logger.debug('\ttk_node after split is {}'
                                      .format(edge.node2))
-                        node = edge.node2
+                        tk_node = edge.node2
 
-            for edge in self.graph.edges(node, direction='out'):
+            for edge in self.graph.edges(tk_node, direction='out'):
                 if edge.edge_type == "execution":
                     if edge.node2.node.visited:
                         logger.debug('\tnode {} has been visited'
                                      .format(edge.node2))
                     else:
-                        logger.debug('\trecursing to node {}'
+                        logger.debug('\trecursing to tk_node {}'
                                      .format(edge.node2))
                         return self.last_node_helper(edge.node2)
             
-        logger.debug('\treturning {}'.format(node))
-        return node
+        logger.debug('\treturning {}'.format(tk_node))
+        return tk_node
 
     def add_edge(self, u, v, edge_type='execution', **kwargs):
         edge = self.graph.add_edge(
