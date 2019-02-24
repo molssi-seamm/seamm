@@ -11,10 +11,14 @@ logger = logging.getLogger(__name__)
 class Join(molssi_workflow.Node):
     def __init__(self,
                  workflow=None,
-                 extension=None):
+                 extension='Join'):
         '''Initialize a node for joining the flow together again
 
         Keyword arguments:
         '''
         logger.debug('Constructing join node {}'.format(self))
-        super().__init__(workflow=workflow, title='Join')
+        super().__init__(
+            workflow=workflow,
+            title='Join',
+            extension=extension
+        )

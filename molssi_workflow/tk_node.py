@@ -15,22 +15,22 @@ class TkNode(abc.ABC):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
-        's': (0, 1),
-        'sse': (0.25, 1),
-        'se': (0.5, 1),
-        'ese': (0.5, 0.75),
-        'e': (0.5, 0.5),
-        'ene': (0.5, 0.25),
-        'ne': (0.5, 0),
-        'nne': (0.25, 0),
-        'n': (0, 0),
-        'nnw': (-0.25, 0),
-        'nw': (-0.5, 0),
-        'wnw': (-0.5, 0.25),
-        'w': (-0.5, 0.5),
-        'wsw': (-0.5, 0.75),
-        'sw': (-0.5, 1),
-        'ssw': (-0.25, 1)
+        's':   (+0.00, +0.50),
+        'sse': (+0.25, +0.50),
+        'se':  (+0.50, +0.50),
+        'ese': (+0.50, +0.25),
+        'e':   (+0.50, +0.00),
+        'ene': (+0.50, -0.25),
+        'ne':  (+0.50, -0.50),
+        'nne': (+0.25, -0.50),
+        'n':   (+0.00, -0.50),
+        'nnw': (-0.25, -0.50),
+        'nw':  (-0.50, -0.50),
+        'wnw': (-0.50, -0.25),
+        'w':   (-0.50, +0.00),
+        'wsw': (-0.50, +0.25),
+        'sw':  (-0.50, +0.50),
+        'ssw': (-0.25, +0.50)
     }
 
     def __init__(self, tk_workflow=None, node=None, canvas=None,
@@ -184,7 +184,7 @@ class TkNode(abc.ABC):
         # the outline
         x0 = self.x - self.w / 2
         x1 = x0 + self.w
-        y0 = self.y
+        y0 = self.y - self.h / 2
         y1 = y0 + self.h
         self._border = self.canvas.create_rectangle(
             x0,
@@ -196,10 +196,11 @@ class TkNode(abc.ABC):
         )
 
         # the label in the middle
-        x0 = self.x
-        y0 = self.y + self.h / 2
         self.title_label = self.canvas.create_text(
-            x0, y0, text=self.title, tags=[self.tag, 'type=title'])
+            self.x, self.y,
+            text=self.title,
+            tags=[self.tag, 'type=title']
+        )
 
     def undraw(self):
         """Remove all of our visual components
@@ -330,9 +331,9 @@ class TkNode(abc.ABC):
         if x > self.x + self.w / 2 + halo:
             return False
 
-        if y < self.y - halo:
+        if y < self.y - self.h / 2 - halo:
             return False
-        if y > self.y + self.h + halo:
+        if y > self.y + self.h / 2 + halo:
             return False
 
         return True

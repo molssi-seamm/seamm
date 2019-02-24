@@ -80,7 +80,9 @@ class TkWorkflow(object):
 
         self.canvas_width = 500
         self.canvas_height = 500
-        self.gap = 20
+        self.grid_x = 300  # Width of the columns for the step display
+        self.grid_y = 70  # Height of the rows for the step display
+        self.gap = 50
         self.halo = 5
         self.data = None
         self._x0 = None
@@ -106,15 +108,38 @@ class TkWorkflow(object):
         self.tree.tag_bind(
             "node", sequence="<ButtonPress-1>", callback=self.create_node)
 
-        # and the main canvas next to the right
+        # and the main canvas with scrollbars next to the right
+        self.canvas_frame = ttk.Frame(self.pw)
+
+        self.canvas_frame.grid_rowconfigure(0, weight=1)
+        self.canvas_frame.grid_columnconfigure(0, weight=1)
+
+        self.xscrollbar = tk.Scrollbar(
+            self.canvas_frame, orient=tk.HORIZONTAL
+        )
+        self.xscrollbar.grid(row=1, column=0, sticky=tk.EW)
+
+        self.yscrollbar = tk.Scrollbar(self.canvas_frame)
+        self.yscrollbar.grid(row=0, column=1, sticky=tk.NS)
+        
         self.canvas = tk.Canvas(
-            self.pw, width=self.canvas_width, height=self.canvas_height)
-        self.pw.add(self.canvas)
+            self.canvas_frame,
+            width=self.canvas_width,
+            height=self.canvas_height,
+            xscrollcommand=self.xscrollbar.set,
+            yscrollcommand=self.yscrollbar.set,
+            scrollregion=(0, 0, 2000, 2000)
+        )
+        self.canvas.grid(row=0, column=0, sticky=tk.NSEW)
+        self.xscrollbar.config(command=self.canvas.xview)
+        self.yscrollbar.config(command=self.canvas.yview)
+
+        self.pw.add(self.canvas_frame)
 
         # background image
         filepath = pkg_resources.resource_filename(
             __name__, 'data/framework.png')
-        print(filepath)
+        logger.info(filepath)
 
         self.image = Image.open(filepath)
         self.prepared_image = Image.eval(self.image.convert("RGB"), grey)
@@ -190,9 +215,15 @@ class TkWorkflow(object):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
+        logger.debug('Finding last node')
         # Handle loops!
-        for tmp in self._workflow:
-            tmp.visited = False
+        for tk_node in self:
+            tk_node.node.visited = False
+            logger.debug(
+                '   reset visited {} = {}'.format(
+                    tk_node.node.visited, tk_node
+                )
+            )
 
         return self.last_node_helper(tk_node)
 
@@ -303,7 +334,12 @@ class TkWorkflow(object):
             start_node = molssi_workflow.StartNode()
 
         tk_start_node = molssi_workflow.TkStartNode(
-            tk_workflow=self, canvas=self.canvas, node=start_node)
+            tk_workflow=self,
+            canvas=self.canvas,
+            node=start_node,
+            x=self.grid_x/2,
+            y=self.grid_y/2
+        )
 
         self.graph.add_node(tk_start_node)
         logger.debug('Created start node {} at {}, {}'.
@@ -558,11 +594,23 @@ class TkWorkflow(object):
         self.graph.add_node(tk_node)
 
         # And figure out where the node should be
-        dx, dy = tk_node.anchor_point(anchor2)
+        # Use the grid approach
+        x0 = last_node.x
+        y0 = last_node.y
 
-        # flip sign to get direction right
-        tk_node.x = x - dx
-        tk_node.y = y - dy
+        if anchor1 == 's':
+            tk_node.x = x0
+            tk_node.y = y0 + self.grid_y
+        elif anchor1 == 'e':
+            tk_node.x = x0 + self.grid_x
+            tk_node.y = y0
+        else:
+            dx, dy = tk_node.anchor_point(anchor2)
+
+            # flip sign to get direction right
+            tk_node.x = x - dx
+            tk_node.y = y - dy
+                
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -591,7 +639,7 @@ class TkWorkflow(object):
 
         # center of node
         x0 = last_node.x
-        y0 = last_node.y + last_node.h/2
+        y0 = last_node.y
 
         # Get the anchor point the last node wants to use
         anchor1 = last_node.next_anchor()
@@ -599,7 +647,7 @@ class TkWorkflow(object):
         anchor2 = anchor1.translate(''.maketrans('news', 'swen'))
 
         # Find the point 'gap' past the anchor point of the last
-        # node, looking for the center (0, 1/2)
+        # node, looking from the center (0, 0)
 
         x1, y1 = last_node.anchor_point(anchor1)
         dx = x1 - x0

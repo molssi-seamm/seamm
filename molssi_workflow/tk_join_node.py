@@ -11,10 +11,10 @@ class TkJoin(molssi_workflow.TkNode):
     """The Tk-based graphical representation of a joining node"""
 
     anchor_points = {
-        'n': (0, 0),
-        's': (0, 1),
-        'e': (0.5, 0.5),
-        'w': (-0.5, 0.5),
+        'n': (0, -0.5),
+        's': (0, 0.5),
+        'e': (0.5, 0.0),
+        'w': (-0.5, 0.0),
     }
 
     def __init__(self, tk_workflow=None, node=None,
@@ -32,7 +32,7 @@ class TkJoin(molssi_workflow.TkNode):
         # the outline
         x0 = self.x - self.w / 2
         x1 = x0 + self.w
-        y0 = self.y
+        y0 = self.y - self.h / 2
         y1 = y0 + self.h
         self._border = self.canvas.create_oval(
             x0,

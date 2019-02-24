@@ -8,13 +8,13 @@ class TkStartNode(molssi_workflow.TkNode):
     """The Tk-based graphical representation of a Start node"""
 
     anchor_points = {
-        's': (0, 1),
-        'e': (0.5, 0.5),
-        'w': (-0.5, 0.5),
+        's': (0, 0.5),
+        'e': (0.5, 0.0),
+        'w': (-0.5, 0.0),
     }
 
     def __init__(self, tk_workflow=None, node=None,
-                 canvas=None, x=120, y=20, w=200, h=70):
+                 canvas=None, x=150, y=50, w=200, h=50):
         '''Initialize a node
 
         Keyword arguments:
@@ -35,7 +35,7 @@ class TkStartNode(molssi_workflow.TkNode):
         # the outline
         x0 = self.x - self.w / 2
         x1 = x0 + self.w
-        y0 = self.y
+        y0 = self.y - self.h / 2
         y1 = y0 + self.h
         self._border = self.canvas.create_oval(
             x0,
@@ -47,7 +47,8 @@ class TkStartNode(molssi_workflow.TkNode):
         )
 
         # the label in the middle
-        x0 = self.x
-        y0 = self.y + self.h / 2
         self.title_label = self.canvas.create_text(
-            x0, y0, text=self.title, tags=[self.tag, 'type=title'])
+            self.x, self.y,
+            text=self.title,
+            tags=[self.tag, 'type=title']
+        )
