@@ -41,6 +41,7 @@ anywhere else it just snaps back to its original place.
 
 import copy
 import logging
+import math
 import molssi_workflow
 from PIL import ImageTk, Image
 import pkg_resources
@@ -537,7 +538,7 @@ class TkWorkflow(object):
         item = self.tree.identify_row(event.y)
         plugin_name = self.tree.item(item, option="text")
 
-        (last_node, x, y) = self.next_position()
+        (last_node, x, y, anchor1, anchor2) = self.next_position()
         edge_label = last_node.default_edge_label()
 
         logger.debug('creating {} node'.format(plugin_name))
@@ -549,10 +550,17 @@ class TkWorkflow(object):
         plugin = self.plugin_manager.get(plugin_name)
         logger.debug('  plugin object: {}'.format(plugin))
         tk_node = plugin.create_tk_node(
-            tk_workflow=self, canvas=self.canvas, x=x, y=y,
+            tk_workflow=self, canvas=self.canvas, x=0, y=0,
             node=node
         )
         self.graph.add_node(tk_node)
+
+        # And figure out where the node should be
+        dx, dy = tk_node.anchor_point(anchor2)
+
+        # flip sign to get direction right
+        tk_node.x = x - dx
+        tk_node.y = y - dy
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -561,8 +569,8 @@ class TkWorkflow(object):
             last_node,
             tk_node,
             'execution',
-            anchor1='s',
-            anchor2='n',
+            anchor1=anchor1,
+            anchor2=anchor2,
             label=edge_label
         )
 
@@ -578,14 +586,28 @@ class TkWorkflow(object):
         in the flowchart."""
 
         last_node = self.last_node()
-        logger.debug('next_position, last_node = {}'.format(last_node))
-        logger.debug('\tx0 = {}'.format(last_node.x))
-        x0 = last_node.x
-        logger.debug('\ty0 = {} + {} + {}'
-                     .format(last_node.y, last_node.h, self.gap))
-        y0 = last_node.y + last_node.h + self.gap
 
-        return (last_node, x0, y0)
+        # center of node
+        x0 = last_node.x
+        y0 = last_node.y + last_node.h/2
+
+        # Get the anchor point the last node wants to use
+        anchor1 = last_node.next_anchor()
+        # and the inverse for the new node
+        anchor2 = anchor1.translate(''.maketrans('news', 'swen'))
+
+        # Find the point 'gap' past the anchor point of the last
+        # node, looking for the center (0, 1/2)
+
+        x1, y1 = last_node.anchor_point(anchor1)
+        dx = x1 - x0
+        dy = y1 - y0
+        norm = math.sqrt(dx*dx + dy*dy)
+
+        x = x1 + self.gap * (dx/norm)
+        y = y1 + self.gap * (dy/norm)
+        
+        return (last_node, x, y, anchor1, anchor2)
 
     def mouse_motion(self, event, exclude=()):
         """Track the mouse and highlight the node under the mouse

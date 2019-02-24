@@ -466,3 +466,10 @@ class TkNode(abc.ABC):
             return ""
         else:
             return "too many"
+
+    def next_anchor(self):
+        """Return where the next node should be positioned. The default is
+        <gap> below the 's' anchor point.
+        """
+
+        return 's'
