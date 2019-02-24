@@ -41,6 +41,7 @@ anywhere else it just snaps back to its original place.
 
 import copy
 import logging
+import math
 import molssi_workflow
 from PIL import ImageTk, Image
 import pkg_resources
@@ -79,7 +80,9 @@ class TkWorkflow(object):
 
         self.canvas_width = 500
         self.canvas_height = 500
-        self.gap = 20
+        self.grid_x = 300  # Width of the columns for the step display
+        self.grid_y = 70  # Height of the rows for the step display
+        self.gap = 50
         self.halo = 5
         self.data = None
         self._x0 = None
@@ -105,15 +108,38 @@ class TkWorkflow(object):
         self.tree.tag_bind(
             "node", sequence="<ButtonPress-1>", callback=self.create_node)
 
-        # and the main canvas next to the right
+        # and the main canvas with scrollbars next to the right
+        self.canvas_frame = ttk.Frame(self.pw)
+
+        self.canvas_frame.grid_rowconfigure(0, weight=1)
+        self.canvas_frame.grid_columnconfigure(0, weight=1)
+
+        self.xscrollbar = tk.Scrollbar(
+            self.canvas_frame, orient=tk.HORIZONTAL
+        )
+        self.xscrollbar.grid(row=1, column=0, sticky=tk.EW)
+
+        self.yscrollbar = tk.Scrollbar(self.canvas_frame)
+        self.yscrollbar.grid(row=0, column=1, sticky=tk.NS)
+        
         self.canvas = tk.Canvas(
-            self.pw, width=self.canvas_width, height=self.canvas_height)
-        self.pw.add(self.canvas)
+            self.canvas_frame,
+            width=self.canvas_width,
+            height=self.canvas_height,
+            xscrollcommand=self.xscrollbar.set,
+            yscrollcommand=self.yscrollbar.set,
+            scrollregion=(0, 0, 2000, 2000)
+        )
+        self.canvas.grid(row=0, column=0, sticky=tk.NSEW)
+        self.xscrollbar.config(command=self.canvas.xview)
+        self.yscrollbar.config(command=self.canvas.yview)
+
+        self.pw.add(self.canvas_frame)
 
         # background image
         filepath = pkg_resources.resource_filename(
             __name__, 'data/framework.png')
-        print(filepath)
+        logger.info(filepath)
 
         self.image = Image.open(filepath)
         self.prepared_image = Image.eval(self.image.convert("RGB"), grey)
@@ -185,62 +211,70 @@ class TkWorkflow(object):
                 return node
         return None
 
-    def last_node(self, node='1'):
+    def last_node(self, tk_node='1'):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
+        logger.debug('Finding last node')
         # Handle loops!
-        for tmp in self._workflow:
-            tmp.visited = False
+        for tk_node in self:
+            tk_node.node.visited = False
+            logger.debug(
+                '   reset visited {} = {}'.format(
+                    tk_node.node.visited, tk_node
+                )
+            )
 
-        return self.last_node_helper(node)
+        return self.last_node_helper(tk_node)
 
-    def last_node_helper(self, node):
+    def last_node_helper(self, tk_node):
         """Helper routine to handle the recursion"""
 
         # get the node to start the traversal
-        logger.debug('last node helper:')
-        if isinstance(node, str):
-            node = self.get_node(node)
-        print('\tnode = {}'.format(node))
+        logger.debug('last tk_node helper:')
+        if isinstance(tk_node, str):
+            tk_node = self.get_node(tk_node)
+        print('\ttk_node = {}'.format(tk_node))
 
-        node.node.visited
-        next_node = None
-        for edge in self.graph.edges(node, direction='out'):
+        tk_node.node.visited = True
+        next_tk_node = None
+        for edge in self.graph.edges(tk_node, direction='out'):
             if edge.edge_type == "execution":
 
                 if edge.node2.node.visited:
-                    logger.debug('\tnode {} has been visited'
+                    logger.debug('\ttk_node {} has been visited'
                                  .format(edge.node2))
-                    next_node = edge.node2
+                    next_tk_node = edge.node2
                 else:
-                    logger.debug('\trecursing to node {}'.format(edge.node2))
+                    logger.debug(
+                        '\trecursing to tk_node {}'.format(edge.node2)
+                    )
                     return self.last_node_helper(edge.node2)
 
-        if next_node is not None:
-            node = next_node
-            logger.debug('\tchecking visited node {} for new nodes'
-                         .format(node))
-            if node.title == "Split":
-                logger.debug('\t  node is a splitter node, so look at next')
-                for edge in self.graph.edges(node, direction='out'):
+        if next_tk_node is not None:
+            tk_node = next_tk_node
+            logger.debug('\tchecking visited tk_node {} for new nodes'
+                         .format(tk_node))
+            if tk_node.node.extension == "Join":
+                logger.debug('\t  tk_node is a join node, so look at next')
+                for edge in self.graph.edges(tk_node, direction='out'):
                     if edge.edge_type == "execution":
-                        logger.debug('\tnode after split is {}'
+                        logger.debug('\ttk_node after split is {}'
                                      .format(edge.node2))
-                        node = edge.node2
+                        tk_node = edge.node2
 
-            for edge in self.graph.edges(node, direction='out'):
+            for edge in self.graph.edges(tk_node, direction='out'):
                 if edge.edge_type == "execution":
                     if edge.node2.node.visited:
                         logger.debug('\tnode {} has been visited'
                                      .format(edge.node2))
                     else:
-                        logger.debug('\trecursing to node {}'
+                        logger.debug('\trecursing to tk_node {}'
                                      .format(edge.node2))
                         return self.last_node_helper(edge.node2)
             
-        logger.debug('\treturning {}'.format(node))
-        return node
+        logger.debug('\treturning {}'.format(tk_node))
+        return tk_node
 
     def add_edge(self, u, v, edge_type='execution', **kwargs):
         edge = self.graph.add_edge(
@@ -300,7 +334,12 @@ class TkWorkflow(object):
             start_node = molssi_workflow.StartNode()
 
         tk_start_node = molssi_workflow.TkStartNode(
-            tk_workflow=self, canvas=self.canvas, node=start_node)
+            tk_workflow=self,
+            canvas=self.canvas,
+            node=start_node,
+            x=self.grid_x/2,
+            y=self.grid_y/2
+        )
 
         self.graph.add_node(tk_start_node)
         logger.debug('Created start node {} at {}, {}'.
@@ -537,7 +576,7 @@ class TkWorkflow(object):
         item = self.tree.identify_row(event.y)
         plugin_name = self.tree.item(item, option="text")
 
-        (last_node, x, y) = self.next_position()
+        (last_node, x, y, anchor1, anchor2) = self.next_position()
         edge_label = last_node.default_edge_label()
 
         logger.debug('creating {} node'.format(plugin_name))
@@ -549,10 +588,29 @@ class TkWorkflow(object):
         plugin = self.plugin_manager.get(plugin_name)
         logger.debug('  plugin object: {}'.format(plugin))
         tk_node = plugin.create_tk_node(
-            tk_workflow=self, canvas=self.canvas, x=x, y=y,
+            tk_workflow=self, canvas=self.canvas, x=0, y=0,
             node=node
         )
         self.graph.add_node(tk_node)
+
+        # And figure out where the node should be
+        # Use the grid approach
+        x0 = last_node.x
+        y0 = last_node.y
+
+        if anchor1 == 's':
+            tk_node.x = x0
+            tk_node.y = y0 + self.grid_y
+        elif anchor1 == 'e':
+            tk_node.x = x0 + self.grid_x
+            tk_node.y = y0
+        else:
+            dx, dy = tk_node.anchor_point(anchor2)
+
+            # flip sign to get direction right
+            tk_node.x = x - dx
+            tk_node.y = y - dy
+                
 
         # And connect this to the last node in the existing workflow,
         # which is probably what the user wants.
@@ -561,8 +619,8 @@ class TkWorkflow(object):
             last_node,
             tk_node,
             'execution',
-            anchor1='s',
-            anchor2='n',
+            anchor1=anchor1,
+            anchor2=anchor2,
             label=edge_label
         )
 
@@ -578,14 +636,28 @@ class TkWorkflow(object):
         in the flowchart."""
 
         last_node = self.last_node()
-        logger.debug('next_position, last_node = {}'.format(last_node))
-        logger.debug('\tx0 = {}'.format(last_node.x))
-        x0 = last_node.x
-        logger.debug('\ty0 = {} + {} + {}'
-                     .format(last_node.y, last_node.h, self.gap))
-        y0 = last_node.y + last_node.h + self.gap
 
-        return (last_node, x0, y0)
+        # center of node
+        x0 = last_node.x
+        y0 = last_node.y
+
+        # Get the anchor point the last node wants to use
+        anchor1 = last_node.next_anchor()
+        # and the inverse for the new node
+        anchor2 = anchor1.translate(''.maketrans('news', 'swen'))
+
+        # Find the point 'gap' past the anchor point of the last
+        # node, looking from the center (0, 0)
+
+        x1, y1 = last_node.anchor_point(anchor1)
+        dx = x1 - x0
+        dy = y1 - y0
+        norm = math.sqrt(dx*dx + dy*dy)
+
+        x = x1 + self.gap * (dx/norm)
+        y = y1 + self.gap * (dy/norm)
+        
+        return (last_node, x, y, anchor1, anchor2)
 
     def mouse_motion(self, event, exclude=()):
         """Track the mouse and highlight the node under the mouse
