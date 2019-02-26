@@ -131,11 +131,15 @@ class TkWorkflow(object):
             scrollregion=(0, 0, 2000, 2000)
         )
         self.canvas.grid(row=0, column=0, sticky=tk.NSEW)
-        self.xscrollbar.config(command=self.canvas.xview)
-        self.yscrollbar.config(command=self.canvas.yview)
+        self.xscrollbar.config(command=self.xview)
+        self.yscrollbar.config(command=self.yview)
 
         self.pw.add(self.canvas_frame)
 
+        # Set up scrolling on the canvas with the mouse scrollwheel or similar
+        self.canvas.bind('<Enter>', self._bound_to_mousewheel)
+        self.canvas.bind('<Leave>', self._unbound_to_mousewheel)
+        
         # background image
         filepath = pkg_resources.resource_filename(
             __name__, 'data/framework.png')
@@ -151,9 +155,13 @@ class TkWorkflow(object):
         h = int(factor * h)
         self.working_image = self.prepared_image.resize((w, h))
         self.photo = ImageTk.PhotoImage(self.working_image)
+        # self.background = self.canvas.create_image(
+        #     self.canvas_width / 2,
+        #     self.canvas_height / 2,
+        #     image=self.photo,
+        #     anchor='center')
         self.background = self.canvas.create_image(
-            self.canvas_width / 2,
-            self.canvas_height / 2,
+            0, 0,
             image=self.photo,
             anchor='center')
 
@@ -234,7 +242,6 @@ class TkWorkflow(object):
         logger.debug('last tk_node helper:')
         if isinstance(tk_node, str):
             tk_node = self.get_node(tk_node)
-        print('\ttk_node = {}'.format(tk_node))
 
         tk_node.node.visited = True
         next_tk_node = None
@@ -259,7 +266,7 @@ class TkWorkflow(object):
                 logger.debug('\t  tk_node is a join node, so look at next')
                 for edge in self.graph.edges(tk_node, direction='out'):
                     if edge.edge_type == "execution":
-                        logger.debug('\ttk_node after split is {}'
+                        logger.debug('\ttk_node after joimn node is {}'
                                      .format(edge.node2))
                         tk_node = edge.node2
 
@@ -276,9 +283,11 @@ class TkWorkflow(object):
         logger.debug('\treturning {}'.format(tk_node))
         return tk_node
 
-    def add_edge(self, u, v, edge_type='execution', **kwargs):
+    def add_edge(self, u, v, edge_type='execution',
+                 edge_subtype='next', **kwargs):
         edge = self.graph.add_edge(
-            u, v, edge_type, edge_class=molssi_workflow.TkEdge,
+            u, v, edge_type, edge_subtype,
+            edge_class=molssi_workflow.TkEdge,
             canvas=self.canvas, **kwargs
         )
         edge.draw()
@@ -405,13 +414,16 @@ class TkWorkflow(object):
         h = int(factor * h)
 
         self.canvas.itemconfigure(self.background, image=None)
-        self.canvas.coords(self.background, cw / 2, ch / 2)
+        # self.canvas.coords(self.background, cw / 2, ch / 2)
+        self.canvas.coords(self.background, 0, 0)
         del (self.working_image)
         self.working_image = self.prepared_image.resize((w, h))
         del (self.photo)
         self.photo = ImageTk.PhotoImage(self.working_image)
+        # self.canvas.itemconfigure(
+        #     self.background, image=self.photo, anchor='center')
         self.canvas.itemconfigure(
-            self.background, image=self.photo, anchor='center')
+            self.background, image=self.photo, anchor='nw')
 
     def click(self, event):
         """Handle a left-click on the canvas by finding out what the
@@ -419,7 +431,9 @@ class TkWorkflow(object):
         selecting to preparing to move the item.
         """
 
-        items = self.canvas.find_closest(event.x, event.y, self.halo)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        items = self.canvas.find_closest(cx, cy, self.halo)
         self.selection = []
         for item in items:
             tags = self.get_tags(item)
@@ -438,8 +452,8 @@ class TkWorkflow(object):
                 self.data['y0'] = y0
                 self.data['x1'] = x1
                 self.data['y1'] = y1
-                self._x0 = event.x
-                self._y0 = event.y
+                self._x0 = cx
+                self._y0 = cy
 
                 logger.debug('self.data for dragging arrow head or base')
                 logger.debug('{}'.format(self.data))
@@ -468,19 +482,19 @@ class TkWorkflow(object):
                     arrow = self.canvas.create_line(
                         x,
                         y,
-                        event.x,
-                        event.y,
+                        cx,
+                        cy,
                         arrow=tk.LAST,
                         tags='type=active_arrow')
                     self.data = (node, tags['anchor'], x, y, arrow)
                     self.canvas.bind('<B1-Motion>', self.drag_arrow)
                     self.canvas.bind('<ButtonRelease-1>', self.drop_arrow)
                 else:
-                    if node.is_inside(event.x, event.y, self.halo):
+                    if node.is_inside(cx, cy, self.halo):
                         self.selection.append(node)
                         node.selected = True
-                        self._x0 = event.x
-                        self._y0 = event.y
+                        self._x0 = cx,
+                        self._y0 = cy,
                         self.mouse_op = 'Move'
                         self.canvas.bind('<B1-Motion>', self.move)
                         self.canvas.bind('<ButtonRelease-1>', self.end_move)
@@ -492,7 +506,9 @@ class TkWorkflow(object):
         mouse is on/in/near and doing the appropriate thing.
         """
 
-        result = self.find_items(event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        result = self.find_items(cx, cy)
         self.selection = []
         if result is None:
             # Handle a right-click out side anything
@@ -501,7 +517,7 @@ class TkWorkflow(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.is_inside(event.x, event.y):
+            if node.is_inside(cx, cy):
                 node.double_click(event)
                 return
 
@@ -517,7 +533,9 @@ class TkWorkflow(object):
         posting an action menu
         """
 
-        result = self.find_items(event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        result = self.find_items(cx, cy)
         self.selection = []
         if result is None:
             # Handle a right-click out side anything
@@ -526,7 +544,7 @@ class TkWorkflow(object):
 
         if result[0] == 'node':
             node = result[1]
-            if node.is_inside(event.x, event.y):
+            if node.is_inside(cx, cy):
                 node.right_click(event)
                 return
 
@@ -540,11 +558,13 @@ class TkWorkflow(object):
         '''Move selected items
         '''
 
-        deltax = event.x - self._x0
-        deltay = event.y - self._y0
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        deltax = cx - self._x0
+        deltay = cy - self._y0
 
-        self._x0 = event.x
-        self._y0 = event.y
+        self._x0 = cx
+        self._y0 = cy
 
         for item in self.selection:
             item.move(deltax, deltay)
@@ -555,8 +575,10 @@ class TkWorkflow(object):
         self.canvas.bind('<B1-Motion>', '')
         self.canvas.bind('<ButtonRelease-1>', '')
 
-        deltax = event.x - self._x0
-        deltay = event.y - self._y0
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        deltax = cx - self._x0
+        deltay = cy - self._y0
 
         for item in self.selection:
             item.end_move(deltax, deltay)
@@ -573,11 +595,13 @@ class TkWorkflow(object):
         which needs to know the other.
         """
 
-        item = self.tree.identify_row(event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        item = self.tree.identify_row(cy)
         plugin_name = self.tree.item(item, option="text")
 
         (last_node, x, y, anchor1, anchor2) = self.next_position()
-        edge_label = last_node.default_edge_label()
+        edge_subtype = last_node.default_edge_subtype()
 
         logger.debug('creating {} node'.format(plugin_name))
 
@@ -621,7 +645,7 @@ class TkWorkflow(object):
             'execution',
             anchor1=anchor1,
             anchor2=anchor2,
-            label=edge_label
+            edge_subtype=edge_subtype
         )
 
         # And update the picture on screen
@@ -629,7 +653,15 @@ class TkWorkflow(object):
 
     def remove_node(self, node):
         """Remove the given node"""
-        self.workflow.remove_node(node)
+
+        # remove the graphical rendering
+        node.undraw()
+
+        # and edges
+        node.remove_edge('all')
+
+        # and the node itself
+        self.graph.remove_node(node)
 
     def next_position(self):
         """Find a reasonable place to position the next step
@@ -683,10 +715,13 @@ class TkWorkflow(object):
         self.canvas.delete('type=arrow_base')
         self.canvas.delete('type=arrow_head')
 
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+
         active = []
         items = self.canvas.find_overlapping(
-            event.x + self.halo / 2, event.y + self.halo / 2,
-            event.x - self.halo / 2, event.y - self.halo / 2)
+            cx + self.halo / 2, cy + self.halo / 2,
+            cx - self.halo / 2, cy - self.halo / 2)
         if len(items) == 0:
             # If we are within e.g. a rectangle, it may not overlap
             # but will be the current item, so if nothing overlaps
@@ -734,14 +769,14 @@ class TkWorkflow(object):
                 break
             if 'node' in tags:
                 node = tags['node']
-                if node.is_inside(event.x, event.y, self.halo):
+                if node.is_inside(cx, cy, self.halo):
                     active.append(node)
                     if node not in self.active_nodes:
                         node.activate()
                         self.active_nodes.append(node)
                     # are we close to any anchor points?
                     point = node.check_anchor_points(
-                        event.x, event.y, self.halo)
+                        cx, cy, self.halo)
                     if point is None:
                         self.canvas.delete('type=active_anchor')
                     else:
@@ -826,9 +861,11 @@ class TkWorkflow(object):
         '''
 
         node, anchor, x, y, arrow = self.data
-        self.canvas.coords(arrow, x, y, event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        self.canvas.coords(arrow, x, y, cx, cy)
         # Check for being near another nodes anchor point
-        result = self.find_items(event.x, event.y, exclude=(arrow, ))
+        result = self.find_items(cx, cy, exclude=(arrow, ))
         if result is not None and result[0] == 'node':
             if node == result[1]:
                 self.canvas.delete('type=active_anchor')
@@ -847,22 +884,24 @@ class TkWorkflow(object):
         self.canvas.bind('<ButtonRelease-1>', '')
 
         node, anchor, x, y, arrow = self.data
-        self.canvas.coords(arrow, x, y, event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        self.canvas.coords(arrow, x, y, cx, cy)
         # Check for being near another nodes anchor point
-        result = self.find_items(event.x, event.y)
+        result = self.find_items(cx, cy)
         self.canvas.delete(arrow)
 
         if result is not None and result[0] == 'node':
             other_node, point = result[1:]
             if node != other_node and point is not None:
-                edge_label = node.default_edge_label()
+                edge_subtype = node.default_edge_subtype()
                 self.add_edge(
                     node,
                     other_node,
                     'execution',
                     anchor1=anchor,
                     anchor2=point,
-                    label=edge_label
+                    edge_subtype=edge_subtype
                 )
 
         self.data = None
@@ -873,15 +912,17 @@ class TkWorkflow(object):
         '''
 
         # move arrow
-        self.canvas.coords(self.data['arrow'], event.x, event.y,
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        self.canvas.coords(self.data['arrow'], cx, cy,
                            self.data['x1'], self.data['y1'])
 
         # move base icon
-        deltax = event.x - self._x0
-        deltay = event.y - self._y0
+        deltax = cx - self._x0
+        deltay = cy - self._y0
 
-        self._x0 = event.x
-        self._y0 = event.y
+        self._x0 = cx
+        self._y0 = cy
 
         self.canvas.move(self.data['arrow_base'], deltax, deltay)
 
@@ -889,7 +930,7 @@ class TkWorkflow(object):
         edge = self.data['edge']
         if edge.has_label:
             self.canvas.coords(edge.label_id,
-                               edge.label_position(event.x, event.y,
+                               edge.label_position(cx, cy,
                                                    self.data['x1'],
                                                    self.data['y1']))
             self.canvas.coords(edge.label_bg_id,
@@ -897,8 +938,8 @@ class TkWorkflow(object):
 
         # Check for being near another nodes anchor point
         result = self.find_items(
-            event.x,
-            event.y,
+            cx,
+            cy,
             exclude=(self.data['arrow'], self.data['arrow_base']))
 
         if result is not None and result[0] == 'node':
@@ -944,7 +985,9 @@ class TkWorkflow(object):
         self.canvas.bind('<ButtonRelease-1>', '')
 
         # Check for being near another nodes anchor point
-        result = self.find_items(event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        result = self.find_items(cx, cy)
 
         edge = self.data['edge']
 
@@ -966,17 +1009,17 @@ class TkWorkflow(object):
 
                 node2 = edge.node2
                 anchor2 = edge.anchor2
-                edge_label = edge['label']
+                edge_subtype = edge.edge_subtype
 
                 self.remove_edge(self.data['arrow'])
 
                 self.add_edge(
                     node1,
                     node2,
-                    'execution',
+                    edge_type='execution',
+                    edge_subtype=edge_subtype,
                     anchor1=anchor1,
                     anchor2=anchor2,
-                    label=edge_label
                 )
 
         self.data = None
@@ -987,15 +1030,17 @@ class TkWorkflow(object):
         '''
 
         # move arrow
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
         self.canvas.coords(self.data['arrow'], self.data['x0'],
-                           self.data['y0'], event.x, event.y)
+                           self.data['y0'], cx, cy)
 
         # move base icon
-        deltax = event.x - self._x0
-        deltay = event.y - self._y0
+        deltax = cx - self._x0
+        deltay = cy - self._y0
 
-        self._x0 = event.x
-        self._y0 = event.y
+        self._x0 = cx
+        self._y0 = cy
 
         self.canvas.move(self.data['arrow_head'], deltax, deltay)
 
@@ -1005,14 +1050,14 @@ class TkWorkflow(object):
             self.canvas.coords(edge.label_id,
                                edge.label_position(self.data['x0'],
                                                    self.data['y0'],
-                                                   event.x, event.y))
+                                                   cx, cy))
             self.canvas.coords(edge.label_bg_id,
                                self.canvas.bbox(edge.label_id))
 
         # Check for being near another nodes anchor point
         result = self.find_items(
-            event.x,
-            event.y,
+            cx,
+            cy,
             exclude=(self.data['arrow'], self.data['arrow_head']))
 
         if result is not None and result[0] == 'node':
@@ -1032,7 +1077,9 @@ class TkWorkflow(object):
         self.canvas.bind('<ButtonRelease-1>', '')
 
         # Check for being near another nodes anchor point
-        result = self.find_items(event.x, event.y)
+        cx = int(self.canvas.canvasx(event.x))
+        cy = int(self.canvas.canvasy(event.y))
+        result = self.find_items(cx, cy)
 
         edge = self.data['edge']
 
@@ -1089,7 +1136,7 @@ class TkWorkflow(object):
         edge = tags['edge']
         tag = edge.tag()
         self.graph.remove_edge(edge.node1, edge.node2,
-                               edge.edge_type)
+                               edge.edge_type, edge.edge_subtype)
 
         # Delete the tag, not item, so that we get all labels, etc.
         self.canvas.delete(tag)
@@ -1102,13 +1149,13 @@ class TkWorkflow(object):
 
         print('All edges in tk_workflow')
         for edge in self.edges():
-            # print('   {}'.format(edge))
-            print('   {} {} {} {} {}'.format(
+            print('   {} {} {} {} {} {}'.format(
                 edge.node1.tag,
                 edge.anchor1,
                 edge.node2.tag,
                 edge.anchor2,
-                edge['label']
+                edge.edge_type,
+                edge.edge_subtype
             )
             )
 
@@ -1146,11 +1193,13 @@ class TkWorkflow(object):
         for edge in self.edges():
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                if key not in ('node1', 'node2', 'edge_type',
+                               'edge_subtype', 'canvas'):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            wf.add_edge(node1, node2, edge.edge_type, **attr)
+            wf.add_edge(node1, node2, edge.edge_type,
+                        edge.edge_subtype, **attr)
 
     def from_workflow(self):
         """Recreate the graphics from the non-graphical workflow"""
@@ -1188,3 +1237,71 @@ class TkWorkflow(object):
                 if key not in ('node1', 'node2'):
                     attr[key] = edge[key]
             self.add_edge(node1, node2, **attr)
+
+    def _bound_to_mousewheel(self, event):
+        """Set the bindings on the canvas, used when the
+        mouse enters the canvas
+        """
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        # self.canvas.bind_all("<Button-4>", self._on_mousewheel)
+        # self.canvas.bind_all("<Button-5>", self._on_mousewheel)
+
+    def _unbound_to_mousewheel(self, event):
+        """Remove the bindings on the canvas, used when the
+        mouse leaves the canvas
+        """
+        self.canvas.unbind_all("<MouseWheel>")
+        # self.canvas.unbind_all("<Button-4>")
+        # self.canvas.unbind_all("<Button-5>")
+
+    def _on_mousewheel(self, event):
+        """Handle the mousewheel or similar events.
+        There are two choices for how to scroll, and it
+        may differ from OS to OS.
+
+        As set up here on a Mac the mouse drags the canvas in
+        the direction of travel, thus to go down in the canvas
+        you drag upwards, and vice versa.
+
+        Flip the signs to change this
+        """
+
+        if event.num == 5 or event.delta < 0:
+            delta = 1
+        else:
+            delta = -1
+
+        self.canvas.yview_scroll(delta, "units")
+
+        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        f0, f1 = self.canvas.yview()
+        y = (int(y1)-int(y0)) * f0
+
+        tk._default_root.tk.call(self.canvas, 'moveto', self.background, 0, y)
+
+    def xview(self, command, amount, *args):
+        """Scroll in the x direction, keeping the background picture stationary
+        """
+        self.canvas.xview(command, amount, *args)
+
+        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        f0, f1 = self.canvas.xview()
+        x = (int(x1)-int(x0)) * f0
+        f0, f1 = self.canvas.yview()
+        y = (int(y1)-int(y0)) * f0
+
+        tk._default_root.tk.call(self.canvas, 'moveto', self.background, x, y)
+
+    def yview(self, command, amount, *args):
+        """Scroll in the y direction, keeping the background picture stationary
+        """
+        self.canvas.yview(command, amount, *args)
+
+        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        f0, f1 = self.canvas.xview()
+        x = (int(x1)-int(x0)) * f0
+        f0, f1 = self.canvas.yview()
+        y = (int(y1)-int(y0)) * f0
+
+        tk._default_root.tk.call(self.canvas, 'moveto', self.background, x, y)
+        
