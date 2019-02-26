@@ -8,6 +8,18 @@ __version__ = '0.1.0'
 
 import pint
 
+# Unit handling!
+units = pint.UnitRegistry(auto_reduce_dimensions=True)
+pint.set_application_registry(units)
+Q_ = units.Quantity
+units_class = units('1 km').__class__
+
+_d = pint.Context('chemistry')
+_d.add_transformation('[mass]/[substance]', '[mass]',
+                      lambda units, x: x / units.avogadro_number)
+units.add_context(_d)
+units.enable_contexts('chemistry')
+
 # Bring up the classes so that they appear to be directly in
 # the molssi_workflow package.
 
@@ -31,17 +43,3 @@ from molssi_workflow.builtins import SplitStep  # nopep8
 from molssi_workflow.join_node import Join  # nopep8
 from molssi_workflow.tk_join_node import TkJoin  # nopep8
 from molssi_workflow.builtins import JoinStep  # nopep8
-
-# Unit handling!
-units = pint.UnitRegistry(auto_reduce_dimensions=True)
-pint.set_application_registry(units)
-Q_ = units.Quantity
-units_class = units('1 km').__class__
-
-_d = pint.Context('chemistry')
-_d.add_transformation('[mass]/[substance]', '[mass]',
-                      lambda units, x: x / units.avogadro_number)
-units.add_context(_d)
-units.enable_contexts('chemistry')
-
-
