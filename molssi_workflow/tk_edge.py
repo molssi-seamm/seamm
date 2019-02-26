@@ -20,9 +20,11 @@ logger = logging.getLogger(__name__)
 class TkEdge(molssi_workflow.Edge):
     str_to_object = weakref.WeakValueDictionary()
 
-    def __init__(self, graph, node1, node2, edge_type='execution',
-                 canvas=None, anchor1='s', anchor2='n', coords=None,
-                 **kwargs):
+    def __init__(
+            self, graph, node1, node2, edge_type='execution',
+            edge_subtype='next', canvas=None, anchor1='s', anchor2='n',
+            coords=None, **kwargs
+    ):
         """Initialize the edge, ensuring that it is
         in the graph.
 
@@ -34,7 +36,8 @@ class TkEdge(molssi_workflow.Edge):
         logger.debug('\tnode2 = {}'.format(node2))
 
         # Initialize the parent class
-        super().__init__(graph, node1, node2, edge_type, **kwargs)
+        super().__init__(graph, node1, node2, edge_type,
+                         edge_subtype, **kwargs)
 
         self._data['canvas'] = canvas
         self.anchor1 = anchor1
@@ -119,11 +122,11 @@ class TkEdge(molssi_workflow.Edge):
         self._data['arrow_id'] = arrow_id
 
         # and the label
-        if self["label"] != "":
+        if self.edge_subtype != "next":
             self.canvas.delete(self.tag() + '&& type=label')
             text = self.canvas.create_text(
                 self.label_position(x0, y0, x1, y1),
-                text=self["label"],
+                text=self.edge_subtype,
                 font=font.Font(family='Helvetica', size=8),
                 tags=[self.tag(), 'type=label']
             )

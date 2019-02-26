@@ -361,8 +361,10 @@ class TkNode(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.canvas.delete(edge.tag())
-            self.node.remove_edge(edge)
+            self.tk_workflow.graph.remove_edge(
+                edge.node1, edge.node2,
+                edge.edge_type, edge.edge_subtype
+            )
 
     def edit(self):
         """Do-nothing base class method"""
@@ -392,7 +394,6 @@ class TkNode(abc.ABC):
         # when the workflow is cleared our objects still exist
         translate = {}
         for node in tk_workflow:
-            print(node)
             translate[node] = workflow.add_node(copy.copy(node.node))
             node.update_workflow()
 
@@ -400,11 +401,13 @@ class TkNode(abc.ABC):
         for edge in tk_workflow.edges():
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2', 'edge_type', 'canvas'):
+                if key not in ('node1', 'node2', 'edge_type',
+                               'edge_subtype', 'canvas'):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            workflow.add_edge(node1, node2, edge.edge_type, **attr)
+            workflow.add_edge(node1, node2, edge.edge_type,
+                              edge.edge_subtype, **attr)
 
     def from_workflow(self, tk_workflow=None, workflow=None):
         """Recreate the graphics from the non-graphical workflow.
@@ -447,8 +450,8 @@ class TkNode(abc.ABC):
                     attr[key] = edge[key]
             tk_workflow.add_edge(node1, node2, **attr)
 
-    def default_edge_label(self):
-        """Return the default label of the edge. Usually this is ''
+    def default_edge_subtype(self):
+        """Return the default subtype of the edge. Usually this is ''
         but for nodes with two or more edges leaving them, such as a loop, this
         method will return an appropriate default for the current edge. For
         example, by default the first edge emanating from a loop-node is the
@@ -464,7 +467,7 @@ class TkNode(abc.ABC):
         logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
 
         if n_edges == 0:
-            return ""
+            return "next"
         else:
             return "too many"
 

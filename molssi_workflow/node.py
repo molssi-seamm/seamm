@@ -6,10 +6,10 @@
 
 import abc
 # from abc import ABC, abstractmethod
-import molssi_workflow
 import json
 import logging
-import molssi_util
+import molssi_workflow
+import molssi_util  # MUST come after molssi_workflow
 import os.path
 import uuid
 
@@ -142,8 +142,10 @@ class Node(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.workflow.graph.remove_edge(edge.node1, edge.node2,
-                                            edge.edge_type)
+            self.workflow.graph.remove_edge(
+                edge.node1, edge.node2,
+                edge.edge_type, edge.edge_subtype
+            )
 
     def describe(self, indent='', json_dict=None):
         """Write out information about what this node will do
@@ -184,7 +186,7 @@ class Node(abc.ABC):
         """
 
         for edge in self.workflow.edges(self, direction='out'):
-            if edge['label'] == '' or edge['label'] == 'exit':
+            if edge.edge_subtype == 'next':
                 logger.debug('Next node is: {}'.format(edge.node2))
                 return edge.node2
 
@@ -196,7 +198,8 @@ class Node(abc.ABC):
         """
 
         for edge in self.workflow.edges(self, direction='in'):
-            if edge.edge_type == 'execution':
+            if edge.edge_type == 'execution' and \
+               edge.edge_subtype == 'next':
                 return edge.node1
 
         return None
@@ -261,8 +264,8 @@ class Node(abc.ABC):
         with open(filename, mode='a') as fd:
             print(*objects, sep=sep, end=end, file=fd, flush=flush)
 
-    def default_edge_label(self):
-        """Return the default label of the edge. Usually this is ''
+    def default_edge_subtype(self):
+        """Return the default subtype of the edge. Usually this is 'next'
         but for nodes with two or more edges leaving them, such as a loop, this
         method will return an appropriate default for the current edge. For
         example, by default the first edge emanating from a loop-node is the
@@ -275,7 +278,7 @@ class Node(abc.ABC):
         # how many outgoing edges are there?
         n_edges = len(self.workflow.edges(self, direction='out'))
 
-        logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
+        logger.debug('node.default_edge_subtype, n_edges = {}'.format(n_edges))
 
         if n_edges == 0:
             return ""

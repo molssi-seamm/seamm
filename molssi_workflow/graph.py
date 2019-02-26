@@ -44,7 +44,7 @@ class Graph(object):
         self._node = {}
         self._edge = {}
 
-    def add_edge(self, u, v, edge_type=None,
+    def add_edge(self, u, v, edge_type=None, edge_subtype=None,
                  edge_class=None, **kwargs):
 
         if u not in self:
@@ -53,18 +53,21 @@ class Graph(object):
         if v not in self:
             self.add_node(v)
 
-        key = (u.__hash__(), v.__hash__(), edge_type)
+        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
         if edge_class is None:
             self._edge[key] = molssi_workflow.Edge(
-                self, u, v, edge_type=edge_type, **kwargs
+                self, u, v, edge_type=edge_type,
+                edge_subtype=edge_subtype, **kwargs
             )
         else:
-            self._edge[key] = edge_class(self, u, v,
-                                         edge_type=edge_type, **kwargs)
+            self._edge[key] = edge_class(
+                self, u, v, edge_type=edge_type,
+                edge_subtype=edge_subtype, **kwargs
+            )
         return self._edge[key]
 
-    def remove_edge(self, u, v, edge_type=None):
-        key = (u.__hash__(), v.__hash__(), edge_type)
+    def remove_edge(self, u, v, edge_type=None, edge_subtype=None):
+        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
         if key not in self._edge:
             raise RuntimeError('edge does not exist!')
         del self._edge[key]
@@ -77,19 +80,19 @@ class Graph(object):
             h = node.__hash__()
             if direction == 'both':
                 for key in self._edge:
-                    h1, h2, edge_type = key
+                    h1, h2, edge_type, edge_subtype = key
                     if h1 == h:
                         result.append(('out', self._edge[key]))
                     if h2 == h:
                         result.append(('in', self._edge[key]))
             elif direction == 'out':
                 for key in self._edge:
-                    h1, h2, edge_type = key
+                    h1, h2, edge_type, edge_subtype = key
                     if h1 == h:
                         result.append(self._edge[key])
             elif direction == 'in':
                 for key in self._edge:
-                    h1, h2, edge_type = key
+                    h1, h2, edge_type, edge_subtype = key
                     if h2 == h:
                         result.append(self._edge[key])
             else:
@@ -98,18 +101,20 @@ class Graph(object):
 
         return result
 
-    def has_edge(self, u, v, edge_type=None):
-        key = (u.__hash__(), v.__hash__(), edge_type)
+    def has_edge(self, u, v, edge_type=None, edge_subtype=None):
+        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
         return key in self._edge
 
 
 class Edge(collections.abc.MutableMapping):
-    def __init__(self, graph, node1, node2, edge_type='execution', **kwargs):
+    def __init__(self, graph, node1, node2, edge_type='execution',
+                 edge_subtype='next', **kwargs):
         self.graph = graph
         self._data = dict(**kwargs)
         self._data['node1'] = node1
         self._data['node2'] = node2
         self._data['edge_type'] = edge_type
+        self._data['edge_subtype'] = edge_subtype
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -164,6 +169,10 @@ class Edge(collections.abc.MutableMapping):
     @property
     def edge_type(self):
         return self._data['edge_type']
+
+    @property
+    def edge_subtype(self):
+        return self._data['edge_subtype']
 
 
 if __name__ == "__main__":
