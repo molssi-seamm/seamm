@@ -3,8 +3,8 @@ import argparse
 import json
 import locale
 import logging
-import molssi_util
 import molssi_workflow
+import molssi_util  # MUST come after molssi_workflow
 import os
 import os.path
 import shutil
