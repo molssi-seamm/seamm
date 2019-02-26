@@ -3,8 +3,8 @@
 import json
 from datetime import datetime
 import logging
-import molssi_util
 import molssi_workflow
+import molssi_util  # MUST come after molssi_workflow
 import os
 import os.path
 import pprint  # nopep8
@@ -213,13 +213,14 @@ class Workflow(object):
         for edge in self.graph.edges():
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2', 'edge_type'):
+                if key not in ('node1', 'node2', 'edge_type', 'edge_subtype'):
                     attr[key] = edge[key]
             edges.append({
                 'item': 'edge',
                 'node1': edge.node1.uuid,
                 'node2': edge.node2.uuid,
                 'edge_type': edge.edge_type,
+                'edge_subtype': edge.edge_subtype,
                 'attributes': attr
                 })
 
@@ -268,7 +269,9 @@ class Workflow(object):
         for edge in data['edges']:
             node1 = self.get_node(edge['node1'])
             node2 = self.get_node(edge['node2'])
-            self.add_edge(node1, node2, edge_type=edge['edge_type'],
+            self.add_edge(node1, node2,
+                          edge_type=edge['edge_type'],
+                          edge_subtype=edge['edge_subtype'],
                           **edge['attributes'])
 
             logger.debug("Adding edges, nodes:\n\t" +
@@ -319,8 +322,8 @@ class Workflow(object):
     def edges(self, node=None, direction='both'):
         return self.graph.edges(node, direction)
 
-    def add_edge(self, u, v, edge_type=None, **attr):
-        return self.graph.add_edge(u, v, edge_type, **attr)
+    def add_edge(self, u, v, edge_type=None, edge_subtype='next', **attr):
+        return self.graph.add_edge(u, v, edge_type, edge_subtype, **attr)
 
     def print_edges(self, event=None):
         '''Print all the edges. Useful for debugging!
@@ -329,11 +332,12 @@ class Workflow(object):
         print('All edges in workflow')
         for edge in self.edges():
             # print('   {}'.format(edge))
-            print('   {} {} {} {} {}'.format(
+            print('   {} {} {} {} {} {}'.format(
                 edge.node1.tag,
                 edge.anchor1,
                 edge.node2.tag,
                 edge.anchor2,
-                edge['label']
+                edge.edge_type,
+                edge.edge_subtype
             )
             )
