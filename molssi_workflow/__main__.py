@@ -10,6 +10,7 @@ import sys
 import tkinter as tk
 
 logger = logging.getLogger(__name__)
+dbg_level = 30
 
 
 def raise_app(root: tk):
@@ -26,6 +27,7 @@ def flowchart():
     """
     global app_name
     app_name = 'MolSSI Workflow'
+    global dbg_level
 
     parser = argparse.ArgumentParser(
         description='MolSSI Workflow')
@@ -35,8 +37,8 @@ def flowchart():
     args = parser.parse_args()
 
     # Sets log level to WARN going more verbose for each new -v.
-    numeric_level = max(3 - args.verbose_count, 0) * 10
-    logging.basicConfig(level=numeric_level)
+    dbg_level = max(3 - args.verbose_count, 0) * 10
+    logging.basicConfig(level=dbg_level)
 
     ##################################################
     # Initialize Tk
@@ -100,6 +102,19 @@ def flowchart():
     filemenu.add_separator()
     filemenu.add_command(label="Run", command=tk_workflow.run,
                          accelerator=CmdKey + 'R')
+
+    # Control debugging info
+    filemenu.add_separator()
+    debug_menu = tk.Menu(menu)
+    filemenu.add_cascade(label="Debug", menu=debug_menu)
+    debug_menu.add_radiobutton(label='normal', value=30, variable=dbg_level,
+                               command=lambda arg0=30: handle_dbg_level(arg0))
+    debug_menu.add_radiobutton(label='info', value=20, variable=dbg_level,
+                               command=lambda arg0=20: handle_dbg_level(arg0))
+    debug_menu.add_radiobutton(label='debug', value=10, variable=dbg_level,
+                               command=lambda arg0=10: handle_dbg_level(arg0))
+
+    # Exiting
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=root.quit)
 
@@ -143,6 +158,13 @@ def flowchart():
 
     # enter the event loop
     root.mainloop()
+
+
+def handle_dbg_level(level):
+    global dbg_level
+
+    dbg_level = level
+    logging.getLogger().setLevel(dbg_level)
 
 
 if __name__ == "__main__":
