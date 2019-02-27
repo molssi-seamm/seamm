@@ -225,11 +225,11 @@ class TkWorkflow(object):
 
         logger.debug('Finding last node')
         # Handle loops!
-        for tk_node in self:
-            tk_node.node.visited = False
+        for node in self:
+            node.node.visited = False
             logger.debug(
-                '   reset visited {} = {}'.format(
-                    tk_node.node.visited, tk_node
+                '   reset visited {} {} = {}'.format(
+                    node.node.visited, node.title, node
                 )
             )
 
@@ -239,48 +239,55 @@ class TkWorkflow(object):
         """Helper routine to handle the recursion"""
 
         # get the node to start the traversal
-        logger.debug('last tk_node helper:')
         if isinstance(tk_node, str):
             tk_node = self.get_node(tk_node)
 
+        logger.debug(
+            '   last tk_node helper: {} {} = {}'.format(
+                tk_node.node.visited, tk_node.title, tk_node
+            )
+        )
+            
         tk_node.node.visited = True
         next_tk_node = None
         for edge in self.graph.edges(tk_node, direction='out'):
             if edge.edge_type == "execution":
 
                 if edge.node2.node.visited:
-                    logger.debug('\ttk_node {} has been visited'
-                                 .format(edge.node2))
+                    logger.debug('\ttk_node {} {} has been visited'
+                                 .format(edge.node2.title, edge.node2))
                     next_tk_node = edge.node2
                 else:
                     logger.debug(
-                        '\trecursing to tk_node {}'.format(edge.node2)
+                        '\trecursing to tk_node {} {}'.format(
+                            edge.node2.title, edge.node2
+                        )
                     )
                     return self.last_node_helper(edge.node2)
 
         if next_tk_node is not None:
             tk_node = next_tk_node
-            logger.debug('\tchecking visited tk_node {} for new nodes'
-                         .format(tk_node))
+            logger.debug('\tchecking visited tk_node {} {} for new nodes'
+                         .format(tk_node.title, tk_node))
             if tk_node.node.extension == "Join":
                 logger.debug('\t  tk_node is a join node, so look at next')
                 for edge in self.graph.edges(tk_node, direction='out'):
                     if edge.edge_type == "execution":
-                        logger.debug('\ttk_node after joimn node is {}'
-                                     .format(edge.node2))
+                        logger.debug('\ttk_node after join node is {} {}'
+                                     .format(edge.node2.title, edge.node2))
                         tk_node = edge.node2
 
             for edge in self.graph.edges(tk_node, direction='out'):
                 if edge.edge_type == "execution":
                     if edge.node2.node.visited:
-                        logger.debug('\tnode {} has been visited'
-                                     .format(edge.node2))
+                        logger.debug('\tnode {} {} has been visited'
+                                     .format(edge.node2.title, edge.node2))
                     else:
-                        logger.debug('\trecursing to tk_node {}'
-                                     .format(edge.node2))
+                        logger.debug('\trecursing to tk_node {} {}'
+                                     .format(edge.node2.title, edge.node2))
                         return self.last_node_helper(edge.node2)
             
-        logger.debug('\treturning {}'.format(tk_node))
+        logger.debug('\treturning {} {}'.format(tk_node.title, tk_node))
         return tk_node
 
     def add_edge(self, u, v, edge_type='execution',
@@ -493,8 +500,8 @@ class TkWorkflow(object):
                     if node.is_inside(cx, cy, self.halo):
                         self.selection.append(node)
                         node.selected = True
-                        self._x0 = cx,
-                        self._y0 = cy,
+                        self._x0 = cx
+                        self._y0 = cy
                         self.mouse_op = 'Move'
                         self.canvas.bind('<B1-Motion>', self.move)
                         self.canvas.bind('<ButtonRelease-1>', self.end_move)
@@ -595,9 +602,8 @@ class TkWorkflow(object):
         which needs to know the other.
         """
 
-        cx = int(self.canvas.canvasx(event.x))
-        cy = int(self.canvas.canvasy(event.y))
-        item = self.tree.identify_row(cy)
+        # not scrolling the left pane yet
+        item = self.tree.identify_row(event.y)
         plugin_name = self.tree.item(item, option="text")
 
         (last_node, x, y, anchor1, anchor2) = self.next_position()
