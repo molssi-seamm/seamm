@@ -60,13 +60,45 @@ class TkNode(abc.ABC):
         self._selected = False
         self.popup_menu = None
         self._tmp = None
-        self._widget = {}
         self.dialog = None
         self.previous_grab = None
+
+        # Widget information
+        self._widget = {}
+        self.tk_var = {}
 
     def __hash__(self):
         """Make iterable!"""
         return self.node.uuid
+
+    # Provide dict like access to the widgets to make
+    # the code cleaner
+
+    def __getitem__(self, key):
+        """Allow [] access to the widgets!"""
+        return self._widget[key]
+
+    def __setitem__(self, key, value):
+        """Allow x[key] access to the data"""
+        self._widget[key] = value
+
+    def __delitem__(self, key):
+        """Allow deletion of keys"""
+        if key in self._widget:
+            self._widget[key].destroy()
+        del self._widget[key]
+
+    def __iter__(self):
+        """Allow iteration over the object"""
+        return iter(self._widget)
+
+    def __len__(self):
+        """The len() command"""
+        return len(self._widget)
+
+    def __contains__(self, item):
+        """Return a boolean indicating if a widget exists."""
+        return item in self._widget
 
     @property
     def uuid(self):
