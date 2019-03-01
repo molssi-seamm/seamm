@@ -61,19 +61,19 @@ class Variables(collections.abc.MutableMapping):
         return self._data.copy()
 
     def value(self, string):
-        """Return the value of the variable if it is a variable
-        i.e. starts with a $ and optionally has braces around the
+        """Return the value of the variable or expression if it is an
+        expression, i.e. starts with a $ and optionally has braces around the
         variable name.
 
         If it is not a variable, return the original string unchanged
         """
 
         if string[0] == '$':
-            name = self.variable(string)
-            if name in self._data:
-                return self._data[name]
-            else:
-                raise RuntimeError("Variable '" + string + "' does not exist")
+            expression = self.filter_expression(string)
+            print("expression = '{}'".format(expression))
+        
+            result = eval(expression, molssi_workflow.workflow_variables._data)
+            return result
         else:
             return string
 
@@ -158,3 +158,49 @@ class Variables(collections.abc.MutableMapping):
         else:
             return string
 
+    def filter_expression(self, string):
+        """A variable or expression coming from the GUI uses '$'
+        to indicate a variable, optionally bracketing the variable
+        with braces, i.e. ${name}.
+
+        This method filters out the variable markers, respecting
+        quoted string, returning a string that can be eval'ed in
+        the Python interpreter.
+        """
+
+        result = ''
+        state = ''
+        for char in string:
+            if state == 'in single quotes':
+                result += char
+                if char == "'":
+                    state = ''
+            elif state == 'in double quotes':
+                result += char
+                if char == '"':
+                    state = ''
+            elif state == 'protected':
+                result += char
+                state = ''
+            elif state == 'in variable name':
+                if char == '}':
+                    state = ''
+                elif char == '{':
+                    pass
+                else:
+                    result += char
+            else:
+                if char == '$':
+                    state = 'in variable name'
+                elif char == "'":
+                    result += char
+                    state = 'in single quotes'
+                elif char == '"':
+                    result += char
+                    state = 'in double quotes'
+                elif char == '\\':
+                    state = 'protected'
+                else:
+                    result += char
+
+        return result
