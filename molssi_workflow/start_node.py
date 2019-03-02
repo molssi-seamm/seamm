@@ -23,3 +23,15 @@ class StartNode(molssi_workflow.Node):
 
     def set_uuid(self):
         pass
+
+    def describe(self, indent='', json_dict=None):
+        """Write out information about what this node will do
+        If json_dict is passed in, add information to that dictionary
+        so that it can be written out by the controller as appropriate.
+        """
+
+        next_node = super().describe(indent, json_dict)
+
+        self.job_output('')
+
+        return next_node

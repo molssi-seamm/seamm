@@ -258,18 +258,11 @@ class Node(abc.ABC):
                 print(*objects, sep=sep, end=end, file=fd, flush=flush)
 
         if self.workflow.output in ('stdout', 'both'):
-            print(*objects)
+            print(*objects, sep=sep, end=end)
 
     def job_output(self, *objects, sep=' ', end='\n', flush=False):
         """Write the main job output to the correct file"""
-        if self.workflow.output in ('files', 'both'):
-            os.makedirs(self.workflow.root_directory, exist_ok=True)
-            filename = os.path.join(self.workflow.root_directory, 'job.txt')
-            with open(filename, mode='a') as fd:
-                print(*objects, sep=sep, end=end, file=fd, flush=flush)
-
-        if self.workflow.output in ('stdout', 'both'):
-            print(*objects)
+        self.workflow.job_output(*objects, sep=sep, end=end, flush=flush)
 
     def default_edge_subtype(self):
         """Return the default subtype of the edge. Usually this is 'next'
