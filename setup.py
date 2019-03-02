@@ -12,6 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
+    'pillow',
     'Pmw',
     'argparse',
     'bitmath',
@@ -23,7 +24,7 @@ requirements = [
     'pyuca',
     'stevedore',
 ]
-# 'PIL',
+# 'PIL', --> pillow
 # 'abc',
 # 'collections.abc',
 # 'copy',
