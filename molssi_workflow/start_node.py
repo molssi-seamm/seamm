@@ -35,3 +35,11 @@ class StartNode(molssi_workflow.Node):
         self.job_output('')
 
         return next_node
+
+    def run(self):
+        """'Run' the start node, i.e. do nothing but print
+        """
+
+        next_node = super().run()
+        self.job_output('')
+        return next_node
