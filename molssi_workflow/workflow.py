@@ -32,7 +32,8 @@ class Workflow(object):
                  data=None,
                  namespace='org.molssi.workflow',
                  name=None,
-                 directory=None):
+                 directory=None,
+                 output='files'):
         '''Initialize the workflow
 
         Keyword arguments:
@@ -42,6 +43,9 @@ class Workflow(object):
 
         self.name = name
         self.parent = parent
+
+        self.output = output  # Where to print output, files, stdout, both
+
         # Setup the plugin handling
         self.plugin_manager = molssi_workflow.PluginManager(namespace)
 
@@ -67,6 +71,25 @@ class Workflow(object):
     @root_directory.setter
     def root_directory(self, value):
         self._root_directory = value
+
+    @property
+    def output(self):
+        """Where to print output:
+            files:  to files in subdirectories
+            stdout: to standard output (for intereactive use)
+            both:   to both files and standard output
+        """
+        return self._output
+
+    @output.setter
+    def output(self, value):
+        if value in ('files', 'stdout', 'both'):
+            self._output = value
+        else:
+            raise RuntimeError(
+                "workflow.output must be one of 'files', 'stdout', or 'both'"
+                ", not '{}'".format(value)
+            )
 
     # -------------------------------------------------------------------------
     # Node creation and deletion

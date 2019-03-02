@@ -171,7 +171,6 @@ class Node(abc.ABC):
 
         self.log('Step ' + '.'.join(str(e) for e in self._id) +
                  ': ' + self.title)
-        self.log('')
 
         next_node = self.next()
         if next_node:
@@ -252,17 +251,25 @@ class Node(abc.ABC):
 
     def log(self, *objects, sep=' ', end='\n', flush=False):
         """Write the main output to the correct file"""
-        os.makedirs(self.directory, exist_ok=True)
-        filename = os.path.join(self.directory, 'out.txt')
-        with open(filename, mode='a') as fd:
-            print(*objects, sep=sep, end=end, file=fd, flush=flush)
+        if self.workflow.output in ('files', 'both'):
+            os.makedirs(self.directory, exist_ok=True)
+            filename = os.path.join(self.directory, 'out.txt')
+            with open(filename, mode='a') as fd:
+                print(*objects, sep=sep, end=end, file=fd, flush=flush)
+
+        if self.workflow.output in ('stdout', 'both'):
+            print(*objects)
 
     def job_output(self, *objects, sep=' ', end='\n', flush=False):
         """Write the main job output to the correct file"""
-        os.makedirs(self.workflow.root_directory, exist_ok=True)
-        filename = os.path.join(self.workflow.root_directory, 'job.txt')
-        with open(filename, mode='a') as fd:
-            print(*objects, sep=sep, end=end, file=fd, flush=flush)
+        if self.workflow.output in ('files', 'both'):
+            os.makedirs(self.workflow.root_directory, exist_ok=True)
+            filename = os.path.join(self.workflow.root_directory, 'job.txt')
+            with open(filename, mode='a') as fd:
+                print(*objects, sep=sep, end=end, file=fd, flush=flush)
+
+        if self.workflow.output in ('stdout', 'both'):
+            print(*objects)
 
     def default_edge_subtype(self):
         """Return the default subtype of the edge. Usually this is 'next'
