@@ -3,6 +3,7 @@
 import collections.abc
 import logging
 import molssi_workflow  # nopep8
+from molssi_workflow import units_class  # nopep8
 import pprint
 
 """A dictionary-like object for holding variables accessible to the
@@ -68,7 +69,7 @@ class Variables(collections.abc.MutableMapping):
         If it is not a variable, return the original string unchanged
         """
 
-        if string[0] == '$':
+        if isinstance(string, str) and string[0] == '$':
             expression = self.filter_expression(string)
             print("expression = '{}'".format(expression))
         
