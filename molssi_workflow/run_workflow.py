@@ -5,9 +5,11 @@ import locale
 import logging
 import molssi_workflow
 import molssi_util  # MUST come after molssi_workflow
+import molssi_util.printing as printing
 import os
 import os.path
 import shutil
+import sys
 
 logger = logging.getLogger(__name__)
 variables = molssi_workflow.Variables()
@@ -43,6 +45,14 @@ def run():
 
     args = parser.parse_args()
 
+    # Set up logging level to WARNING by default, going more verbose
+    # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
+
+    numeric_level = max(3 - args.verbose_count, 0) * 10
+    logging.basicConfig(level=numeric_level)
+
+    # Create the working directory where files, output, etc. go
+
     if args.directory is None:
         wdir = os.path.join(
             os.getcwd(),
@@ -50,22 +60,50 @@ def run():
         )
     else:
         wdir = args.directory
-    print("Working directory is '{}'".format(wdir))
+
+    logging.info("The working directory is '{}'".format(wdir))
 
     if os.path.exists(wdir):
         if args.force:
             shutil.rmtree(wdir)
         else:
-            print('Directory {} exists, use --force to overwrite'.format(wdir))
-            exit()
+            msg = "Directory '{}' exists, use --force to overwrite"\
+                  .format(wdir)
 
-    # Sets log level to WARN going more verbose for each new -v.
-    numeric_level = max(3 - args.verbose_count, 0) * 10
-    logging.basicConfig(level=numeric_level)
+            logging.critical(msg)
+            sys.exit(msg)
 
-    workflow = molssi_workflow.Workflow(directory=wdir, output=args.output)
-    workflow.read(args.filename)
-    exec = molssi_workflow.ExecWorkflow(workflow)
+    os.makedirs(wdir, exist_ok=False)
+
+    # Set up the root printer, and add handlers to print to the file
+    # 'job.out' in the working directory and to stdout, as requested
+    # in the options. Since all printers are children of the root
+    # printer, all output at the right levels will flow here
+    
+    printer = printing.getPrinter()
+
+    # Set up our formatter
+    formatter = logging.Formatter(fmt='{message:s}', style='{')
+
+    # A handler for stdout
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(printing.JOB)
+    console_handler.setFormatter(formatter)
+    printer.addHandler(console_handler)
+
+    # A handler for the file
+    file_handler = logging.FileHandler(os.path.join(wdir, 'job.out'))
+    file_handler.setLevel(printing.JOB)
+    file_handler.setFormatter(formatter)
+    printer.addHandler(file_handler)
+    
+    # And ... finally ... run!
+    printer.job("Running in directory '{}'".format(wdir))
+    
+    flowchart = molssi_workflow.Workflow(directory=wdir, output=args.output)
+    flowchart.read(args.filename)
+
+    exec = molssi_workflow.ExecWorkflow(flowchart)
     exec.run(root=wdir)
 
 
