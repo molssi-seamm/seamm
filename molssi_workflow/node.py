@@ -10,10 +10,12 @@ import json
 import logging
 import molssi_workflow
 import molssi_util  # MUST come after molssi_workflow
+import molssi_util.printing as printing
 import os.path
 import uuid
 
 logger = logging.getLogger(__name__)
+job = printing.getPrinter()
 
 
 class Node(abc.ABC):
@@ -35,10 +37,15 @@ class Node(abc.ABC):
         self.extension = extension
         self._visited = False
 
+        self.parameters = None  # Object containing control parameters
+
         self.x = None
         self.y = None
         self.w = None
         self.h = None
+
+        # Set up our formatter for printing
+        self.formatter = logging.Formatter(fmt='{message:s}', style='{')
 
     def __hash__(self):
         """Make iterable!"""
@@ -88,6 +95,23 @@ class Node(abc.ABC):
     @description.setter
     def description(self, value):
         self._description = value
+
+    @property
+    def indent(self):
+        length = len(self._id)
+        if length <= 1:
+            return ''
+        if length > 2:
+            result = (length-2) * '  .' + '   '
+        else:
+            result = '   '
+        return result
+
+    @property
+    def header(self):
+        """A printable header for this section of output"""
+        return ('Step ' + '.'.join(str(e) for e in self._id) + ': '
+                + self.title)
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
@@ -154,8 +178,10 @@ class Node(abc.ABC):
         """
 
         self.visited = True
-        self.job_output(indent + 'Step ' + '.'.join(str(e) for e in self._id) +
-                        ': ' + self.title)
+        job.job(
+            '\n' + self.indent + 'Step ' + '.'.join(str(e) for e in self._id) +
+            ': ' + self.title
+        )
 
         next_node = self.next()
 
@@ -164,13 +190,21 @@ class Node(abc.ABC):
         else:
             return next_node
 
-    def run(self):
+    def run(self, printer=None):
         """Do whatever we need to do! The base class does nothing except
         return the next node.
         """
 
-        self.log('Step ' + '.'.join(str(e) for e in self._id) +
-                 ': ' + self.title)
+        # Create the directory for writing output and files
+        os.makedirs(self.directory, exist_ok=True)
+
+        if printer is not None:
+            # Setup up the printing for this step
+            self.setup_printing(printer)
+
+            printer.important(
+                '\nStep ' + '.'.join(str(e) for e in self._id) + ': ' + self.title
+            )
 
         next_node = self.next()
         if next_node:
@@ -226,6 +260,8 @@ class Node(abc.ABC):
                 continue
             if key == 'parent':
                 continue
+            if key == 'formatter':
+                continue
             if 'workflow' in key:
                 # Have a subworkflow!
                 data[key] = self.__dict__[key].to_dict()
@@ -248,21 +284,6 @@ class Node(abc.ABC):
                     self.__dict__[key] = attributes[key]
             elif 'workflow' in key:
                 self.__dict__[key].from_dict(data[key])
-
-    def log(self, *objects, sep=' ', end='\n', flush=False):
-        """Write the main output to the correct file"""
-        if self.workflow.output in ('files', 'both'):
-            os.makedirs(self.directory, exist_ok=True)
-            filename = os.path.join(self.directory, 'out.txt')
-            with open(filename, mode='a') as fd:
-                print(*objects, sep=sep, end=end, file=fd, flush=flush)
-
-        if self.workflow.output in ('stdout', 'both'):
-            print(*objects, sep=sep, end=end)
-
-    def job_output(self, *objects, sep=' ', end='\n', flush=False):
-        """Write the main job output to the correct file"""
-        self.workflow.job_output(*objects, sep=sep, end=end, flush=flush)
 
     def default_edge_subtype(self):
         """Return the default subtype of the edge. Usually this is 'next'
@@ -328,3 +349,36 @@ class Node(abc.ABC):
         """
 
         molssi_workflow.workflow_variables.delete(variable)
+
+    def setup_printing(self, printer):
+        """Establish the handlers for printing as controlled by
+        options
+        """
+
+        # First remove an existing handlers
+        self.close_printing(printer)
+
+        # A handler for stdout
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(printing.JOB)
+        console_handler.setFormatter(self.formatter)
+        printer.addHandler(console_handler)
+
+        # A handler for the file
+        file_handler = logging.FileHandler(
+            os.path.join(self.directory, 'step.out'), delay=True
+        )
+        file_handler.setLevel(printing.NORMAL)
+        file_handler.setFormatter(self.formatter)
+        printer.addHandler(file_handler)
+
+    def close_printing(self, printer):
+        """Close the handlers for printing, so that buffers are
+        flushed, files closed, etc.
+        """
+        for handler in printer.handlers:
+            printer.removeHandler(handler)
+
+    def job_output(self, text):
+        """Temporary!"""
+        job.job(text)
