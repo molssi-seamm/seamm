@@ -71,7 +71,6 @@ class Variables(collections.abc.MutableMapping):
 
         if isinstance(string, str) and string[0] == '$':
             expression = self.filter_expression(string)
-            print("expression = '{}'".format(expression))
         
             result = eval(expression, molssi_workflow.workflow_variables._data)
             return result
