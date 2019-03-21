@@ -36,7 +36,8 @@ def flowchart():
                         help="increases log verbosity for each occurence.")
     parser.add_argument(
         "flowcharts",
-        action='append',
+        nargs='*',
+        default=[],
         help='flowcharts to open initially'
     )
         
