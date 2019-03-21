@@ -1,28 +1,35 @@
 # -*- coding: utf-8 -*-
 """Top-level package for MolSSI Workflow."""
 
+import pint
+import textwrap
 
 __author__ = """Paul Saxe"""
 __email__ = 'psaxe@molssi.org'
 __version__ = '0.1.0'
 
-import pint
-
 # Unit handling!
-units = pint.UnitRegistry(auto_reduce_dimensions=True)
-pint.set_application_registry(units)
-Q_ = units.Quantity
-units_class = units('1 km').__class__
+ureg = pint.UnitRegistry(auto_reduce_dimensions=True)
+pint.set_application_registry(ureg)
+Q_ = ureg.Quantity
+units_class = ureg('1 km').__class__
 
 _d = pint.Context('chemistry')
 _d.add_transformation('[mass]/[substance]', '[mass]',
                       lambda units, x: x / units.avogadro_number)
-units.add_context(_d)
-units.enable_contexts('chemistry')
+ureg.add_context(_d)
+ureg.enable_contexts('chemistry')
+
+# Text handling
+from textwrap import dedent  # nopepe8
+wrap_text = textwrap.TextWrapper(width=120)
+wrap_stdout = textwrap.TextWrapper(width=120)
 
 # Bring up the classes so that they appear to be directly in
 # the molssi_workflow package.
 
+from molssi_workflow.parameters import Parameter  # nopep8
+from molssi_workflow.parameters import Parameters  # nopep8
 from molssi_workflow.variables import Variables  # nopep8
 from molssi_workflow.variables import workflow_variables  # nopep8
 from molssi_workflow.plugin_manager import PluginManager  # nopep8
