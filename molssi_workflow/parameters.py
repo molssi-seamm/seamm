@@ -2,6 +2,7 @@
 """Control parameters for a step in a MolSSI flowchart"""
 
 import collections.abc
+from distutils.util import strtobool
 import logging
 from molssi_workflow import Q_
 from molssi_workflow import ureg
@@ -303,13 +304,21 @@ class Parameter(collections.abc.MutableMapping):
 
         # If it is an enum, just return that.
         if result in self.enumeration:
-            return result
+            if self.kind == 'boolean':
+                return bool(strtobool(result))
+            else:
+                return result
         
         # convert to proper type
         if self.kind == 'integer':
             result = int(result)
         elif self.kind == 'float':
             result = float(result)
+        elif self.kind == 'boolean':
+            if isinstance(result, str):
+                result = bool(strtobool(result))
+            elif not isinstance(result, bool):
+                result = bool(result)
 
         # format if requested
         if formatted:
