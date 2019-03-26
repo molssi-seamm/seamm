@@ -131,9 +131,13 @@ class Parameter(collections.abc.MutableMapping):
         Python expression containing variables prefix with $,
         standard operators or parentheses."""
 
+        if 'value' not in self._data:
+            self._data['value'] = self._data['default']
+
         result = self._data['value']
         if result is None:
             result = self._data['default']
+
         return result
 
     @value.setter
@@ -175,8 +179,12 @@ class Parameter(collections.abc.MutableMapping):
     def units(self):
         """The units, as a string. These need to be compatible with
         pint"""
+        if 'units' not in self._data:
+            self._data['units'] = self._data['default_units']
+
         if self._data['units'] is None:
             return self['default_units']
+
         return self._data['units']
 
     @units.setter
@@ -334,10 +342,8 @@ class Parameter(collections.abc.MutableMapping):
     def reset(self):
         """Reset to an empty state"""
         self._data = {
-            'value':         None,
             'default':       None,
             'kind':          None,
-            'units':         None,
             'default_units': None,
             'enumeration':   tuple(),
             'format_string': None,
@@ -417,7 +423,7 @@ class Parameter(collections.abc.MutableMapping):
     def from_dict(self, data):
         """Convert from a dict back to an object"""
         for key in data:
-            if key not in self._data:
+            if key not in self._data and key not in ('value', 'units'):
                 raise RuntimeError(
                     'from_dict: dictionary not compatible with Parameters,'
                     " which do not have an attribute '{}'".format(key)
@@ -432,7 +438,7 @@ class Parameter(collections.abc.MutableMapping):
     def update(self, data):
         """Update values from a dict"""
         for key in data:
-            if key not in self._data:
+            if key not in self._data and key not in ('value', 'units'):
                 raise RuntimeError(
                     'update: dictionary not compatible with Parameters,'
                     " which do not have an attribute '{}'".format(key)
@@ -440,8 +446,10 @@ class Parameter(collections.abc.MutableMapping):
         self._data.update(data)
 
         # Update the dimensionality if needed
-        self.units = self._data['units']
-        self.default_units = self._data['default_units']
+        if 'units' in self._data:
+            self.units = self._data['units']
+        if 'default_units' in self._data:
+            self.default_units = self._data['default_units']
 
 
 class Parameters(collections.abc.MutableMapping):
