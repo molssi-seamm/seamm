@@ -552,6 +552,8 @@ class Parameters(collections.abc.MutableMapping):
 
         data = {}
         for key in self:
-            data[key] = self[key].get(context)
+            data[key] = self[key].get(
+                context=context, formatted=formatted, units=units
+            )
 
         return data
