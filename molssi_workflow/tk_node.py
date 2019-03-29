@@ -39,7 +39,6 @@ class TkNode(abc.ABC):
 
         Keyword arguments:
         """
-
         self.tk_workflow = tk_workflow
         self.node = node
         self.toplevel = None
