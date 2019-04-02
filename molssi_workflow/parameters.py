@@ -3,6 +3,7 @@
 
 import collections.abc
 from distutils.util import strtobool
+import json
 import logging
 from molssi_workflow import Q_
 from molssi_workflow import ureg
@@ -35,7 +36,7 @@ class Parameter(collections.abc.MutableMapping):
     def __init__(self, *args, **kwargs):
         """Initialize this parameter"""
 
-        logger.debug('Parameter.__init__')
+        logger.debug('\nParameter.__init__')
 
         self._data = {}
         self.dimensionality = None
@@ -51,6 +52,8 @@ class Parameter(collections.abc.MutableMapping):
                 raise RuntimeError('Positional arguments must be dicts')
 
         self.update(kwargs)
+
+        logger.debug('Finished constructing Parameter\n')
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -91,16 +94,21 @@ class Parameter(collections.abc.MutableMapping):
                 try:
                     value = float(self.value)
                     return ('{:' + self.format_string + '}').format(value)
-                except:
+                except ValueError:
                     return ('{}').format(self.value)
-            return ('{:' + self.format_string + '}').format(self.value)
+            # print("format_string = '{}'".format(self.format_string))
+            # print("value = '{}'".format(self.value))
+            if self.format_string == '':
+                return str(self.value)
+            else:
+                return ('{:' + self.format_string + '}').format(self.value)
         else:
             if self.kind == 'integer':
                 try:
                     value = int(self.value)
                     return ('{:' + self.format_string + '} {}').format(
                         value, self.units)
-                except:
+                except ValueError:
                     return ('{} {}').format(self.value, self.units)
             if self.kind == 'float':
                 try:
@@ -109,8 +117,11 @@ class Parameter(collections.abc.MutableMapping):
                         value, self.units)
                 except:
                     return ('{} {}').format(self.value, self.units)
-            return ('{:' + self.format_string + '} {}').format(
-                self.value, self.units)
+            if self.format_string == '':
+                return '{} {}'.format(self.value, self.units)
+            else:
+                return ('{:' + self.format_string + '} {}').format(
+                    self.value, self.units)
 
     def __contains__(self, item):
         """Return a boolean indicating if a key exists."""
@@ -319,6 +330,14 @@ class Parameter(collections.abc.MutableMapping):
                 result = bool(strtobool(result))
             elif not isinstance(result, bool):
                 result = bool(result)
+        elif self.kind == 'list':
+            if not isinstance(result, list):
+                result = json.loads(result)
+            return result
+        elif self.kind == 'dictionary':
+            if not isinstance(result, dict):
+                result = json.loads(result)
+            return result
 
         # format if requested
         if formatted:
@@ -366,7 +385,7 @@ class Parameter(collections.abc.MutableMapping):
         # Will this keep the graphics isolated?
         import molssi_util.molssi_widgets as mw
 
-        logger.debug('Creating widget for {}'.format(self))
+        logger.debug('Creating widget for {}'.format(type(self)))
 
         if self._widget is not None:
             if self._widget.winfo_exists():
@@ -427,32 +446,41 @@ class Parameter(collections.abc.MutableMapping):
 
     def to_dict(self):
         """Convert into a string suitable for editing"""
-        return dict(self._data)
-
-    def from_dict(self, data):
-        """Convert from a dict back to an object"""
-        for key in data:
-            if key not in self._data and key not in ('value', 'units'):
-                raise RuntimeError(
-                    'from_dict: dictionary not compatible with Parameters,'
-                    " which do not have an attribute '{}'".format(key)
-                )
-        self.reset()
-        self._data.update(data)
-
-        # Update the dimensionality if needed
-        self.units = self._data['units']
-        self.default_units = self._data['default_units']
+        result = dict()
+        # if self['kind'] == 'list':
+        #     result['value'] = json.dumps(self.value)
+        # elif self['kind'] == 'dict':
+        #     result['value'] = json.dumps(self.value)
+        # else:
+        #     result['value'] = self.value
+        result['value'] = self.value
+        result['units'] = self.units
+        return result
 
     def update(self, data):
-        """Update values from a dict"""
-        for key in data:
-            if key not in self._data and key not in ('value', 'units'):
+        """Update values from a dict
+
+        This assumes that the static data such as 'kind' and
+        'default' has been created already.
+        """
+
+        logger.debug('Parameter.update....')
+        for key, value in data.items():
+            logger.debug('{:>10s} {}'.format(key, value))
+            if key in ('value', 'default'):
+                # if self['kind'] in ('list', 'dictionary'):
+                #     self._data[key] = json.loads(value)
+                # else:
+                self._data[key] = value
+            elif key == 'units':
+                self._data[key] = value
+            elif key not in self:
                 raise RuntimeError(
                     'update: dictionary not compatible with Parameters,'
                     " which do not have an attribute '{}'".format(key)
                 )
-        self._data.update(data)
+            else:
+                self._data[key] = value
 
         # Update the dimensionality if needed
         if 'units' in self._data:
@@ -460,23 +488,46 @@ class Parameter(collections.abc.MutableMapping):
         if 'default_units' in self._data:
             self.default_units = self._data['default_units']
 
+    def debug_print(self):
+        logger.debug(
+            '\nParameter instance:\n{}'.format(pprint.pformat(self._data))
+        )
 
 class Parameters(collections.abc.MutableMapping):
     """A dict-like container for parameters"""
-    def __init__(self, data=None):
+
+    def __init__(self, defaults, data=None):
         """Create an instance, optionally from a dict"""
 
-        logger.debug('Parameters.__init__')
+        logger.debug('\nParameters.__init__')
+
+        self.defaults = defaults
+        self._data = {}
+
+        self.initialize()
+
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("\nafter defaults:")
+            for key, value in self.items():
+                logger.debug(
+                    '  {}: {}'.format(key, pprint.pformat(value._data))
+                )
 
         if data:
             if isinstance(data, dict):
-                self.from_dict(data)
+                self.update(data)
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug("\nafter data:")
+                    for key, value in self.items():
+                        logger.debug(
+                            '  {}: {}'.format(key, pprint.pformat(value._data))
+                        )
             else:
                 raise RuntimeError(
                     'A Parameters object can be initialized with a dict object'
                 )
-        else:
-            self._data = {}
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -521,18 +572,39 @@ class Parameters(collections.abc.MutableMapping):
         return self._data.copy()
 
     def to_dict(self):
+        """Return a new dictionary with the pertinent data
+
+        The Parameter class only saves the value and units, 
+        as everything else comes form the constructor below
+        """
         data = {}
         for key in self:
-            data[key] = self[key].to_dict()
+            try:
+                data[key] = self[key].to_dict()
+            except:
+                logger.critical(("An error occurred in Parameters.to_dict "
+                                 "with key '{}'").format(key))
+                logger.critical(
+                    ("The type of the key is '{}'").format(type(self[key]))
+                )
+                raise
         return data
 
     def from_dict(self, data):
+        """Recreate the object from a dictionary"""
         self._data = dict()
+        # Put back in all the constant data
+        self.initialize()
+        # and update with the new data
         self.update(data)
+
+    def initialize(self):
+        for key, value in self.defaults.items():
+            self[key] = Parameter(value)
 
     def update(self, data):
         for key in data:
-            self[key] = Parameter(data[key])
+            self[key].update(data[key])
 
     def values_to_dict(self):
         """Return a dict of the raw values of the parameters
