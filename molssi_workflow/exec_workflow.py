@@ -11,8 +11,11 @@ contains."""
 
 import logging
 import molssi_workflow
+import molssi_util.printing as printing
+from molssi_util.printing import FormattedText as __
 
 logger = logging.getLogger(__name__)
+job = printing.getPrinter()
 
 
 class ExecWorkflow(object):
@@ -42,16 +45,16 @@ class ExecWorkflow(object):
         next_node = self.flowchart.get_node('1')
 
         # describe ourselves
-        self.flowchart.job_output('\nDescription of the flowchart')
-        self.flowchart.job_output('----------------------------')
+        job.job(('\nDescription of the flowchart'
+                 '\n----------------------------'))
 
         while next_node:
             next_node = next_node.describe()
-        self.flowchart.job_output('')
+        job.job('')
 
         # And actually run it!
-        self.flowchart.job_output('Running the flowchart')
-        self.flowchart.job_output('---------------------')
+        job.job(('Running the flowchart\n'
+                 '---------------------'))
 
         next_node = self.flowchart.get_node('1')
         while next_node:
