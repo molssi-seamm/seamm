@@ -368,14 +368,3 @@ class Workflow(object):
     # -------------------------------------------------------------------------
     # Printing
     # -------------------------------------------------------------------------
-
-    def job_output(self, *objects, sep=' ', end='\n', flush=False):
-        """Write the main job output to the correct file"""
-        if self.output in ('files', 'both'):
-            os.makedirs(self.root_directory, exist_ok=True)
-            filename = os.path.join(self.root_directory, 'job.txt')
-            with open(filename, mode='a') as fd:
-                print(*objects, sep=sep, end=end, file=fd, flush=flush)
-
-        if self.output in ('stdout', 'both'):
-            print(*objects, sep=sep, end=end)
