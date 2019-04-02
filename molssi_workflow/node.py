@@ -10,6 +10,7 @@ import json
 import logging
 import molssi_workflow
 import molssi_util  # MUST come after molssi_workflow
+from molssi_util.printing import FormattedText as __
 import molssi_util.printing as printing
 import os.path
 import uuid
@@ -171,6 +172,13 @@ class Node(abc.ABC):
                 edge.edge_type, edge.edge_subtype
             )
 
+    def description_text(self, P):
+        """Prepare information about what this node will do
+        """
+        return ('This node has no specific description. '
+                "Override the method 'description_text' "
+                'to provide the description.')
+
     def describe(self, indent='', json_dict=None):
         """Write out information about what this node will do
         If json_dict is passed in, add information to that dictionary
@@ -178,10 +186,16 @@ class Node(abc.ABC):
         """
 
         self.visited = True
-        job.job(
-            '\n' + self.indent + 'Step ' + '.'.join(str(e) for e in self._id) +
-            ': ' + self.title
-        )
+
+        # The 'step' line
+        job.job('')
+        job.job(__(self.header, indent=self.indent))
+
+        # and rest of the description
+        if self.parameters:
+            P = self.parameters.values_to_dict()
+            text = self.description_text(P)
+            job.job(__(text, **P, indent=self.indent+'    '))
 
         next_node = self.next()
 
@@ -203,7 +217,8 @@ class Node(abc.ABC):
             self.setup_printing(printer)
 
             printer.important(
-                '\nStep ' + '.'.join(str(e) for e in self._id) + ': ' + self.title
+                '\nStep ' + '.'.join(str(e) for e in self._id) + ': '
+                + self.title
             )
 
         next_node = self.next()
