@@ -383,7 +383,7 @@ class Parameter(collections.abc.MutableMapping):
     def widget(self, frame,  **kwargs):
         """Return a widget for handling the parameter"""
         # Will this keep the graphics isolated?
-        import molssi_util.molssi_widgets as mw
+        import molssi_widgets as mw
 
         logger.debug('Creating widget for {}'.format(type(self)))
 
@@ -400,8 +400,8 @@ class Parameter(collections.abc.MutableMapping):
 
         if self.enumeration:
             if self.dimensionality:
-                logger.debug('   making UnitComboBox')
-                w = mw.UnitComboBox(
+                logger.debug('   making UnitCombobox')
+                w = mw.UnitCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
@@ -409,8 +409,8 @@ class Parameter(collections.abc.MutableMapping):
                 )
                 w.set(self.value, self.units)
             else:
-                logger.debug('    making LabeledComboBox')
-                w = mw.LabeledComboBox(
+                logger.debug('    making LabeledCombobox')
+                w = mw.LabeledCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
