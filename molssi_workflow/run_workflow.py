@@ -15,6 +15,19 @@ logger = logging.getLogger(__name__)
 variables = molssi_workflow.Variables()
 
 
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
+
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
+
+
 def run():
     """The standalone flowchart app
     """
@@ -99,12 +112,16 @@ def run():
     
     # And ... finally ... run!
     printer.job("Running in directory '{}'".format(wdir))
-    
+
+    # copy the flowchart to the root directory for later reference
+    shutil.copy2(args.filename, os.path.join(wdir, 'flowchart.flow'))
+
     flowchart = molssi_workflow.Workflow(directory=wdir, output=args.output)
     flowchart.read(args.filename)
 
     exec = molssi_workflow.ExecWorkflow(flowchart)
-    exec.run(root=wdir)
+    with cd(wdir):
+        exec.run(root=wdir)
 
 
 def open_workflow(name):
