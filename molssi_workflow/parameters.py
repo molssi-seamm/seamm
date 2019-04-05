@@ -282,7 +282,7 @@ class Parameter(collections.abc.MutableMapping):
 
     @property
     def has_units(self):
-        """Does this parameter have associated associated?"""
+        """Does this parameter have units associated?"""
         if self.dimensionality:
             return False
         if self.dimensionality == '':
@@ -294,7 +294,7 @@ class Parameter(collections.abc.MutableMapping):
         """Is the current value a variable reference or
         expression?"""
         if isinstance(self.value, str):
-            return self.value[0] == '$'
+            return self.value and self.value[0] == '$'
         else:
             return False
 
