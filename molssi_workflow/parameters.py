@@ -96,8 +96,6 @@ class Parameter(collections.abc.MutableMapping):
                     return ('{:' + self.format_string + '}').format(value)
                 except ValueError:
                     return ('{}').format(self.value)
-            # print("format_string = '{}'".format(self.format_string))
-            # print("value = '{}'".format(self.value))
             if self.format_string == '':
                 return str(self.value)
             else:
@@ -375,6 +373,7 @@ class Parameter(collections.abc.MutableMapping):
             'default_units': None,
             'enumeration':   tuple(),
             'format_string': None,
+            'group':         '',
             'description':   None,
             'help_text':     None,
         }
@@ -493,15 +492,19 @@ class Parameter(collections.abc.MutableMapping):
             '\nParameter instance:\n{}'.format(pprint.pformat(self._data))
         )
 
+
 class Parameters(collections.abc.MutableMapping):
     """A dict-like container for parameters"""
 
-    def __init__(self, defaults, data=None):
+    def __init__(self, defaults={}, data=None):
         """Create an instance, optionally from a dict"""
 
         logger.debug('\nParameters.__init__')
+        logger.debug(pprint.pformat(defaults))
 
         self.defaults = defaults
+        logger.debug('\ndefaults:\n{}'.format(pprint.pformat(defaults)))
+
         self._data = {}
 
         self.initialize()
