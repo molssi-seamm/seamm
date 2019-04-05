@@ -136,8 +136,8 @@ def flowchart():
     root.bind_all('<'+CmdKey+'o>', tk_framework.open_file)
     root.bind_all('<'+CmdKey+'R>', tk_framework.run)
     root.bind_all('<'+CmdKey+'r>', tk_framework.run)
-    root.bind_all('<'+CmdKey+'S>', tk_framework.save_file)
-    root.bind_all('<'+CmdKey+'s>', tk_framework.save_file)
+    root.bind_all('<'+CmdKey+'S>', tk_framework.save)
+    root.bind_all('<'+CmdKey+'s>', tk_framework.save)
 
     root.bind_all('<'+CmdKey+'`>', tk_framework.print_edges)
 
