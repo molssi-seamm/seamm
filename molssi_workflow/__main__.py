@@ -16,7 +16,8 @@ dbg_level = 30
 def raise_app(root: tk):
     root.attributes("-topmost", True)
     if platform.system() == 'Darwin':
-        tmpl = 'tell application "System Events" to set frontmost of every process whose unix id is {} to true'  # nopep8
+        tmpl = ('tell application "System Events" to set frontmost '
+                'of every process whose unix id is {} to true')
         script = tmpl.format(os.getpid())
         subprocess.check_call(['/usr/bin/osascript', '-e', script])
     root.after(100, lambda: root.attributes("-topmost", False))
