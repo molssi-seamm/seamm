@@ -12,7 +12,9 @@ import molssi_workflow
 import molssi_util  # MUST come after molssi_workflow
 from molssi_util.printing import FormattedText as __
 import molssi_util.printing as printing
+import numpy as np
 import os.path
+import pandas
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -397,3 +399,70 @@ class Node(abc.ABC):
     def job_output(self, text):
         """Temporary!"""
         job.job(text)
+
+    def store_results(self, data={}, properties=None, results=None,
+                      create_tables=True):
+        """Store results in variables and tables, as requested
+
+        Keywords:
+        
+        properties (dict): a dictionary of properties
+        results (dict): a dictionary of results from the calculation
+        create_tables (bool): whether to create tables as needed
+
+        Each item in 'results' is itself a dictionary. If the following keys
+        are in the dictionary, the appropriate action is taken:
+
+        'variable' -- is the name of a variable to store the result in
+        'table' -- the name of the table, and
+        'column' -- is the column name for the result in the table.
+        """
+
+        for key, value in results.items():
+            # Check for storing in a variable
+            if 'variable' in value:
+                self.set_variable(value['variable'], data[key])
+
+            # and table
+            if 'table' in value:
+                tablename = value['table']
+                column = value['column']
+                # Does the table exist?
+                if not self.variable_exists(tablename):
+                    if create_tables:
+                        table = pandas.DataFrame()
+                        self.set_variable(
+                            tablename, {
+                                'type': 'pandas',
+                                'table': table,
+                                'defaults': {},
+                                'loop index': False,
+                                'current index': 0
+                            }
+                        )
+                    else:
+                        raise RuntimeError(
+                            "Table '{}' does not exist.".format(tablename)
+                        )
+
+                table_handle = self.get_variable(tablename)
+                table = table_handle['table']
+
+                # create the column as needed
+                if column not in table.columns:
+                    kind = properties[key]['type']
+                    if kind == 'boolean':
+                        default = False
+                    elif kind == 'integer':
+                        default = 0
+                    elif kind == 'float':
+                        default = np.nan
+                    else:
+                        default = ''
+
+                    table_handle['defaults'][column] = default
+                    table[column] = default
+
+                # and put the value in (finally!!!)
+                row_index = table_handle['current index']
+                table.at[row_index, column] = data[key]
