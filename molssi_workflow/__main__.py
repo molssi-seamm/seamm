@@ -126,6 +126,14 @@ def flowchart():
     filemenu.add_separator()
     filemenu.add_command(label="Exit", command=root.quit)
 
+    # Edit menu
+    editmenu = tk.Menu(menu)
+    menu.add_cascade(label="Edit", menu=editmenu)
+    filemenu.add_command(label="Clean layout",
+                         command=tk_framework.clean_layout,
+                         accelerator=CmdKey + 'C')
+
+    # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
     root.createcommand('tk::mac::ShowHelp',
@@ -138,6 +146,8 @@ def flowchart():
     root.bind_all('<'+CmdKey+'r>', tk_framework.run)
     root.bind_all('<'+CmdKey+'S>', tk_framework.save)
     root.bind_all('<'+CmdKey+'s>', tk_framework.save)
+    root.bind_all('<'+CmdKey+'C>', tk_framework.clean_layout)
+    root.bind_all('<'+CmdKey+'c>', tk_framework.clean_layout)
 
     root.bind_all('<'+CmdKey+'`>', tk_framework.print_edges)
 
