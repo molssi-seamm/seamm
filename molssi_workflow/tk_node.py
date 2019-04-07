@@ -54,6 +54,8 @@ class TkNode(abc.ABC):
             if self.node.h is None:
                 self.node.h = h
 
+        self.node_type = 'simple'
+
         self._border = None
         self.title_label = None
         self._selected = False
@@ -212,6 +214,9 @@ class TkNode(abc.ABC):
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
 
+        # Remove any graphics items
+        self.undraw()
+
         # the outline
         x0 = self.x - self.w / 2
         x1 = x0 + self.w
@@ -232,6 +237,9 @@ class TkNode(abc.ABC):
             text=self.title,
             tags=[self.tag, 'type=title']
         )
+
+        for direction, edge in self.connections():
+            edge.move()
 
     def undraw(self):
         """Remove all of our visual components
