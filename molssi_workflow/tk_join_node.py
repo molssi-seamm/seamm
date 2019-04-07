@@ -28,6 +28,8 @@ class TkJoin(molssi_workflow.TkNode):
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
+        # Remove any graphics items
+        self.undraw()
 
         # the outline
         x0 = self.x - self.w / 2
@@ -42,3 +44,6 @@ class TkJoin(molssi_workflow.TkNode):
             tags=[self.tag, 'type=outline'],
             fill='black',
         )
+
+        for direction, edge in self.connections():
+            edge.move()
