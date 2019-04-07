@@ -1311,3 +1311,138 @@ class TkWorkflow(object):
 
         tk._default_root.tk.call(self.canvas, 'moveto', self.background, x, y)
         
+    def clean_layout(self, event=None):
+        """Clean the visual layout of the flowchart
+        """
+
+        # clear the visited flag
+        for node in self:
+            node.node.visited = False
+
+        # get the node to start the traversal
+        node = self.get_node('1')
+
+        # traverse the nodes, finding what loops they are in
+        self._loops = {}  # what loops a node is in
+        self._in_loop = {  # ordered list of nodes directly in a loop
+            'start': []
+        }
+        loops = tuple()
+
+        self._loop_helper(loops, node)
+
+        logger.debug('\nloops\n\n{}'.format(pprint.pformat(self._loops)))
+        logger.debug('\nin loops\n\n{}'.format(pprint.pformat(self._in_loop)))
+
+        # Move the nodes to the correct place on the grid
+        x = 0
+        y = 0
+        self._loopxy = {
+            'start': (0, 0)
+        }
+        self._layout_nodes('start', x, y)
+
+        logger.debug('\nmax x,y\n\n{}'.format(pprint.pformat(self._loopxy)))
+
+        # Fix the edges
+        for edge in self.edges():
+            # only work on edges that go upwards
+            x0, y0 = edge.node1.anchor_point(edge.anchor1)
+            x1, y1 = edge.node2.anchor_point(edge.anchor2)
+            if y1 < y0:
+                edge.coords = [x0, y0]
+                loop = self._loops[edge.node1][-1]
+                xmax, ymax = self._loopxy[loop]
+                xmax = (xmax+1) * self.grid_x
+                ymax = (ymax+1) * self.grid_y
+
+                dx = 10*len(self._loops[edge.node1])
+                dy = 0
+                
+                # Down far enough
+                edge.coords.append(x0)
+                edge.coords.append(ymax - dy)
+                # Right far enough
+                edge.coords.append(xmax - dx)
+                edge.coords.append(ymax - dy)
+                # up
+                edge.coords.append(xmax - dx)
+                edge.coords.append(y1)
+                # and to the node
+                edge.coords.append(x1)
+                edge.coords.append(y1)
+            else:
+                edge.coords = [x0, y0, x1, y1]
+
+        # Redraw everything
+        self.draw()
+
+        del self._loops
+        del self._in_loop
+        del self._loopxy
+
+    def _layout_nodes(self, loop, x, y):
+        """Recursively position nodes
+        """
+        for node in self._in_loop[loop]:
+            x0 = int(node.x)
+            y0 = int(node.y)
+            node.x = int((x + 0.5) * self.grid_x)
+            node.y = int((y + 0.5) * self.grid_y)
+
+            logger.debug('node {} {} = {:3d} {:3d} ({:3d} {:3d}) {}'
+                         .format(x, y, int(node.x), int(node.y), x0, y0, node))
+
+            xmax, ymax = self._loopxy[loop]
+            if x > xmax:
+                xmax = x
+            if y > ymax:
+                ymax = y
+            self._loopxy[loop] = (xmax, ymax)
+
+            if node in self._in_loop:
+                self._loopxy[node] = (x+1, y)
+                x1, y = self._layout_nodes(node, x+1, y)
+                self._loopxy[loop] = (x1, y)
+            else:
+                y += 1
+
+        return x, y
+
+    def _loop_helper(self, loops, node):
+        """A helper to traverse graph finding the grid locations of the nodes
+        """
+        node.node.visited = True
+        self._loops[node] = loops
+
+        logger.debug('node = {}, loops = {}'.format(node, loops))
+
+        if len(loops) == 0:
+            self._in_loop['start'].append(node)
+        else:
+            self._in_loop[loops[-1]].append(node)
+
+        if node.node_type == 'loop':
+            loops = loops + (node,)
+            self._in_loop[node] = []
+            # nodes in the loop
+            for edge in self.graph.edges(node, direction='out'):
+                if edge.edge_type == "execution" and \
+                   edge.edge_subtype == 'loop':
+                    node2 = edge.node2
+                    if not node2.node.visited:
+                        self._loop_helper(loops, node2)
+            loops = loops[0:-1]
+            # end exiting the loop
+            for edge in self.graph.edges(node, direction='out'):
+                if edge.edge_type == "execution" and \
+                   edge.edge_subtype == 'exit':
+                    node2 = edge.node2
+                    if not node2.node.visited:
+                        self._loop_helper(loops, node2)
+        else:
+            for edge in self.graph.edges(node, direction='out'):
+                if edge.edge_type == "execution":
+                    node2 = edge.node2
+                    if not node2.node.visited:
+                        self._loop_helper(loops, node2)
