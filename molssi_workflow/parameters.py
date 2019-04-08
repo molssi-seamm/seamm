@@ -509,7 +509,6 @@ class Parameters(collections.abc.MutableMapping):
 
         self.initialize()
 
-
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("\nafter defaults:")
             for key, value in self.items():
