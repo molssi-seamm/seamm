@@ -330,7 +330,8 @@ class Parameter(collections.abc.MutableMapping):
                 result = bool(result)
         elif self.kind == 'list':
             if not isinstance(result, list):
-                result = json.loads(result)
+                if isinstance(result, str) and result[0] != '$':
+                    result = json.loads(result)
             return result
         elif self.kind == 'dictionary':
             if not isinstance(result, dict):
