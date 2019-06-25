@@ -19,6 +19,8 @@ requirements = [
     'datetime',
     'logging',
     'molssi_util',
+    'numpy',
+    'pandas',
     'pint',
     'pprint',
     'pyuca',

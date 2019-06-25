@@ -5,7 +5,6 @@
 """
 
 import abc
-# from abc import ABC, abstractmethod
 import json
 import logging
 import molssi_workflow
