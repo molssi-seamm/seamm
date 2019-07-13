@@ -5,8 +5,8 @@ import collections.abc
 from distutils.util import strtobool
 import json
 import logging
-from molssi_workflow import Q_
-from molssi_workflow import ureg
+from seamm import Q_
+from seamm import ureg
 import pprint
 
 

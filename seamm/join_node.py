@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-"""A node to join together parallel flows in a workflow"""
+"""A node to join together parallel flows in a flowchart"""
 
-import molssi_workflow
+import seamm
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class Join(molssi_workflow.Node):
+class Join(seamm.Node):
     def __init__(self,
-                 workflow=None,
+                 flowchart=None,
                  extension='Join'):
         '''Initialize a node for joining the flow together again
 
@@ -18,7 +18,7 @@ class Join(molssi_workflow.Node):
         '''
         logger.debug('Constructing join node {}'.format(self))
         super().__init__(
-            workflow=workflow,
+            flowchart=flowchart,
             title='Join',
             extension=extension
         )

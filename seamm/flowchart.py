@@ -3,23 +3,23 @@
 import json
 from datetime import datetime
 import logging
-import molssi_workflow
-import molssi_util  # MUST come after molssi_workflow
+import seamm
+import molssi_util  # MUST come after seamm
 import os
 import os.path
 import pprint  # nopep8
 import stat
 
-"""A workflow, which is a set of nodes. There must be a single
+"""A flowchart, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe
-the workflow. There may be isolated nodes or groups of connected nodes;
+the flowchart. There may be isolated nodes or groups of connected nodes;
 however, the flow starts at the 'start' node and follows the connections,
 so isolated nodes and fragments will not be executed."""
 
 logger = logging.getLogger(__name__)
 
 
-class Workflow(object):
+class Flowchart(object):
     """The class variable 'graphics' gives
     the default graphics to use for display, if needed. It defaults to
     'Tk' for the tkinter GUI.
@@ -30,16 +30,16 @@ class Workflow(object):
     def __init__(self,
                  parent=None,
                  data=None,
-                 namespace='org.molssi.workflow',
+                 namespace='org.molssi.seamm',
                  name=None,
                  directory=None,
                  output='files'):
-        '''Initialize the workflow
+        '''Initialize the flowchart
 
         Keyword arguments:
         '''
 
-        self.graph = molssi_workflow.Graph()
+        self.graph = seamm.Graph()
 
         self.name = name
         self.parent = parent
@@ -47,10 +47,10 @@ class Workflow(object):
         self.output = output  # Where to print output, files, stdout, both
 
         # Setup the plugin handling
-        self.plugin_manager = molssi_workflow.PluginManager(namespace)
+        self.plugin_manager = seamm.PluginManager(namespace)
 
         # and make sure that the start node exists
-        self.add_node(molssi_workflow.StartNode(workflow=self))
+        self.add_node(seamm.StartNode(flowchart=self))
 
         # And the root directory
         self.root_directory = directory
@@ -60,7 +60,7 @@ class Workflow(object):
 
     @property
     def root_directory(self):
-        """The root directory for files, etc for this workflow"""
+        """The root directory for files, etc for this flowchart"""
         if self._root_directory is None:
             self._root_directory = os.path.join(
                 os.getcwd(),
@@ -87,7 +87,7 @@ class Workflow(object):
             self._output = value
         else:
             raise RuntimeError(
-                "workflow.output must be one of 'files', 'stdout', or 'both'"
+                "flowchart.output must be one of 'files', 'stdout', or 'both'"
                 ", not '{}'".format(value)
             )
 
@@ -99,19 +99,19 @@ class Workflow(object):
         """Create a new node given the extension name"""
         plugin = self.plugin_manager.get(extension_name)
         node = plugin.create_node(
-            workflow=self,
+            flowchart=self,
             extension=extension_name
         )
         node.parent = self.parent
         return node
 
     def add_node(self, n, **attr):
-        """Add a single node n, ensuring that it knows the workflow"""
-        n.workflow = self
+        """Add a single node n, ensuring that it knows the flowchart"""
+        n.flowchart = self
         return self.graph.add_node(n, **attr)
 
     def remove_node(self, node):
-        """Delete a node from the workflow, and from the graphics if
+        """Delete a node from the flowchart, and from the graphics if
         necessary
         """
 
@@ -167,7 +167,7 @@ class Workflow(object):
 
         # and make sure that the start node exists
         if not all:
-            start_node = molssi_workflow.StartNode(workflow=self)
+            start_node = seamm.StartNode(flowchart=self)
             self.add_node(start_node)
         
     def list_nodes(self):
@@ -250,11 +250,11 @@ class Workflow(object):
         return data
 
     def from_dict(self, data):
-        """recreate the workflow from the dict. Inverse of to_dict."""
+        """recreate the flowchart from the dict. Inverse of to_dict."""
         if 'class' not in data:
             raise RuntimeError('There is no class information in the data!')
         if data['class'] != self.__class__.__name__:
-            raise RuntimeError('The dictionary does not contain a workflow!'
+            raise RuntimeError('The dictionary does not contain a flowchart!'
                                ' It contains a {} class'.format(data['class']))
 
         self.clear()
@@ -272,7 +272,7 @@ class Workflow(object):
 
             # Recreate the node
             new_node = plugin.create_node(
-                workflow=self,
+                flowchart=self,
                 extension=node['extension']
             )
             new_node.parent = self.parent
@@ -280,7 +280,7 @@ class Workflow(object):
             # set uuid to correct value
             new_node._uuid = node['attributes']['_uuid']
 
-            # and add to the workflow
+            # and add to the flowchart
             self.add_node(new_node)
 
             new_node.from_dict(node)
@@ -303,8 +303,8 @@ class Workflow(object):
     def write(self, filename):
         """Write the serialized form to disk"""
         with open(filename, 'w') as fd:
-            fd.write('#!/usr/bin/env run_workflow\n')
-            fd.write('!MolSSI workflow 1.0\n')
+            fd.write('#!/usr/bin/env run_flowchart\n')
+            fd.write('!MolSSI flowchart 1.0\n')
             json.dump(self.to_dict(), fd, indent=4,
                       cls=molssi_util.JSONEncoder)
             logger.info('Wrote json to {}'.format(filename))
@@ -313,7 +313,7 @@ class Workflow(object):
         os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
 
     def read(self, filename):
-        """Recreate the workflow from the serialized form on disk"""
+        """Recreate the flowchart from the serialized form on disk"""
         with open(filename, 'r') as fd:
             line = fd.readline(256)
             # There may be exec magic as first line
@@ -325,16 +325,16 @@ class Workflow(object):
             if len(tmp) < 3:
                 raise RuntimeError(
                     'File is not a proper MolSSI file! -- ' + line)
-            if tmp[1] != 'workflow':
-                raise RuntimeError('File is not a workflow! -- ' + line)
-            workflow_version = tmp[2]
-            logger.info('Reading workflow version {} from file {}'.format(
-                workflow_version, filename))
+            if tmp[1] != 'flowchart':
+                raise RuntimeError('File is not a flowchart! -- ' + line)
+            flowchart_version = tmp[2]
+            logger.info('Reading flowchart version {} from file {}'.format(
+                flowchart_version, filename))
 
             data = json.load(fd, cls=molssi_util.JSONDecoder)
 
-        if data['class'] != 'Workflow':
-            raise RuntimeError(filename + ' does not contain a workflow')
+        if data['class'] != 'Flowchart':
+            raise RuntimeError(filename + ' does not contain a flowchart')
 
         self.from_dict(data)
 
@@ -352,7 +352,7 @@ class Workflow(object):
         '''Print all the edges. Useful for debugging!
         '''
 
-        print('All edges in workflow')
+        print('All edges in flowchart')
         for edge in self.edges():
             # print('   {}'.format(edge))
             print('   {} {} {} {} {} {}'.format(

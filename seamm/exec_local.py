@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class ExecLocal(object):
     def __init__(self):
-        """Execute a workflow, providing support for the actual
+        """Execute a flowchart, providing support for the actual
         execution of codes """
 
         # times for formating 'ls' like output

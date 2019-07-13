@@ -2,17 +2,17 @@
 
 import collections.abc
 import logging
-import molssi_workflow  # nopep8
-from molssi_workflow import units_class  # nopep8
+import seamm  # nopep8
+from seamm import units_class  # nopep8
 import pprint
 
 """A dictionary-like object for holding variables accessible to the
-executing workflow.
+executing flowchart.
 """
 
 logger = logging.getLogger(__name__)
 # Module level variable to be used in other modules
-workflow_variables = None
+flowchart_variables = None
 
 
 class Variables(collections.abc.MutableMapping):
@@ -72,7 +72,7 @@ class Variables(collections.abc.MutableMapping):
         if isinstance(string, str) and string[0] == '$':
             expression = self.filter_expression(string)
         
-            result = eval(expression, molssi_workflow.workflow_variables._data)
+            result = eval(expression, seamm.flowchart_variables._data)
             return result
         else:
             return string

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""A node to split the flow in a workflow"""
+"""A node to split the flow in a flowchart"""
 
 import logging
-import molssi_workflow
+import seamm
 
 logger = logging.getLogger(__name__)
 
 
-class TkSplit(molssi_workflow.TkNode):
+class TkSplit(seamm.TkNode):
     """The Tk-based graphical representation of a splitting node"""
 
     anchor_points = {
@@ -17,7 +17,7 @@ class TkSplit(molssi_workflow.TkNode):
         'w': (-0.5, 0.5),
     }
 
-    def __init__(self, tk_workflow=None, node=None,
+    def __init__(self, tk_flowchart=None, node=None,
                  canvas=None, x=120, y=20, w=10, h=10):
         '''Initialize a node
 
@@ -25,7 +25,7 @@ class TkSplit(molssi_workflow.TkNode):
         '''
         logger.debug('Creating TkSplit, {} {} {} {} {}'
                      .format(node, x, y, w, h))
-        super().__init__(tk_workflow=tk_workflow, node=node,
+        super().__init__(tk_flowchart=tk_flowchart, node=node,
                          canvas=canvas, x=x, y=y, w=w, h=h)
 
     def draw(self):

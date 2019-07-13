@@ -50,7 +50,7 @@ requirements = [
 # 'weakref',
 
 setup_requirements = [
-    'pytest-runner',
+    # tmp PWS 'pytest-runner',
     # TODO(paulsaxe): put setup requirements (distutils extensions, etc.) here
 ]
 
@@ -62,27 +62,27 @@ test_requirements = [
 setup(
     name='seamm',
     version='0.1.0',
-    description="The MolSSI workflow for computational molecular and materials science (CMS)",
+    description="Simulation Environment for Atomistic and Molecular Modeling ",
     long_description=readme + '\n\n' + history,
     author="Paul Saxe",
     author_email='psaxe@molssi.org',
-    url='https://github.com/paulsaxe/seamm',
+    url='https://github.com/molssi-seamm/seamm',
     packages=find_packages(include=['seamm']),
     entry_points={
         'console_scripts': [
             'seamm=seamm.__main__:flowchart',
-            'run_workflow=seamm.run_workflow:run'
+            'run_flowchart=seamm.run_flowchart:run'
         ],
-        'org.molssi.workflow': [
+        'org.molssi.seamm': [
             'Split = seamm:SplitStep',
         ],
-        'org.molssi.workflow.tk': [
+        'org.molssi.seamm.tk': [
             'Split = seamm:SplitStep',
         ],
-        'org.molssi.workflow': [
+        'org.molssi.seamm': [
             'Join = seamm:JoinStep',
         ],
-        'org.molssi.workflow.tk': [
+        'org.molssi.seamm.tk': [
             'Join = seamm:JoinStep',
         ],
     },
