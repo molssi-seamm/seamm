@@ -60,37 +60,37 @@ test_requirements = [
 ]
 
 setup(
-    name='molssi_workflow',
+    name='seamm',
     version='0.1.0',
     description="The MolSSI workflow for computational molecular and materials science (CMS)",
     long_description=readme + '\n\n' + history,
     author="Paul Saxe",
     author_email='psaxe@molssi.org',
-    url='https://github.com/paulsaxe/molssi_workflow',
-    packages=find_packages(include=['molssi_workflow']),
+    url='https://github.com/paulsaxe/seamm',
+    packages=find_packages(include=['seamm']),
     entry_points={
         'console_scripts': [
-            'molssi_workflow=molssi_workflow.__main__:flowchart',
-            'run_workflow=molssi_workflow.run_workflow:run'
+            'seamm=seamm.__main__:flowchart',
+            'run_workflow=seamm.run_workflow:run'
         ],
         'org.molssi.workflow': [
-            'Split = molssi_workflow:SplitStep',
+            'Split = seamm:SplitStep',
         ],
         'org.molssi.workflow.tk': [
-            'Split = molssi_workflow:SplitStep',
+            'Split = seamm:SplitStep',
         ],
         'org.molssi.workflow': [
-            'Join = molssi_workflow:JoinStep',
+            'Join = seamm:JoinStep',
         ],
         'org.molssi.workflow.tk': [
-            'Join = molssi_workflow:JoinStep',
+            'Join = seamm:JoinStep',
         ],
     },
     include_package_data=True,
     install_requires=requirements,
     license="GNU Lesser General Public License v3",
     zip_safe=False,
-    keywords='molssi_workflow',
+    keywords='seamm',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
