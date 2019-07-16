@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The flowchart is a visual representation of a workflow
+"""The flowchart is a visual representation of a flowchart
 drawn on a Tk canvas. The nodes of the graph are shown as
 ovals, rectangles, etc. with the edges indicated by arrows
 from one node to another.
@@ -42,7 +42,7 @@ anywhere else it just snaps back to its original place.
 import copy
 import logging
 import math
-import molssi_workflow
+import seamm
 from PIL import ImageTk, Image
 import pkg_resources
 import pprint  # nopep8
@@ -58,11 +58,11 @@ def grey(value):
     return 255 - (255 - value) * 0.1
 
 
-class TkWorkflow(object):
+class TkFlowchart(object):
     def __init__(self,
                  master=None,
-                 workflow=None,
-                 namespace='org.molssi.workflow.tk'):
+                 flowchart=None,
+                 namespace='org.molssi.seamm.tk'):
         '''Initialize a Flowchart object
 
         Keyword arguments:
@@ -70,13 +70,13 @@ class TkWorkflow(object):
 
         self.toplevel = None
         self.master = master
-        self._workflow = workflow
+        self._flowchart = flowchart
         self.filename = None
 
-        self.graph = molssi_workflow.Graph()
+        self.graph = seamm.Graph()
 
         # Setup the plugin handling
-        self.plugin_manager = molssi_workflow.PluginManager(namespace)
+        self.plugin_manager = seamm.PluginManager(namespace)
 
         self.canvas_width = 500
         self.canvas_height = 500
@@ -178,19 +178,19 @@ class TkWorkflow(object):
         else:
             self.canvas.bind('<ButtonPress-3>', self.right_click)
 
-        logger.debug('Finished initializing tk_workflow')
+        logger.debug('Finished initializing tk_flowchart')
 
     def __iter__(self):
         return self.graph.__iter__()
 
     @property
-    def workflow(self):
-        """The workflow, which holds the nodes"""
-        return self._workflow
+    def flowchart(self):
+        """The flowchart, which holds the nodes"""
+        return self._flowchart
 
-    @workflow.setter
-    def workflow(self, value):
-        self._workflow = value
+    @flowchart.setter
+    def flowchart(self, value):
+        self._flowchart = value
 
     @property
     def master(self):
@@ -294,7 +294,7 @@ class TkWorkflow(object):
                  edge_subtype='next', **kwargs):
         edge = self.graph.add_edge(
             u, v, edge_type, edge_subtype,
-            edge_class=molssi_workflow.TkEdge,
+            edge_class=seamm.TkEdge,
             canvas=self.canvas, **kwargs
         )
         edge.draw()
@@ -325,8 +325,8 @@ class TkWorkflow(object):
         if isinstance(filename, list):
             filename = filename[0]
 
-        self.workflow.read(filename)
-        self.from_workflow()
+        self.flowchart.read(filename)
+        self.from_flowchart()
         self.filename = filename
 
     def clear(self, all=False):
@@ -345,12 +345,12 @@ class TkWorkflow(object):
     def create_start_node(self):
         """Create the start node"""
         # Check if the start node exists
-        start_node = self.workflow.get_node('1')
+        start_node = self.flowchart.get_node('1')
         if start_node is None:
-            start_node = molssi_workflow.StartNode()
+            start_node = seamm.StartNode()
 
-        tk_start_node = molssi_workflow.TkStartNode(
-            tk_workflow=self,
+        tk_start_node = seamm.TkStartNode(
+            tk_flowchart=self,
             canvas=self.canvas,
             node=start_node,
             x=self.grid_x/2,
@@ -366,9 +366,9 @@ class TkWorkflow(object):
         if self.filename is None:
             self.save_file()
         else:
-            self.update_workflow()
-            self.workflow.write(self.filename)
-            self.workflow.clear()
+            self.update_flowchart()
+            self.flowchart.write(self.filename)
+            self.flowchart.clear()
 
     def save_file(self, event=None):
         filename = tk_filedialog.asksaveasfilename(
@@ -612,13 +612,13 @@ class TkWorkflow(object):
         logger.debug('creating {} node'.format(plugin_name))
 
         # The node.
-        node = self.workflow.create_node(plugin_name)
+        node = self.flowchart.create_node(plugin_name)
 
         # The graphics partner
         plugin = self.plugin_manager.get(plugin_name)
         logger.debug('  plugin object: {}'.format(plugin))
         tk_node = plugin.create_tk_node(
-            tk_workflow=self, canvas=self.canvas, x=0, y=0,
+            tk_flowchart=self, canvas=self.canvas, x=0, y=0,
             node=node
         )
         self.graph.add_node(tk_node)
@@ -642,7 +642,7 @@ class TkWorkflow(object):
             tk_node.y = y - dy
                 
 
-        # And connect this to the last node in the existing workflow,
+        # And connect this to the last node in the existing flowchart,
         # which is probably what the user wants.
 
         self.add_edge(
@@ -854,7 +854,7 @@ class TkWorkflow(object):
                 if 'node' in key:
                     tags[key] = self.get_node(value)
                 elif 'edge' == key:
-                    tags[key] = molssi_workflow.TkEdge.str_to_object[value]
+                    tags[key] = seamm.TkEdge.str_to_object[value]
                 else:
                     tags[key] = value
             else:
@@ -1153,7 +1153,7 @@ class TkWorkflow(object):
         '''Print all the edges. Useful for debugging!
         '''
 
-        print('All edges in tk_workflow')
+        print('All edges in tk_flowchart')
         for edge in self.edges():
             print('   {} {} {} {} {} {}'.format(
                 edge.node1.tag,
@@ -1174,26 +1174,26 @@ class TkWorkflow(object):
             print('{}: {}'.format(item, self.canvas.gettags(item)))
 
     def run(self, event=None):
-        """Run the current workflow"""
+        """Run the current flowchart"""
 
-        self.update_workflow()
-        exec = molssi_workflow.ExecWorkflow(self.workflow)
+        self.update_flowchart()
+        exec = seamm.ExecFlowchart(self.flowchart)
         exec.run()
-        self.update_workflow()
+        self.update_flowchart()
 
-    def update_workflow(self):
-        """Update the non-graphical workflow"""
-        wf = self.workflow
+    def update_flowchart(self):
+        """Update the non-graphical flowchart"""
+        wf = self.flowchart
 
-        # Make sure there is nothing in the workflow
+        # Make sure there is nothing in the flowchart
         wf.clear(all=True)
 
         # Add all the non-graphical nodes, making copies so that
-        # when the workflow is cleared our objects still exist
+        # when the flowchart is cleared our objects still exist
         translate = {}
         for node in self:
             translate[node] = wf.add_node(copy.copy(node.node))
-            node.update_workflow()
+            node.update_flowchart()
 
         # And the edges
         for edge in self.edges():
@@ -1207,14 +1207,14 @@ class TkWorkflow(object):
             wf.add_edge(node1, node2, edge.edge_type,
                         edge.edge_subtype, **attr)
 
-    def from_workflow(self):
-        """Recreate the graphics from the non-graphical workflow"""
-        wf = self.workflow
+    def from_flowchart(self):
+        """Recreate the graphics from the non-graphical flowchart"""
+        wf = self.flowchart
 
         self.clear()
 
         # Add all the non-graphical nodes, making copies so that
-        # when the workflow is cleared our objects still exist
+        # when the flowchart is cleared our objects still exist
         translate = {}
         for node in wf:
             extension = node.extension
@@ -1227,10 +1227,10 @@ class TkWorkflow(object):
                 plugin = self.plugin_manager.get(extension)
                 logger.debug('  plugin object: {}'.format(plugin))
                 tk_node = plugin.create_tk_node(
-                    tk_workflow=self, canvas=self.canvas, node=new_node
+                    tk_flowchart=self, canvas=self.canvas, node=new_node
                 )
                 translate[node] = tk_node
-                tk_node.from_workflow()
+                tk_node.from_flowchart()
                 self.graph.add_node(tk_node)
                 tk_node.draw()
 

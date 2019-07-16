@@ -1,5 +1,5 @@
 import argparse
-import molssi_workflow
+import seamm
 import locale
 import logging
 import os
@@ -59,8 +59,8 @@ def flowchart():
     # and the data
     ##############################################################
 
-    framework = molssi_workflow.Workflow()
-    tk_framework = molssi_workflow.TkWorkflow(master=root, workflow=framework)
+    framework = seamm.Flowchart()
+    tk_framework = seamm.TkFlowchart(master=root, flowchart=framework)
     # The data is implicitly initialized to none...
 
     ##################################################

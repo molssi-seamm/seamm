@@ -3,8 +3,8 @@ MolSSI Workflow
 ===============
 
 
-.. image:: https://img.shields.io/pypi/v/molssi_workflow.svg
-        :target: https://pypi.python.org/pypi/molssi_workflow
+.. image:: https://img.shields.io/pypi/v/seamm.svg
+        :target: https://pypi.python.org/pypi/seamm
 
 .. image:: https://img.shields.io/travis/paulsaxe/molssi_eex.svg
         :target: https://travis-ci.org/paulsaxe/molssi_eex
@@ -13,8 +13,8 @@ MolSSI Workflow
         :target: https://molssi-workflow.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/paulsaxe/molssi_workflow/shield.svg
-     :target: https://pyup.io/repos/github/paulsaxe/molssi_workflow/
+.. image:: https://pyup.io/repos/github/paulsaxe/seamm/shield.svg
+     :target: https://pyup.io/repos/github/paulsaxe/seamm/
      :alt: Updates
 
 

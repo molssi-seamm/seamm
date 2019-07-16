@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-"""The start node in a workflow"""
+"""The start node in a flowchart"""
 
 import logging
-import molssi_workflow
-import molssi_util.printing as printing
-from molssi_util.printing import FormattedText as __  # nopep8
+import seamm
+import seamm_util.printing as printing
+from seamm_util.printing import FormattedText as __  # nopep8
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 printer = printing.getPrinter('start')
 
 
-class StartNode(molssi_workflow.Node):
-    def __init__(self, workflow=None):
+class StartNode(seamm.Node):
+    def __init__(self, flowchart=None):
 
         '''Initialize a specialized start node, which is the
         anchor for the graph.
@@ -21,7 +21,7 @@ class StartNode(molssi_workflow.Node):
         Keyword arguments:
         '''
         logger.debug('Constructing start node {}'.format(self))
-        super().__init__(workflow=workflow, title='Start')
+        super().__init__(flowchart=flowchart, title='Start')
 
         self._uuid = 1
 

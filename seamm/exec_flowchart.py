@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 """The ExecWorkflow object does what it name implies: it executes, or
-runs, a given workflow.
+runs, a given flowchart.
 
 It provides the environment for running the computational tasks
 locally or remotely, using what is commonly called workflow management
 system (WMS).  The WMS concept, as used here, means tools that run
 given tasks without knowing anything about chemistry. The chemistry
-specialization is contained in the Workflow and the nodes that it
+specialization is contained in the Flowchart and the nodes that it
 contains."""
 
 import logging
-import molssi_workflow
-import molssi_util.printing as printing
-from molssi_util.printing import FormattedText as __
+import seamm
+import seamm_util.printing as printing
+from seamm_util.printing import FormattedText as __
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 
 
-class ExecWorkflow(object):
+class ExecFlowchart(object):
     def __init__(self, flowchart=None):
         """Execute a flowchart, providing support for the actual
         execution of codes """
@@ -30,7 +30,7 @@ class ExecWorkflow(object):
             raise RuntimeError('There is no flowchart to run!')
 
         logger.debug('Creating global variables space')
-        molssi_workflow.workflow_variables = molssi_workflow.Variables()
+        seamm.flowchart_variables = seamm.Variables()
         
         self.flowchart.root_directory = root
 

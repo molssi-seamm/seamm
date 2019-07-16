@@ -8,7 +8,7 @@ edge so that the graphical representation can be restored as needed.
 
 import logging
 import math
-import molssi_workflow
+import seamm
 import pprint  # nopep8
 from tkinter import font
 import tkinter as tk
@@ -17,7 +17,7 @@ import weakref
 logger = logging.getLogger(__name__)
 
 
-class TkEdge(molssi_workflow.Edge):
+class TkEdge(seamm.Edge):
     str_to_object = weakref.WeakValueDictionary()
 
     def __init__(

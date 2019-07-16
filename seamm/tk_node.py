@@ -3,7 +3,7 @@
 import abc
 import copy
 import logging
-import molssi_workflow
+import seamm
 import pprint  # nopep8
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
@@ -33,13 +33,13 @@ class TkNode(abc.ABC):
         'ssw': (-0.25, +0.50)
     }
 
-    def __init__(self, tk_workflow=None, node=None, canvas=None,
+    def __init__(self, tk_flowchart=None, node=None, canvas=None,
                  x=None, y=None, w=None, h=None):
         """Initialize a node
 
         Keyword arguments:
         """
-        self.tk_workflow = tk_workflow
+        self.tk_flowchart = tk_flowchart
         self.node = node
         self.toplevel = None
         self.canvas = canvas
@@ -123,14 +123,14 @@ class TkNode(abc.ABC):
         return self.node.tag
 
     @property
-    def workflow(self):
-        """The workflow object"""
-        return self.node.workflow
+    def flowchart(self):
+        """The flowchart object"""
+        return self.node.flowchart
 
-    @workflow.setter
-    def workflow(self, value):
-        """The workflow object"""
-        self.node.workflow = value
+    @flowchart.setter
+    def flowchart(self, value):
+        """The flowchart object"""
+        self.node.flowchart = value
 
     @property
     def x(self):
@@ -176,7 +176,7 @@ class TkNode(abc.ABC):
         for this node, giving the anchor points and other node
         """
 
-        return self.tk_workflow.edges(self)
+        return self.tk_flowchart.edges(self)
 
     @property
     def selected(self):
@@ -280,9 +280,9 @@ class TkNode(abc.ABC):
 
         self.popup_menu = tk.Menu(self.canvas, tearoff=0)
         self.popup_menu.add_command(
-            label="Delete", command=lambda: self.tk_workflow.remove_node(self))
+            label="Delete", command=lambda: self.tk_flowchart.remove_node(self))
 
-        if type(self) is molssi_workflow.tk_node.TkNode:
+        if type(self) is seamm.tk_node.TkNode:
             self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
 
     def double_click(self, event):
@@ -400,7 +400,7 @@ class TkNode(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.tk_workflow.graph.remove_edge(
+            self.tk_flowchart.graph.remove_edge(
                 edge.node1, edge.node2,
                 edge.edge_type, edge.edge_subtype
             )
@@ -420,24 +420,24 @@ class TkNode(abc.ABC):
 
         return data
 
-    def update_workflow(self, tk_workflow=None, workflow=None):
-        """Update the nongraphical workflow. Only used in nodes that contain
-        workflows"""
-        if tk_workflow is None or workflow is None:
+    def update_flowchart(self, tk_flowchart=None, flowchart=None):
+        """Update the nongraphical flowchart. Only used in nodes that contain
+        flowcharts"""
+        if tk_flowchart is None or flowchart is None:
             return
 
-        # Make sure there is nothing in the workflow
-        workflow.clear(all=True)
+        # Make sure there is nothing in the flowchart
+        flowchart.clear(all=True)
 
         # Add all the non-graphical nodes, making copies so that
-        # when the workflow is cleared our objects still exist
+        # when the flowchart is cleared our objects still exist
         translate = {}
-        for node in tk_workflow:
-            translate[node] = workflow.add_node(copy.copy(node.node))
-            node.update_workflow()
+        for node in tk_flowchart:
+            translate[node] = flowchart.add_node(copy.copy(node.node))
+            node.update_flowchart()
 
         # And the edges
-        for edge in tk_workflow.edges():
+        for edge in tk_flowchart.edges():
             attr = {}
             for key in edge:
                 if key not in ('node1', 'node2', 'edge_type',
@@ -445,49 +445,49 @@ class TkNode(abc.ABC):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            workflow.add_edge(node1, node2, edge.edge_type,
+            flowchart.add_edge(node1, node2, edge.edge_type,
                               edge.edge_subtype, **attr)
 
-    def from_workflow(self, tk_workflow=None, workflow=None):
-        """Recreate the graphics from the non-graphical workflow.
-        Only used in nodes that contain workflow"""
+    def from_flowchart(self, tk_flowchart=None, flowchart=None):
+        """Recreate the graphics from the non-graphical flowchart.
+        Only used in nodes that contain flowchart"""
 
-        if tk_workflow is None or workflow is None:
+        if tk_flowchart is None or flowchart is None:
             return
 
-        tk_workflow.clear()
+        tk_flowchart.clear()
 
         # Add all the non-graphical nodes, making copies so that
-        # when the workflow is cleared our objects still exist
+        # when the flowchart is cleared our objects still exist
         translate = {}
-        for node in workflow:
+        for node in flowchart:
             extension = node.extension
             if extension is None:
                 # Start node
-                translate[node] = tk_workflow.get_node('1')
+                translate[node] = tk_flowchart.get_node('1')
             else:
                 new_node = copy.copy(node)
                 logger.debug('creating {} node'.format(extension))
-                plugin = tk_workflow.plugin_manager.get(extension)
+                plugin = tk_flowchart.plugin_manager.get(extension)
                 logger.debug('  plugin object: {}'.format(plugin))
                 tk_node = plugin.create_tk_node(
-                    tk_workflow=tk_workflow, canvas=tk_workflow.canvas,
+                    tk_flowchart=tk_flowchart, canvas=tk_flowchart.canvas,
                     node=new_node
                 )
                 translate[node] = tk_node
-                tk_node.from_workflow()
-                tk_workflow.graph.add_node(tk_node)
+                tk_node.from_flowchart()
+                tk_flowchart.graph.add_node(tk_node)
                 tk_node.draw()
 
         # And the edges
-        for edge in workflow.edges():
+        for edge in flowchart.edges():
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
             attr = {}
             for key in edge:
                 if key not in ('node1', 'node2'):
                     attr[key] = edge[key]
-            tk_workflow.add_edge(node1, node2, **attr)
+            tk_flowchart.add_edge(node1, node2, **attr)
 
     def default_edge_subtype(self):
         """Return the default subtype of the edge. Usually this is ''
@@ -501,7 +501,7 @@ class TkNode(abc.ABC):
         """
 
         # how many outgoing edges are there?
-        n_edges = len(self.tk_workflow.edges(self, direction='out'))
+        n_edges = len(self.tk_flowchart.edges(self, direction='out'))
 
         logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
 

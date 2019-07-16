@@ -4,7 +4,7 @@ a description() method that returns a dict containing a description of
 this node, and a factory() method for creating the graphical and non-graphical
 nodes."""
 
-import molssi_workflow
+import seamm
 
 
 class SplitStep(object):
@@ -15,10 +15,10 @@ class SplitStep(object):
         'name': 'Split'
     }
 
-    def __init__(self, workflow=None, gui=None):
+    def __init__(self, flowchart=None, gui=None):
         """Initialize this helper class, which is used by
         the application via stevedore to get information about
-        and create node objects for the workflow
+        and create node objects for the flowchart
         """
         pass
 
@@ -27,13 +27,13 @@ class SplitStep(object):
         """
         return SplitStep.my_description
 
-    def create_node(self, workflow=None, **kwargs):
+    def create_node(self, flowchart=None, **kwargs):
         """Return the new node object"""
-        return molssi_workflow.Split(workflow=workflow, **kwargs)
+        return seamm.Split(flowchart=flowchart, **kwargs)
 
     def create_tk_node(self, canvas=None, **kwargs):
         """Return the graphical Tk node object"""
-        return molssi_workflow.TkSplit(canvas=canvas, **kwargs)
+        return seamm.TkSplit(canvas=canvas, **kwargs)
 
     
 class JoinStep(object):
@@ -44,10 +44,10 @@ class JoinStep(object):
         'name': 'Join'
     }
 
-    def __init__(self, workflow=None, gui=None):
+    def __init__(self, flowchart=None, gui=None):
         """Initialize this helper class, which is used by
         the application via stevedore to get information about
-        and create node objects for the workflow
+        and create node objects for the flowchart
         """
         pass
 
@@ -56,10 +56,10 @@ class JoinStep(object):
         """
         return JoinStep.my_description
 
-    def create_node(self, workflow=None, **kwargs):
+    def create_node(self, flowchart=None, **kwargs):
         """Return the new node object"""
-        return molssi_workflow.Join(workflow=workflow, **kwargs)
+        return seamm.Join(flowchart=flowchart, **kwargs)
 
     def create_tk_node(self, canvas=None, **kwargs):
         """Return the graphical Tk node object"""
-        return molssi_workflow.TkJoin(canvas=canvas, **kwargs)
+        return seamm.TkJoin(canvas=canvas, **kwargs)

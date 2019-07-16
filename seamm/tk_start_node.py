@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""The start node in a workflow"""
+"""The start node in a flowchart"""
 
-import molssi_workflow
+import seamm
 
 
-class TkStartNode(molssi_workflow.TkNode):
+class TkStartNode(seamm.TkNode):
     """The Tk-based graphical representation of a Start node"""
 
     anchor_points = {
@@ -13,13 +13,13 @@ class TkStartNode(molssi_workflow.TkNode):
         'w': (-0.5, 0.0),
     }
 
-    def __init__(self, tk_workflow=None, node=None,
+    def __init__(self, tk_flowchart=None, node=None,
                  canvas=None, x=150, y=50, w=200, h=50):
         '''Initialize a node
 
         Keyword arguments:
         '''
-        super().__init__(tk_workflow=tk_workflow, node=node,
+        super().__init__(tk_flowchart=tk_flowchart, node=node,
                          canvas=canvas, x=x, y=y, w=w, h=h)
 
     def right_click(self, event):

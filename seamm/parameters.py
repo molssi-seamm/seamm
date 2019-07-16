@@ -5,8 +5,8 @@ import collections.abc
 from distutils.util import strtobool
 import json
 import logging
-from molssi_workflow import Q_
-from molssi_workflow import ureg
+from seamm import Q_
+from seamm import ureg
 import pprint
 
 
@@ -383,7 +383,7 @@ class Parameter(collections.abc.MutableMapping):
     def widget(self, frame,  **kwargs):
         """Return a widget for handling the parameter"""
         # Will this keep the graphics isolated?
-        import molssi_widgets as mw
+        import seamm_widgets as sw
 
         logger.debug('Creating widget for {}'.format(type(self)))
 
@@ -401,7 +401,7 @@ class Parameter(collections.abc.MutableMapping):
         if self.enumeration:
             if self.dimensionality:
                 logger.debug('   making UnitCombobox')
-                w = mw.UnitCombobox(
+                w = sw.UnitCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
@@ -410,7 +410,7 @@ class Parameter(collections.abc.MutableMapping):
                 w.set(self.value, self.units)
             else:
                 logger.debug('    making LabeledCombobox')
-                w = mw.LabeledCombobox(
+                w = sw.LabeledCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
@@ -420,7 +420,7 @@ class Parameter(collections.abc.MutableMapping):
         else:
             if self.dimensionality:
                 logger.debug('   making UnitEntry')
-                w = mw.UnitEntry(
+                w = sw.UnitEntry(
                     frame,
                     labeltext=labeltext,
                     **kwargs
@@ -428,7 +428,7 @@ class Parameter(collections.abc.MutableMapping):
                 w.set(self.value, self.units)
             else:
                 logger.debug('   making LabeledEntry')
-                w = mw.LabeledEntry(
+                w = sw.LabeledEntry(
                     frame,
                     labeltext=labeltext,
                     **kwargs

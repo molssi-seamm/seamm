@@ -3,16 +3,16 @@ import argparse
 import json
 import locale
 import logging
-import molssi_workflow
-import molssi_util  # MUST come after molssi_workflow
-import molssi_util.printing as printing
+import seamm
+import seamm_util  # MUST come after seamm
+import seamm_util.printing as printing
 import os
 import os.path
 import shutil
 import sys
 
 logger = logging.getLogger(__name__)
-variables = molssi_workflow.Variables()
+variables = seamm.Variables()
 
 
 class cd:
@@ -32,7 +32,7 @@ def run():
     """The standalone flowchart app
     """
 
-    parser = argparse.ArgumentParser(description='Execute a MolSSI workflow')
+    parser = argparse.ArgumentParser(description='Execute a MolSSI flowchart')
 
     parser.add_argument(
         "-v", "--verbose", dest="verbose_count",
@@ -53,7 +53,7 @@ def run():
         help='whether to put the output in files, direct to stdout, or both'
     )
     parser.add_argument(
-        "filename", help='the filename of the workflow'
+        "filename", help='the filename of the flowchart'
     )
 
     args = parser.parse_args()
@@ -116,15 +116,15 @@ def run():
     # copy the flowchart to the root directory for later reference
     shutil.copy2(args.filename, os.path.join(wdir, 'flowchart.flow'))
 
-    flowchart = molssi_workflow.Workflow(directory=wdir, output=args.output)
+    flowchart = seamm.Flowchart(directory=wdir, output=args.output)
     flowchart.read(args.filename)
 
-    exec = molssi_workflow.ExecWorkflow(flowchart)
+    exec = seamm.ExecFlowchart(flowchart)
     with cd(wdir):
         exec.run(root=wdir)
 
 
-def open_workflow(name):
+def open_flowchart(name):
     with open(name, 'r') as fd:
         line = fd.readline(256)
         # There may be exec magic as first line
@@ -136,23 +136,23 @@ def open_workflow(name):
         if len(tmp) < 3:
             raise RuntimeError(
                 'File is not a proper MolSSI file! -- ' + line)
-        if tmp[1] != 'workflow':
-            raise RuntimeError('File is not a workflow! -- ' + line)
-        workflow_version = tmp[2]
-        logger.info('Reading workflow version {} from file {}'.format(
-            workflow_version, name))
+        if tmp[1] != 'flowchart':
+            raise RuntimeError('File is not a flowchart! -- ' + line)
+        flowchart_version = tmp[2]
+        logger.info('Reading flowchart version {} from file {}'.format(
+            flowchart_version, name))
 
-        data = json.load(fd, cls=molssi_util.JSONDecoder)
+        data = json.load(fd, cls=seamm_util.JSONDecoder)
 
-    if data['class'] != 'Workflow':
-        raise RuntimeError('File {} does not contain a workflow!'.format(name))
+    if data['class'] != 'Flowchart':
+        raise RuntimeError('File {} does not contain a flowchart!'.format(name))
         return
 
-    # Restore the workflow
-    workflow = molssi_workflow.Workflow()
-    workflow.from_dict(data)
+    # Restore the flowchart
+    flowchart = seamm.Flowchart()
+    flowchart.from_dict(data)
 
-    return workflow
+    return flowchart
 
 
 if __name__ == "__main__":

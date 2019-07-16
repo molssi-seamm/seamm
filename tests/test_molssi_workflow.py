@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `molssi_workflow` package."""
+"""Tests for `seamm` package."""
 
 import pytest
-from molssi_workflow import molssi_workflow  # nopep8
+from seamm import seamm  # nopep8
 
 
 @pytest.fixture

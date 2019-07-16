@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""A node in a workflow
+"""A node in a flowchart
 
 
 """
@@ -7,10 +7,10 @@
 import abc
 import json
 import logging
-import molssi_workflow
-import molssi_util  # MUST come after molssi_workflow
-from molssi_util.printing import FormattedText as __
-import molssi_util.printing as printing
+import seamm
+import seamm_util  # MUST come after seamm
+from seamm_util.printing import FormattedText as __
+import seamm_util.printing as printing
 import numpy as np
 import os.path
 import pandas
@@ -22,7 +22,7 @@ job = printing.getPrinter()
 
 class Node(abc.ABC):
     def __init__(self,
-                 workflow=None,
+                 flowchart=None,
                  title='',
                  extension=None):
         """Initialize a node
@@ -32,7 +32,7 @@ class Node(abc.ABC):
 
         self._uuid = uuid.uuid4().int
         self.parent = None
-        self.workflow = workflow
+        self.flowchart = flowchart
         self._title = title
         self._description = ''
         self._id = None
@@ -76,7 +76,7 @@ class Node(abc.ABC):
     def directory(self):
         """Return the directory we should write output to"""
         return os.path.join(
-            self.workflow.root_directory,
+            self.flowchart.root_directory,
             *self._id
         )
 
@@ -137,16 +137,16 @@ class Node(abc.ABC):
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
         if gui is None:
-            return self._gui_data[molssi_workflow.Workflow.graphics][key]
+            return self._gui_data[seamm.Flowchart.graphics][key]
         else:
             return self._gui_data[gui][key]
 
     def set_gui_data(self, key, value, gui=None):
         """Set an element of the GUI dictionary"""
         if gui is None:
-            if molssi_workflow.Workflow.graphics not in self._gui_data:
-                self._gui_data[molssi_workflow.Workflow.graphics] = {}
-            self._gui_data[molssi_workflow.Workflow.graphics][key] = value
+            if seamm.Flowchart.graphics not in self._gui_data:
+                self._gui_data[seamm.Flowchart.graphics] = {}
+            self._gui_data[seamm.Flowchart.graphics][key] = value
         else:
             if gui not in self._gui_data:
                 self._gui_data[gui] = {}
@@ -157,7 +157,7 @@ class Node(abc.ABC):
         for this node, giving the anchor points and other node
         """
 
-        result = self.workflow.edges(self)
+        result = self.flowchart.edges(self)
         return result
 
     def remove_edge(self, edge):
@@ -168,7 +168,7 @@ class Node(abc.ABC):
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
-            self.workflow.graph.remove_edge(
+            self.flowchart.graph.remove_edge(
                 edge.node1, edge.node2,
                 edge.edge_type, edge.edge_subtype
             )
@@ -234,19 +234,19 @@ class Node(abc.ABC):
         """Return the next node in the flow
         """
 
-        for edge in self.workflow.edges(self, direction='out'):
+        for edge in self.flowchart.edges(self, direction='out'):
             if edge.edge_subtype == 'next':
                 logger.debug('Next node is: {}'.format(edge.node2))
                 return edge.node2
 
-        logger.debug('Reached the end of the workflow')
+        logger.debug('Reached the end of the flowchart')
         return None
 
     def previous(self):
         """Return the previous node in the flow
         """
 
-        for edge in self.workflow.edges(self, direction='in'):
+        for edge in self.flowchart.edges(self, direction='in'):
             if edge.edge_type == 'execution' and \
                edge.edge_subtype == 'next':
                 return edge.node1
@@ -260,7 +260,7 @@ class Node(abc.ABC):
         return ''
 
     def to_json(self):
-        return json.dumps(self.to_dict(), cls=molssi_util.JSONEncoder)
+        return json.dumps(self.to_dict(), cls=seamm_util.JSONEncoder)
 
     def to_dict(self):
         """serialize this object and everything it contains as a dict"""
@@ -272,14 +272,14 @@ class Node(abc.ABC):
         }
         data['attributes'] = {}
         for key in self.__dict__:
-            if key == 'workflow':
+            if key == 'flowchart':
                 continue
             if key == 'parent':
                 continue
             if key == 'formatter':
                 continue
-            if 'workflow' in key:
-                # Have a subworkflow!
+            if 'flowchart' in key:
+                # Have a subflowchart!
                 data[key] = self.__dict__[key].to_dict()
             else:
                 data['attributes'][key] = self.__dict__[key]
@@ -298,7 +298,7 @@ class Node(abc.ABC):
                 attributes = data['attributes']
                 for key in attributes:
                     self.__dict__[key] = attributes[key]
-            elif 'workflow' in key:
+            elif 'flowchart' in key:
                 self.__dict__[key].from_dict(data[key])
 
     def default_edge_subtype(self):
@@ -313,7 +313,7 @@ class Node(abc.ABC):
         """
 
         # how many outgoing edges are there?
-        n_edges = len(self.workflow.edges(self, direction='out'))
+        n_edges = len(self.flowchart.edges(self, direction='out'))
 
         logger.debug('node.default_edge_subtype, n_edges = {}'.format(n_edges))
 
@@ -339,32 +339,32 @@ class Node(abc.ABC):
         unchanged.
         """
 
-        return molssi_workflow.workflow_variables.value(variable_or_value)
+        return seamm.flowchart_variables.value(variable_or_value)
 
     def get_variable(self, variable):
         """Get the value of a variable, which must exist
         """
 
-        return molssi_workflow.workflow_variables.get_variable(variable)
+        return seamm.flowchart_variables.get_variable(variable)
 
     def set_variable(self, variable, value):
         """Set the value of a variable in the workspace. The name of the
         variable maybe a plain string, or be $<name> or ${<name>}
         """
 
-        molssi_workflow.workflow_variables.set_variable(variable, value)
+        seamm.flowchart_variables.set_variable(variable, value)
 
     def variable_exists(self, variable):
         """Return whether a varable exists in the workspace
         """
 
-        return molssi_workflow.workflow_variables.exists(variable)
+        return seamm.flowchart_variables.exists(variable)
 
     def delete_variable(self, variable):
         """Delete a variable in the workspace
         """
 
-        molssi_workflow.workflow_variables.delete(variable)
+        seamm.flowchart_variables.delete(variable)
 
     def setup_printing(self, printer):
         """Establish the handlers for printing as controlled by

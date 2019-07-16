@@ -7,7 +7,7 @@ Installation
 Environment
 -----------
 
-Some of the requirements to run the MolSSI framework cannot be automatically installed using e.g. pip. A couple
+Some of the requirements to run the SEAMM framework cannot be automatically installed using e.g. pip. A couple
 require a conda environment, so at the moment you will need to install either the `Anaconda`_ or `conda`_ Python
 environment from Continuum IO. The first dependency to install manually is RDKit. You can follow the `RDKit
 documentation`_ to install Anaconda, etc. but if you already have Anaconda/Conda installed you can simply do the
@@ -41,13 +41,13 @@ system. The easiest way is to use conda:
 Stable release
 --------------
 
-To install MolSSI Workflow, run this command in your terminal:
+To install SEAMM, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install molssi_workflow
+    $ pip install seamm
 
-This is the preferred method to install MolSSI Workflow, as it will always install the most recent stable release. 
+This is the preferred method to install SEAMM, as it will always install the most recent stable release. 
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -59,19 +59,19 @@ you through the process.
 From sources
 ------------
 
-The sources for MolSSI Workflow can be downloaded from the `Github repo`_.
+The sources for SEAMM can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/molssi/molssi_workflow
+    $ git clone git://github.com/molssi-seamm/seamm
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/molssi/molssi_workflow/tarball/master
+    $ curl  -OL https://github.com/molssi-seamm/seamm/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -80,5 +80,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/molssi/molssi_workflow
-.. _tarball: https://github.com/molssi/molssi_workflow/tarball/master
+.. _Github repo: https://github.com/molssi-seamm/seamm
+.. _tarball: https://github.com/molssi-seamm/seamm/tarball/master

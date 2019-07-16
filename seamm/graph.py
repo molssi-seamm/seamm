@@ -2,10 +2,10 @@
 
 import collections.abc
 import logging
-import molssi_workflow
+import seamm
 import pprint
 
-"""A simple graph structure for holding the workflow. This handles a
+"""A simple graph structure for holding the flowchart. This handles a
 directed graph -- all edges have a direction implied -- with zero or
 more edges from or to each node.
 """
@@ -55,7 +55,7 @@ class Graph(object):
 
         key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
         if edge_class is None:
-            self._edge[key] = molssi_workflow.Edge(
+            self._edge[key] = seamm.Edge(
                 self, u, v, edge_type=edge_type,
                 edge_subtype=edge_subtype, **kwargs
             )
