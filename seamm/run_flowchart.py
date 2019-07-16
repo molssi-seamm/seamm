@@ -4,8 +4,8 @@ import json
 import locale
 import logging
 import seamm
-import molssi_util  # MUST come after seamm
-import molssi_util.printing as printing
+import seamm_util  # MUST come after seamm
+import seamm_util.printing as printing
 import os
 import os.path
 import shutil
@@ -142,7 +142,7 @@ def open_flowchart(name):
         logger.info('Reading flowchart version {} from file {}'.format(
             flowchart_version, name))
 
-        data = json.load(fd, cls=molssi_util.JSONDecoder)
+        data = json.load(fd, cls=seamm_util.JSONDecoder)
 
     if data['class'] != 'Flowchart':
         raise RuntimeError('File {} does not contain a flowchart!'.format(name))

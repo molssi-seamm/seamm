@@ -8,9 +8,9 @@ import abc
 import json
 import logging
 import seamm
-import molssi_util  # MUST come after seamm
-from molssi_util.printing import FormattedText as __
-import molssi_util.printing as printing
+import seamm_util  # MUST come after seamm
+from seamm_util.printing import FormattedText as __
+import seamm_util.printing as printing
 import numpy as np
 import os.path
 import pandas
@@ -260,7 +260,7 @@ class Node(abc.ABC):
         return ''
 
     def to_json(self):
-        return json.dumps(self.to_dict(), cls=molssi_util.JSONEncoder)
+        return json.dumps(self.to_dict(), cls=seamm_util.JSONEncoder)
 
     def to_dict(self):
         """serialize this object and everything it contains as a dict"""

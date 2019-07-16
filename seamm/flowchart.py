@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 import logging
 import seamm
-import molssi_util  # MUST come after seamm
+import seamm_util  # MUST come after seamm
 import os
 import os.path
 import pprint  # nopep8
@@ -306,7 +306,7 @@ class Flowchart(object):
             fd.write('#!/usr/bin/env run_flowchart\n')
             fd.write('!MolSSI flowchart 1.0\n')
             json.dump(self.to_dict(), fd, indent=4,
-                      cls=molssi_util.JSONEncoder)
+                      cls=seamm_util.JSONEncoder)
             logger.info('Wrote json to {}'.format(filename))
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
@@ -331,7 +331,7 @@ class Flowchart(object):
             logger.info('Reading flowchart version {} from file {}'.format(
                 flowchart_version, filename))
 
-            data = json.load(fd, cls=molssi_util.JSONDecoder)
+            data = json.load(fd, cls=seamm_util.JSONDecoder)
 
         if data['class'] != 'Flowchart':
             raise RuntimeError(filename + ' does not contain a flowchart')

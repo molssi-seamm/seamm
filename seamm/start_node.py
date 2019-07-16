@@ -4,8 +4,8 @@
 
 import logging
 import seamm
-import molssi_util.printing as printing
-from molssi_util.printing import FormattedText as __  # nopep8
+import seamm_util.printing as printing
+from seamm_util.printing import FormattedText as __  # nopep8
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()

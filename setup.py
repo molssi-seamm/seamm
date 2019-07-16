@@ -18,7 +18,7 @@ requirements = [
     'bitmath',
     'datetime',
     'logging',
-    'molssi_util',
+    'seamm_util',
     'numpy',
     'pandas',
     'pint',
