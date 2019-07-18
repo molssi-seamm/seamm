@@ -17,7 +17,6 @@ requirements = [
     'argparse',
     'bitmath',
     'datetime',
-    'logging',
     'seamm_util',
     'numpy',
     'pandas',
@@ -26,31 +25,9 @@ requirements = [
     'pyuca',
     'stevedore',
 ]
-# 'PIL', --> pillow
-# 'abc',
-# 'collections.abc',
-# 'copy',
-# 'glob',
-# 'grp',
-# 'json',
-# 'locale',
-# 'math',
-# 'os',
-# 'os.path',
-# 'pkg_resources',
-# 'platform',
-# 'pwd',
-# 'shutil',
-# 'stat',
-# 'subprocess',
-# 'sys',
-# 'tempfile',
-# 'time',
-# 'uuid',
-# 'weakref',
 
 setup_requirements = [
-    # tmp PWS 'pytest-runner',
+    PWS 'pytest-runner',
     # TODO(paulsaxe): put setup requirements (distutils extensions, etc.) here
 ]
 
@@ -95,9 +72,6 @@ setup(
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
