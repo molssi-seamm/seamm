@@ -1,6 +1,6 @@
-===============
-MolSSI Workflow
-===============
+======================================================================
+Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
+======================================================================
 
 
 .. image:: https://img.shields.io/pypi/v/seamm.svg
@@ -18,11 +18,11 @@ MolSSI Workflow
      :alt: Updates
 
 
-The MolSSI workflow for computational molecular and materials science (CMS)
+The MolSSI Simulation Environment for computational molecular and materials science (CMS)
 
 
 * Free software: GNU Lesser General Public License v3
-* Documentation: https://molssi-workflow.readthedocs.io.
+* Documentation: https://seamm.readthedocs.io.
 
 
 Features
