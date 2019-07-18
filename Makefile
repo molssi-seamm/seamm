@@ -47,8 +47,16 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
-lint: ## check style with flake8
-	flake8 seamm tests
+lint: ## check style with yapf
+	yapf --diff --recursive  seamm_util tests
+	flake8  seamm_util tests
+
+flake: ## check the style with flake8
+	flake8  seamm_util tests
+
+format: ## reformat with with yapf and isort
+	yapf --recursive --in-place  seamm_util tests
+	#isort --recursive --atomic  seamm_util tests
 
 test: ## run tests quickly with the default Python
 	py.test
@@ -78,8 +86,12 @@ servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
 release: clean ## package and upload a release
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
+	python setup.py sdist bdist_wheel
+	python -m twine upload dist/*
+
+
+#	python setup.py sdist upload
+#	python setup.py bdist_wheel upload
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist

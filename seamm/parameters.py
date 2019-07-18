@@ -5,8 +5,8 @@ import collections.abc
 from distutils.util import strtobool
 import json
 import logging
-from seamm import Q_
-from seamm import ureg
+from seamm_util import Q_
+from seamm_util import ureg
 import pprint
 
 

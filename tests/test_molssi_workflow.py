@@ -4,7 +4,7 @@
 """Tests for `seamm` package."""
 
 import pytest
-from seamm import seamm  # nopep8
+import seamm  # noqa: F401
 
 
 @pytest.fixture

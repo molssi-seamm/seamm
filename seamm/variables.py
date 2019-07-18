@@ -2,8 +2,8 @@
 
 import collections.abc
 import logging
-import seamm  # nopep8
-from seamm import units_class  # nopep8
+import seamm
+from seamm_util import units_class
 import pprint
 
 """A dictionary-like object for holding variables accessible to the

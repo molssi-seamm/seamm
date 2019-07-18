@@ -27,7 +27,7 @@ requirements = [
 ]
 
 setup_requirements = [
-    PWS 'pytest-runner',
+    'pytest-runner',
     # TODO(paulsaxe): put setup requirements (distutils extensions, etc.) here
 ]
 

@@ -1,5 +1,5 @@
-Welcome to MolSSI Workflow's documentation!
-======================================
+Welcome to the SEAMM documentation!
+===================================
 
 Contents:
 
