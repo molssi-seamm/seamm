@@ -17,13 +17,12 @@ requirements = [
     'argparse',
     'bitmath',
     'datetime',
-    'seamm_util',
     'numpy',
     'pandas',
     'pint',
     'pprint',
     'pyuca',
-    'seamm_util',
+    'seamm-util',
     'stevedore',
 ]
 
