@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """A node to split the flow in a flowchart"""
 
 import logging
@@ -17,16 +18,32 @@ class TkSplit(seamm.TkNode):
         'w': (-0.5, 0.5),
     }
 
-    def __init__(self, tk_flowchart=None, node=None,
-                 canvas=None, x=120, y=20, w=10, h=10):
+    def __init__(
+        self,
+        tk_flowchart=None,
+        node=None,
+        canvas=None,
+        x=120,
+        y=20,
+        w=10,
+        h=10
+    ):
         '''Initialize a node
 
         Keyword arguments:
         '''
-        logger.debug('Creating TkSplit, {} {} {} {} {}'
-                     .format(node, x, y, w, h))
-        super().__init__(tk_flowchart=tk_flowchart, node=node,
-                         canvas=canvas, x=x, y=y, w=w, h=h)
+        logger.debug(
+            'Creating TkSplit, {} {} {} {} {}'.format(node, x, y, w, h)
+        )
+        super().__init__(
+            tk_flowchart=tk_flowchart,
+            node=node,
+            canvas=canvas,
+            x=x,
+            y=y,
+            w=w,
+            h=h
+        )
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""

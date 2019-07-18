@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """Control parameters for a step in a MolSSI flowchart"""
 
 import collections.abc
@@ -9,9 +10,7 @@ from seamm_util import Q_
 from seamm_util import ureg
 import pprint
 
-
 logger = logging.getLogger(__name__)
-
 
 # All for a default root context for evaluating expressions
 # and variables
@@ -43,7 +42,7 @@ class Parameter(collections.abc.MutableMapping):
         self._widget = None
 
         self.reset()
-        
+
         # Handle positional or keyword arguments
         for data in args:
             if isinstance(data, dict):
@@ -88,7 +87,7 @@ class Parameter(collections.abc.MutableMapping):
                 try:
                     value = int(self.value)
                     return ('{:' + self.format_string + '}').format(value)
-                except:
+                except:  # noqa: E722
                     return ('{}').format(self.value)
             if self.kind == 'float':
                 try:
@@ -104,22 +103,22 @@ class Parameter(collections.abc.MutableMapping):
             if self.kind == 'integer':
                 try:
                     value = int(self.value)
-                    return ('{:' + self.format_string + '} {}').format(
-                        value, self.units)
+                    return ('{:' + self.format_string +
+                            '} {}').format(value, self.units)
                 except ValueError:
                     return ('{} {}').format(self.value, self.units)
             if self.kind == 'float':
                 try:
                     value = float(self.value)
-                    return ('{:' + self.format_string + '} {}').format(
-                        value, self.units)
-                except:
+                    return ('{:' + self.format_string +
+                            '} {}').format(value, self.units)
+                except:  # noqa: E722
                     return ('{} {}').format(self.value, self.units)
             if self.format_string == '':
                 return '{} {}'.format(self.value, self.units)
             else:
-                return ('{:' + self.format_string + '} {}').format(
-                    self.value, self.units)
+                return ('{:' + self.format_string +
+                        '} {}').format(self.value, self.units)
 
     def __contains__(self, item):
         """Return a boolean indicating if a key exists."""
@@ -184,7 +183,7 @@ class Parameter(collections.abc.MutableMapping):
                 "'string', not '{}'".format(value)
             )
         self._data['kind'] = value
-    
+
     @property
     def units(self):
         """The units, as a string. These need to be compatible with
@@ -210,18 +209,19 @@ class Parameter(collections.abc.MutableMapping):
             if self.dimensionality is None:
                 self.dimensionality = tmp.dimensionality
 
-            logger.debug("   dimensionality = '{}'".format(
-                self.dimensionality)
+            logger.debug(
+                "   dimensionality = '{}'".format(self.dimensionality)
             )
 
             if tmp.dimensionality != self.dimensionality:
                 raise RuntimeError(
-                    ("Units '{}' have a different dimensionality than "
-                     "the parameters: '{}' != '{}'").format(
-                         value, tmp.dimensionality, self.dimensionality)
+                    (
+                        "Units '{}' have a different dimensionality than "
+                        "the parameters: '{}' != '{}'"
+                    ).format(value, tmp.dimensionality, self.dimensionality)
                 )
         self._data['units'] = value
-    
+
     @property
     def default_units(self):
         """The default units, as a string. These need to be compatible with
@@ -239,10 +239,13 @@ class Parameter(collections.abc.MutableMapping):
 
                 if tmp.dimensionality != self.dimensionality:
                     raise RuntimeError(
-                        ("The default units '{}' have a different "
-                         "dimensionality than the parameters: "
-                         "'{}' != '{}'").format(
-                             value, tmp.dimensionality, self.dimensionality)
+                        (
+                            "The default units '{}' have a different "
+                            "dimensionality than the parameters: "
+                            "'{}' != '{}'"
+                        ).format(
+                            value, tmp.dimensionality, self.dimensionality
+                        )
                     )
         self._data['default_units'] = value
 
@@ -317,7 +320,7 @@ class Parameter(collections.abc.MutableMapping):
                 return bool(strtobool(result))
             else:
                 return result
-        
+
         # convert to proper type
         if self.kind == 'integer':
             result = int(result)
@@ -369,18 +372,18 @@ class Parameter(collections.abc.MutableMapping):
     def reset(self):
         """Reset to an empty state"""
         self._data = {
-            'default':       None,
-            'kind':          None,
+            'default': None,
+            'kind': None,
             'default_units': None,
-            'enumeration':   tuple(),
+            'enumeration': tuple(),
             'format_string': None,
-            'group':         '',
-            'description':   None,
-            'help_text':     None,
+            'group': '',
+            'description': None,
+            'help_text': None,
         }
         self.dimensionality = None
-        
-    def widget(self, frame,  **kwargs):
+
+    def widget(self, frame, **kwargs):
         """Return a widget for handling the parameter"""
         # Will this keep the graphics isolated?
         import seamm_widgets as sw
@@ -390,8 +393,7 @@ class Parameter(collections.abc.MutableMapping):
         if self._widget is not None:
             if self._widget.winfo_exists():
                 raise RuntimeError(
-                    'Widget for Parameter {} already exists!'
-                    .format(self)
+                    'Widget for Parameter {} already exists!'.format(self)
                 )
 
         logger.debug('   finished checking if the widget already exists.')
@@ -420,19 +422,11 @@ class Parameter(collections.abc.MutableMapping):
         else:
             if self.dimensionality:
                 logger.debug('   making UnitEntry')
-                w = sw.UnitEntry(
-                    frame,
-                    labeltext=labeltext,
-                    **kwargs
-                )
+                w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value, self.units)
             else:
                 logger.debug('   making LabeledEntry')
-                w = sw.LabeledEntry(
-                    frame,
-                    labeltext=labeltext,
-                    **kwargs
-                )
+                w = sw.LabeledEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value)
 
         self._widget = w
@@ -525,7 +519,9 @@ class Parameters(collections.abc.MutableMapping):
                     logger.debug("\nafter data:")
                     for key, value in self.items():
                         logger.debug(
-                            '  {}: {}'.format(key, pprint.pformat(value._data))
+                            '  {}: {}'.format(
+                                key, pprint.pformat(value._data)
+                            )
                         )
             else:
                 raise RuntimeError(
@@ -577,16 +573,20 @@ class Parameters(collections.abc.MutableMapping):
     def to_dict(self):
         """Return a new dictionary with the pertinent data
 
-        The Parameter class only saves the value and units, 
+        The Parameter class only saves the value and units,
         as everything else comes form the constructor below
         """
         data = {}
         for key in self:
             try:
                 data[key] = self[key].to_dict()
-            except:
-                logger.critical(("An error occurred in Parameters.to_dict "
-                                 "with key '{}'").format(key))
+            except:  # noqa: E722
+                logger.critical(
+                    (
+                        "An error occurred in Parameters.to_dict "
+                        "with key '{}'"
+                    ).format(key)
+                )
                 logger.critical(
                     ("The type of the key is '{}'").format(type(self[key]))
                 )
@@ -619,8 +619,9 @@ class Parameters(collections.abc.MutableMapping):
 
         return data
 
-    def current_values_to_dict(self, context=None, formatted=False,
-                               units=True):
+    def current_values_to_dict(
+        self, context=None, formatted=False, units=True
+    ):
         """Return the current values of the parameters, resolving
         any expressions, etc. in the given context or the root
         context is none is given."""

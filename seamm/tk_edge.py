@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """The Tk graphical representation of an edge in the graph, i.e. an
 arrow connecting nodes.
 
@@ -9,7 +10,7 @@ edge so that the graphical representation can be restored as needed.
 import logging
 import math
 import seamm
-import pprint  # nopep8
+import pprint  # noqa: F401
 from tkinter import font
 import tkinter as tk
 import weakref
@@ -21,9 +22,17 @@ class TkEdge(seamm.Edge):
     str_to_object = weakref.WeakValueDictionary()
 
     def __init__(
-            self, graph, node1, node2, edge_type='execution',
-            edge_subtype='next', canvas=None, anchor1='s', anchor2='n',
-            coords=None, **kwargs
+        self,
+        graph,
+        node1,
+        node2,
+        edge_type='execution',
+        edge_subtype='next',
+        canvas=None,
+        anchor1='s',
+        anchor2='n',
+        coords=None,
+        **kwargs
     ):
         """Initialize the edge, ensuring that it is
         in the graph.
@@ -36,8 +45,9 @@ class TkEdge(seamm.Edge):
         logger.debug('\tnode2 = {}'.format(node2))
 
         # Initialize the parent class
-        super().__init__(graph, node1, node2, edge_type,
-                         edge_subtype, **kwargs)
+        super().__init__(
+            graph, node1, node2, edge_type, edge_subtype, **kwargs
+        )
 
         self._data['canvas'] = canvas
         self.anchor1 = anchor1
@@ -53,8 +63,9 @@ class TkEdge(seamm.Edge):
         TkEdge.str_to_object[str(id(self))] = self
 
         # Arrange that the graphics are deleted when we are
-        self._finalizer = weakref.finalize(self, self.canvas.delete,
-                                           self.tag())
+        self._finalizer = weakref.finalize(
+            self, self.canvas.delete, self.tag()
+        )
         self._finalizer.atexit = False
 
     @property
@@ -96,7 +107,7 @@ class TkEdge(seamm.Edge):
     @property
     def label_bg_id(self):
         return self._data['label_bg_id']
-    
+
     def tag(self):
         """Return a string tag for self"""
         return 'edge=' + str(id(self))
@@ -118,7 +129,8 @@ class TkEdge(seamm.Edge):
         # the arrow
         self.canvas.delete(self.tag() + '&& type=arrow')
         arrow_id = self.canvas.create_line(
-            self.coords, arrow=tk.LAST, tags=[self.tag(), 'type=arrow'])
+            self.coords, arrow=tk.LAST, tags=[self.tag(), 'type=arrow']
+        )
         self._data['arrow_id'] = arrow_id
 
         # and the label
@@ -134,7 +146,8 @@ class TkEdge(seamm.Edge):
             self.canvas.delete(self.tag() + '&& type=label_bg')
             bg = self.canvas.create_rectangle(
                 self.canvas.bbox(text),
-                outline="white", fill="white",
+                outline="white",
+                fill="white",
                 tags=[self.tag(), 'type=label_bg']
             )
             self._data['label_bg_id'] = bg
@@ -144,15 +157,15 @@ class TkEdge(seamm.Edge):
         """Work out the position for the label on an edge"""
         dx = x1 - x0
         dy = y1 - y0
-        length = math.sqrt(dx*dx + dy*dy)
-        if length < 2*offset:
-            offset = int(length/2)
+        length = math.sqrt(dx * dx + dy * dy)
+        if length < 2 * offset:
+            offset = int(length / 2)
         xy = [
-            x0 if dx == 0.0 else x0 + dx/length * offset,
-            y0 if dy == 0.0 else y0 + dy/length * offset
+            x0 if dx == 0.0 else x0 + dx / length * offset,
+            y0 if dy == 0.0 else y0 + dy / length * offset
         ]
         return xy
-        
+
     def undraw(self):
         """Remove any graphics"""
         self.canvas.delete(self.tag())
@@ -162,4 +175,3 @@ class TkEdge(seamm.Edge):
             del self._data['label_id']
         if 'label_bg_id' in self._data:
             del self._data['label_bg_id']
-            

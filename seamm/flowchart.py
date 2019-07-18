@@ -7,9 +7,8 @@ import seamm
 import seamm_util  # MUST come after seamm
 import os
 import os.path
-import pprint  # nopep8
+import pprint  # noqa: F401
 import stat
-
 """A flowchart, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe
 the flowchart. There may be isolated nodes or groups of connected nodes;
@@ -27,13 +26,15 @@ class Flowchart(object):
 
     graphics = 'Tk'
 
-    def __init__(self,
-                 parent=None,
-                 data=None,
-                 namespace='org.molssi.seamm',
-                 name=None,
-                 directory=None,
-                 output='files'):
+    def __init__(
+        self,
+        parent=None,
+        data=None,
+        namespace='org.molssi.seamm',
+        name=None,
+        directory=None,
+        output='files'
+    ):
         '''Initialize the flowchart
 
         Keyword arguments:
@@ -98,10 +99,7 @@ class Flowchart(object):
     def create_node(self, extension_name):
         """Create a new node given the extension name"""
         plugin = self.plugin_manager.get(extension_name)
-        node = plugin.create_node(
-            flowchart=self,
-            extension=extension_name
-        )
+        node = plugin.create_node(flowchart=self, extension=extension_name)
         node.parent = self.parent
         return node
 
@@ -169,7 +167,7 @@ class Flowchart(object):
         if not all:
             start_node = seamm.StartNode(flowchart=self)
             self.add_node(start_node)
-        
+
     def list_nodes(self):
         """List the nodes, for debugging"""
         result = []
@@ -185,7 +183,7 @@ class Flowchart(object):
         """Reset the 'visited' flag, which is used to detect
         loops during traversals
         """
-        
+
         for tmp in self:
             tmp.visited = False
 
@@ -238,14 +236,16 @@ class Flowchart(object):
             for key in edge:
                 if key not in ('node1', 'node2', 'edge_type', 'edge_subtype'):
                     attr[key] = edge[key]
-            edges.append({
-                'item': 'edge',
-                'node1': edge.node1.uuid,
-                'node2': edge.node2.uuid,
-                'edge_type': edge.edge_type,
-                'edge_subtype': edge.edge_subtype,
-                'attributes': attr
-                })
+            edges.append(
+                {
+                    'item': 'edge',
+                    'node1': edge.node1.uuid,
+                    'node2': edge.node2.uuid,
+                    'edge_type': edge.edge_type,
+                    'edge_subtype': edge.edge_subtype,
+                    'attributes': attr
+                }
+            )
 
         return data
 
@@ -254,8 +254,10 @@ class Flowchart(object):
         if 'class' not in data:
             raise RuntimeError('There is no class information in the data!')
         if data['class'] != self.__class__.__name__:
-            raise RuntimeError('The dictionary does not contain a flowchart!'
-                               ' It contains a {} class'.format(data['class']))
+            raise RuntimeError(
+                'The dictionary does not contain a flowchart!'
+                ' It contains a {} class'.format(data['class'])
+            )
 
         self.clear()
 
@@ -272,8 +274,7 @@ class Flowchart(object):
 
             # Recreate the node
             new_node = plugin.create_node(
-                flowchart=self,
-                extension=node['extension']
+                flowchart=self, extension=node['extension']
             )
             new_node.parent = self.parent
 
@@ -285,28 +286,32 @@ class Flowchart(object):
 
             new_node.from_dict(node)
 
-            logger.debug("adding nodes: nodes:\n\t" +
-                         "\n\t".join(self.list_nodes()))
+            logger.debug(
+                "adding nodes: nodes:\n\t" + "\n\t".join(self.list_nodes())
+            )
 
         # and the edges connecting them
         for edge in data['edges']:
             node1 = self.get_node(edge['node1'])
             node2 = self.get_node(edge['node2'])
-            self.add_edge(node1, node2,
-                          edge_type=edge['edge_type'],
-                          edge_subtype=edge['edge_subtype'],
-                          **edge['attributes'])
+            self.add_edge(
+                node1,
+                node2,
+                edge_type=edge['edge_type'],
+                edge_subtype=edge['edge_subtype'],
+                **edge['attributes']
+            )
 
-            logger.debug("Adding edges, nodes:\n\t" +
-                         "\n\t".join(self.list_nodes()))
+            logger.debug(
+                "Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes())
+            )
 
     def write(self, filename):
         """Write the serialized form to disk"""
         with open(filename, 'w') as fd:
             fd.write('#!/usr/bin/env run_flowchart\n')
             fd.write('!MolSSI flowchart 1.0\n')
-            json.dump(self.to_dict(), fd, indent=4,
-                      cls=seamm_util.JSONEncoder)
+            json.dump(self.to_dict(), fd, indent=4, cls=seamm_util.JSONEncoder)
             logger.info('Wrote json to {}'.format(filename))
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
@@ -324,12 +329,16 @@ class Flowchart(object):
             tmp = line.split()
             if len(tmp) < 3:
                 raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line)
+                    'File is not a proper MolSSI file! -- ' + line
+                )
             if tmp[1] != 'flowchart':
                 raise RuntimeError('File is not a flowchart! -- ' + line)
             flowchart_version = tmp[2]
-            logger.info('Reading flowchart version {} from file {}'.format(
-                flowchart_version, filename))
+            logger.info(
+                'Reading flowchart version {} from file {}'.format(
+                    flowchart_version, filename
+                )
+            )
 
             data = json.load(fd, cls=seamm_util.JSONDecoder)
 
@@ -355,14 +364,11 @@ class Flowchart(object):
         print('All edges in flowchart')
         for edge in self.edges():
             # print('   {}'.format(edge))
-            print('   {} {} {} {} {} {}'.format(
-                edge.node1.tag,
-                edge.anchor1,
-                edge.node2.tag,
-                edge.anchor2,
-                edge.edge_type,
-                edge.edge_subtype
-            )
+            print(
+                '   {} {} {} {} {} {}'.format(
+                    edge.node1.tag, edge.anchor1, edge.node2.tag, edge.anchor2,
+                    edge.edge_type, edge.edge_subtype
+                )
             )
 
     # -------------------------------------------------------------------------

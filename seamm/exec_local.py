@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """The ExecLocal object does what it name implies: it executes, or
 runs, an executable locally."""
 
@@ -22,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class ExecLocal(object):
+
     def __init__(self):
         """Execute a flowchart, providing support for the actual
         execution of codes """
@@ -30,8 +32,14 @@ class ExecLocal(object):
         self.now = int(time.time())
         self.recent = self.now - (6 * 30 * 24 * 60 * 60)  # 6 months ago
 
-    def run(self, cmd=[], input_data=None, files=None, return_files=[],
-            shell=False):
+    def run(
+        self,
+        cmd=[],
+        input_data=None,
+        files=None,
+        return_files=[],
+        shell=False
+    ):
         """Execute 'cmd' in a temporary directory. 'files' is a dict
         keyed by filename of files to write before execution."""
 
@@ -49,16 +57,18 @@ class ExecLocal(object):
                 try:
                     with open(path, "w") as fd:
                         fd.write(files[filename])
-                except IOError as e:
+                except IOError:
                     logging.exception(
-                        "An I/O error occured writing file '{}'".format(path))
+                        "An I/O error occured writing file '{}'".format(path)
+                    )
                     os.umask(saved_umask)
                     shutil.rmtree(tmpdir)
                     return None
-                except:  # nopep8
+                except:  # noqa: E722
                     logging.exception(
-                        "An unexpected error occured writing file '{}'".format(
-                            path))
+                        "An unexpected error occured writing file '{}'"
+                        .format(path)
+                    )
                     os.remove(path)
                     os.umask(saved_umask)
                     shutil.rmtree(tmpdir)
@@ -95,7 +105,8 @@ class ExecLocal(object):
         for dirpath, dirs, files in os.walk(tmpdir):
             # Do locale sensitive sort of files to list
             listing += dirpath + '\n' + '\n\t'.join(
-                self.ls_format(dirpath, sorted(files, key=c.sort_key)))
+                self.ls_format(dirpath, sorted(files, key=c.sort_key))
+            )
         result['listing'] = listing
 
         # capture the requested files
@@ -110,17 +121,20 @@ class ExecLocal(object):
                 try:
                     with open(path, "r") as fd:
                         data = fd.read()
-                except IOError as e:
+                except IOError:
                     exception = sys.exc_info()
                     logging.warning(
                         "An I/O error occured reading file '{}'"
-                        .format(filename), exc_info=exception)
-                except:  # nopep8
+                        .format(filename),
+                        exc_info=exception
+                    )
+                except:  # noqa: E722
                     exception = sys.exc_info()
                     logging.warning(
                         "An unexpected error occured reading file '{}'"
                         .format(filename),
-                        exc_info=exception)
+                        exc_info=exception
+                    )
                 finally:
                     result[filename] = {'exception': exception, 'data': data}
 
@@ -159,12 +173,13 @@ class ExecLocal(object):
             try:  # exceptions
                 # Get all the file info
                 stat_info = os.lstat(os.path.join(path, filename))
-            except:  # nopep8
+            except:  # noqa: E722
                 result.append("{}: No such file or directory".format(filename))
                 continue
 
             perms, link = self.get_mode_info(
-                os.path.join(path, filename), stat_info.st_mode)
+                os.path.join(path, filename), stat_info.st_mode
+            )
 
             nlink = "%4d" % stat_info.st_nlink  # formatting strings
 
@@ -178,8 +193,9 @@ class ExecLocal(object):
             except KeyError:
                 group = "%-8s" % stat_info.st_gid
 
-            size = bitmath.Byte(
-                stat_info.st_size).best_prefix().format("{value:.1f} {unit}")
+            size = bitmath.Byte(stat_info.st_size).best_prefix().format(
+                "{value:.1f} {unit}"
+            )  # noqa: E124
 
             # Get time stamp of file
             ts = stat_info.st_mtime
@@ -190,8 +206,9 @@ class ExecLocal(object):
             time_str = time.strftime(time_fmt, time.gmtime(ts))
 
             # Format the result
-            tmp = '{} {} {} {} {} {} {}'.format(perms, nlink, name, group,
-                                                size, time_str, filename)
+            tmp = '{} {} {} {} {} {} {}'.format(
+                perms, nlink, name, group, size, time_str, filename
+            )
 
             if link:
                 tmp += " -> " + link

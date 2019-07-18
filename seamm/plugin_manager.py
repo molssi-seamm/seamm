@@ -3,7 +3,6 @@
 import logging
 import pprint
 import stevedore
-
 """A plugin manager based on Stevedore"""
 
 logger = logging.getLogger(__name__)
@@ -22,9 +21,11 @@ class PluginManager(object):
         )
         self._plugins = {}
 
-        logger.info("Found {:d} extensions in '{:s}': {}".format(
-            len(self.manager.names()), self.namespace,
-            self.manager.names()))
+        logger.info(
+            "Found {:d} extensions in '{:s}': {}".format(
+                len(self.manager.names()), self.namespace, self.manager.names()
+            )
+        )
 
         logger.debug('Processing extensions')
 

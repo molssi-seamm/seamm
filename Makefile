@@ -48,15 +48,15 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 
 lint: ## check style with yapf
-	yapf --diff --recursive  seamm_util tests
-	flake8  seamm_util tests
+	yapf --diff --recursive  seamm tests
+	flake8  seamm tests
 
 flake: ## check the style with flake8
-	flake8  seamm_util tests
+	flake8  seamm tests
 
 format: ## reformat with with yapf and isort
-	yapf --recursive --in-place  seamm_util tests
-	#isort --recursive --atomic  seamm_util tests
+	yapf --recursive --in-place  seamm tests
+	#isort --recursive --atomic  seamm tests
 
 test: ## run tests quickly with the default Python
 	py.test

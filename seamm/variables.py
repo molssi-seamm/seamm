@@ -3,9 +3,7 @@
 import collections.abc
 import logging
 import seamm
-from seamm_util import units_class
 import pprint
-
 """A dictionary-like object for holding variables accessible to the
 executing flowchart.
 """
@@ -16,6 +14,7 @@ flowchart_variables = None
 
 
 class Variables(collections.abc.MutableMapping):
+
     def __init__(self, **kwargs):
         self._data = dict(**kwargs)
 
@@ -71,7 +70,7 @@ class Variables(collections.abc.MutableMapping):
 
         if isinstance(string, str) and string[0] == '$':
             expression = self.filter_expression(string)
-        
+
             result = eval(expression, seamm.flowchart_variables._data)
             return result
         else:
@@ -149,8 +148,9 @@ class Variables(collections.abc.MutableMapping):
         if string[0] == '$':
             if string[1] == '{':
                 if string[-1] != '}':
-                    raise RuntimeError("'" + string +
-                                       "'is not a valid string name")
+                    raise RuntimeError(
+                        "'" + string + "'is not a valid string name"
+                    )
                 else:
                     return string[2:-1]
             else:

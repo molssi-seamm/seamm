@@ -16,8 +16,10 @@ dbg_level = 30
 def raise_app(root: tk):
     root.attributes("-topmost", True)
     if platform.system() == 'Darwin':
-        tmpl = ('tell application "System Events" to set frontmost '
-                'of every process whose unix id is {} to true')
+        tmpl = (
+            'tell application "System Events" to set frontmost '
+            'of every process whose unix id is {} to true'
+        )
         script = tmpl.format(os.getpid())
         subprocess.check_call(['/usr/bin/osascript', '-e', script])
     root.after(100, lambda: root.attributes("-topmost", False))
@@ -30,18 +32,22 @@ def flowchart():
     app_name = 'MolSSI Framework'
     global dbg_level
 
-    parser = argparse.ArgumentParser(
-        description='MolSSI Framework')
-    parser.add_argument("-v", "--verbose", dest="verbose_count",
-                        action="count", default=0,
-                        help="increases log verbosity for each occurence.")
+    parser = argparse.ArgumentParser(description='MolSSI Framework')
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="verbose_count",
+        action="count",
+        default=0,
+        help="increases log verbosity for each occurence."
+    )
     parser.add_argument(
         "flowcharts",
         nargs='*',
         default=[],
         help='flowcharts to open initially'
     )
-        
+
     args = parser.parse_args()
 
     # Sets log level to WARN going more verbose for each new -v.
@@ -78,17 +84,14 @@ def flowchart():
         app_menu = tk.Menu(menu, name='apple')
         menu.add_cascade(menu=app_menu)
 
-        app_menu.add_command(label='About ' + app_name,
-                             command=tk_framework.about)
+        app_menu.add_command(
+            label='About ' + app_name, command=tk_framework.about
+        )
         app_menu.add_separator()
         root.createcommand(
-            'tk::mac::ShowPreferences',
-            tk_framework.preferences
+            'tk::mac::ShowPreferences', tk_framework.preferences
         )
-        root.createcommand(
-            'tk::mac::OpenDocument',
-            tk_framework.open_file
-        )
+        root.createcommand('tk::mac::OpenDocument', tk_framework.open_file)
         CmdKey = 'Command-'
     else:
         CmdKey = 'Control-'
@@ -96,31 +99,45 @@ def flowchart():
     root.config(menu=menu)
     filemenu = tk.Menu(menu)
     menu.add_cascade(label="File", menu=filemenu)
-    filemenu.add_command(label="New",
-                         command=tk_framework.new_file,
-                         accelerator=CmdKey + 'N')
-    filemenu.add_command(label="Save...",
-                         command=tk_framework.save,
-                         accelerator=CmdKey + 'S')
-    filemenu.add_command(label="Save as...",
-                         command=tk_framework.save_file)
-    filemenu.add_command(label="Open...",
-                         command=tk_framework.open_file,
-                         accelerator=CmdKey + 'O')
+    filemenu.add_command(
+        label="New", command=tk_framework.new_file, accelerator=CmdKey + 'N'
+    )
+    filemenu.add_command(
+        label="Save...", command=tk_framework.save, accelerator=CmdKey + 'S'
+    )
+    filemenu.add_command(label="Save as...", command=tk_framework.save_file)
+    filemenu.add_command(
+        label="Open...",
+        command=tk_framework.open_file,
+        accelerator=CmdKey + 'O'
+    )
     filemenu.add_separator()
-    filemenu.add_command(label="Run", command=tk_framework.run,
-                         accelerator=CmdKey + 'R')
+    filemenu.add_command(
+        label="Run", command=tk_framework.run, accelerator=CmdKey + 'R'
+    )
 
     # Control debugging info
     filemenu.add_separator()
     debug_menu = tk.Menu(menu)
     filemenu.add_cascade(label="Debug", menu=debug_menu)
-    debug_menu.add_radiobutton(label='normal', value=30, variable=dbg_level,
-                               command=lambda arg0=30: handle_dbg_level(arg0))
-    debug_menu.add_radiobutton(label='info', value=20, variable=dbg_level,
-                               command=lambda arg0=20: handle_dbg_level(arg0))
-    debug_menu.add_radiobutton(label='debug', value=10, variable=dbg_level,
-                               command=lambda arg0=10: handle_dbg_level(arg0))
+    debug_menu.add_radiobutton(
+        label='normal',
+        value=30,
+        variable=dbg_level,
+        command=lambda arg0=30: handle_dbg_level(arg0)
+    )
+    debug_menu.add_radiobutton(
+        label='info',
+        value=20,
+        variable=dbg_level,
+        command=lambda arg0=20: handle_dbg_level(arg0)
+    )
+    debug_menu.add_radiobutton(
+        label='debug',
+        value=10,
+        variable=dbg_level,
+        command=lambda arg0=10: handle_dbg_level(arg0)
+    )
 
     # Exiting
     filemenu.add_separator()
@@ -129,27 +146,28 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
-    filemenu.add_command(label="Clean layout",
-                         command=tk_framework.clean_layout,
-                         accelerator=CmdKey + 'C')
+    filemenu.add_command(
+        label="Clean layout",
+        command=tk_framework.clean_layout,
+        accelerator=CmdKey + 'C'
+    )
 
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
-    root.createcommand('tk::mac::ShowHelp',
-                       tk_framework.help)
-    root.bind_all('<'+CmdKey+'N>', tk_framework.new_file)
-    root.bind_all('<'+CmdKey+'n>', tk_framework.new_file)
-    root.bind_all('<'+CmdKey+'O>', tk_framework.open_file)
-    root.bind_all('<'+CmdKey+'o>', tk_framework.open_file)
-    root.bind_all('<'+CmdKey+'R>', tk_framework.run)
-    root.bind_all('<'+CmdKey+'r>', tk_framework.run)
-    root.bind_all('<'+CmdKey+'S>', tk_framework.save)
-    root.bind_all('<'+CmdKey+'s>', tk_framework.save)
-    root.bind_all('<'+CmdKey+'C>', tk_framework.clean_layout)
-    root.bind_all('<'+CmdKey+'c>', tk_framework.clean_layout)
+    root.createcommand('tk::mac::ShowHelp', tk_framework.help)
+    root.bind_all('<' + CmdKey + 'N>', tk_framework.new_file)
+    root.bind_all('<' + CmdKey + 'n>', tk_framework.new_file)
+    root.bind_all('<' + CmdKey + 'O>', tk_framework.open_file)
+    root.bind_all('<' + CmdKey + 'o>', tk_framework.open_file)
+    root.bind_all('<' + CmdKey + 'R>', tk_framework.run)
+    root.bind_all('<' + CmdKey + 'r>', tk_framework.run)
+    root.bind_all('<' + CmdKey + 'S>', tk_framework.save)
+    root.bind_all('<' + CmdKey + 's>', tk_framework.save)
+    root.bind_all('<' + CmdKey + 'C>', tk_framework.clean_layout)
+    root.bind_all('<' + CmdKey + 'c>', tk_framework.clean_layout)
 
-    root.bind_all('<'+CmdKey+'`>', tk_framework.print_edges)
+    root.bind_all('<' + CmdKey + '`>', tk_framework.print_edges)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()

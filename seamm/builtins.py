@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """Helper class needed for the stevedore integration. Needs to provide
 a description() method that returns a dict containing a description of
 this node, and a factory() method for creating the graphical and non-graphical
@@ -9,8 +10,7 @@ import seamm
 
 class SplitStep(object):
     my_description = {
-        'description':
-        'An interface for a node to split the control flow',
+        'description': 'An interface for a node to split the control flow',
         'group': 'Control',
         'name': 'Split'
     }
@@ -35,11 +35,10 @@ class SplitStep(object):
         """Return the graphical Tk node object"""
         return seamm.TkSplit(canvas=canvas, **kwargs)
 
-    
+
 class JoinStep(object):
     my_description = {
-        'description':
-        'An interface for a node to join the control flow',
+        'description': 'An interface for a node to join the control flow',
         'group': 'Control',
         'name': 'Join'
     }

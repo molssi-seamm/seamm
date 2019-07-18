@@ -9,9 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class Split(seamm.Node):
-    def __init__(self,
-                 flowchart=None,
-                 extension=None):
+
+    def __init__(self, flowchart=None, extension=None):
         '''Initialize a node for splitting the flow apart
 
         Keyword arguments:

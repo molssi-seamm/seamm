@@ -5,7 +5,7 @@
 import logging
 import seamm
 import seamm_util.printing as printing
-from seamm_util.printing import FormattedText as __  # nopep8
+from seamm_util.printing import FormattedText as __  # noqa: F401
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -13,8 +13,8 @@ printer = printing.getPrinter('start')
 
 
 class StartNode(seamm.Node):
-    def __init__(self, flowchart=None):
 
+    def __init__(self, flowchart=None):
         '''Initialize a specialized start node, which is the
         anchor for the graph.
 

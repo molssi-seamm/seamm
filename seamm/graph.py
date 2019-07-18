@@ -4,7 +4,6 @@ import collections.abc
 import logging
 import seamm
 import pprint
-
 """A simple graph structure for holding the flowchart. This handles a
 directed graph -- all edges have a direction implied -- with zero or
 more edges from or to each node.
@@ -44,8 +43,15 @@ class Graph(object):
         self._node = {}
         self._edge = {}
 
-    def add_edge(self, u, v, edge_type=None, edge_subtype=None,
-                 edge_class=None, **kwargs):
+    def add_edge(
+        self,
+        u,
+        v,
+        edge_type=None,
+        edge_subtype=None,
+        edge_class=None,
+        **kwargs
+    ):
 
         if u not in self:
             self.add_node(u)
@@ -56,13 +62,21 @@ class Graph(object):
         key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
         if edge_class is None:
             self._edge[key] = seamm.Edge(
-                self, u, v, edge_type=edge_type,
-                edge_subtype=edge_subtype, **kwargs
+                self,
+                u,
+                v,
+                edge_type=edge_type,
+                edge_subtype=edge_subtype,
+                **kwargs
             )
         else:
             self._edge[key] = edge_class(
-                self, u, v, edge_type=edge_type,
-                edge_subtype=edge_subtype, **kwargs
+                self,
+                u,
+                v,
+                edge_type=edge_type,
+                edge_subtype=edge_subtype,
+                **kwargs
             )
         return self._edge[key]
 
@@ -96,8 +110,9 @@ class Graph(object):
                     if h2 == h:
                         result.append(self._edge[key])
             else:
-                return RuntimeError("Don't recognize direction '{}'!".format(
-                    direction))
+                return RuntimeError(
+                    "Don't recognize direction '{}'!".format(direction)
+                )
 
         return result
 
@@ -107,8 +122,16 @@ class Graph(object):
 
 
 class Edge(collections.abc.MutableMapping):
-    def __init__(self, graph, node1, node2, edge_type='execution',
-                 edge_subtype='next', **kwargs):
+
+    def __init__(
+        self,
+        graph,
+        node1,
+        node2,
+        edge_type='execution',
+        edge_subtype='next',
+        **kwargs
+    ):
         self.graph = graph
         self._data = dict(**kwargs)
         self._data['node1'] = node1
@@ -176,7 +199,9 @@ class Edge(collections.abc.MutableMapping):
 
 
 if __name__ == "__main__":
+
     class Node(object):
+
         def __init__(self, **kwargs):
             self.data = dict(**kwargs)
 

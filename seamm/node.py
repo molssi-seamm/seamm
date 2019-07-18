@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """A node in a flowchart
 
 
@@ -21,10 +22,8 @@ job = printing.getPrinter()
 
 
 class Node(abc.ABC):
-    def __init__(self,
-                 flowchart=None,
-                 title='',
-                 extension=None):
+
+    def __init__(self, flowchart=None, title='', extension=None):
         """Initialize a node
 
         Keyword arguments:
@@ -75,10 +74,7 @@ class Node(abc.ABC):
     @property
     def directory(self):
         """Return the directory we should write output to"""
-        return os.path.join(
-            self.flowchart.root_directory,
-            *self._id
-        )
+        return os.path.join(self.flowchart.root_directory, *self._id)
 
     @property
     def visited(self):
@@ -104,7 +100,7 @@ class Node(abc.ABC):
         if length <= 1:
             return ''
         if length > 2:
-            result = (length-2) * '  .' + '   '
+            result = (length - 2) * '  .' + '   '
         else:
             result = '   '
         return result
@@ -112,8 +108,9 @@ class Node(abc.ABC):
     @property
     def header(self):
         """A printable header for this section of output"""
-        return ('Step ' + '.'.join(str(e) for e in self._id) + ': '
-                + self.title)
+        return (
+            'Step ' + '.'.join(str(e) for e in self._id) + ': ' + self.title
+        )
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
@@ -169,16 +166,17 @@ class Node(abc.ABC):
                 self.remove_edge(obj)
         else:
             self.flowchart.graph.remove_edge(
-                edge.node1, edge.node2,
-                edge.edge_type, edge.edge_subtype
+                edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
             )
 
     def description_text(self, P):
         """Prepare information about what this node will do
         """
-        return ('This node has no specific description. '
-                "Override the method 'description_text' "
-                'to provide the description.')
+        return (
+            'This node has no specific description. '
+            "Override the method 'description_text' "
+            'to provide the description.'
+        )
 
     def describe(self, indent='', json_dict=None):
         """Write out information about what this node will do
@@ -196,7 +194,7 @@ class Node(abc.ABC):
         if self.parameters:
             P = self.parameters.values_to_dict()
             text = self.description_text(P)
-            job.job(__(text, **P, indent=self.indent+'    '))
+            job.job(__(text, **P, indent=self.indent + '    '))
 
         next_node = self.next()
 
@@ -218,8 +216,8 @@ class Node(abc.ABC):
             self.setup_printing(printer)
 
             printer.important(
-                '\nStep ' + '.'.join(str(e) for e in self._id) + ': '
-                + self.title
+                '\nStep ' + '.'.join(str(e) for e in self._id) + ': ' +
+                self.title
             )
 
         next_node = self.next()
@@ -292,7 +290,8 @@ class Node(abc.ABC):
         if data['class'] != self.__class__.__name__:
             raise RuntimeError(
                 'Trying to restore a {}'.format(self.__class__.__name__) +
-                ' from data for a {}'.format(data['class']))
+                ' from data for a {}'.format(data['class'])
+            )
         for key in data:
             if key == 'attributes':
                 attributes = data['attributes']
@@ -399,12 +398,13 @@ class Node(abc.ABC):
         """Temporary!"""
         job.job(text)
 
-    def store_results(self, data={}, properties=None, results=None,
-                      create_tables=True):
+    def store_results(
+        self, data={}, properties=None, results=None, create_tables=True
+    ):
         """Store results in variables and tables, as requested
 
         Keywords:
-        
+
         properties (dict): a dictionary of properties
         results (dict): a dictionary of results from the calculation
         create_tables (bool): whether to create tables as needed

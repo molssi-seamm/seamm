@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """The start node in a flowchart"""
 
 import seamm
@@ -13,14 +14,29 @@ class TkStartNode(seamm.TkNode):
         'w': (-0.5, 0.0),
     }
 
-    def __init__(self, tk_flowchart=None, node=None,
-                 canvas=None, x=150, y=50, w=200, h=50):
+    def __init__(
+        self,
+        tk_flowchart=None,
+        node=None,
+        canvas=None,
+        x=150,
+        y=50,
+        w=200,
+        h=50
+    ):
         '''Initialize a node
 
         Keyword arguments:
         '''
-        super().__init__(tk_flowchart=tk_flowchart, node=node,
-                         canvas=canvas, x=x, y=y, w=w, h=h)
+        super().__init__(
+            tk_flowchart=tk_flowchart,
+            node=node,
+            canvas=canvas,
+            x=x,
+            y=y,
+            w=w,
+            h=h
+        )
 
     def right_click(self, event):
         """At the moment, since we shouldn't delete the start node
@@ -48,7 +64,5 @@ class TkStartNode(seamm.TkNode):
 
         # the label in the middle
         self.title_label = self.canvas.create_text(
-            self.x, self.y,
-            text=self.title,
-            tags=[self.tag, 'type=title']
+            self.x, self.y, text=self.title, tags=[self.tag, 'type=title']
         )

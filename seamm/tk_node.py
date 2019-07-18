@@ -4,7 +4,7 @@ import abc
 import copy
 import logging
 import seamm
-import pprint  # nopep8
+import pprint  # noqa: F401
 import tkinter as tk
 """A graphical node using Tk on a canvas"""
 
@@ -15,26 +15,34 @@ class TkNode(abc.ABC):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
-        's':   (+0.00, +0.50),
+        's': (+0.00, +0.50),
         'sse': (+0.25, +0.50),
-        'se':  (+0.50, +0.50),
+        'se': (+0.50, +0.50),
         'ese': (+0.50, +0.25),
-        'e':   (+0.50, +0.00),
+        'e': (+0.50, +0.00),
         'ene': (+0.50, -0.25),
-        'ne':  (+0.50, -0.50),
+        'ne': (+0.50, -0.50),
         'nne': (+0.25, -0.50),
-        'n':   (+0.00, -0.50),
+        'n': (+0.00, -0.50),
         'nnw': (-0.25, -0.50),
-        'nw':  (-0.50, -0.50),
+        'nw': (-0.50, -0.50),
         'wnw': (-0.50, -0.25),
-        'w':   (-0.50, +0.00),
+        'w': (-0.50, +0.00),
         'wsw': (-0.50, +0.25),
-        'sw':  (-0.50, +0.50),
+        'sw': (-0.50, +0.50),
         'ssw': (-0.25, +0.50)
     }
 
-    def __init__(self, tk_flowchart=None, node=None, canvas=None,
-                 x=None, y=None, w=None, h=None):
+    def __init__(
+        self,
+        tk_flowchart=None,
+        node=None,
+        canvas=None,
+        x=None,
+        y=None,
+        w=None,
+        h=None
+    ):
         """Initialize a node
 
         Keyword arguments:
@@ -233,9 +241,7 @@ class TkNode(abc.ABC):
 
         # the label in the middle
         self.title_label = self.canvas.create_text(
-            self.x, self.y,
-            text=self.title,
-            tags=[self.tag, 'type=title']
+            self.x, self.y, text=self.title, tags=[self.tag, 'type=title']
         )
 
         for direction, edge in self.connections():
@@ -280,7 +286,9 @@ class TkNode(abc.ABC):
 
         self.popup_menu = tk.Menu(self.canvas, tearoff=0)
         self.popup_menu.add_command(
-            label="Delete", command=lambda: self.tk_flowchart.remove_node(self))
+            label="Delete",
+            command=lambda: self.tk_flowchart.remove_node(self)
+        )
 
         if type(self) is seamm.tk_node.TkNode:
             self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
@@ -312,7 +320,8 @@ class TkNode(abc.ABC):
                 y1,
                 fill='red',
                 outline='red',
-                tags=[self.tag, 'type=anchor', 'anchor=' + pt])
+                tags=[self.tag, 'type=anchor', 'anchor=' + pt]
+            )
 
     def deactivate(self):
         """Remove the decorations indicate the anchor points
@@ -329,8 +338,9 @@ class TkNode(abc.ABC):
             result = []
             for pt in type(self).anchor_points:
                 a, b = type(self).anchor_points[pt]
-                result.append((pt, int(self.x + a * self.w),
-                               int(self.y + b * self.h)))
+                result.append(
+                    (pt, int(self.x + a * self.w), int(self.y + b * self.h))
+                )
             return result
 
         if anchor in type(self).anchor_points:
@@ -338,7 +348,8 @@ class TkNode(abc.ABC):
             return (int(self.x + a * self.w), int(self.y + b * self.h))
 
         raise NotImplementedError(
-            "anchor position '{}' not implemented".format(anchor))
+            "anchor position '{}' not implemented".format(anchor)
+        )
 
     def check_anchor_points(self, x, y, halo):
         """If the position x, y is within halo or one of the anchor points
@@ -390,7 +401,8 @@ class TkNode(abc.ABC):
             y + halo,
             fill='red',
             outline='red',
-            tags=[self.tag, 'type=active_anchor', 'anchor=' + point])
+            tags=[self.tag, 'type=active_anchor', 'anchor=' + point]
+        )
 
     def remove_edge(self, edge):
         """Remove a given edge, or all edges if 'all' is given
@@ -401,8 +413,7 @@ class TkNode(abc.ABC):
                 self.remove_edge(obj)
         else:
             self.tk_flowchart.graph.remove_edge(
-                edge.node1, edge.node2,
-                edge.edge_type, edge.edge_subtype
+                edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
             )
 
     def edit(self):
@@ -440,13 +451,15 @@ class TkNode(abc.ABC):
         for edge in tk_flowchart.edges():
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2', 'edge_type',
-                               'edge_subtype', 'canvas'):
+                if key not in (
+                    'node1', 'node2', 'edge_type', 'edge_subtype', 'canvas'
+                ):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            flowchart.add_edge(node1, node2, edge.edge_type,
-                              edge.edge_subtype, **attr)
+            flowchart.add_edge(
+                node1, node2, edge.edge_type, edge.edge_subtype, **attr
+            )
 
     def from_flowchart(self, tk_flowchart=None, flowchart=None):
         """Recreate the graphics from the non-graphical flowchart.
@@ -471,7 +484,8 @@ class TkNode(abc.ABC):
                 plugin = tk_flowchart.plugin_manager.get(extension)
                 logger.debug('  plugin object: {}'.format(plugin))
                 tk_node = plugin.create_tk_node(
-                    tk_flowchart=tk_flowchart, canvas=tk_flowchart.canvas,
+                    tk_flowchart=tk_flowchart,
+                    canvas=tk_flowchart.canvas,
                     node=new_node
                 )
                 translate[node] = tk_node

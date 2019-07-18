@@ -17,6 +17,7 @@ variables = seamm.Variables()
 
 class cd:
     """Context manager for changing the current working directory"""
+
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
 
@@ -35,26 +36,28 @@ def run():
     parser = argparse.ArgumentParser(description='Execute a MolSSI flowchart')
 
     parser.add_argument(
-        "-v", "--verbose", dest="verbose_count",
-        action="count", default=0,
+        "-v",
+        "--verbose",
+        dest="verbose_count",
+        action="count",
+        default=0,
         help="increases log verbosity for each occurence."
     )
     parser.add_argument(
-        "--directory", dest="directory",
-        default=None, action="store",
+        "--directory",
+        dest="directory",
+        default=None,
+        action="store",
         help="Directory to write output and other files."
     )
+    parser.add_argument("--force", dest="force", action='store_true')
     parser.add_argument(
-        "--force", dest="force", action='store_true'
-    )
-    parser.add_argument(
-        "--output", choices=['files', 'stdout', 'both'],
+        "--output",
+        choices=['files', 'stdout', 'both'],
         default='files',
         help='whether to put the output in files, direct to stdout, or both'
     )
-    parser.add_argument(
-        "filename", help='the filename of the flowchart'
-    )
+    parser.add_argument("filename", help='the filename of the flowchart')
 
     args = parser.parse_args()
 
@@ -92,7 +95,7 @@ def run():
     # 'job.out' in the working directory and to stdout, as requested
     # in the options. Since all printers are children of the root
     # printer, all output at the right levels will flow here
-    
+
     printer = printing.getPrinter()
 
     # Set up our formatter
@@ -109,7 +112,7 @@ def run():
     file_handler.setLevel(printing.JOB)
     file_handler.setFormatter(formatter)
     printer.addHandler(file_handler)
-    
+
     # And ... finally ... run!
     printer.job("Running in directory '{}'".format(wdir))
 
@@ -134,18 +137,22 @@ def open_flowchart(name):
             raise RuntimeError('File is not a MolSSI file! -- ' + line)
         tmp = line.split()
         if len(tmp) < 3:
-            raise RuntimeError(
-                'File is not a proper MolSSI file! -- ' + line)
+            raise RuntimeError('File is not a proper MolSSI file! -- ' + line)
         if tmp[1] != 'flowchart':
             raise RuntimeError('File is not a flowchart! -- ' + line)
         flowchart_version = tmp[2]
-        logger.info('Reading flowchart version {} from file {}'.format(
-            flowchart_version, name))
+        logger.info(
+            'Reading flowchart version {} from file {}'.format(
+                flowchart_version, name
+            )
+        )
 
         data = json.load(fd, cls=seamm_util.JSONDecoder)
 
     if data['class'] != 'Flowchart':
-        raise RuntimeError('File {} does not contain a flowchart!'.format(name))
+        raise RuntimeError(
+            'File {} does not contain a flowchart!'.format(name)
+        )
         return
 
     # Restore the flowchart
