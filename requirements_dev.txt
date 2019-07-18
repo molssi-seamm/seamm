@@ -10,4 +10,5 @@ cryptography
 PyYAML==5.1
 pytest
 pytest-runner
+seamm-util
 twine
