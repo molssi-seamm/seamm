@@ -6,16 +6,19 @@ Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
 .. image:: https://img.shields.io/pypi/v/seamm.svg
         :target: https://pypi.python.org/pypi/seamm
 
-.. image:: https://img.shields.io/travis/paulsaxe/molssi_eex.svg
-        :target: https://travis-ci.org/paulsaxe/molssi_eex
+.. image:: https://travis-ci.org/molssi-seamm/seamm.svg?branch=master
+        :target: https://travis-ci.org/molssi-seamm/seamm
 
 .. image:: https://readthedocs.org/projects/molssi-workflow/badge/?version=latest
         :target: https://molssi-workflow.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/paulsaxe/seamm/shield.svg
-     :target: https://pyup.io/repos/github/paulsaxe/seamm/
+     :target: https://pyup.io/repos/github/molssi-seamm/seamm/
      :alt: Updates
+
+.. image:: https://codecov.io/gh/molssi-seamm/seamm/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/molssi-seamm/seamm
 
 
 The MolSSI Simulation Environment for computational molecular and materials science (CMS)
