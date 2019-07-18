@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'MolSSI Workflow'
+project = u'SEAMM'
 copyright = u"2018, Paul Saxe"
 
 # The version info for the project you're documenting, acts as replacement
@@ -209,7 +209,7 @@ latex_elements = {
 # [howto/manual]).
 latex_documents = [
     ('index', 'seamm.tex',
-     u'MolSSI Workflow Documentation',
+     u'SEAMM Documentation',
      u'Paul Saxe', 'manual'),
 ]
 
@@ -240,7 +240,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'seamm',
-     u'MolSSI Workflow Documentation',
+     u'SEAMM Documentation',
      [u'Paul Saxe'], 1)
 ]
 
@@ -255,7 +255,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'seamm',
-     u'MolSSI Workflow Documentation',
+     u'SEAMM Documentation',
      u'Paul Saxe',
      'seamm',
      'One line description of project.',
