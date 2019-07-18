@@ -9,8 +9,8 @@ Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
 .. image:: https://travis-ci.org/molssi-seamm/seamm.svg?branch=master
         :target: https://travis-ci.org/molssi-seamm/seamm
 
-.. image:: https://readthedocs.org/projects/molssi-workflow/badge/?version=latest
-        :target: https://molssi-workflow.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/seamm/badge/?version=latest
+        :target: https://seamm.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/paulsaxe/seamm/shield.svg
