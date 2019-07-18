@@ -23,6 +23,7 @@ requirements = [
     'pint',
     'pprint',
     'pyuca',
+    'seamm_util',
     'stevedore',
 ]
 
