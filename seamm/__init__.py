@@ -6,7 +6,7 @@ import textwrap
 
 __author__ = """Paul Saxe"""
 __email__ = 'psaxe@molssi.org'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 # Text handling
 from textwrap import dedent  # noqa: F401
