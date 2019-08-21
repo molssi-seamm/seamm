@@ -25,16 +25,28 @@ class StartNode(seamm.Node):
 
         self._uuid = 1
 
+    @property
+    def version(self):
+        """The semantic version of this module.
+        """
+        return seamm.__version__
+
+    @property
+    def git_revision(self):
+        """The git version of this module.
+        """
+        return seamm.__git_revision__
+
     def set_uuid(self):
         pass
 
-    def describe(self, indent='', json_dict=None):
+    def describe(self):
         """Write out information about what this node will do
         If json_dict is passed in, add information to that dictionary
         so that it can be written out by the controller as appropriate.
         """
 
-        next_node = super().describe(indent, json_dict)
+        next_node = super().describe()
 
         return next_node
 
