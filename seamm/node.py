@@ -109,7 +109,9 @@ class Node(abc.ABC):
     def header(self):
         """A printable header for this section of output"""
         return (
-            'Step ' + '.'.join(str(e) for e in self._id) + ': ' + self.title
+            'Step {}: {}  {}'.format(
+                '.'.join(str(e) for e in self._id), self.title, self.version
+            )
         )
 
     def set_uuid(self):
@@ -169,7 +171,7 @@ class Node(abc.ABC):
                 edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
             )
 
-    def description_text(self, P):
+    def description_text(self, P=None):
         """Prepare information about what this node will do
         """
         return (
@@ -178,10 +180,8 @@ class Node(abc.ABC):
             'to provide the description.'
         )
 
-    def describe(self, indent='', json_dict=None):
+    def describe(self):
         """Write out information about what this node will do
-        If json_dict is passed in, add information to that dictionary
-        so that it can be written out by the controller as appropriate.
         """
 
         self.visited = True
@@ -215,10 +215,7 @@ class Node(abc.ABC):
             # Setup up the printing for this step
             self.setup_printing(printer)
 
-            printer.important(
-                '\nStep ' + '.'.join(str(e) for e in self._id) + ': ' +
-                self.title
-            )
+            printer.important(self.header)
 
         next_node = self.next()
         if next_node:
