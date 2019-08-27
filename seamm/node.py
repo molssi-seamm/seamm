@@ -172,7 +172,15 @@ class Node(abc.ABC):
             )
 
     def description_text(self, P=None):
-        """Prepare information about what this node will do
+        """Return a short description of this step.
+
+        Return a nicely formatted string describing what this step will
+        do.
+
+        Keyword arguments:
+            P: a dictionary of parameter values, which may be variables
+                or final values. If None, then the parameters values will
+                be used as is.
         """
         return (
             'This node has no specific description. '
@@ -186,15 +194,8 @@ class Node(abc.ABC):
 
         self.visited = True
 
-        # The 'step' line
-        job.job('')
-        job.job(__(self.header, indent=self.indent))
-
-        # and rest of the description
-        if self.parameters:
-            P = self.parameters.values_to_dict()
-            text = self.description_text(P)
-            job.job(__(text, **P, indent=self.indent + '    '))
+        # The description
+        job.job(__(self.description_text(), indent=self.indent))
 
         next_node = self.next()
 
@@ -214,8 +215,6 @@ class Node(abc.ABC):
         if printer is not None:
             # Setup up the printing for this step
             self.setup_printing(printer)
-
-            printer.important(self.header)
 
         next_node = self.next()
         if next_node:
@@ -383,6 +382,14 @@ class Node(abc.ABC):
         file_handler.setLevel(printing.NORMAL)
         file_handler.setFormatter(self.formatter)
         printer.addHandler(file_handler)
+
+        # # A handler for the job file
+        # wdir = self.flowchart.root_directory
+        # job_file_handler = logging.FileHandler(os.path.join(wdir, 'job.out'))
+        # # job_file_handler.setLevel(printing.JOB)
+        # job_file_handler.setLevel(printing.NORMAL)
+        # job_file_handler.setFormatter(self.formatter)
+        # printer.addHandler(job_file_handler)
 
     def close_printing(self, printer):
         """Close the handlers for printing, so that buffers are
