@@ -25,24 +25,56 @@ class StartNode(seamm.Node):
 
         self._uuid = 1
 
+    @property
+    def version(self):
+        """The semantic version of this module.
+        """
+        return seamm.__version__
+
+    @property
+    def git_revision(self):
+        """The git version of this module.
+        """
+        return seamm.__git_revision__
+
     def set_uuid(self):
         pass
 
-    def describe(self, indent='', json_dict=None):
+    def description_text(self, P=None):
+        """Return a short description of this step.
+
+        Return a nicely formatted string describing what this step will
+        do.
+
+        Keyword arguments:
+            P: a dictionary of parameter values, which may be variables
+                or final values. If None, then the parameters values will
+                be used as is.
+        """
+        return self.header + '\n'
+
+    def describe(self):
         """Write out information about what this node will do
-        If json_dict is passed in, add information to that dictionary
-        so that it can be written out by the controller as appropriate.
         """
 
-        next_node = super().describe(indent, json_dict)
+        self.visited = True
 
-        return next_node
+        # The description
+        job.job(self.indent + self.description_text())
+
+        next_node = self.next()
+
+        if next_node is None or next_node.visited:
+            return None
+        else:
+            return next_node
 
     def run(self):
         """'Run' the start node, i.e. do nothing but print
         """
 
         next_node = super().run(printer)
+        printer.important(self.header + '\n')
         return next_node
 
     def setup_printing(self, aprinter):

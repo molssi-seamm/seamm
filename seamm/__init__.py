@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for SEAMM."""
+"""
+seamm
+Simulation Environment for Atomistic and Molecular Modeling.
+"""
 
 import textwrap
-
-__author__ = """Paul Saxe"""
-__email__ = 'psaxe@molssi.org'
-__version__ = '0.2.0'
 
 # Text handling
 from textwrap import dedent  # noqa: F401
@@ -39,3 +38,12 @@ from seamm.builtins import JoinStep  # noqa: F401
 
 wrap_text = textwrap.TextWrapper(width=120)
 wrap_stdout = textwrap.TextWrapper(width=120)
+
+# Handle versioneer
+from ._version import get_versions  # noqa: E402
+__author__ = """Paul Saxe"""
+__email__ = 'psaxe@molssi.org'
+versions = get_versions()
+__version__ = versions['version']
+__git_revision__ = versions['full-revisionid']
+del get_versions, versions

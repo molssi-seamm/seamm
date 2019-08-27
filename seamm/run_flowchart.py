@@ -75,10 +75,7 @@ def run():
             datetime.now().isoformat(sep='_', timespec='seconds')
         )
     else:
-        wdir = os.path.join(
-            os.getcwd(),
-            args.directory
-        )
+        wdir = os.path.join(os.getcwd(), args.directory)
 
     logging.info("The working directory is '{}'".format(wdir))
 
@@ -106,13 +103,15 @@ def run():
 
     # A handler for stdout
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(printing.JOB)
+    # console_handler.setLevel(printing.JOB)
+    console_handler.setLevel(printing.NORMAL)
     console_handler.setFormatter(formatter)
     printer.addHandler(console_handler)
 
     # A handler for the file
     file_handler = logging.FileHandler(os.path.join(wdir, 'job.out'))
-    file_handler.setLevel(printing.JOB)
+    # file_handler.setLevel(printing.JOB)
+    file_handler.setLevel(printing.NORMAL)
     file_handler.setFormatter(formatter)
     printer.addHandler(file_handler)
 
