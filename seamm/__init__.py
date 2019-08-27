@@ -40,7 +40,7 @@ wrap_text = textwrap.TextWrapper(width=120)
 wrap_stdout = textwrap.TextWrapper(width=120)
 
 # Handle versioneer
-from ._version import get_versions
+from ._version import get_versions  # noqa: E402
 __author__ = """Paul Saxe"""
 __email__ = 'psaxe@molssi.org'
 versions = get_versions()

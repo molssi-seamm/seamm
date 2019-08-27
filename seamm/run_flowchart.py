@@ -75,10 +75,7 @@ def run():
             datetime.now().isoformat(sep='_', timespec='seconds')
         )
     else:
-        wdir = os.path.join(
-            os.getcwd(),
-            args.directory
-        )
+        wdir = os.path.join(os.getcwd(), args.directory)
 
     logging.info("The working directory is '{}'".format(wdir))
 
