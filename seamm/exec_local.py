@@ -5,19 +5,22 @@ runs, an executable locally."""
 
 import bitmath
 import glob
-import grp
 import logging
 import os
 import os.path
+import platform
 import pprint
 import pyuca
-import pwd
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
 import time
+
+if platform.system() != 'Windows':
+    import grp
+    import pwd
 
 logger = logging.getLogger(__name__)
 
@@ -183,15 +186,19 @@ class ExecLocal(object):
 
             nlink = "%4d" % stat_info.st_nlink  # formatting strings
 
-            try:
-                name = "%-8s" % pwd.getpwuid(stat_info.st_uid)[0]
-            except KeyError:
-                name = "%-8s" % stat_info.st_uid
+            if platform.system() == 'Windows':
+                name = 8*' '
+                group = 8*' '
+            else:
+                try:
+                    name = "%-8s" % pwd.getpwuid(stat_info.st_uid)[0]
+                except KeyError:
+                    name = "%-8s" % stat_info.st_uid
 
-            try:
-                group = "%-8s" % grp.getgrgid(stat_info.st_gid)[0]
-            except KeyError:
-                group = "%-8s" % stat_info.st_gid
+                    try:
+                        group = "%-8s" % grp.getgrgid(stat_info.st_gid)[0]
+                    except KeyError:
+                        group = "%-8s" % stat_info.st_gid
 
             size = bitmath.Byte(stat_info.st_size).best_prefix().format(
                 "{value:.1f} {unit}"
