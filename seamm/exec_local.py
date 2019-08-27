@@ -195,10 +195,10 @@ class ExecLocal(object):
                 except KeyError:
                     name = "%-8s" % stat_info.st_uid
 
-                    try:
-                        group = "%-8s" % grp.getgrgid(stat_info.st_gid)[0]
-                    except KeyError:
-                        group = "%-8s" % stat_info.st_gid
+                try:
+                    group = "%-8s" % grp.getgrgid(stat_info.st_gid)[0]
+                except KeyError:
+                    group = "%-8s" % stat_info.st_gid
 
             size = bitmath.Byte(stat_info.st_size).best_prefix().format(
                 "{value:.1f} {unit}"
