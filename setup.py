@@ -38,7 +38,7 @@ test_requirements = [
 
 setup(
     name='seamm',
-    version='0.2.0',
+    version=versioneer.get_version(),
     description="Simulation Environment for Atomistic and Molecular Modeling ",
     long_description=readme + '\n\n' + history,
     author="Paul Saxe",
