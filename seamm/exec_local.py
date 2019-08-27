@@ -187,8 +187,8 @@ class ExecLocal(object):
             nlink = "%4d" % stat_info.st_nlink  # formatting strings
 
             if platform.system() == 'Windows':
-                name = 8*' '
-                group = 8*' '
+                name = 8 * ' '
+                group = 8 * ' '
             else:
                 try:
                     name = "%-8s" % pwd.getpwuid(stat_info.st_uid)[0]
