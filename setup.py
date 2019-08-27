@@ -1,9 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+seamm
+The core of the SEAMM environment.
+"""
 
-"""The setup script."""
-
+import sys
 from setuptools import setup, find_packages
+import versioneer
+
+short_description = __doc__.split("\n")
+
+# from https://github.com/pytest-dev/pytest-runner#conditional-requirement
+needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
+pytest_runner = ['pytest-runner'] if needs_pytest else []
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -26,25 +36,57 @@ requirements = [
     'stevedore',
 ]
 
-setup_requirements = [
-    'pytest-runner',
-    # TODO(paulsaxe): put setup requirements (distutils extensions, etc.) here
-]
-
-test_requirements = [
-    'pytest',
-    # TODO: put package test requirements here
-]
-
 setup(
     name='seamm',
-    version=versioneer.get_version(),
-    description="Simulation Environment for Atomistic and Molecular Modeling ",
-    long_description=readme + '\n\n' + history,
     author="Paul Saxe",
     author_email='psaxe@molssi.org',
+    description=short_description[1],
+    long_description=readme + '\n\n' + history,
+    version=versioneer.get_version(),
+    # version='0.1.0',
+    cmdclass=versioneer.get_cmdclass(),
+    license="GNU Lesser General Public License v3",
     url='https://github.com/molssi-seamm/seamm',
+
+    # Which Python importable modules should be included when your package is
+    # installed, handled automatically by setuptools. Use 'exclude' to prevent
+    # some specific subpackage(s) from being added, if needed
     packages=find_packages(include=['seamm']),
+
+    # Optional include package data to ship with your package. Customize
+    # MANIFEST.in if the general case does not suit your needs. Comment out
+    # this line to prevent the files from being packaged with your software
+    include_package_data=True,
+
+    # Allows `setup.py test` to work correctly with pytest
+    setup_requires=[] + pytest_runner,
+
+    # Required packages, pulls from pip if needed; do not use for Conda
+    # deployment
+    install_requires=requirements,
+
+    test_suite='tests',
+
+    # Valid platforms your code works on, adjust to your flavor
+    platforms=['Linux',
+               'Mac OS-X',
+               'Unix',
+               'Windows'],
+
+    # Manual control if final package is compressible or not, set False to
+    # prevent the .egg from being made
+    # zip_safe=False,
+
+    keywords='seamm',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
     entry_points={
         'console_scripts': [
             'seamm=seamm.__main__:flowchart',
@@ -62,21 +104,5 @@ setup(
         'org.molssi.seamm.tk': [
             'Join = seamm:JoinStep',
         ],
-    },
-    include_package_data=True,
-    install_requires=requirements,
-    license="GNU Lesser General Public License v3",
-    zip_safe=False,
-    keywords='seamm',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-    ],
-    test_suite='tests',
-    tests_require=test_requirements,
-    setup_requires=setup_requirements,
+    }
 )
