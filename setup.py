@@ -24,13 +24,9 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'pillow',
     'Pmw',
-    'argparse',
     'bitmath',
-    'datetime',
     'numpy',
     'pandas',
-    'pint',
-    'pprint',
     'pyuca',
     'seamm-util',
     'stevedore',
