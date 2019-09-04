@@ -1,5 +1,4 @@
 from datetime import datetime
-import argparse
 import configargparse
 import json
 import locale
@@ -37,9 +36,9 @@ def run():
     parser = configargparse.ArgParser(
         auto_env_var_prefix='',
         default_config_files=[
-                '/etc/seamm/seamm.ini',
-                '~/.seamm/seamm.ini',
-            ],
+            '/etc/seamm/seamm.ini',
+            '~/.seamm/seamm.ini',
+        ],
         description='Execute a SEAMM flowchart'
     )
 
