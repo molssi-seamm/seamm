@@ -54,4 +54,4 @@ class Join(seamm.Node):
         text = ''
         text += 'Join threads together'
 
-        return self.header + '\n' + __(text, indent=4*' ').__str__()
+        return self.header + '\n' + __(text, indent=4 * ' ').__str__()
