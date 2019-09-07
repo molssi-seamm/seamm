@@ -272,6 +272,12 @@ class Node(abc.ABC):
                 continue
             if key == 'formatter':
                 continue
+            if key == 'parser':
+                continue
+            if key == 'options':
+                continue
+            if key == 'unknown':
+                continue
             if 'flowchart' in key:
                 # Have a subflowchart!
                 data[key] = self.__dict__[key].to_dict()
