@@ -46,6 +46,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr htmlcov/
+	find . -name '.pytype' -exec rm -fr {} +
 
 lint: ## check style with yapf
 	yapf --diff --recursive  seamm tests
@@ -58,12 +59,12 @@ format: ## reformat with with yapf and isort
 	yapf --recursive --in-place  seamm tests
 	#isort --recursive --atomic  seamm tests
 
-test: ## run tests quickly with the default Python
-	py.test
+typing: ## check typing
+	pytype seamm_ff_util
+#	mypy -p seamm_ff_util
 
-dependencies:
-	pur -r requirements_dev.txt
-	pip install -r requirements_dev.txt
+test: ## run tests quickly with the default Python
+	pytest
 
 test-all: ## run tests on every Python version with tox
 	tox
