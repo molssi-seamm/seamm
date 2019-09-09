@@ -272,6 +272,12 @@ class Node(abc.ABC):
                 continue
             if key == 'formatter':
                 continue
+            if key == 'parser':
+                continue
+            if key == 'options':
+                continue
+            if key == 'unknown':
+                continue
             if 'flowchart' in key:
                 # Have a subflowchart!
                 data[key] = self.__dict__[key].to_dict()
@@ -365,6 +371,15 @@ class Node(abc.ABC):
         """Establish the handlers for printing as controlled by
         options
         """
+
+        # Control output going to the main job printer
+        # If we are in a loop, don't print to the job output, except
+        # at the JOB level
+        job.setLevel(printing.NORMAL)
+        for segment in self._id:
+            if str(segment)[0:5] == 'iter_':
+                job.setLevel(printing.JOB)
+                break
 
         # First remove an existing handlers
         self.close_printing(printer)

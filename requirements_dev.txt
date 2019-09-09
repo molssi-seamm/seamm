@@ -1,13 +1,10 @@
-pip
-bumpversion
-wheel
-watchdog
-flake8
-tox
+-r requirements_install.txt
+
 coverage
-Sphinx
-cryptography
-PyYAML==5.1
+flake8
 pytest
 pytest-runner
+sphinx
+tox
 twine
+yapf

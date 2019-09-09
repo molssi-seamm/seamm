@@ -21,16 +21,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [
-    'pillow',
-    'Pmw',
-    'bitmath',
-    'numpy',
-    'pandas',
-    'pyuca',
-    'seamm-util',
-    'stevedore',
-]
+with open('requirements_install.txt') as fd:
+    requirements = fd.read()
 
 setup(
     name='seamm',
@@ -39,7 +31,6 @@ setup(
     description=short_description[1],
     long_description=readme + '\n\n' + history,
     version=versioneer.get_version(),
-    # version='0.1.0',
     cmdclass=versioneer.get_cmdclass(),
     license="GNU Lesser General Public License v3",
     url='https://github.com/molssi-seamm/seamm',
@@ -77,7 +68,8 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
+        ('License :: OSI Approved :: GNU Lesser General Public License v3 or '
+         'later (LGPLv3+)'),
         'Natural Language :: English',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
@@ -90,16 +82,12 @@ setup(
             'run_flowchart=seamm.run_flowchart:run'
         ],
         'org.molssi.seamm': [
+            'Join = seamm:JoinStep',
             'Split = seamm:SplitStep',
         ],
         'org.molssi.seamm.tk': [
+            'Join = seamm:JoinStep',
             'Split = seamm:SplitStep',
-        ],
-        'org.molssi.seamm': [
-            'Join = seamm:JoinStep',
-        ],
-        'org.molssi.seamm.tk': [
-            'Join = seamm:JoinStep',
         ],
     }
 )

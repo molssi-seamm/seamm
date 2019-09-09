@@ -1,5 +1,5 @@
 from datetime import datetime
-import argparse
+import configargparse
 import json
 import locale
 import logging
@@ -33,8 +33,21 @@ def run():
     """The standalone flowchart app
     """
 
-    parser = argparse.ArgumentParser(description='Execute a MolSSI flowchart')
+    parser = configargparse.ArgParser(
+        auto_env_var_prefix='',
+        default_config_files=[
+            '/etc/seamm/seamm.ini',
+            '~/.seamm/seamm.ini',
+        ],
+        description='Execute a SEAMM flowchart'
+    )
 
+    parser.add_argument(
+        '--seamm-configfile',
+        is_config_file=True,
+        default=None,
+        help='a configuration file to override others'
+    )
     parser.add_argument(
         "-v",
         "--verbose",
@@ -59,7 +72,7 @@ def run():
     )
     parser.add_argument("filename", help='the filename of the flowchart')
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     # Set up logging level to WARNING by default, going more verbose
     # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
