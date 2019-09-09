@@ -38,7 +38,7 @@ jobs:
       env: PYTHON_VER=3.7
       script:
         - flake8 seamm tests
-        - yapf seamm tests
+        - yapf --diff --recursive  seamm tests
 
     - stage: test
       name: "Run tests and coverage"
