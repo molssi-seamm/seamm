@@ -12,7 +12,6 @@ python-dateutil==2.8.0
 pytz==2019.2
 pyuca==1.2
 scipy==1.3.1
-seamm==0.6+0.gf48d738.dirty
 seamm-util==0.6
 six==1.12.0
 statsmodels==0.10.1
