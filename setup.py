@@ -21,17 +21,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [
-    'configargparse',
-    'pillow',
-    'Pmw',
-    'bitmath',
-    'numpy',
-    'pandas',
-    'pyuca',
-    'seamm-util',
-    'stevedore',
-]
+with open('requirements_install.txt') as fd:
+    requirements = fd.read()
 
 setup(
     name='seamm',

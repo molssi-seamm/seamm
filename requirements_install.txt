@@ -1,0 +1,9 @@
+bitmath
+configargparse
+numpy
+pandas
+pillow
+Pmw
+pyuca
+seamm-util>=0.6
+stevedore
