@@ -38,7 +38,7 @@ jobs:
       env: PYTHON_VER=3.7
       script:
         - flake8 seamm tests
-        - yaml seamm tests
+        - yapf seamm tests
 
     - stage: test
       name: "Run tests and coverage"
@@ -49,15 +49,15 @@ jobs:
       language: generic
       env: PYTHON_VER=3.6
 
-      os: osx
+    - os: osx
       language: generic
       env: PYTHON_VER=3.7
 
-      os: linux
+    - os: linux
       language: generic  # No need to set Python version since its conda
       env: PYTHON_VER=3.6
 
-      os: linux
+    - os: linux
       language: generic
       env: PYTHON_VER=3.7
       script:
