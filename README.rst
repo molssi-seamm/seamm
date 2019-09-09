@@ -13,7 +13,7 @@ Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
         :target: https://seamm.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/paulsaxe/seamm/shield.svg
+.. image:: https://pyup.io/repos/github/molssi-seamm/seamm/shield.svg
      :target: https://pyup.io/repos/github/molssi-seamm/seamm/
      :alt: Updates
 
