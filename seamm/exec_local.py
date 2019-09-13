@@ -40,8 +40,9 @@ class ExecLocal(object):
         cmd=[],
         input_data=None,
         files=None,
+        env={},
         return_files=[],
-        shell=False
+        shell=False,
     ):
         """Execute 'cmd' in a temporary directory. 'files' is a dict
         keyed by filename of files to write before execution."""
@@ -81,9 +82,11 @@ class ExecLocal(object):
 
         # Now execute the program in the temp directory
         logger.debug('about to run ' + ' '.join(cmd))
+
         p = subprocess.run(
             cmd,
             input=input_data,
+            env=dict(os.environ, **env),
             cwd=tmpdir,
             universal_newlines=True,
             stdout=subprocess.PIPE,
