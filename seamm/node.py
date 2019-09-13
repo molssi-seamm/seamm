@@ -483,4 +483,5 @@ class Node(abc.ABC):
 
                 # and put the value in (finally!!!)
                 row_index = table_handle['current index']
-                table.at[row_index, column] = data[key]
+                if key in data:
+                    table.at[row_index, column] = data[key]
