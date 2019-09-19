@@ -11,6 +11,8 @@ specialization is contained in the Flowchart and the nodes that it
 contains."""
 
 import logging
+import os.path
+import reference_handler
 import seamm
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
@@ -64,3 +66,23 @@ class ExecFlowchart(object):
         next_node = self.flowchart.get_node('1')
         while next_node:
             next_node = next_node.run()
+
+        # And print out the references
+        filename = os.path.join(
+            self.flowchart.root_directory, 'references.db'
+        )
+        references = reference_handler.Reference_Handler(filename)
+
+        job.job('There are {} citations:'.format(references.total_citations()))
+        lines = references.dump(fmt='text')
+        i = 0
+        for line in lines:
+            i += 1
+            job.job(
+                '{:6d} ({:d}/{:d}) {:s}'.format(i, line[2], line[3], line[1])
+            )
+        
+        # Close the reference handler, which should force it to close the
+        # connection.
+        references = None
+
