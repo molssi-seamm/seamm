@@ -1,17 +1,26 @@
-from datetime import datetime
+# -*- coding: utf-8 -*-
+
+"""Run a SEAMM flowchart.
+
+SEAMM flowcharts have a 'magic' line, so that they can be executed directly.
+Or, run_flowchart can be invoked with the name of flowchart.
+"""
+
 import configargparse
+import cpuinfo
+import datetime
 import fasteners
 import json
 import locale
 import logging
 import seamm
-import seamm_util  # MUST come after seamm
 import seamm_util.printing as printing
 import os
 import os.path
 import re
 import shutil
 import sys
+import time
 
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
@@ -59,6 +68,14 @@ def run():
         help="increases log verbosity for each occurence."
     )
     parser.add_argument(
+        "--title",
+        dest="title",
+        default='',
+        action="store",
+        env_var='SEAMM_TITLE',
+        help="The title for this run."
+    )
+    parser.add_argument(
         "--datastore",
         dest="datastore",
         default='.',
@@ -103,7 +120,7 @@ def run():
     datastore = args.datastore
 
     if args.projects is None:
-        projects = ['default', ]
+        projects = ['default']
     else:
         projects = args.projects
 
@@ -112,13 +129,12 @@ def run():
 
     # Get the job_id from the file, creating the file if necessary
     job_id = get_job_id(job_id_file)
-    print('datastore = {}'.format(datastore))
-    print('job_id = {}'.format(job_id))
-    print('projects = {}'.format(projects[0]))
 
     # And put it all together
     wdir = os.path.abspath(
-        os.path.join(datastore, 'projects', projects[0], str(job_id))
+        os.path.join(
+            datastore, 'projects', projects[0], 'Job_{:06d}'.format(job_id)
+        )
     )
 
     logging.info("The working directory is '{}'".format(wdir))
@@ -168,18 +184,73 @@ def run():
     flowchart = seamm.Flowchart(directory=wdir, output=args.output)
     flowchart.read(args.filename)
 
-    exec = seamm.ExecFlowchart(flowchart)
+    # Set up the initial metadata for the job.
+    data = cpuinfo.get_cpu_info()
+    data['command line'] = sys.argv
+    data['title'] = args.title
+    data['working directory'] = wdir
+    data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+    data['state'] = 'started'
+    data['projects'] = projects
+    data['datastore'] = datastore
+    data['job id'] = job_id
+
+    # Change to the working directory and run the flowchart
     with cd(wdir):
-        exec.run(root=wdir)
+        # Output the initial metadate for the job.
+        with open('job_data.json', 'w') as fd:
+            json.dump(data, fd, indent=3, sort_keys=True)
+
+        t0 = time.time()
+        pt0 = time.process_time()
+
+        # And run the flowchart
+        try:
+            exec = seamm.ExecFlowchart(flowchart)
+            exec.run(root=wdir)
+            data['state'] = 'finished'
+        except Exception as e:
+            data['state'] = 'error'
+            data['error type'] = type(e).__name__
+            data['error message'] = str(e)
+
+        # Wrap things up
+        t1 = time.time()
+        pt1 = time.process_time()
+        data['end time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+        t = t1 - t0
+        pt = pt1 - pt0
+        data['elapsed time'] = t
+        data['process time'] = pt
+
+        with open('job_data.json', 'w') as fd:
+            json.dump(data, fd, indent=3, sort_keys=True)
+
+        printer.job(
+            "\nProcess time: {} ({:.3f} s)".format(
+                datetime.timedelta(seconds=pt), pt
+            )
+        )
+        printer.job(
+            "Elapsed time: {} ({:.3f} s)".format(
+                datetime.timedelta(seconds=t), t
+            )
+        )
 
 
 def get_job_id(filename):
+    """Get the next job id from the given file.
+
+    This uses the fasteners module to provide locking so that
+    only one job at a time can access the file, so that the job
+    ids are unique and monotonically increasing.
+    """
+
     lock_file = filename + '.lock'
     lock = fasteners.InterProcessLock(lock_file)
     locked = lock.acquire(blocking=True, timeout=5)
 
     if locked:
-        print('I have the lock')
         if not os.path.isfile(filename):
             job_id = 1
             with open(filename, 'w') as fd:
@@ -215,8 +286,9 @@ def get_job_id(filename):
                     job_id = int(line)
                 except TypeError:
                     raise TypeError(
-                        "The job_id in file '{}' is not an integer: {}"
-                        .format(filename, line)
+                        "The job_id in file '{}' is not an integer: {}".format(
+                            filename, line
+                        )
                     )
                 job_id += 1
                 fd.seek(pos)
