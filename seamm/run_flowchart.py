@@ -117,7 +117,7 @@ def run():
     # Create the working directory where files, output, etc. go.
     # At the moment this is datastore/job_id
 
-    datastore = args.datastore
+    datastore = os.path.expanduser(args.datastore)
 
     if args.projects is None:
         projects = ['default']
