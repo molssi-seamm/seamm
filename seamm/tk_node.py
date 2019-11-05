@@ -4,8 +4,10 @@ import abc
 import copy
 import logging
 import seamm
+import Pmw
 import pprint  # noqa: F401
 import tkinter as tk
+import tkinter.ttk as ttk
 """A graphical node using Tk on a canvas"""
 
 logger = logging.getLogger(__name__)
@@ -417,7 +419,68 @@ class TkNode(abc.ABC):
             )
 
     def edit(self):
-        """Do-nothing base class method"""
+        """Present a dialog for editing this step's parameters.
+
+        Subclasses can override this.
+        """
+        # Create the dialog if it doesn't exist
+        if self.dialog is None:
+            self.create_dialog()
+
+        # And put it on-screen, the first time centered.
+        self.dialog.activate(geometry='centerscreenfirst')
+
+    def create_dialog(self, title='Edit step'):
+        """Create the base dialog for editing the parameters for a step.
+
+        At the moment I have removed the Help button.
+        """
+        self.dialog = Pmw.Dialog(
+            self.toplevel,
+            buttons=('OK', 'Cancel'),
+            master=self.toplevel,
+            title=title,
+            command=self.handle_dialog
+        )
+        self.dialog.withdraw()
+
+        # Create a frame to hold everything
+        frame = ttk.Frame(self.dialog.interior())
+        frame.pack(expand=tk.YES, fill=tk.BOTH)
+        self['frame'] = frame
+        return frame
+
+    def reset_dialog(self, widget=None):
+        """Reset the layout of the dialog as needed for the parameters.
+
+        In this base class this does nothing. Override as needed in the 
+        subclasses derived from this class.
+        """
+        pass
+
+    def handle_dialog(self, result):
+        if result is None or result == 'Cancel':
+            self.dialog.deactivate(result)
+            self.node.parameters.reset_widgets()
+            # Reset the layout to make sure it is correct
+            self.reset_dialog()
+        elif result == 'Help':
+            self.help()
+        elif result == 'OK':
+            self.dialog.deactivate(result)
+            # Capture the parameters from the widgets
+            self.node.parameters.set_from_widgets()
+        else:
+            self.dialog.deactivate(result)
+            raise RuntimeError(
+                "Don't recognize dialog result '{}'".format(result)
+            )
+
+    def help(self):
+        """Base class for presenting help, does nothing.
+
+        Subclasses should override this.
+        """
         pass
 
     def to_dict(self):

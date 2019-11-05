@@ -438,6 +438,17 @@ class Parameter(collections.abc.MutableMapping):
         """Set the value from the widget"""
         self.set(self._widget.get())
 
+    def reset_widget(self):
+        """Reset the values in the widget to the current ones."""
+
+        if self._widget is None:
+            return
+
+        if self.dimensionality:
+            self._widget.set(self.value, self.units)
+        else:
+            self._widget.set(self.value)
+
     def to_dict(self):
         """Convert into a string suitable for editing"""
         result = dict()
@@ -633,3 +644,13 @@ class Parameters(collections.abc.MutableMapping):
             )
 
         return data
+
+    def set_from_widgets(self):
+        """Convenience function to set the parameters from their widgets."""
+        for key in self:
+            self[key].set_from_widget()
+
+    def reset_widgets(self):
+        """Convenience function to reset the widgets to the current value."""
+        for key in self:
+            self[key].reset_widget()
