@@ -84,7 +84,7 @@ def run():
         help="The datastore (directory) for this run."
     )
     parser.add_argument(
-        "--job_id_file",
+        "--job-id-file",
         dest="job_id_file",
         default=None,
         action="store",
