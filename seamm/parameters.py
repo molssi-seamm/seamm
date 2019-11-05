@@ -237,16 +237,16 @@ class Parameter(collections.abc.MutableMapping):
             if self.dimensionality is None:
                 self.dimensionality = tmp.dimensionality
 
-                if tmp.dimensionality != self.dimensionality:
-                    raise RuntimeError(
-                        (
-                            "The default units '{}' have a different "
-                            "dimensionality than the parameters: "
-                            "'{}' != '{}'"
-                        ).format(
-                            value, tmp.dimensionality, self.dimensionality
-                        )
+            if tmp.dimensionality != self.dimensionality:
+                raise RuntimeError(
+                    (
+                        "The default units '{}' have a different "
+                        "dimensionality than the parameters: "
+                        "'{}' != '{}'"
+                    ).format(
+                        value, tmp.dimensionality, self.dimensionality
                     )
+                )
         self._data['default_units'] = value
 
     @property
@@ -286,7 +286,7 @@ class Parameter(collections.abc.MutableMapping):
     @property
     def has_units(self):
         """Does this parameter have units associated?"""
-        if self.dimensionality:
+        if self.dimensionality is None:
             return False
         if self.dimensionality == '':
             return False
@@ -401,16 +401,7 @@ class Parameter(collections.abc.MutableMapping):
         labeltext = kwargs.pop('labeltext', self.description)
 
         if self.enumeration:
-            if self.dimensionality:
-                logger.debug('   making UnitCombobox')
-                w = sw.UnitCombobox(
-                    frame,
-                    labeltext=labeltext,
-                    values=self.enumeration,
-                    **kwargs
-                )
-                w.set(self.value, self.units)
-            else:
+            if self.dimensionality is None:
                 logger.debug('    making LabeledCombobox')
                 w = sw.LabeledCombobox(
                     frame,
@@ -419,15 +410,24 @@ class Parameter(collections.abc.MutableMapping):
                     **kwargs
                 )
                 w.set(self.value)
-        else:
-            if self.dimensionality:
-                logger.debug('   making UnitEntry')
-                w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
-                w.set(self.value, self.units)
             else:
+                logger.debug('   making UnitCombobox')
+                w = sw.UnitCombobox(
+                    frame,
+                    labeltext=labeltext,
+                    values=self.enumeration,
+                    **kwargs
+                )
+                w.set(self.value, self.units)
+        else:
+            if self.dimensionality is None:
                 logger.debug('   making LabeledEntry')
                 w = sw.LabeledEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value)
+            else:
+                logger.debug('   making UnitEntry')
+                w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
+                w.set(self.value, self.units)
 
         self._widget = w
 
@@ -444,10 +444,10 @@ class Parameter(collections.abc.MutableMapping):
         if self._widget is None:
             return
 
-        if self.dimensionality:
-            self._widget.set(self.value, self.units)
-        else:
+        if self.dimensionality is None:
             self._widget.set(self.value)
+        else:
+            self._widget.set(self.value, self.units)
 
     def to_dict(self):
         """Convert into a string suitable for editing"""
