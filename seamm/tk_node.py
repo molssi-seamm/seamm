@@ -459,6 +459,8 @@ class TkNode(abc.ABC):
         pass
 
     def handle_dialog(self, result):
+        """Do the right thing when the dialog is closed.
+        """
         if result is None or result == 'Cancel':
             self.dialog.deactivate(result)
             self.node.parameters.reset_widgets()
