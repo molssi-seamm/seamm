@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import abc
+import collections.abc
 import copy
 import logging
 import seamm
@@ -13,7 +13,7 @@ import tkinter.ttk as ttk
 logger = logging.getLogger(__name__)
 
 
-class TkNode(abc.ABC):
+class TkNode(collections.abc.MutableMapping):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
@@ -106,10 +106,6 @@ class TkNode(abc.ABC):
     def __len__(self):
         """The len() command"""
         return len(self._widget)
-
-    def __contains__(self, item):
-        """Return a boolean indicating if a widget exists."""
-        return item in self._widget
 
     @property
     def uuid(self):
