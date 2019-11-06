@@ -243,9 +243,7 @@ class Parameter(collections.abc.MutableMapping):
                         "The default units '{}' have a different "
                         "dimensionality than the parameters: "
                         "'{}' != '{}'"
-                    ).format(
-                        value, tmp.dimensionality, self.dimensionality
-                    )
+                    ).format(value, tmp.dimensionality, self.dimensionality)
                 )
         self._data['default_units'] = value
 
