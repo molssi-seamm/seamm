@@ -426,7 +426,7 @@ class TkNode(collections.abc.MutableMapping):
         # And put it on-screen, the first time centered.
         self.dialog.activate(geometry='centerscreenfirst')
 
-    def create_dialog(self, title='Edit step'):
+    def create_dialog(self, title='Edit step', widget='frame'):
         """Create the base dialog for editing the parameters for a step.
 
         At the moment I have removed the Help button.
@@ -440,16 +440,23 @@ class TkNode(collections.abc.MutableMapping):
         )
         self.dialog.withdraw()
 
-        # Create a frame to hold everything
-        frame = ttk.Frame(self.dialog.interior())
-        frame.pack(expand=tk.YES, fill=tk.BOTH)
-        self['frame'] = frame
-        return frame
+        if widget == 'frame':
+            # Create a frame to hold everything
+            frame = ttk.Frame(self.dialog.interior())
+            frame.pack(expand=tk.YES, fill=tk.BOTH)
+            self['frame'] = frame
+            return frame
+        elif widget == 'notebook':
+            # A tabbed notebook
+            notebook = ttk.Notebook(self.dialog.interior())
+            notebook.pack(side='top', fill=tk.BOTH, expand=tk.YES)
+            self['notebook'] = notebook
+            return notebook
 
     def reset_dialog(self, widget=None):
         """Reset the layout of the dialog as needed for the parameters.
 
-        In this base class this does nothing. Override as needed in the 
+        In this base class this does nothing. Override as needed in the
         subclasses derived from this class.
         """
         pass
