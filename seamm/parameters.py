@@ -435,7 +435,7 @@ class Parameter(collections.abc.MutableMapping):
     def set_from_widget(self):
         """Set the value from the widget, ignoring if there is no widget.
         """
-        if self._widgets is not None:
+        if self._widget is not None:
             self.set(self._widget.get())
 
     def reset_widget(self):
