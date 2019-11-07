@@ -433,19 +433,19 @@ class Parameter(collections.abc.MutableMapping):
         return w
 
     def set_from_widget(self):
-        """Set the value from the widget"""
-        self.set(self._widget.get())
+        """Set the value from the widget, ignoring if there is no widget.
+        """
+        if self._widgets is not None:
+            self.set(self._widget.get())
 
     def reset_widget(self):
-        """Reset the values in the widget to the current ones."""
-
-        if self._widget is None:
-            return
-
-        if self.dimensionality is None:
-            self._widget.set(self.value)
-        else:
-            self._widget.set(self.value, self.units)
+        """Reset the values in the widget, if it has been created.
+        """
+        if self._widget is not None:
+            if self.dimensionality is None:
+                self._widget.set(self.value)
+            else:
+                self._widget.set(self.value, self.units)
 
     def to_dict(self):
         """Convert into a string suitable for editing"""
