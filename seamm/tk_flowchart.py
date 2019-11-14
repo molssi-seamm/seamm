@@ -142,9 +142,7 @@ class TkFlowchart(object):
         self.canvas.bind('<Leave>', self._unbound_to_mousewheel)
 
         # background image
-        filepath = pkg_resources.resource_filename(
-            __name__, 'data/SEAMM.png'
-        )
+        filepath = pkg_resources.resource_filename(__name__, 'data/SEAMM.png')
         logger.info(filepath)
 
         self.image = Image.open(filepath)
