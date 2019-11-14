@@ -146,7 +146,7 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
-    filemenu.add_command(
+    editmenu.add_command(
         label="Clean layout",
         command=tk_flowchart.clean_layout,
         accelerator=CmdKey + 'C'
