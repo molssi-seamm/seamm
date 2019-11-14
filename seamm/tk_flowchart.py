@@ -143,7 +143,7 @@ class TkFlowchart(object):
 
         # background image
         filepath = pkg_resources.resource_filename(
-            __name__, 'data/framework.png'
+            __name__, 'data/SEAMM.png'
         )
         logger.info(filepath)
 
