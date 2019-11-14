@@ -111,10 +111,10 @@ def flowchart():
         command=tk_flowchart.open_file,
         accelerator=CmdKey + 'O'
     )
-    filemenu.add_separator()
-    filemenu.add_command(
-        label="Run", command=tk_flowchart.run, accelerator=CmdKey + 'R'
-    )
+    # filemenu.add_separator()
+    # filemenu.add_command(
+    #     label="Run", command=tk_flowchart.run, accelerator=CmdKey + 'R'
+    # )
 
     # Control debugging info
     filemenu.add_separator()
@@ -160,8 +160,8 @@ def flowchart():
     root.bind_all('<' + CmdKey + 'n>', tk_flowchart.new_file)
     root.bind_all('<' + CmdKey + 'O>', tk_flowchart.open_file)
     root.bind_all('<' + CmdKey + 'o>', tk_flowchart.open_file)
-    root.bind_all('<' + CmdKey + 'R>', tk_flowchart.run)
-    root.bind_all('<' + CmdKey + 'r>', tk_flowchart.run)
+    # root.bind_all('<' + CmdKey + 'R>', tk_flowchart.run)
+    # root.bind_all('<' + CmdKey + 'r>', tk_flowchart.run)
     root.bind_all('<' + CmdKey + 'S>', tk_flowchart.save)
     root.bind_all('<' + CmdKey + 's>', tk_flowchart.save)
     root.bind_all('<' + CmdKey + 'C>', tk_flowchart.clean_layout)
