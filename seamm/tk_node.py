@@ -50,6 +50,7 @@ class TkNode(collections.abc.MutableMapping):
         Keyword arguments:
         """
         self.tk_flowchart = tk_flowchart
+        self.tk_subflowchart = None
         self.node = node
         self.toplevel = None
         self.canvas = canvas
@@ -81,6 +82,12 @@ class TkNode(collections.abc.MutableMapping):
     def __hash__(self):
         """Make iterable!"""
         return self.node.uuid
+
+    def __eq__(self, other):
+        return (
+            self.__class__ == other.__class__ and
+            self.__hash__() == other.__hash__()
+        )
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -423,7 +430,11 @@ class TkNode(collections.abc.MutableMapping):
         if self.dialog is None:
             self.create_dialog()
 
-        # And put it on-screen, the first time centered.
+        # And put it on-screen, the first time centered. If it contains
+        # a subflowchart, save it so it can be restored on a 'Cancel'
+        if self.tk_subflowchart is not None:
+            self.tk_subflowchart.push()
+
         self.dialog.activate(geometry='centerscreenfirst')
 
     def create_dialog(self, title='Edit step', widget='frame'):
@@ -469,12 +480,18 @@ class TkNode(collections.abc.MutableMapping):
             self.node.parameters.reset_widgets()
             # Reset the layout to make sure it is correct
             self.reset_dialog()
+            # If there is a subflowchart, revert to the saved copy
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop()
         elif result == 'Help':
             self.help()
         elif result == 'OK':
             self.dialog.deactivate(result)
             # Capture the parameters from the widgets
             self.node.parameters.set_from_widgets()
+            # If there is a subflowchart, throw the saved copy away
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop_and_discard()
         else:
             self.dialog.deactivate(result)
             raise RuntimeError(
