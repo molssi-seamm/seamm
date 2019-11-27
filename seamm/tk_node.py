@@ -45,12 +45,14 @@ class TkNode(collections.abc.MutableMapping):
         x=None,
         y=None,
         w=None,
-        h=None
+        h=None,
+        my_logger=logger
     ):
         """Initialize a node
 
         Keyword arguments:
         """
+        self.logger = my_logger
         self.tk_flowchart = tk_flowchart
         self.tk_subflowchart = None
         self.node = node
@@ -436,6 +438,8 @@ class TkNode(collections.abc.MutableMapping):
             # or may layout the widgets, but can only be done after fully
             # creating the dialog.
             self.reset_dialog()
+            # And resize the dialog to fit...
+            self.fit_dialog()
 
         # And put it on-screen, the first time centered. If it contains
         # a subflowchart, save it so it can be restored on a 'Cancel'
@@ -570,31 +574,81 @@ class TkNode(collections.abc.MutableMapping):
             self.results_widgets.append(widgets)
             row += 1
 
-        # And make the dialog wide enough
+    def fit_dialog(self):
+        """Resize and fit the dialog to the current contents and the
+        constraint of the window.
+        """
+        self.logger.debug('Entering fit_dialog')
+        frame = self['frame']
         frame.update_idletasks()
         width = frame.winfo_width() + 70  # extra space for frame, etc.
         height = frame.winfo_height()
         sw = frame.winfo_screenwidth()
         sh = frame.winfo_screenheight()
 
+        self.logger.debug(
+            '  frame wxh = {} x {}, screen = {} x {}'.format(
+                width, height, sw, sh
+            )
+        )
+
         mw = 0
         mh = 0
-        for tab in self['notebook'].tabs():
-            tab = frame.nametowidget(tab)
-            w = tab.winfo_reqwidth()
-            h = tab.winfo_reqheight()
-            if w > mw:
-                mw = w
-            if h > mh:
-                mh = h
+        if 'notebook' in self:
+            for tab in self['notebook'].tabs():
+                widget = frame.nametowidget(tab)
+                widget.update_idletasks()
+                self.logger.debug('  widget = {}'.format(widget))
+                ww = widget.winfo_width() + 70
+                hh = widget.winfo_height()
+                w = widget.winfo_reqwidth()
+                h = widget.winfo_reqheight()
+                self.logger.debug(
+                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                        tab, ww, hh, w, h
+                    )
+                )
+                if w > mw:
+                    mw = w
+                if h > mh:
+                    mh = h
+                if ww > width:
+                    width = ww
+                if hh > height:
+                    height = hh
+            # Need to do results again using the inside of the scrolled table..
+            if 'results' in self:
+                widget = self['results'].interior()
+                self.logger.debug('  widget = {}'.format(widget))
+                widget.update_idletasks()
+                ww = widget.winfo_width() + 70
+                hh = widget.winfo_height()
+                w = widget.winfo_reqwidth()
+                h = widget.winfo_reqheight()
+                self.logger.debug(
+                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                        tab, ww, hh, w, h
+                    )
+                )
+                if w > mw:
+                    mw = w
+                if h > mh:
+                    mh = h
+                if ww > width:
+                    width = ww
+                if hh > height:
+                    height = hh
+        else:
+            mw = frame.winfo_reqwidth()
+            mh = frame.winfo_reqheight()
 
         if width < mw:
             width = mw
-        if width > sw:
+        if width > 0.9 * sw:
             width = int(0.9 * sw)
         if height < mh:
             height = mh
-        if height > sh:
+        if height > 0.9 * sh:
             height = int(0.9 * sh)
 
         self.dialog.geometry('{}x{}'.format(width, height))
@@ -620,23 +674,23 @@ class TkNode(collections.abc.MutableMapping):
             # Reset the results widgets if they exist
             if self.results_widgets is not None:
                 results = self.node.parameters['results']['value']
-                logger.debug('Resetting results on Cancel')
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug('  results dict\n---------')
+                self.logger.debug('Resetting results on Cancel')
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug('  results dict\n---------')
                     for key, item in results.items():
-                        logger.debug(key)
-                        logger.debug(
+                        self.logger.debug(key)
+                        self.logger.debug(
                             json.dumps(results[key], sort_keys=True, indent=3)
                         )
 
                 for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
-                    logger.debug('  key: {}'.format(key))
+                    self.logger.debug('  key: {}'.format(key))
                     w_variable.delete(0, tk.END)
                     w_table.delete(0, tk.END)
                     w_column.delete(0, tk.END)
                     if key in results:
                         tmp = results[key]
-                        logger.debug(
+                        self.logger.debug(
                             '  key dict\n---------\n' +
                             json.dumps(tmp, sort_keys=True, indent=3) +
                             '\n-----'
@@ -655,7 +709,7 @@ class TkNode(collections.abc.MutableMapping):
                             w_table.set('')
                             w_column.insert(0, key.lower())
                     else:
-                        logger.debug('  resetting widgets')
+                        self.logger.debug('  resetting widgets')
                         self.tk_var[key].set(0)
                         w_variable.insert(0, key.lower())
                         w_column.insert(0, key.lower())
@@ -776,9 +830,9 @@ class TkNode(collections.abc.MutableMapping):
                 translate[node] = tk_flowchart.get_node('1')
             else:
                 new_node = copy.copy(node)
-                logger.debug('creating {} node'.format(extension))
+                self.logger.debug('creating {} node'.format(extension))
                 plugin = tk_flowchart.plugin_manager.get(extension)
-                logger.debug('  plugin object: {}'.format(plugin))
+                self.logger.debug('  plugin object: {}'.format(plugin))
                 tk_node = plugin.create_tk_node(
                     tk_flowchart=tk_flowchart,
                     canvas=tk_flowchart.canvas,
@@ -813,7 +867,9 @@ class TkNode(collections.abc.MutableMapping):
         # how many outgoing edges are there?
         n_edges = len(self.tk_flowchart.edges(self, direction='out'))
 
-        logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
+        self.logger.debug(
+            'node.default_edge_label, n_edges = {}'.format(n_edges)
+        )
 
         if n_edges == 0:
             return "next"
