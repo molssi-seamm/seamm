@@ -48,7 +48,7 @@ def flowchart():
         help='flowcharts to open initially'
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     # Sets log level to WARN going more verbose for each new -v.
     dbg_level = max(3 - args.verbose_count, 0) * 10
