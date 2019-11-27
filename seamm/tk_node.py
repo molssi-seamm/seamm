@@ -3,9 +3,11 @@
 import collections.abc
 import copy
 import logging
-import seamm
+import json
 import Pmw
 import pprint  # noqa: F401
+import seamm
+import seamm_widgets as sw
 import tkinter as tk
 import tkinter.ttk as ttk
 """A graphical node using Tk on a canvas"""
@@ -78,6 +80,7 @@ class TkNode(collections.abc.MutableMapping):
         # Widget information
         self._widget = {}
         self.tk_var = {}
+        self.results_widgets = None
 
     def __hash__(self):
         """Make iterable!"""
@@ -429,6 +432,10 @@ class TkNode(collections.abc.MutableMapping):
         # Create the dialog if it doesn't exist
         if self.dialog is None:
             self.create_dialog()
+            # After full creation, reset the dialog. This may do nothing,
+            # or may layout the widgets, but can only be done after fully
+            # creating the dialog.
+            self.reset_dialog()
 
         # And put it on-screen, the first time centered. If it contains
         # a subflowchart, save it so it can be restored on a 'Cancel'
@@ -437,7 +444,9 @@ class TkNode(collections.abc.MutableMapping):
 
         self.dialog.activate(geometry='centerscreenfirst')
 
-    def create_dialog(self, title='Edit step', widget='frame'):
+    def create_dialog(
+        self, title='Edit step', widget='frame', results_tab=False
+    ):
         """Create the base dialog for editing the parameters for a step.
 
         At the moment I have removed the Help button.
@@ -457,12 +466,138 @@ class TkNode(collections.abc.MutableMapping):
             frame.pack(expand=tk.YES, fill=tk.BOTH)
             self['frame'] = frame
             return frame
-        elif widget == 'notebook':
+        elif widget == 'notebook' or results_tab:
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
             notebook.pack(side='top', fill=tk.BOTH, expand=tk.YES)
             self['notebook'] = notebook
-            return notebook
+
+            # Main frame holding the widgets
+            frame = ttk.Frame(notebook)
+            self['frame'] = frame
+            notebook.add(frame, text='Parameters', sticky=tk.NW)
+
+        if results_tab:
+            # Second tab for results if requested
+            rframe = self['results frame'] = ttk.Frame(notebook)
+            notebook.add(rframe, text='Results', sticky=tk.NSEW)
+
+            # Shortcut for parameters
+            P = self.node.parameters
+
+            var = self.tk_var['create tables'] = tk.IntVar()
+            if P['create tables'].value == 'yes':
+                var.set(1)
+            else:
+                var.set(0)
+            self['create tables'] = ttk.Checkbutton(
+                rframe, text='Create tables if needed', variable=var
+            )
+            self['create tables'].grid(row=0, column=0, sticky=tk.W)
+
+            self['results'] = sw.ScrolledColumns(
+                rframe,
+                columns=[
+                    'Result',
+                    'Save',
+                    'Variable name',
+                    'In table',
+                    'Column name',
+                ]
+            )
+            self['results'].grid(row=1, column=0, sticky=tk.NSEW)
+            rframe.columnconfigure(0, weight=1)
+            rframe.rowconfigure(1, weight=1)
+
+        return frame
+
+    def setup_results(self, properties, calculation='energy'):
+        """Layout the results tab of the dialog"""
+        results = self.node.parameters['results'].value
+
+        self.results_widgets = []
+        table = self['results']
+        frame = table.interior()
+
+        row = 0
+        for key, entry in properties.items():
+            if 'calculation' not in entry:
+                continue
+            if calculation not in entry['calculation']:
+                continue
+            if 'dimensionality' not in entry:
+                continue
+            if entry['dimensionality'] != 'scalar':
+                continue
+
+            widgets = []
+            widgets.append(key)
+
+            table.cell(row, 0, entry['description'])
+
+            # variable
+            var = self.tk_var[key] = tk.IntVar()
+            var.set(0)
+            w = ttk.Checkbutton(frame, variable=var)
+            table.cell(row, 1, w)
+            widgets.append(w)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower())
+            table.cell(row, 2, e)
+            widgets.append(e)
+
+            if key in results:
+                if 'variable' in results[key]:
+                    var.set(1)
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]['variable'])
+
+            # table
+            w = ttk.Combobox(frame, width=10)
+            table.cell(row, 3, w)
+            widgets.append(w)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower())
+            table.cell(row, 4, e)
+            widgets.append(e)
+
+            if key in results:
+                if 'table' in results[key]:
+                    w.set(results[key]['table'])
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]['column'])
+
+            self.results_widgets.append(widgets)
+            row += 1
+
+        # And make the dialog wide enough
+        frame.update_idletasks()
+        width = frame.winfo_width() + 70  # extra space for frame, etc.
+        height = frame.winfo_height()
+        sw = frame.winfo_screenwidth()
+        sh = frame.winfo_screenheight()
+
+        mw = 0
+        mh = 0
+        for tab in self['notebook'].tabs():
+            tab = frame.nametowidget(tab)
+            w = tab.winfo_reqwidth()
+            h = tab.winfo_reqheight()
+            if w > mw:
+                mw = w
+            if h > mh:
+                mh = h
+
+        if width < mw:
+            width = mw
+        if width > sw:
+            width = int(0.9 * sw)
+        if height < mh:
+            height = mh
+        if height > sh:
+            height = int(0.9 * sh)
+
+        self.dialog.geometry('{}x{}'.format(width, height))
 
     def reset_dialog(self, widget=None):
         """Reset the layout of the dialog as needed for the parameters.
@@ -477,21 +612,97 @@ class TkNode(collections.abc.MutableMapping):
         """
         if result is None or result == 'Cancel':
             self.dialog.deactivate(result)
-            self.node.parameters.reset_widgets()
-            # Reset the layout to make sure it is correct
-            self.reset_dialog()
+
             # If there is a subflowchart, revert to the saved copy
             if self.tk_subflowchart is not None:
                 self.tk_subflowchart.pop()
+
+            # Reset the results widgets if they exist
+            if self.results_widgets is not None:
+                results = self.node.parameters['results']['value']
+                logger.debug('Resetting results on Cancel')
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug('  results dict\n---------')
+                    for key, item in results.items():
+                        logger.debug(key)
+                        logger.debug(
+                            json.dumps(results[key], sort_keys=True, indent=3)
+                        )
+
+                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
+                    logger.debug('  key: {}'.format(key))
+                    w_variable.delete(0, tk.END)
+                    w_table.delete(0, tk.END)
+                    w_column.delete(0, tk.END)
+                    if key in results:
+                        tmp = results[key]
+                        logger.debug(
+                            '  key dict\n---------\n' +
+                            json.dumps(tmp, sort_keys=True, indent=3) +
+                            '\n-----'
+                        )
+                        if 'variable' in tmp:
+                            self.tk_var[key].set(1)
+                            w_variable.insert(0, tmp['variable'])
+                        else:
+                            self.tk_var[key].set(0)
+                            w_variable.insert(0, key.lower())
+
+                        if 'table' in tmp:
+                            w_table.insert(0, tmp['table'])
+                            w_column.insert(0, tmp['column'])
+                        else:
+                            w_table.set('')
+                            w_column.insert(0, key.lower())
+                    else:
+                        logger.debug('  resetting widgets')
+                        self.tk_var[key].set(0)
+                        w_variable.insert(0, key.lower())
+                        w_column.insert(0, key.lower())
+
+            # Reset the parameters, if any
+            if self.node.parameters is not None:
+                self.node.parameters.reset_widgets()
+
+            # Reset the layout to make sure it is correct
+            self.reset_dialog()
+
         elif result == 'Help':
             self.help()
         elif result == 'OK':
             self.dialog.deactivate(result)
+
             # Capture the parameters from the widgets
-            self.node.parameters.set_from_widgets()
+            if self.node.parameters is not None:
+                self.node.parameters.set_from_widgets()
+
             # If there is a subflowchart, throw the saved copy away
             if self.tk_subflowchart is not None:
                 self.tk_subflowchart.pop_and_discard()
+
+            # Get what results to store, if the results tab exists
+            if self.results_widgets is not None:
+                # Shortcut for parameters
+                P = self.node.parameters
+
+                # and from the results tab...
+                if self.tk_var['create tables'].get():
+                    P['create tables'].value = 'yes'
+                else:
+                    P['create tables'].value = 'no'
+
+                results = P['results'].value = {}
+                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
+
+                    if self.tk_var[key].get():
+                        tmp = results[key] = dict()
+                        tmp['variable'] = w_variable.get()
+                    table = w_table.get()
+                    if table != '':
+                        if key not in results:
+                            tmp = results[key] = dict()
+                        tmp['table'] = table
+                        tmp['column'] = w_column.get()
         else:
             self.dialog.deactivate(result)
             raise RuntimeError(
