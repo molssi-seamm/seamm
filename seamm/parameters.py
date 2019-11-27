@@ -76,13 +76,13 @@ class Parameter(collections.abc.MutableMapping):
 
     def __repr__(self):
         """The official string representation of this object"""
-        if self.units or self.units == '':
+        if self.units is None or self.units == '':
             return self.value
         else:
             return ('{} {}').format(self.value, self.units)
 
     def __str__(self):
-        if not self.units or self.units == '':
+        if self.units is None or self.units == '':
             if self.kind == 'integer':
                 try:
                     value = int(self.value)
@@ -203,7 +203,9 @@ class Parameter(collections.abc.MutableMapping):
 
         if value == '':
             value = None
-        if value is not None:
+        if value is None:
+            self.dimensionality = None
+        else:
             tmp = ureg(value)
             logger.debug("   tmp = '{}'".format(tmp))
             if self.dimensionality is None:
@@ -232,7 +234,9 @@ class Parameter(collections.abc.MutableMapping):
     def default_units(self, value):
         if value == '':
             value = None
-        if value is not None:
+        if value is None:
+            self.dimensionality = None
+        else:
             tmp = ureg(value)
             if self.dimensionality is None:
                 self.dimensionality = tmp.dimensionality
@@ -342,11 +346,11 @@ class Parameter(collections.abc.MutableMapping):
         # format if requested
         if formatted:
             result = self.format_string.format(result)
-            if self.units:
+            if self.units is not None and self.units != '':
                 result += ' ' + self.units
 
         # and run into pint quantity if requested
-        if units and self.units:
+        if units and self.units is not None and self.units != '':
             result = Q_(result, self.units)
 
         return result
@@ -389,12 +393,11 @@ class Parameter(collections.abc.MutableMapping):
         logger.debug('Creating widget for {}'.format(type(self)))
 
         if self._widget is not None:
-            if self._widget.winfo_exists():
-                raise RuntimeError(
-                    'Widget for Parameter {} already exists!'.format(self)
-                )
-
-        logger.debug('   finished checking if the widget already exists.')
+            logger.debug('   Destroying existing widget.')
+            try:
+                self._widget.destroy()
+            except Exception:
+                pass
 
         labeltext = kwargs.pop('labeltext', self.description)
 
@@ -651,4 +654,12 @@ class Parameters(collections.abc.MutableMapping):
     def reset_widgets(self):
         """Convenience function to reset the widgets to the current value."""
         for key in self:
-            self[key].reset_widget()
+            try:
+                self[key].reset_widget()
+            except ValueError as e:
+                logger.warning(
+                    'Error resetting widget for {}: {}'.format(key, str(e))
+                )
+                raise
+            except Exception:
+                raise
