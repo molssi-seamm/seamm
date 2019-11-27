@@ -581,7 +581,7 @@ class TkNode(collections.abc.MutableMapping):
         self.logger.debug('Entering fit_dialog')
         frame = self['frame']
         frame.update_idletasks()
-        width = frame.winfo_width() + 70  # extra space for frame, etc.
+        width = frame.winfo_width()
         height = frame.winfo_height()
         sw = frame.winfo_screenwidth()
         sh = frame.winfo_screenheight()
@@ -599,7 +599,7 @@ class TkNode(collections.abc.MutableMapping):
                 widget = frame.nametowidget(tab)
                 widget.update_idletasks()
                 self.logger.debug('  widget = {}'.format(widget))
-                ww = widget.winfo_width() + 70
+                ww = widget.winfo_width()
                 hh = widget.winfo_height()
                 w = widget.winfo_reqwidth()
                 h = widget.winfo_reqheight()
@@ -621,7 +621,7 @@ class TkNode(collections.abc.MutableMapping):
                 widget = self['results'].interior()
                 self.logger.debug('  widget = {}'.format(widget))
                 widget.update_idletasks()
-                ww = widget.winfo_width() + 70
+                ww = widget.winfo_width()
                 hh = widget.winfo_height()
                 w = widget.winfo_reqwidth()
                 h = widget.winfo_reqheight()
@@ -641,13 +641,16 @@ class TkNode(collections.abc.MutableMapping):
         else:
             mw = frame.winfo_reqwidth()
             mh = frame.winfo_reqheight()
+            self.logger.debug('  frame requested = {} x {}'.format(mw, mh))
 
         if width < mw:
             width = mw
-        if width > 0.9 * sw:
+        width += 70
+        if width + 70 > 0.9 * sw:
             width = int(0.9 * sw)
         if height < mh:
             height = mh
+        height += 70
         if height > 0.9 * sh:
             height = int(0.9 * sh)
 
