@@ -155,7 +155,9 @@ def flowchart():
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
-    root.createcommand('tk::mac::ShowHelp', tk_framework.help)
+    if sys.platform.startswith('darwin'):
+        root.createcommand('tk::mac::ShowHelp', tk_framework.help)
+
     root.bind_all('<' + CmdKey + 'N>', tk_framework.new_file)
     root.bind_all('<' + CmdKey + 'n>', tk_framework.new_file)
     root.bind_all('<' + CmdKey + 'O>', tk_framework.open_file)
@@ -166,8 +168,6 @@ def flowchart():
     root.bind_all('<' + CmdKey + 's>', tk_framework.save)
     root.bind_all('<' + CmdKey + 'C>', tk_framework.clean_layout)
     root.bind_all('<' + CmdKey + 'c>', tk_framework.clean_layout)
-
-    root.bind_all('<' + CmdKey + '`>', tk_framework.print_edges)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()
