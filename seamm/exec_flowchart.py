@@ -93,8 +93,16 @@ class ExecFlowchart(object):
             try:
                 next_node = next_node.run()
             except Exception as e:
-                print('Error running flowchart: ' + str(e))
-                logger.critical("Error running flowchart: " + str(e))
+                print(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
+                logger.critical(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
                 raise
             except:  # noqa: E722
                 print(
