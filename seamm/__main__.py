@@ -29,10 +29,10 @@ def flowchart():
     """The standalone flowchart app
     """
     global app_name
-    app_name = 'MolSSI Framework'
+    app_name = 'MolSSI SEAMM'
     global dbg_level
 
-    parser = argparse.ArgumentParser(description='MolSSI Framework')
+    parser = argparse.ArgumentParser(description='MolSSI SEAMM')
     parser.add_argument(
         "-v",
         "--verbose",
@@ -65,8 +65,8 @@ def flowchart():
     # and the data
     ##############################################################
 
-    framework = seamm.Flowchart()
-    tk_framework = seamm.TkFlowchart(master=root, flowchart=framework)
+    flowchart = seamm.Flowchart()
+    tk_flowchart = seamm.TkFlowchart(master=root, flowchart=flowchart)
     # The data is implicitly initialized to none...
 
     ##################################################
@@ -85,13 +85,13 @@ def flowchart():
         menu.add_cascade(menu=app_menu)
 
         app_menu.add_command(
-            label='About ' + app_name, command=tk_framework.about
+            label='About ' + app_name, command=tk_flowchart.about
         )
         app_menu.add_separator()
         root.createcommand(
-            'tk::mac::ShowPreferences', tk_framework.preferences
+            'tk::mac::ShowPreferences', tk_flowchart.preferences
         )
-        root.createcommand('tk::mac::OpenDocument', tk_framework.open_file)
+        root.createcommand('tk::mac::OpenDocument', tk_flowchart.open_file)
         CmdKey = 'Command-'
     else:
         CmdKey = 'Control-'
@@ -100,21 +100,21 @@ def flowchart():
     filemenu = tk.Menu(menu)
     menu.add_cascade(label="File", menu=filemenu)
     filemenu.add_command(
-        label="New", command=tk_framework.new_file, accelerator=CmdKey + 'N'
+        label="New", command=tk_flowchart.new_file, accelerator=CmdKey + 'N'
     )
     filemenu.add_command(
-        label="Save...", command=tk_framework.save, accelerator=CmdKey + 'S'
+        label="Save...", command=tk_flowchart.save, accelerator=CmdKey + 'S'
     )
-    filemenu.add_command(label="Save as...", command=tk_framework.save_file)
+    filemenu.add_command(label="Save as...", command=tk_flowchart.save_file)
     filemenu.add_command(
         label="Open...",
-        command=tk_framework.open_file,
+        command=tk_flowchart.open_file,
         accelerator=CmdKey + 'O'
     )
-    filemenu.add_separator()
-    filemenu.add_command(
-        label="Run", command=tk_framework.run, accelerator=CmdKey + 'R'
-    )
+    # filemenu.add_separator()
+    # filemenu.add_command(
+    #     label="Run", command=tk_flowchart.run, accelerator=CmdKey + 'R'
+    # )
 
     # Control debugging info
     filemenu.add_separator()
@@ -146,9 +146,9 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
-    filemenu.add_command(
+    editmenu.add_command(
         label="Clean layout",
-        command=tk_framework.clean_layout,
+        command=tk_flowchart.clean_layout,
         accelerator=CmdKey + 'C'
     )
 
@@ -182,9 +182,9 @@ def flowchart():
     logger.debug('Finished initializing the rest of the GUI, drawing window')
 
     # Draw the flowchart
-    tk_framework.draw()
+    tk_flowchart.draw()
 
-    logger.debug('Framework has been drawn. Now raise it to the top')
+    logger.debug('SEAMM has been drawn. Now raise it to the top')
 
     # bring it to the top of all windows
     root.lift()
@@ -196,7 +196,7 @@ def flowchart():
         if len(args.flowcharts) > 1:
             raise RuntimeError('Currently handle only one flowchart at a time')
         for filename in args.flowcharts:
-            tk_framework.open(filename)
+            tk_flowchart.open(filename)
 
     logger.debug('and now enter the event loop')
 
