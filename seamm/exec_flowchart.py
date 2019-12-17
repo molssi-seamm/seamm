@@ -14,6 +14,7 @@ import logging
 import seamm
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
+import sys
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -55,7 +56,23 @@ class ExecFlowchart(object):
         )
 
         while next_node:
-            next_node = next_node.describe()
+            try:
+                next_node = next_node.describe()
+            except Exception as e:
+                print('Error describing flowchart: ' + str(e))
+                logger.critical("Error describing flowchart: " + str(e))
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error describing flowchart: ",
+                    sys.exc_info()[0]
+                )
+                logger.critical(
+                    "Unexpected error describing flowchart: ",
+                    sys.exc_info()[0]
+                )
+                raise
+
         job.job('')
 
         # And actually run it!
@@ -63,4 +80,19 @@ class ExecFlowchart(object):
 
         next_node = self.flowchart.get_node('1')
         while next_node:
-            next_node = next_node.run()
+            try:
+                next_node = next_node.run()
+            except Exception as e:
+                print('Error running flowchart: ' + str(e))
+                logger.critical("Error running flowchart: " + str(e))
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                logger.critical(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                raise
