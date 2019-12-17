@@ -627,7 +627,11 @@ class Parameters(collections.abc.MutableMapping):
 
         data = {}
         for key in self:
-            data[key] = str(self[key])
+            try:
+                data[key] = str(self[key])
+            except Exception as e:
+                logger.warning("Cannot format '{}': {}".format(key, str(e)))
+                data[key] = '#err#'
 
         return data
 
