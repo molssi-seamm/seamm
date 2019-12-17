@@ -146,7 +146,7 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
-    filemenu.add_command(
+    editmenu.add_command(
         label="Clean layout",
         command=tk_flowchart.clean_layout,
         accelerator=CmdKey + 'C'
@@ -184,7 +184,7 @@ def flowchart():
     # Draw the flowchart
     tk_flowchart.draw()
 
-    logger.debug('Flowchart has been drawn. Now raise it to the top')
+    logger.debug('SEAMM has been drawn. Now raise it to the top')
 
     # bring it to the top of all windows
     root.lift()
