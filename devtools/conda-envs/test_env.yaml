@@ -26,6 +26,7 @@ dependencies:
     - Pmw
     - pyuca
     - seamm-util>=0.6
+    - seamm-widgets
     - stevedore
       # Testing
     - yapf
