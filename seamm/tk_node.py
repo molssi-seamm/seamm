@@ -46,7 +46,9 @@ class TkNode(collections.abc.MutableMapping):
         y=None,
         w=None,
         h=None,
-        my_logger=logger
+        my_logger=logger,
+        keyword_metadata=None,
+        keywords=None
     ):
         """Initialize a node
 
@@ -56,6 +58,7 @@ class TkNode(collections.abc.MutableMapping):
         self.tk_flowchart = tk_flowchart
         self.tk_subflowchart = None
         self.node = node
+        self._keyword_metadata = keyword_metadata
         self.toplevel = None
         self.canvas = canvas
 
@@ -449,12 +452,16 @@ class TkNode(collections.abc.MutableMapping):
         self.dialog.activate(geometry='centerscreenfirst')
 
     def create_dialog(
-        self, title='Edit step', widget='frame', results_tab=False
+        self,
+        title='Edit step',
+        widget='frame',
+        results_tab=False,
     ):
         """Create the base dialog for editing the parameters for a step.
 
         At the moment I have removed the Help button.
         """
+        self.logger.debug('Create dialog in tk_node base class')
         self.dialog = Pmw.Dialog(
             self.toplevel,
             buttons=('OK', 'Cancel'),
@@ -470,7 +477,10 @@ class TkNode(collections.abc.MutableMapping):
             frame.pack(expand=tk.YES, fill=tk.BOTH)
             self['frame'] = frame
             return frame
-        elif widget == 'notebook' or results_tab:
+        elif (
+            widget == 'notebook' or results_tab or
+            self._keyword_metadata is not None
+        ):
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
             notebook.pack(side='top', fill=tk.BOTH, expand=tk.YES)
@@ -512,6 +522,18 @@ class TkNode(collections.abc.MutableMapping):
             self['results'].grid(row=1, column=0, sticky=tk.NSEW)
             rframe.columnconfigure(0, weight=1)
             rframe.rowconfigure(1, weight=1)
+
+        if self._keyword_metadata is not None:
+            # Next tab to handle adding keywords manually
+            self.logger.debug('Adding the keyword tab')
+            kframe = self['add_to_input'] = ttk.Frame(notebook)
+            notebook.add(kframe, text='Add to input', sticky=tk.NSEW)
+            self['keywords'] = sw.Keywords(
+                kframe,
+                metadata=self._keyword_metadata,
+                keywords=self.node.parameters['extra keywords'].value
+            )
+            self['keywords'].pack(expand='yes', fill='both')
 
         return frame
 
@@ -721,6 +743,10 @@ class TkNode(collections.abc.MutableMapping):
             if self.node.parameters is not None:
                 self.node.parameters.reset_widgets()
 
+            # Reset any keywords
+            if 'keywords' in self:
+                self['keywords'].reset()
+
             # Reset the layout to make sure it is correct
             self.reset_dialog()
 
@@ -760,6 +786,10 @@ class TkNode(collections.abc.MutableMapping):
                             tmp = results[key] = dict()
                         tmp['table'] = table
                         tmp['column'] = w_column.get()
+            # And any keywords
+            if 'keywords' in self:
+                P['extra keywords'].value = self['keywords'].get_keywords()
+                self['keywords'].keywords = P['extra keywords'].value
         else:
             self.dialog.deactivate(result)
             raise RuntimeError(
