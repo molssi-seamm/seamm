@@ -48,7 +48,7 @@ def flowchart():
         help='flowcharts to open initially'
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     # Sets log level to WARN going more verbose for each new -v.
     dbg_level = max(3 - args.verbose_count, 0) * 10
@@ -155,7 +155,9 @@ def flowchart():
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
-    root.createcommand('tk::mac::ShowHelp', tk_flowchart.help)
+    if sys.platform.startswith('darwin'):
+        root.createcommand('tk::mac::ShowHelp', tk_flowchart.help)
+
     root.bind_all('<' + CmdKey + 'N>', tk_flowchart.new_file)
     root.bind_all('<' + CmdKey + 'n>', tk_flowchart.new_file)
     root.bind_all('<' + CmdKey + 'O>', tk_flowchart.open_file)
@@ -166,8 +168,6 @@ def flowchart():
     root.bind_all('<' + CmdKey + 's>', tk_flowchart.save)
     root.bind_all('<' + CmdKey + 'C>', tk_flowchart.clean_layout)
     root.bind_all('<' + CmdKey + 'c>', tk_flowchart.clean_layout)
-
-    root.bind_all('<' + CmdKey + '`>', tk_flowchart.print_edges)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()

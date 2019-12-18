@@ -52,6 +52,12 @@ class Node(abc.ABC):
         """Make iterable!"""
         return self._uuid
 
+    def __eq__(self, other):
+        return (
+            self.__class__ == other.__class__ and
+            self.__hash__() == other.__hash__()
+        )
+
     @property
     def uuid(self):
         """The uuid of the node"""

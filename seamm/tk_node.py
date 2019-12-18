@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import abc
+import collections.abc
 import copy
 import logging
-import seamm
+import json
+import Pmw
 import pprint  # noqa: F401
+import seamm
+import seamm_widgets as sw
 import tkinter as tk
+import tkinter.ttk as ttk
 """A graphical node using Tk on a canvas"""
 
 logger = logging.getLogger(__name__)
 
 
-class TkNode(abc.ABC):
+class TkNode(collections.abc.MutableMapping):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
@@ -41,14 +45,20 @@ class TkNode(abc.ABC):
         x=None,
         y=None,
         w=None,
-        h=None
+        h=None,
+        my_logger=logger,
+        keyword_metadata=None,
+        keywords=None
     ):
         """Initialize a node
 
         Keyword arguments:
         """
+        self.logger = my_logger
         self.tk_flowchart = tk_flowchart
+        self.tk_subflowchart = None
         self.node = node
+        self._keyword_metadata = keyword_metadata
         self.toplevel = None
         self.canvas = canvas
 
@@ -75,10 +85,17 @@ class TkNode(abc.ABC):
         # Widget information
         self._widget = {}
         self.tk_var = {}
+        self.results_widgets = None
 
     def __hash__(self):
         """Make iterable!"""
         return self.node.uuid
+
+    def __eq__(self, other):
+        return (
+            self.__class__ == other.__class__ and
+            self.__hash__() == other.__hash__()
+        )
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -104,10 +121,6 @@ class TkNode(abc.ABC):
     def __len__(self):
         """The len() command"""
         return len(self._widget)
-
-    def __contains__(self, item):
-        """Return a boolean indicating if a widget exists."""
-        return item in self._widget
 
     @property
     def uuid(self):
@@ -417,7 +430,377 @@ class TkNode(abc.ABC):
             )
 
     def edit(self):
-        """Do-nothing base class method"""
+        """Present a dialog for editing this step's parameters.
+
+        Subclasses can override this.
+        """
+        # Create the dialog if it doesn't exist
+        if self.dialog is None:
+            self.create_dialog()
+            # After full creation, reset the dialog. This may do nothing,
+            # or may layout the widgets, but can only be done after fully
+            # creating the dialog.
+            self.reset_dialog()
+            # And resize the dialog to fit...
+            self.fit_dialog()
+
+        # And put it on-screen, the first time centered. If it contains
+        # a subflowchart, save it so it can be restored on a 'Cancel'
+        if self.tk_subflowchart is not None:
+            self.tk_subflowchart.push()
+
+        self.dialog.activate(geometry='centerscreenfirst')
+
+    def create_dialog(
+        self,
+        title='Edit step',
+        widget='frame',
+        results_tab=False,
+    ):
+        """Create the base dialog for editing the parameters for a step.
+
+        At the moment I have removed the Help button.
+        """
+        self.logger.debug('Create dialog in tk_node base class')
+        self.dialog = Pmw.Dialog(
+            self.toplevel,
+            buttons=('OK', 'Cancel'),
+            master=self.toplevel,
+            title=title,
+            command=self.handle_dialog
+        )
+        self.dialog.withdraw()
+
+        if widget == 'frame':
+            # Create a frame to hold everything
+            frame = ttk.Frame(self.dialog.interior())
+            frame.pack(expand=tk.YES, fill=tk.BOTH)
+            self['frame'] = frame
+            return frame
+        elif (
+            widget == 'notebook' or results_tab or
+            self._keyword_metadata is not None
+        ):
+            # A tabbed notebook
+            notebook = ttk.Notebook(self.dialog.interior())
+            notebook.pack(side='top', fill=tk.BOTH, expand=tk.YES)
+            self['notebook'] = notebook
+
+            # Main frame holding the widgets
+            frame = ttk.Frame(notebook)
+            self['frame'] = frame
+            notebook.add(frame, text='Parameters', sticky=tk.NW)
+
+        if results_tab:
+            # Second tab for results if requested
+            rframe = self['results frame'] = ttk.Frame(notebook)
+            notebook.add(rframe, text='Results', sticky=tk.NSEW)
+
+            # Shortcut for parameters
+            P = self.node.parameters
+
+            var = self.tk_var['create tables'] = tk.IntVar()
+            if P['create tables'].value == 'yes':
+                var.set(1)
+            else:
+                var.set(0)
+            self['create tables'] = ttk.Checkbutton(
+                rframe, text='Create tables if needed', variable=var
+            )
+            self['create tables'].grid(row=0, column=0, sticky=tk.W)
+
+            self['results'] = sw.ScrolledColumns(
+                rframe,
+                columns=[
+                    'Result',
+                    'Save',
+                    'Variable name',
+                    'In table',
+                    'Column name',
+                ]
+            )
+            self['results'].grid(row=1, column=0, sticky=tk.NSEW)
+            rframe.columnconfigure(0, weight=1)
+            rframe.rowconfigure(1, weight=1)
+
+        if self._keyword_metadata is not None:
+            # Next tab to handle adding keywords manually
+            self.logger.debug('Adding the keyword tab')
+            kframe = self['add_to_input'] = ttk.Frame(notebook)
+            notebook.add(kframe, text='Add to input', sticky=tk.NSEW)
+            self['keywords'] = sw.Keywords(
+                kframe,
+                metadata=self._keyword_metadata,
+                keywords=self.node.parameters['extra keywords'].value
+            )
+            self['keywords'].pack(expand='yes', fill='both')
+
+        return frame
+
+    def setup_results(self, properties, calculation='energy'):
+        """Layout the results tab of the dialog"""
+        results = self.node.parameters['results'].value
+
+        self.results_widgets = []
+        table = self['results']
+        frame = table.interior()
+
+        row = 0
+        for key, entry in properties.items():
+            if 'calculation' not in entry:
+                continue
+            if calculation not in entry['calculation']:
+                continue
+            if 'dimensionality' not in entry:
+                continue
+            if entry['dimensionality'] != 'scalar':
+                continue
+
+            widgets = []
+            widgets.append(key)
+
+            table.cell(row, 0, entry['description'])
+
+            # variable
+            var = self.tk_var[key] = tk.IntVar()
+            var.set(0)
+            w = ttk.Checkbutton(frame, variable=var)
+            table.cell(row, 1, w)
+            widgets.append(w)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower())
+            table.cell(row, 2, e)
+            widgets.append(e)
+
+            if key in results:
+                if 'variable' in results[key]:
+                    var.set(1)
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]['variable'])
+
+            # table
+            w = ttk.Combobox(frame, width=10)
+            table.cell(row, 3, w)
+            widgets.append(w)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower())
+            table.cell(row, 4, e)
+            widgets.append(e)
+
+            if key in results:
+                if 'table' in results[key]:
+                    w.set(results[key]['table'])
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]['column'])
+
+            self.results_widgets.append(widgets)
+            row += 1
+
+    def fit_dialog(self):
+        """Resize and fit the dialog to the current contents and the
+        constraint of the window.
+        """
+        self.logger.debug('Entering fit_dialog')
+        frame = self['frame']
+        frame.update_idletasks()
+        width = frame.winfo_width()
+        height = frame.winfo_height()
+        sw = frame.winfo_screenwidth()
+        sh = frame.winfo_screenheight()
+
+        self.logger.debug(
+            '  frame wxh = {} x {}, screen = {} x {}'.format(
+                width, height, sw, sh
+            )
+        )
+
+        mw = 0
+        mh = 0
+        if 'notebook' in self:
+            for tab in self['notebook'].tabs():
+                widget = frame.nametowidget(tab)
+                widget.update_idletasks()
+                self.logger.debug('  widget = {}'.format(widget))
+                ww = widget.winfo_width()
+                hh = widget.winfo_height()
+                w = widget.winfo_reqwidth()
+                h = widget.winfo_reqheight()
+                self.logger.debug(
+                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                        tab, ww, hh, w, h
+                    )
+                )
+                if w > mw:
+                    mw = w
+                if h > mh:
+                    mh = h
+                if ww > width:
+                    width = ww
+                if hh > height:
+                    height = hh
+            # Need to do results again using the inside of the scrolled table..
+            if 'results' in self:
+                widget = self['results'].interior()
+                self.logger.debug('  widget = {}'.format(widget))
+                widget.update_idletasks()
+                ww = widget.winfo_width()
+                hh = widget.winfo_height()
+                w = widget.winfo_reqwidth()
+                h = widget.winfo_reqheight()
+                self.logger.debug(
+                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                        tab, ww, hh, w, h
+                    )
+                )
+                if w > mw:
+                    mw = w
+                if h > mh:
+                    mh = h
+                if ww > width:
+                    width = ww
+                if hh > height:
+                    height = hh
+        else:
+            mw = frame.winfo_reqwidth()
+            mh = frame.winfo_reqheight()
+            self.logger.debug('  frame requested = {} x {}'.format(mw, mh))
+
+        if width < mw:
+            width = mw
+        width += 70
+        if width + 70 > 0.9 * sw:
+            width = int(0.9 * sw)
+        if height < mh:
+            height = mh
+        height += 70
+        if height > 0.9 * sh:
+            height = int(0.9 * sh)
+
+        self.dialog.geometry('{}x{}'.format(width, height))
+
+    def reset_dialog(self, widget=None):
+        """Reset the layout of the dialog as needed for the parameters.
+
+        In this base class this does nothing. Override as needed in the
+        subclasses derived from this class.
+        """
+        pass
+
+    def handle_dialog(self, result):
+        """Do the right thing when the dialog is closed.
+        """
+        if result is None or result == 'Cancel':
+            self.dialog.deactivate(result)
+
+            # If there is a subflowchart, revert to the saved copy
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop()
+
+            # Reset the results widgets if they exist
+            if self.results_widgets is not None:
+                results = self.node.parameters['results']['value']
+                self.logger.debug('Resetting results on Cancel')
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug('  results dict\n---------')
+                    for key, item in results.items():
+                        self.logger.debug(key)
+                        self.logger.debug(
+                            json.dumps(results[key], sort_keys=True, indent=3)
+                        )
+
+                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
+                    self.logger.debug('  key: {}'.format(key))
+                    w_variable.delete(0, tk.END)
+                    w_table.delete(0, tk.END)
+                    w_column.delete(0, tk.END)
+                    if key in results:
+                        tmp = results[key]
+                        self.logger.debug(
+                            '  key dict\n---------\n' +
+                            json.dumps(tmp, sort_keys=True, indent=3) +
+                            '\n-----'
+                        )
+                        if 'variable' in tmp:
+                            self.tk_var[key].set(1)
+                            w_variable.insert(0, tmp['variable'])
+                        else:
+                            self.tk_var[key].set(0)
+                            w_variable.insert(0, key.lower())
+
+                        if 'table' in tmp:
+                            w_table.insert(0, tmp['table'])
+                            w_column.insert(0, tmp['column'])
+                        else:
+                            w_table.set('')
+                            w_column.insert(0, key.lower())
+                    else:
+                        self.logger.debug('  resetting widgets')
+                        self.tk_var[key].set(0)
+                        w_variable.insert(0, key.lower())
+                        w_column.insert(0, key.lower())
+
+            # Reset the parameters, if any
+            if self.node.parameters is not None:
+                self.node.parameters.reset_widgets()
+
+            # Reset any keywords
+            if 'keywords' in self:
+                self['keywords'].reset()
+
+            # Reset the layout to make sure it is correct
+            self.reset_dialog()
+
+        elif result == 'Help':
+            self.help()
+        elif result == 'OK':
+            self.dialog.deactivate(result)
+
+            # Capture the parameters from the widgets
+            if self.node.parameters is not None:
+                self.node.parameters.set_from_widgets()
+
+            # If there is a subflowchart, throw the saved copy away
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop_and_discard()
+
+            # Get what results to store, if the results tab exists
+            if self.results_widgets is not None:
+                # Shortcut for parameters
+                P = self.node.parameters
+
+                # and from the results tab...
+                if self.tk_var['create tables'].get():
+                    P['create tables'].value = 'yes'
+                else:
+                    P['create tables'].value = 'no'
+
+                results = P['results'].value = {}
+                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
+
+                    if self.tk_var[key].get():
+                        tmp = results[key] = dict()
+                        tmp['variable'] = w_variable.get()
+                    table = w_table.get()
+                    if table != '':
+                        if key not in results:
+                            tmp = results[key] = dict()
+                        tmp['table'] = table
+                        tmp['column'] = w_column.get()
+            # And any keywords
+            if 'keywords' in self:
+                P['extra keywords'].value = self['keywords'].get_keywords()
+                self['keywords'].keywords = P['extra keywords'].value
+        else:
+            self.dialog.deactivate(result)
+            raise RuntimeError(
+                "Don't recognize dialog result '{}'".format(result)
+            )
+
+    def help(self):
+        """Base class for presenting help, does nothing.
+
+        Subclasses should override this.
+        """
         pass
 
     def to_dict(self):
@@ -480,9 +863,9 @@ class TkNode(abc.ABC):
                 translate[node] = tk_flowchart.get_node('1')
             else:
                 new_node = copy.copy(node)
-                logger.debug('creating {} node'.format(extension))
+                self.logger.debug('creating {} node'.format(extension))
                 plugin = tk_flowchart.plugin_manager.get(extension)
-                logger.debug('  plugin object: {}'.format(plugin))
+                self.logger.debug('  plugin object: {}'.format(plugin))
                 tk_node = plugin.create_tk_node(
                     tk_flowchart=tk_flowchart,
                     canvas=tk_flowchart.canvas,
@@ -517,7 +900,9 @@ class TkNode(abc.ABC):
         # how many outgoing edges are there?
         n_edges = len(self.tk_flowchart.edges(self, direction='out'))
 
-        logger.debug('node.default_edge_label, n_edges = {}'.format(n_edges))
+        self.logger.debug(
+            'node.default_edge_label, n_edges = {}'.format(n_edges)
+        )
 
         if n_edges == 0:
             return "next"
