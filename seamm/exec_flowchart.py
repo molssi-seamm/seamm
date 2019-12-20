@@ -15,6 +15,7 @@ import seamm
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
 import sys
+import traceback
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -92,12 +93,17 @@ class ExecFlowchart(object):
         while next_node:
             try:
                 next_node = next_node.run()
+            except DeprecationWarning as e:
+                print('\nDeprecation warning: ' + str(e))
+                traceback.print_exc(file=sys.stderr)
+                traceback.print_exc(file=sys.stdout)
             except Exception as e:
                 print(
                     'Error running flowchart: {} in {}'.format(
                         str(e), str(next_node)
                     )
                 )
+                traceback.print_exc(file=sys.stdout)
                 logger.critical(
                     'Error running flowchart: {} in {}'.format(
                         str(e), str(next_node)
@@ -109,6 +115,7 @@ class ExecFlowchart(object):
                     "Unexpected error running flowchart: ",
                     sys.exc_info()[0]
                 )
+                traceback.print_exc(file=sys.stdout)
                 logger.critical(
                     "Unexpected error running flowchart: ",
                     sys.exc_info()[0]
