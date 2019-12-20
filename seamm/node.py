@@ -5,7 +5,7 @@
 
 """
 
-import abc
+import collections.abc
 import json
 import logging
 import seamm
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 
 
-class Node(abc.ABC):
+class Node(collections.abc.Hashable):
 
     def __init__(self, flowchart=None, title='', extension=None):
         """Initialize a node
