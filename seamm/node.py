@@ -59,8 +59,6 @@ class Node(abc.ABC):
             filepath = pkg_resources.resource_filename(
                 self.module, 'data/references.bib'
             )
-            print("filepath = '{}'".format(filepath))
-            
             logger.info("bibliography file path = '{}'".format(filepath))
 
             if os.path.exists(filepath):
