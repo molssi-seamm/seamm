@@ -1,15 +1,26 @@
-from datetime import datetime
+# -*- coding: utf-8 -*-
+
+"""Run a SEAMM flowchart.
+
+SEAMM flowcharts have a 'magic' line, so that they can be executed directly.
+Or, run_flowchart can be invoked with the name of flowchart.
+"""
+
 import configargparse
+import cpuinfo
+import datetime
+import fasteners
 import json
 import locale
 import logging
 import seamm
-import seamm_util  # MUST come after seamm
 import seamm_util.printing as printing
 import os
 import os.path
+import re
 import shutil
 import sys
+import time
 
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
@@ -57,11 +68,34 @@ def run():
         help="increases log verbosity for each occurence."
     )
     parser.add_argument(
-        "--directory",
-        dest="directory",
+        "--title",
+        dest="title",
+        default='',
+        action="store",
+        env_var='SEAMM_TITLE',
+        help="The title for this run."
+    )
+    parser.add_argument(
+        "--datastore",
+        dest="datastore",
+        default='.',
+        action="store",
+        env_var='SEAMM_DATASTORE',
+        help="The datastore (directory) for this run."
+    )
+    parser.add_argument(
+        "--job-id-file",
+        dest="job_id_file",
         default=None,
         action="store",
-        help="Directory to write output and other files."
+        help="The job_id file to use."
+    )
+    parser.add_argument(
+        "--project",
+        dest="projects",
+        action="append",
+        env_var='SEAMM_PROJECT',
+        help="The project(s) for this job."
     )
     parser.add_argument("--force", dest="force", action='store_true')
     parser.add_argument(
@@ -80,15 +114,28 @@ def run():
     numeric_level = max(3 - args.verbose_count, 0) * 10
     logging.basicConfig(level=numeric_level)
 
-    # Create the working directory where files, output, etc. go
+    # Create the working directory where files, output, etc. go.
+    # At the moment this is datastore/job_id
 
-    if args.directory is None:
-        wdir = os.path.join(
-            os.getcwd(),
-            datetime.now().isoformat(sep='_', timespec='seconds')
-        )
+    datastore = os.path.expanduser(args.datastore)
+
+    if args.projects is None:
+        projects = ['default']
     else:
-        wdir = os.path.join(os.getcwd(), args.directory)
+        projects = args.projects
+
+    if args.job_id_file is None:
+        job_id_file = os.path.join(datastore, 'job.id')
+
+    # Get the job_id from the file, creating the file if necessary
+    job_id = get_job_id(job_id_file)
+
+    # And put it all together
+    wdir = os.path.abspath(
+        os.path.join(
+            datastore, 'projects', projects[0], 'Job_{:06d}'.format(job_id)
+        )
+    )
 
     logging.info("The working directory is '{}'".format(wdir))
 
@@ -137,44 +184,121 @@ def run():
     flowchart = seamm.Flowchart(directory=wdir, output=args.output)
     flowchart.read(args.filename)
 
-    exec = seamm.ExecFlowchart(flowchart)
+    # Set up the initial metadata for the job.
+    data = cpuinfo.get_cpu_info()
+    data['command line'] = sys.argv
+    data['title'] = args.title
+    data['working directory'] = wdir
+    data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+    data['state'] = 'started'
+    data['projects'] = projects
+    data['datastore'] = datastore
+    data['job id'] = job_id
+
+    # Change to the working directory and run the flowchart
     with cd(wdir):
-        exec.run(root=wdir)
+        # Output the initial metadate for the job.
+        with open('job_data.json', 'w') as fd:
+            json.dump(data, fd, indent=3, sort_keys=True)
 
+        t0 = time.time()
+        pt0 = time.process_time()
 
-def open_flowchart(name):
-    with open(name, 'r') as fd:
-        line = fd.readline(256)
-        # There may be exec magic as first line
-        if line[0:2] == '#!':
-            line = fd.readline(256)
-        if line[0:7] != '!MolSSI':
-            raise RuntimeError('File is not a MolSSI file! -- ' + line)
-        tmp = line.split()
-        if len(tmp) < 3:
-            raise RuntimeError('File is not a proper MolSSI file! -- ' + line)
-        if tmp[1] != 'flowchart':
-            raise RuntimeError('File is not a flowchart! -- ' + line)
-        flowchart_version = tmp[2]
-        logger.info(
-            'Reading flowchart version {} from file {}'.format(
-                flowchart_version, name
+        # And run the flowchart
+        try:
+            exec = seamm.ExecFlowchart(flowchart)
+            exec.run(root=wdir)
+            data['state'] = 'finished'
+        except Exception as e:
+            data['state'] = 'error'
+            data['error type'] = type(e).__name__
+            data['error message'] = str(e)
+
+        # Wrap things up
+        t1 = time.time()
+        pt1 = time.process_time()
+        data['end time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+        t = t1 - t0
+        pt = pt1 - pt0
+        data['elapsed time'] = t
+        data['process time'] = pt
+
+        with open('job_data.json', 'w') as fd:
+            json.dump(data, fd, indent=3, sort_keys=True)
+
+        printer.job(
+            "\nProcess time: {} ({:.3f} s)".format(
+                datetime.timedelta(seconds=pt), pt
+            )
+        )
+        printer.job(
+            "Elapsed time: {} ({:.3f} s)".format(
+                datetime.timedelta(seconds=t), t
             )
         )
 
-        data = json.load(fd, cls=seamm_util.JSONDecoder)
 
-    if data['class'] != 'Flowchart':
+def get_job_id(filename):
+    """Get the next job id from the given file.
+
+    This uses the fasteners module to provide locking so that
+    only one job at a time can access the file, so that the job
+    ids are unique and monotonically increasing.
+    """
+
+    lock_file = filename + '.lock'
+    lock = fasteners.InterProcessLock(lock_file)
+    locked = lock.acquire(blocking=True, timeout=5)
+
+    if locked:
+        if not os.path.isfile(filename):
+            job_id = 1
+            with open(filename, 'w') as fd:
+                fd.write('!MolSSI job_id 1.0\n')
+                fd.write('1\n')
+            lock.release()
+        else:
+            with open(filename, 'r+') as fd:
+                line = fd.readline()
+                pos = fd.tell()
+                if line == '':
+                    lock.release()
+                    raise EOFError(
+                        "job_id file '{}' is empty".format(filename)
+                    )
+                line = line.strip()
+                match = re.fullmatch(
+                    r'!MolSSI job_id ([0-9]+(?:\.[0-9]+)*)', line
+                )
+                if match is None:
+                    lock.release()
+                    raise RuntimeError(
+                        'The job_id file has an incorrect header: {}'
+                        .format(line)
+                    )
+                line = fd.readline()
+                if line == '':
+                    lock.release()
+                    raise EOFError(
+                        "job_id file '{}' is truncated".format(filename)
+                    )
+                try:
+                    job_id = int(line)
+                except TypeError:
+                    raise TypeError(
+                        "The job_id in file '{}' is not an integer: {}".format(
+                            filename, line
+                        )
+                    )
+                job_id += 1
+                fd.seek(pos)
+                fd.write('{:d}\n'.format(job_id))
+    else:
         raise RuntimeError(
-            'File {} does not contain a flowchart!'.format(name)
+            "Could not lock the job_id file '{}'".format(filename)
         )
-        return
 
-    # Restore the flowchart
-    flowchart = seamm.Flowchart()
-    flowchart.from_dict(data)
-
-    return flowchart
+    return job_id
 
 
 if __name__ == "__main__":

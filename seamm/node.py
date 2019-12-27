@@ -5,8 +5,8 @@
 
 """
 
-import abc
 import bibtexparser
+import collections.abc
 import json
 import logging
 import pkg_resources
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 
 
-class Node(abc.ABC):
+class Node(collections.abc.Hashable):
 
     def __init__(self, flowchart=None, title='', extension=None, module=None):
         """Initialize a node
@@ -71,6 +71,12 @@ class Node(abc.ABC):
     def __hash__(self):
         """Make iterable!"""
         return self._uuid
+
+    def __eq__(self, other):
+        return (
+            self.__class__ == other.__class__ and
+            self.__hash__() == other.__hash__()
+        )
 
     @property
     def uuid(self):

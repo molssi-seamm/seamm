@@ -73,6 +73,7 @@ class TkFlowchart(object):
         self.master = master
         self._flowchart = flowchart
         self.filename = None
+        self._stack = []
 
         self.graph = seamm.Graph()
 
@@ -84,7 +85,7 @@ class TkFlowchart(object):
         self.grid_x = 300  # Width of the columns for the step display
         self.grid_y = 70  # Height of the rows for the step display
         self.gap = 50
-        self.halo = 5
+        self.halo = 8  # How many pixels to consider 'near'
         self.data = None
         self._x0 = None
         self._y0 = None
@@ -142,9 +143,7 @@ class TkFlowchart(object):
         self.canvas.bind('<Leave>', self._unbound_to_mousewheel)
 
         # background image
-        filepath = pkg_resources.resource_filename(
-            __name__, 'data/framework.png'
-        )
+        filepath = pkg_resources.resource_filename(__name__, 'data/SEAMM.png')
         logger.info(filepath)
 
         self.image = Image.open(filepath)
@@ -884,17 +883,30 @@ class TkFlowchart(object):
         Used when creating a new edge.
         '''
 
+        logger.debug('drag arrow')
         node, anchor, x, y, arrow = self.data
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
+        logger.debug(
+            '  x = {}, y = {}, cx = {}, cy = {}, arrow = {}'.format(
+                x, y, cx, cy, arrow
+            )
+        )
         self.canvas.coords(arrow, x, y, cx, cy)
         # Check for being near another nodes anchor point
         result = self.find_items(cx, cy, exclude=(arrow,))
+        logger.debug('  result = {}'.format(result))
         if result is not None and result[0] == 'node':
+            logger.debug('       node = {}'.format(node))
+            logger.debug('  result[1] = {}'.format(result[1]))
             if node == result[1]:
                 self.canvas.delete('type=active_anchor')
+                logger.debug('  deactivate {}'.format(result[1]))
                 result[1].deactivate()
             else:
+                logger.debug(
+                    '  activate_node {} {}'.format(result[1], result[2])
+                )
                 self.activate_node(result[1], result[2])
 
     def drop_arrow(self, event):
@@ -1197,6 +1209,23 @@ class TkFlowchart(object):
         exec = seamm.ExecFlowchart(self.flowchart)
         exec.run()
         self.update_flowchart()
+
+    def push(self):
+        """Save a copy of the current flowchart on the stack.
+        """
+        self.update_flowchart()
+        self._stack.append(self.flowchart.to_dict())
+
+    def pop(self):
+        """Replace the current flowchart with the version on the stack.
+        """
+        self.flowchart.from_dict(self._stack.pop())
+        self.from_flowchart()
+
+    def pop_and_discard(self):
+        """Remove the saved copy from the stack
+        """
+        self._stack.pop()
 
     def update_flowchart(self):
         """Update the non-graphical flowchart"""

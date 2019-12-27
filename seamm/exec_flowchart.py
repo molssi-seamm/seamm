@@ -16,6 +16,8 @@ import reference_handler
 import seamm
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
+import sys
+import traceback
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -57,7 +59,33 @@ class ExecFlowchart(object):
         )
 
         while next_node:
-            next_node = next_node.describe()
+            try:
+                next_node = next_node.describe()
+            except Exception as e:
+                print(
+                    'Error describing flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
+                logger.critical(
+                    'Error describing flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error describing flowchart: {} in {}".format(
+                        sys.exc_info()[0], str(next_node)
+                    )
+                )
+                logger.critical(
+                    "Unexpected error describing flowchart: {} in {}".format(
+                        sys.exc_info()[0], str(next_node)
+                    )
+                )
+                raise
+
         job.job('')
 
         # And actually run it!
@@ -65,8 +93,37 @@ class ExecFlowchart(object):
 
         next_node = self.flowchart.get_node('1')
         while next_node:
-            next_node = next_node.run()
-
+            try:
+                next_node = next_node.run()
+            except DeprecationWarning as e:
+                print('\nDeprecation warning: ' + str(e))
+                traceback.print_exc(file=sys.stderr)
+                traceback.print_exc(file=sys.stdout)
+            except Exception as e:
+                print(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
+                traceback.print_exc(file=sys.stdout)
+                logger.critical(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(next_node)
+                    )
+                )
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                traceback.print_exc(file=sys.stdout)
+                logger.critical(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                raise
+ 
         # And print out the references
         filename = os.path.join(
             self.flowchart.root_directory, 'references.db'

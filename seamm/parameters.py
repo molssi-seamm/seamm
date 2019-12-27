@@ -76,13 +76,13 @@ class Parameter(collections.abc.MutableMapping):
 
     def __repr__(self):
         """The official string representation of this object"""
-        if self.units or self.units == '':
+        if self.units is None or self.units == '':
             return self.value
         else:
             return ('{} {}').format(self.value, self.units)
 
     def __str__(self):
-        if not self.units or self.units == '':
+        if self.units is None or self.units == '':
             if self.kind == 'integer':
                 try:
                     value = int(self.value)
@@ -203,7 +203,9 @@ class Parameter(collections.abc.MutableMapping):
 
         if value == '':
             value = None
-        if value is not None:
+        if value is None:
+            self.dimensionality = None
+        else:
             tmp = ureg(value)
             logger.debug("   tmp = '{}'".format(tmp))
             if self.dimensionality is None:
@@ -232,21 +234,21 @@ class Parameter(collections.abc.MutableMapping):
     def default_units(self, value):
         if value == '':
             value = None
-        if value is not None:
+        if value is None:
+            self.dimensionality = None
+        else:
             tmp = ureg(value)
             if self.dimensionality is None:
                 self.dimensionality = tmp.dimensionality
 
-                if tmp.dimensionality != self.dimensionality:
-                    raise RuntimeError(
-                        (
-                            "The default units '{}' have a different "
-                            "dimensionality than the parameters: "
-                            "'{}' != '{}'"
-                        ).format(
-                            value, tmp.dimensionality, self.dimensionality
-                        )
-                    )
+            if tmp.dimensionality != self.dimensionality:
+                raise RuntimeError(
+                    (
+                        "The default units '{}' have a different "
+                        "dimensionality than the parameters: "
+                        "'{}' != '{}'"
+                    ).format(value, tmp.dimensionality, self.dimensionality)
+                )
         self._data['default_units'] = value
 
     @property
@@ -286,7 +288,7 @@ class Parameter(collections.abc.MutableMapping):
     @property
     def has_units(self):
         """Does this parameter have units associated?"""
-        if self.dimensionality:
+        if self.dimensionality is None:
             return False
         if self.dimensionality == '':
             return False
@@ -344,11 +346,11 @@ class Parameter(collections.abc.MutableMapping):
         # format if requested
         if formatted:
             result = self.format_string.format(result)
-            if self.units:
+            if self.units is not None and self.units != '':
                 result += ' ' + self.units
 
         # and run into pint quantity if requested
-        if units and self.units:
+        if units and self.units is not None and self.units != '':
             result = Q_(result, self.units)
 
         return result
@@ -391,26 +393,16 @@ class Parameter(collections.abc.MutableMapping):
         logger.debug('Creating widget for {}'.format(type(self)))
 
         if self._widget is not None:
-            if self._widget.winfo_exists():
-                raise RuntimeError(
-                    'Widget for Parameter {} already exists!'.format(self)
-                )
-
-        logger.debug('   finished checking if the widget already exists.')
+            logger.debug('   Destroying existing widget.')
+            try:
+                self._widget.destroy()
+            except Exception:
+                pass
 
         labeltext = kwargs.pop('labeltext', self.description)
 
         if self.enumeration:
-            if self.dimensionality:
-                logger.debug('   making UnitCombobox')
-                w = sw.UnitCombobox(
-                    frame,
-                    labeltext=labeltext,
-                    values=self.enumeration,
-                    **kwargs
-                )
-                w.set(self.value, self.units)
-            else:
+            if self.dimensionality is None:
                 logger.debug('    making LabeledCombobox')
                 w = sw.LabeledCombobox(
                     frame,
@@ -419,15 +411,24 @@ class Parameter(collections.abc.MutableMapping):
                     **kwargs
                 )
                 w.set(self.value)
-        else:
-            if self.dimensionality:
-                logger.debug('   making UnitEntry')
-                w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
-                w.set(self.value, self.units)
             else:
+                logger.debug('   making UnitCombobox')
+                w = sw.UnitCombobox(
+                    frame,
+                    labeltext=labeltext,
+                    values=self.enumeration,
+                    **kwargs
+                )
+                w.set(self.value, self.units)
+        else:
+            if self.dimensionality is None:
                 logger.debug('   making LabeledEntry')
                 w = sw.LabeledEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value)
+            else:
+                logger.debug('   making UnitEntry')
+                w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
+                w.set(self.value, self.units)
 
         self._widget = w
 
@@ -435,8 +436,19 @@ class Parameter(collections.abc.MutableMapping):
         return w
 
     def set_from_widget(self):
-        """Set the value from the widget"""
-        self.set(self._widget.get())
+        """Set the value from the widget, ignoring if there is no widget.
+        """
+        if self._widget is not None:
+            self.set(self._widget.get())
+
+    def reset_widget(self):
+        """Reset the values in the widget, if it has been created.
+        """
+        if self._widget is not None:
+            if self.dimensionality is None:
+                self._widget.set(self.value)
+            else:
+                self._widget.set(self.value, self.units)
 
     def to_dict(self):
         """Convert into a string suitable for editing"""
@@ -615,7 +627,11 @@ class Parameters(collections.abc.MutableMapping):
 
         data = {}
         for key in self:
-            data[key] = str(self[key])
+            try:
+                data[key] = str(self[key])
+            except Exception as e:
+                logger.warning("Cannot format '{}': {}".format(key, str(e)))
+                data[key] = '#err#'
 
         return data
 
@@ -633,3 +649,21 @@ class Parameters(collections.abc.MutableMapping):
             )
 
         return data
+
+    def set_from_widgets(self):
+        """Convenience function to set the parameters from their widgets."""
+        for key in self:
+            self[key].set_from_widget()
+
+    def reset_widgets(self):
+        """Convenience function to reset the widgets to the current value."""
+        for key in self:
+            try:
+                self[key].reset_widget()
+            except ValueError as e:
+                logger.warning(
+                    'Error resetting widget for {}: {}'.format(key, str(e))
+                )
+                raise
+            except Exception:
+                raise
