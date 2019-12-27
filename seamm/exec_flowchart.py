@@ -71,17 +71,38 @@ class ExecFlowchart(object):
         filename = os.path.join(
             self.flowchart.root_directory, 'references.db'
         )
-        references = reference_handler.Reference_Handler(filename)
+        references = reference_handler.ReferenceHandler(filename)
 
-        job.job('There are {} citations:'.format(references.total_citations()))
-        lines = references.dump(fmt='text')
-        i = 0
-        for line in lines:
-            i += 1
-            job.job(
-                '{:6d} ({:d}/{:d}) {:s}'.format(i, line[2], line[3], line[1])
-            )
-        
+        if references.total_citations() > 0:
+            tmp = {}
+            citations = references.dump(fmt='text')
+            for citation, text, count, level in citations:
+                if level not in tmp:
+                    tmp[level] = {}
+                tmp[level][citation] = (text, count)
+
+            for level, ref_dict in sorted(tmp.items(), key=lambda x: x[0]):
+                if level == 1:
+                    job.job('\nPrimary references:\n')
+                elif level == 2:
+                    job.job('\nSecondary references:\n')
+                else:
+                    job.job('\nLess important references:\n')
+
+                lines = []
+                for citation in sorted(ref_dict.keys()):
+                    text, count = ref_dict[citation]
+                    if count == 1:
+                        lines.append('\t({:s}) {:s}'.format(citation, text))
+                    else:
+                        lines.append(
+                            '\t({:s}) {:s} (used {:d} times)'.format(
+                                citation, text, count
+                            )
+                        )
+                job.job(
+                    __('\n\n'.join(lines), indent=4*' ', indent_initial=False)
+                )
         # Close the reference handler, which should force it to close the
         # connection.
         references = None
