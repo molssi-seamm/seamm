@@ -5,9 +5,12 @@
 
 """
 
+import bibtexparser
 import collections.abc
 import json
 import logging
+import pkg_resources
+import reference_handler
 import seamm
 import seamm_util  # MUST come after seamm
 from seamm_util.printing import FormattedText as __
@@ -23,13 +26,14 @@ job = printing.getPrinter()
 
 class Node(collections.abc.Hashable):
 
-    def __init__(self, flowchart=None, title='', extension=None):
+    def __init__(self, flowchart=None, title='', extension=None, module=None):
         """Initialize a node
 
         Keyword arguments:
         """
 
         self._uuid = uuid.uuid4().int
+        self.module = module
         self.parent = None
         self.flowchart = flowchart
         self._title = title
@@ -37,6 +41,7 @@ class Node(collections.abc.Hashable):
         self._id = None
         self.extension = extension
         self._visited = False
+        self._references = None
 
         self.parameters = None  # Object containing control parameters
 
@@ -47,6 +52,21 @@ class Node(collections.abc.Hashable):
 
         # Set up our formatter for printing
         self.formatter = logging.Formatter(fmt='{message:s}', style='{')
+
+        # Setup the bibliography
+        self.bibliography = {}
+        if self.module:
+            filepath = pkg_resources.resource_filename(
+                self.module, 'data/references.bib'
+            )
+            logger.info("bibliography file path = '{}'".format(filepath))
+
+            if os.path.exists(filepath):
+                with open(filepath) as fd:
+                    tmp = bibtexparser.load(fd).entries_dict
+                writer = bibtexparser.bwriter.BibTexWriter()
+                for key, data in tmp.items():
+                    self.bibliography[key] = writer._entry_to_bibtex(data)
 
     def __hash__(self):
         """Make iterable!"""
@@ -119,6 +139,25 @@ class Node(collections.abc.Hashable):
                 '.'.join(str(e) for e in self._id), self.title, self.version
             )
         )
+
+    @property
+    def references(self):
+        """The reference handle for citations."""
+        if self._references is None:
+            filename = os.path.join(
+                self.flowchart.root_directory, 'references.db'
+            )
+            self._references = reference_handler.Reference_Handler(filename)
+
+        return self._references
+
+    @references.setter
+    def references(self, value):
+        if self._references is not None:
+            self._references.conn.commit()
+            self._references.__del__()
+
+        self._references = value
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
