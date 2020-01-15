@@ -123,11 +123,9 @@ class ExecFlowchart(object):
                     sys.exc_info()[0]
                 )
                 raise
- 
+
         # And print out the references
-        filename = os.path.join(
-            self.flowchart.root_directory, 'references.db'
-        )
+        filename = os.path.join(self.flowchart.root_directory, 'references.db')
         references = reference_handler.ReferenceHandler(filename)
 
         if references.total_citations() > 0:
@@ -158,9 +156,12 @@ class ExecFlowchart(object):
                             )
                         )
                 job.job(
-                    __('\n\n'.join(lines), indent=4*' ', indent_initial=False)
+                    __(
+                        '\n\n'.join(lines),
+                        indent=4 * ' ',
+                        indent_initial=False
+                    )
                 )
         # Close the reference handler, which should force it to close the
         # connection.
         references = None
-
