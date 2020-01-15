@@ -7,7 +7,6 @@ import seamm
 import seamm_util  # MUST come after seamm
 import os
 import os.path
-import pprint  # noqa: F401
 import stat
 """A flowchart, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe

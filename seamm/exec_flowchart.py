@@ -164,4 +164,4 @@ class ExecFlowchart(object):
                 )
         # Close the reference handler, which should force it to close the
         # connection.
-        references = None
+        del references

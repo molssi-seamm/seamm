@@ -5,7 +5,6 @@ import copy
 import logging
 import json
 import Pmw
-import pprint  # noqa: F401
 import seamm
 import seamm_widgets as sw
 import tkinter as tk

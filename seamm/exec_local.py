@@ -68,7 +68,7 @@ class ExecLocal(object):
                     os.umask(saved_umask)
                     shutil.rmtree(tmpdir)
                     return None
-                except:  # noqa: E722
+                except Exception:
                     logging.exception(
                         "An unexpected error occured writing file '{}'"
                         .format(path)
@@ -134,7 +134,7 @@ class ExecLocal(object):
                         .format(filename),
                         exc_info=exception
                     )
-                except:  # noqa: E722
+                except Exception:
                     exception = sys.exc_info()
                     logging.warning(
                         "An unexpected error occured reading file '{}'"
@@ -179,7 +179,7 @@ class ExecLocal(object):
             try:  # exceptions
                 # Get all the file info
                 stat_info = os.lstat(os.path.join(path, filename))
-            except:  # noqa: E722
+            except Exception:
                 result.append("{}: No such file or directory".format(filename))
                 continue
 

@@ -342,8 +342,8 @@ class Node(collections.abc.Hashable):
         for key in data:
             if key == 'attributes':
                 attributes = data['attributes']
-                for key in attributes:
-                    self.__dict__[key] = attributes[key]
+                for subkey in attributes:
+                    self.__dict__[subkey] = attributes[subkey]
             elif 'flowchart' in key:
                 self.__dict__[key].from_dict(data[key])
 

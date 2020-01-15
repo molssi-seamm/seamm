@@ -10,7 +10,6 @@ edge so that the graphical representation can be restored as needed.
 import logging
 import math
 import seamm
-import pprint  # noqa: F401
 from tkinter import font
 import tkinter as tk
 import weakref

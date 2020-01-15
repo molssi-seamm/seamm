@@ -87,7 +87,7 @@ class Parameter(collections.abc.MutableMapping):
                 try:
                     value = int(self.value)
                     return ('{:' + self.format_string + '}').format(value)
-                except:  # noqa: E722
+                except Exception:
                     return ('{}').format(self.value)
             if self.kind == 'float':
                 try:
@@ -112,7 +112,7 @@ class Parameter(collections.abc.MutableMapping):
                     value = float(self.value)
                     return ('{:' + self.format_string +
                             '} {}').format(value, self.units)
-                except:  # noqa: E722
+                except Exception:
                     return ('{} {}').format(self.value, self.units)
             if self.format_string == '':
                 return '{} {}'.format(self.value, self.units)
