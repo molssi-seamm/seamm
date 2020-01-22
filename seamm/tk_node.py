@@ -787,6 +787,7 @@ class TkNode(collections.abc.MutableMapping):
                         tmp['column'] = w_column.get()
             # And any keywords
             if 'keywords' in self:
+                P = self.node.parameters
                 P['extra keywords'].value = self['keywords'].get_keywords()
                 self['keywords'].keywords = P['extra keywords'].value
         else:
