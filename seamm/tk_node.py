@@ -40,6 +40,7 @@ class TkNode(collections.abc.MutableMapping):
         self,
         tk_flowchart=None,
         node=None,
+        node_type='simple',
         canvas=None,
         x=None,
         y=None,
@@ -71,7 +72,7 @@ class TkNode(collections.abc.MutableMapping):
             if self.node.h is None:
                 self.node.h = h
 
-        self.node_type = 'simple'
+        self.node_type = node_type
 
         self._border = None
         self.title_label = None
