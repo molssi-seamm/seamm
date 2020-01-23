@@ -1395,8 +1395,12 @@ class TkFlowchart(object):
             # only work on edges that go upwards
             x0, y0 = edge.node1.anchor_point(edge.anchor1)
             x1, y1 = edge.node2.anchor_point(edge.anchor2)
+            logger.debug(
+                '   edge {}: {}, {} to {}, {}'.format(edge, x0, y0, x1, y1)
+            )
             if y1 < y0:
                 edge.coords = [x0, y0]
+                logger.debug('   edge.node1 = {}'.format(edge.node1))
                 loop = self._loops[edge.node1][-1]
                 xmax, ymax = self._loopxy[loop]
                 xmax = (xmax + 1) * self.grid_x
