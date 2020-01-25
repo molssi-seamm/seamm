@@ -33,7 +33,7 @@ requirements:
   - requirements.txt:
       # update all dependencies and pin them
       update: insecure
-      pin: True
+      pin: False
   - requirements_dev.txt:
       # update insecure only
       update: insecure
