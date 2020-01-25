@@ -1,6 +1,8 @@
+bibtexparser==1.1.0
 bitmath==1.3.3.1
 certifi==2019.11.28
 ConfigArgParse==1.0
+future==0.18.2
 numpy==1.18.1
 pandas==0.25.3
 patsy==0.5.1
@@ -8,13 +10,13 @@ pbr==5.4.4
 Pillow==7.0.0
 Pint==0.10.1
 Pmw==2.0.1
+pyparsing==2.4.6
 python-dateutil==2.8.1
 pytz==2019.3
 pyuca==1.2
 reference-handler==0.1.2
 scipy==1.4.1
 seamm-util==0.7.0
-seamm-widgets==0.7.0
-six==1.13.0
-statsmodels==0.10.2
+six==1.14.0
+statsmodels==0.11.0
 stevedore==1.31.0
