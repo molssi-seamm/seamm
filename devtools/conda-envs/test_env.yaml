@@ -25,8 +25,9 @@ dependencies:
     - bitmath
     - Pmw
     - pyuca
-    - seamm-util>=0.6
-    - seamm-widgets
+    - reference-handler>=0.8
+    - seamm-util>=0.8
+    - seamm-widgets>=0.8
     - stevedore
       # Testing
     - yapf
