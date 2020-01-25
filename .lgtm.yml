@@ -9,6 +9,4 @@ path_classifiers:
     - versioneer.py  # Set Versioneer.py to an external "library" (3rd party code)
     - devtools/*
   generated:
-    - seamm/_version.py
-queries:
-  - exclude: py/missing-equals
+    - */_version.py
