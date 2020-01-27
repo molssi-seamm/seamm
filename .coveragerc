@@ -1,0 +1,5 @@
+# File to control coverage in pytest.
+[run]
+   omit =
+        */tk_*
+        */_version.py
