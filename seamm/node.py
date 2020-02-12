@@ -167,12 +167,8 @@ class Node(collections.abc.Hashable):
 
     def set_id(self, node_id):
         """Set the id for node to a given tuple"""
-        if self.visited:
-            return None
-        else:
-            self.visited = True
-            self._id = node_id
-            return self.next()
+        self._id = node_id
+        return 'next'
 
     def reset_id(self):
         """Reset the id for node"""
@@ -237,21 +233,17 @@ class Node(collections.abc.Hashable):
         """Write out information about what this node will do
         """
 
-        self.visited = True
-
         # The description
         job.job(__(self.description_text(), indent=self.indent))
 
-        next_node = self.next()
-
-        if next_node is None or next_node.visited:
-            return None
-        else:
-            return next_node
+        return 'next'
 
     def run(self, printer=None):
-        """Do whatever we need to do! The base class does nothing except
-        return the next node.
+        """Do whatever we need to do!
+
+        The base class creates the working directory, sets up printing and
+        returns the default edge to the next node. It should be called by all
+        run methods, but they may wish to override the edge to return.
         """
 
         # Create the directory for writing output and files
@@ -261,36 +253,7 @@ class Node(collections.abc.Hashable):
             # Setup up the printing for this step
             self.setup_printing(printer)
 
-        next_node = self.next()
-        if next_node:
-            logger.debug('returning next_node: {}'.format(next_node))
-        else:
-            logger.debug('returning next_node: None')
-
-        return next_node
-
-    def next(self):
-        """Return the next node in the flow
-        """
-
-        for edge in self.flowchart.edges(self, direction='out'):
-            if edge.edge_subtype == 'next':
-                logger.debug('Next node is: {}'.format(edge.node2))
-                return edge.node2
-
-        logger.debug('Reached the end of the flowchart')
-        return None
-
-    def previous(self):
-        """Return the previous node in the flow
-        """
-
-        for edge in self.flowchart.edges(self, direction='in'):
-            if edge.edge_type == 'execution' and \
-               edge.edge_subtype == 'next':
-                return edge.node1
-
-        return None
+        return 'next'
 
     def get_input(self):
         """Return the input from this subnode, usually used for

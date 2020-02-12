@@ -58,9 +58,10 @@ class ExecFlowchart(object):
             )
         )
 
-        while next_node:
+        while next_node is not None:
             try:
-                next_node = next_node.describe()
+                next_node.visited = True
+                edge_subtype = next_node.describe()
             except Exception as e:
                 print(
                     'Error describing flowchart: {} in {}'.format(
@@ -86,15 +87,25 @@ class ExecFlowchart(object):
                 )
                 raise
 
+            # Get the next node and check if we have visited it already.
+            next_node = self.flowchart.next_node(
+                next_node, edge_subtype=edge_subtype
+            )
+            if next_node is None or next_node.visited:
+                break
+
         job.job('')
 
         # And actually run it!
         job.job(('Running the flowchart\n' '---------------------'))
 
         next_node = self.flowchart.get_node('1')
-        while next_node:
+        logger.debug(
+            'Running the flowchart, start node is: {}'.format(next_node)
+        )
+        while next_node is not None:
             try:
-                next_node = next_node.run()
+                edge_subtype = next_node.run()
             except DeprecationWarning as e:
                 print('\nDeprecation warning: ' + str(e))
                 traceback.print_exc(file=sys.stderr)
@@ -123,6 +134,12 @@ class ExecFlowchart(object):
                     sys.exc_info()[0]
                 )
                 raise
+
+            # Get the next node
+            next_node = self.flowchart.next_node(
+                next_node, edge_subtype=edge_subtype
+            )
+            logger.debug('Next node is: {}'.format(next_node))
 
         # And print out the references
         filename = os.path.join(self.flowchart.root_directory, 'references.db')

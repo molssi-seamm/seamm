@@ -202,10 +202,47 @@ class Flowchart(object):
 
         # And traverse the nodes.
         n = 0
-        while next_node:
-            next_node = next_node.set_id((*node_id, str(n)))
+        logger.debug('Setting the ids, start node is ' + str(next_node))
+        while next_node is not None:
+            next_node.visited = True
+            try:
+                edge_subtype = next_node.set_id((*node_id, str(n)))
+            except Exception as e:
+                print(e)
+                raise
+            logger.debug('   edge_subtype = {}'.format(edge_subtype))
             n += 1
+
+            # Get the next node and check if we have visited it already.
+            next_node = self.next_node(next_node, edge_subtype=edge_subtype)
+            logger.debug('   next node is ' + str(next_node))
+            if next_node is None or next_node.visited:
+                break
+
         logger.debug('Finished setting ids')
+
+    def next_node(self, node, edge_subtype='next'):
+        """Return the next node from this one, following the given edge.
+
+        This method returns the next node in the graph connected to the
+        current node via the edge of the given subtype. For simple nodes
+        the edge subtype is 'next', which is the default for this method.
+
+        Parameters:
+            node: The current node on the graph.
+            edge_subtype: The subtype label for the desired edge. Defaults t0
+               'next'.
+
+        Returns:
+            next_node: the next node in the graph, or None if at the end.
+        """
+        for edge in self.edges(node, direction='out'):
+            if edge.edge_subtype == 'next':
+                logger.debug('Next node is: {}'.format(edge.node2))
+                return edge.node2
+
+        logger.debug('Reached the end of the flowchart')
+        return None
 
     # -------------------------------------------------------------------------
     # Strings, reading and writing
