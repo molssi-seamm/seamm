@@ -25,8 +25,7 @@ class TkEdge(seamm.Edge):
         graph,
         node1,
         node2,
-        edge_type='execution',
-        edge_subtype='next',
+        name='next',
         canvas=None,
         anchor1='s',
         anchor2='n',
@@ -44,9 +43,7 @@ class TkEdge(seamm.Edge):
         logger.debug('\tnode2 = {}'.format(node2))
 
         # Initialize the parent class
-        super().__init__(
-            graph, node1, node2, edge_type, edge_subtype, **kwargs
-        )
+        super().__init__(graph, node1, node2, name, **kwargs)
 
         self._data['canvas'] = canvas
         self.anchor1 = anchor1
@@ -133,11 +130,11 @@ class TkEdge(seamm.Edge):
         self._data['arrow_id'] = arrow_id
 
         # and the label
-        if self.edge_subtype != "next":
+        if self.name != "next":
             self.canvas.delete(self.tag() + '&& type=label')
             text = self.canvas.create_text(
                 self.label_position(x0, y0, x1, y1),
-                text=self.edge_subtype,
+                text=self.name,
                 font=font.Font(family='Helvetica', size=8),
                 tags=[self.tag(), 'type=label']
             )

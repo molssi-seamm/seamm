@@ -37,9 +37,6 @@ class StartNode(seamm.Node):
         """
         return seamm.__git_revision__
 
-    def set_uuid(self):
-        pass
-
     def description_text(self, P=None):
         """Return a short description of this step.
 

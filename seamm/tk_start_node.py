@@ -14,39 +14,41 @@ class TkStartNode(seamm.TkNode):
         'w': (-0.5, 0.0),
     }
 
-    def __init__(
-        self,
-        tk_flowchart=None,
-        node=None,
-        canvas=None,
-        x=150,
-        y=50,
-        w=200,
-        h=50
-    ):
-        '''Initialize a node
+    def __init__(self, canvas=None, x=150, y=50, w=200, h=50):
+        """Initialize the start node.
 
         Keyword arguments:
-        '''
-        super().__init__(
-            tk_flowchart=tk_flowchart,
-            node=node,
-            canvas=canvas,
-            x=x,
-            y=y,
-            w=w,
-            h=h
-        )
+        """
+        super().__init__(canvas=canvas, x=x, y=y, w=w, h=h, title='Start')
 
-    def right_click(self, event):
+        # The start node has the special uuid of 1
+        self._uuid = 1
+
+    @property
+    def version(self):
+        """The semantic version of this module.
+        """
+        return seamm.__version__
+
+    @property
+    def git_revision(self):
+        """The git version of this module.
+        """
+        return seamm.__git_revision__
+
+    def add_to_popup(self, popup_menu):
         """At the moment, since we shouldn't delete the start node
         there is nothing to do here.
         """
 
-        pass
+        popup_menu.destroy()
+        return None
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
+
+        # Remove the items form the canvas if they exist.
+        self.undraw()
 
         # the outline
         x0 = self.x - self.w / 2

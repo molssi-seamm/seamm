@@ -14,7 +14,7 @@ import tkinter.ttk as ttk
 logger = logging.getLogger(__name__)
 
 
-class TkNode(collections.abc.MutableMapping):
+class TkNode(seamm.NodeBase, collections.abc.MutableMapping):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
@@ -38,64 +38,49 @@ class TkNode(collections.abc.MutableMapping):
 
     def __init__(
         self,
-        tk_flowchart=None,
-        node=None,
         node_type='simple',
         canvas=None,
         x=None,
         y=None,
         w=None,
         h=None,
+        title='',
         my_logger=logger,
         keyword_metadata=None,
         keywords=None
     ):
-        """Initialize a node
+        """Initialize this graphical node
 
         Keyword arguments:
         """
+        super().__init__()
+
         self.logger = my_logger
-        self.tk_flowchart = tk_flowchart
+        self.tk_flowchart = None
         self.tk_subflowchart = None
-        self.node = node
         self._keyword_metadata = keyword_metadata
         self.toplevel = None
         self.canvas = canvas
-
-        if self.node is not None:
-            if self.node.x is None:
-                self.node.x = x
-            if self.node.y is None:
-                self.node.y = y
-            if self.node.w is None:
-                self.node.w = w
-            if self.node.h is None:
-                self.node.h = h
+        self._title = title
 
         self.node_type = node_type
 
         self._border = None
         self.title_label = None
         self._selected = False
-        self.popup_menu = None
         self._tmp = None
         self.dialog = None
         self.previous_grab = None
+
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
 
         # Widget information
         self._widget = {}
         self.tk_var = {}
         self.results_widgets = None
-
-    def __hash__(self):
-        """Make iterable!"""
-        return self.node.uuid
-
-    def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__ and
-            self.__hash__() == other.__hash__()
-        )
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -123,81 +108,40 @@ class TkNode(collections.abc.MutableMapping):
         return len(self._widget)
 
     @property
-    def uuid(self):
-        """The uuid of the node"""
-        return self.node.uuid
-
-    @property
-    def title(self):
-        """The title to display"""
-        return self.node.title
-
-    @title.setter
-    def title(self, value):
-        self.node.title = value
-        if self.title_label is not None:
-            self.canvas.itemconfigure(self.title_label, text=value)
-
-    @property
-    def tag(self):
-        """The string representation of the uuid of the node"""
-        return self.node.tag
-
-    @property
-    def flowchart(self):
-        """The flowchart object"""
-        return self.node.flowchart
-
-    @flowchart.setter
-    def flowchart(self, value):
-        """The flowchart object"""
-        self.node.flowchart = value
-
-    @property
     def x(self):
         """The x-position of the center of the graphical node"""
-        return self.node.x
+        return self.graphics['x']
 
     @x.setter
     def x(self, value):
-        self.node.x = value
+        self.graphics['x'] = value
 
     @property
     def y(self):
         """The y-position of the center of the graphical node"""
-        return self.node.y
+        return self.graphics['y']
 
     @y.setter
     def y(self, value):
-        self.node.y = value
+        self.graphics['y'] = value
 
     @property
     def w(self):
         """The width of the graphical node"""
-        return self.node.w
+        return self.graphics['w']
 
     @w.setter
     def w(self, value):
-        self.node.w = value
+        self.graphics['w'] = value
 
     @property
     def h(self):
         """The height of the graphical node"""
-        return self.node.h
+        return self.graphics['h']
 
     @h.setter
     def h(self, value):
-        self.node.h = value
-
-    def set_uuid(self):
-        self.node.set_uuid()
-
-    def connections(self):
-        """Return a list of all the incoming and outgoing edges
-        for this node, giving the anchor points and other node
-        """
-
-        return self.tk_flowchart.edges(self)
+        self.graphics['h'] = value
 
     @property
     def selected(self):
@@ -257,9 +201,6 @@ class TkNode(collections.abc.MutableMapping):
             self.x, self.y, text=self.title, tags=[self.tag, 'type=title']
         )
 
-        for direction, edge in self.connections():
-            edge.move()
-
     def undraw(self):
         """Remove all of our visual components
         """
@@ -267,44 +208,22 @@ class TkNode(collections.abc.MutableMapping):
         self.canvas.delete(self.tag)
 
     def move(self, deltax, deltay):
-        if self._tmp is None:
-            self._tmp = self.connections()
-
         self.x += deltax
         self.y += deltay
 
         self.canvas.move(self.tag, deltax, deltay)
 
-        for connection in self._tmp:
-            direction, edge = connection
-            edge.move()
-
-    def end_move(self, deltax, deltay):
-        self.move(deltax, deltay)
-        self._x0 = None
-        self._y0 = None
-        self._tmp = None
-
-    def right_click(self, event):
-        """Do whatever needs to be done for a right-click on this
-        item in the flowchart.
+    def add_to_popup(self, popup_menu):
+        """Handle the popup menu for a right click.
 
         Subclasses should override this as appropriate! The menu
-        created in this base method is accessible in subclasses
-        which should make it relatively easy to override.
+        is created by tk_flowchart with 'Delete' in place. You can
+        delete that command, add to the menu, etc. as needed.
         """
 
-        if self.popup_menu is not None:
-            self.popup_menu.destroy()
+        popup_menu.add_command(label="Edit..", command=self.edit)
 
-        self.popup_menu = tk.Menu(self.canvas, tearoff=0)
-        self.popup_menu.add_command(
-            label="Delete",
-            command=lambda: self.tk_flowchart.remove_node(self)
-        )
-
-        if type(self) is seamm.tk_node.TkNode:
-            self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
+        return popup_menu
 
     def double_click(self, event):
         """Do whatever needs to be done for a double-click on this
@@ -364,27 +283,6 @@ class TkNode(collections.abc.MutableMapping):
             "anchor position '{}' not implemented".format(anchor)
         )
 
-    def check_anchor_points(self, x, y, halo):
-        """If the position x, y is within halo or one of the anchor points
-        activate the point and return the name of the anchor point
-        """
-
-        points = []
-        for direction, edge in self.connections():
-            if direction == 'out':
-                points.append(edge.anchor1)
-            else:
-                points.append(edge.anchor2)
-
-        for point, x0, y0 in self.anchor_point():
-            if x >= x0 - halo and x <= x0 + halo and \
-               y >= y0 - halo and y <= y0 + halo:
-                if point in points:
-                    return None
-                else:
-                    return point
-        return None
-
     def is_inside(self, x, y, halo=0):
         """Return a boolean indicating whether the point x, y is inside
         this node, using halo as a size around the point
@@ -416,18 +314,6 @@ class TkNode(collections.abc.MutableMapping):
             outline='red',
             tags=[self.tag, 'type=active_anchor', 'anchor=' + point]
         )
-
-    def remove_edge(self, edge):
-        """Remove a given edge, or all edges if 'all' is given
-        """
-
-        if isinstance(edge, str) and edge == 'all':
-            for direction, obj in self.connections():
-                self.remove_edge(obj)
-        else:
-            self.tk_flowchart.graph.remove_edge(
-                edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
-            )
 
     def edit(self):
         """Present a dialog for editing this step's parameters.
@@ -497,7 +383,7 @@ class TkNode(collections.abc.MutableMapping):
             notebook.add(rframe, text='Results', sticky=tk.NSEW)
 
             # Shortcut for parameters
-            P = self.node.parameters
+            P = self.parameters
 
             var = self.tk_var['create tables'] = tk.IntVar()
             if P['create tables'].value == 'yes':
@@ -531,7 +417,7 @@ class TkNode(collections.abc.MutableMapping):
             self['keywords'] = sw.Keywords(
                 kframe,
                 metadata=self._keyword_metadata,
-                keywords=self.node.parameters['extra keywords'].value
+                keywords=self.parameters['extra keywords'].value
             )
             self['keywords'].pack(expand='yes', fill='both')
 
@@ -539,7 +425,7 @@ class TkNode(collections.abc.MutableMapping):
 
     def setup_results(self, properties, calculation='energy'):
         """Layout the results tab of the dialog"""
-        results = self.node.parameters['results'].value
+        results = self.parameters['results'].value
 
         self.results_widgets = []
         table = self['results']
@@ -698,7 +584,7 @@ class TkNode(collections.abc.MutableMapping):
 
             # Reset the results widgets if they exist
             if self.results_widgets is not None:
-                results = self.node.parameters['results']['value']
+                results = self.parameters['results']['value']
                 self.logger.debug('Resetting results on Cancel')
                 if self.logger.isEnabledFor(logging.DEBUG):
                     self.logger.debug('  results dict\n---------')
@@ -740,8 +626,8 @@ class TkNode(collections.abc.MutableMapping):
                         w_column.insert(0, key.lower())
 
             # Reset the parameters, if any
-            if self.node.parameters is not None:
-                self.node.parameters.reset_widgets()
+            if self.parameters is not None:
+                self.parameters.reset_widgets()
 
             # Reset any keywords
             if 'keywords' in self:
@@ -756,8 +642,8 @@ class TkNode(collections.abc.MutableMapping):
             self.dialog.deactivate(result)
 
             # Capture the parameters from the widgets
-            if self.node.parameters is not None:
-                self.node.parameters.set_from_widgets()
+            if self.parameters is not None:
+                self.parameters.set_from_widgets()
 
             # If there is a subflowchart, throw the saved copy away
             if self.tk_subflowchart is not None:
@@ -766,7 +652,7 @@ class TkNode(collections.abc.MutableMapping):
             # Get what results to store, if the results tab exists
             if self.results_widgets is not None:
                 # Shortcut for parameters
-                P = self.node.parameters
+                P = self.parameters
 
                 # and from the results tab...
                 if self.tk_var['create tables'].get():
@@ -788,7 +674,7 @@ class TkNode(collections.abc.MutableMapping):
                         tmp['column'] = w_column.get()
             # And any keywords
             if 'keywords' in self:
-                P = self.node.parameters
+                P = self.parameters
                 P['extra keywords'].value = self['keywords'].get_keywords()
                 self['keywords'].keywords = P['extra keywords'].value
         else:
@@ -886,29 +772,6 @@ class TkNode(collections.abc.MutableMapping):
                 if key not in ('node1', 'node2'):
                     attr[key] = edge[key]
             tk_flowchart.add_edge(node1, node2, **attr)
-
-    def default_edge_subtype(self):
-        """Return the default subtype of the edge. Usually this is ''
-        but for nodes with two or more edges leaving them, such as a loop, this
-        method will return an appropriate default for the current edge. For
-        example, by default the first edge emanating from a loop-node is the
-        'loop' edge; the second, the 'exit' edge.
-
-        A return value of 'too many' indicates that the node exceeds the number
-        of allowed exit edges.
-        """
-
-        # how many outgoing edges are there?
-        n_edges = len(self.tk_flowchart.edges(self, direction='out'))
-
-        self.logger.debug(
-            'node.default_edge_label, n_edges = {}'.format(n_edges)
-        )
-
-        if n_edges == 0:
-            return "next"
-        else:
-            return "too many"
 
     def next_anchor(self):
         """Return where the next node should be positioned. The default is

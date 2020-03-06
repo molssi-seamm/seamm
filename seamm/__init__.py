@@ -23,6 +23,7 @@ from seamm.tk_flowchart import TkFlowchart  # noqa: F401
 from seamm.graph import Graph  # noqa: F401
 from seamm.graph import Edge  # noqa: F401
 from seamm.exec_flowchart import ExecFlowchart  # noqa: F401
+from seamm.node_base import NodeBase  # noqa: F401
 from seamm.node import Node  # noqa: F401
 from seamm.start_node import StartNode  # noqa: F401
 from seamm.tk_edge import TkEdge  # noqa: F401
