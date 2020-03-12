@@ -40,7 +40,6 @@ same node as the tail/head for head/tail!). If the arrow is dropped
 anywhere else it just snaps back to its original place.
 """
 
-import copy
 import logging
 import math
 import seamm
@@ -59,11 +58,9 @@ def grey(value):
     return 255 - (255 - value) * 0.1
 
 
-class TkFlowchart(object):
+class TkFlowchart(seamm.FlowchartBase):
 
-    def __init__(
-        self, master=None, flowchart=None, namespace='org.molssi.seamm.tk'
-    ):
+    def __init__(self, master=None, namespace='org.molssi.seamm.tk'):
         '''Initialize a Flowchart object
 
         Keyword arguments:
@@ -71,7 +68,6 @@ class TkFlowchart(object):
 
         self.toplevel = None
         self.master = master
-        self._flowchart = flowchart
         self.filename = None
         self._stack = []
 
@@ -113,7 +109,7 @@ class TkFlowchart(object):
                     group, "end", plugin, text=plugin, tags="node"
                 )
         self.tree.tag_bind(
-            "node", sequence="<ButtonPress-1>", callback=self.create_node
+            "node", sequence="<ButtonPress-1>", callback=self.create_node_cb
         )
 
         # and the main canvas with scrollbars next to the right
@@ -188,15 +184,6 @@ class TkFlowchart(object):
         return self.graph.__iter__()
 
     @property
-    def flowchart(self):
-        """The flowchart, which holds the nodes"""
-        return self._flowchart
-
-    @flowchart.setter
-    def flowchart(self, value):
-        self._flowchart = value
-
-    @property
     def master(self):
         """The window that is our master"""
         return self._master
@@ -207,87 +194,163 @@ class TkFlowchart(object):
             self.toplevel = value.winfo_toplevel()
         self._master = value
 
-    def tag_exists(self, tag):
-        """Check if the node with a given tag exists"""
-        for node in self:
-            if node.tag == tag:
-                return True
-        return False
+    @property
+    def base_module(self):
+        """The module name with 'tk_' removed."""
+        tmp = self.__module__.split('.')
+        tmp[1] = tmp[1][3:]
+        return '.'.join(tmp)
 
-    def get_node(self, tag):
-        """Return the node with a given tag"""
-        if isinstance(tag, int):
-            tag = str(tag)
-        for node in self:
-            if str(node.uuid) == tag:
-                return node
-        return None
+    @property
+    def base_class(self):
+        """The class name with the prefix 'Tk' removed."""
+        return self.__class__.__name__[2:]
 
-    def last_node(self, tk_node='1'):
+    # -------------------------------------------------------------------------
+    # Node creation and deletion
+    # -------------------------------------------------------------------------
+
+    def create_node(self, plugin_name):
+        """Create a new node given the plug-in name"""
+        plugin = self.plugin_manager.get(plugin_name)
+        node = plugin.create_tk_node(canvas=self.canvas)
+        return node
+
+    def create_node_cb(self, event):
+        """Callback for create a node from the menu.
+
+        Assumes that this is called by a binding on the tree widgets, so it
+        uses the location on the tree to get the plug-in name.
+        """
+
+        # We are  not scrolling the left pane yet, so can just use the position
+        item = self.tree.identify_row(event.y)
+
+        # The text is the name of the plugin!
+        plugin_name = self.tree.item(item, option="text")
+
+        logger.debug('creating {} node'.format(plugin_name))
+
+        # Create the graphical node
+        node = self.create_node(plugin_name)
+        self.graph.add_node(node)
+
+        last_node, x, y, anchor1, anchor2 = self.next_position()
+
+        logger.debug('last node is {} at {}, {}'.format(last_node, x, y))
+
+        # Figure out where the node should be
+        # Use the grid approach
+        x0 = last_node.x
+        y0 = last_node.y
+
+        if anchor1 == 's':
+            node.x = x0
+            node.y = y0 + self.grid_y
+        elif anchor1 == 'e':
+            node.x = x0 + self.grid_x
+            node.y = y0
+        else:
+            dx, dy = node.anchor_point(anchor2)
+
+            # flip sign to get direction right
+            node.x = x - dx
+            node.y = y - dy
+
+        edge_name = last_node.default_edge_name()
+
+        logger.debug("default edge from last node is '{}'".format(edge_name))
+
+        if edge_name is not None:
+            # And connect this to the last node in the existing flowchart,
+            # which is probably what the user wants.
+
+            self.add_edge(
+                last_node,
+                node,
+                name=edge_name,
+                anchor1=anchor1,
+                anchor2=anchor2
+            )
+
+        # And update the picture on screen
+        self.draw()
+
+    def remove_node(self, node):
+        """Remove the given node"""
+
+        # remove the graphical rendering of the node...
+        node.undraw()
+
+        # ... and edges
+        for edge in node.edges():
+            edge.undraw()
+
+        # and then remove the actual node and edges
+        super().remove_node(node)
+
+    # -------------------------------------------------------------------------
+    # Finding nodes
+    # -------------------------------------------------------------------------
+
+    def last_node(self, node='1'):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
         logger.debug('Finding last node')
-        # Handle loops!
-        for node in self:
-            node.visited = False
-            logger.debug(
-                '   reset visited {} {} = {}'.format(
-                    node.visited, node.title, node
-                )
-            )
 
-        return self.last_node_helper(tk_node)
+        self.reset_visited()
+        return self.last_node_helper(node)
 
-    def last_node_helper(self, tk_node):
+    def last_node_helper(self, node):
         """Helper routine to handle the recursion"""
 
         # get the node to start the traversal
-        if isinstance(tk_node, str):
-            tk_node = self.get_node(tk_node)
+        if isinstance(node, str):
+            node = self.get_node(node)
 
         logger.debug(
-            '   last tk_node helper: {} {} = {}'.format(
-                tk_node.visited, tk_node.title, tk_node
+            '   last node helper: {} {} = {}'.format(
+                node.visited, node.title, node
             )
         )
 
-        tk_node.visited = True
-        next_tk_node = None
-        for edge in self.graph.edges(tk_node, direction='out'):
+        node.visited = True
+        next_node = None
+        for edge in self.graph.edges(node, direction='out'):
             if edge.node2.visited:
                 logger.debug(
-                    '\ttk_node {} {} has been visited'.format(
+                    '\tnode {} {} has been visited'.format(
                         edge.node2.title, edge.node2
                     )
                 )
-                next_tk_node = edge.node2
+                next_node = edge.node2
             else:
                 logger.debug(
-                    '\trecursing to tk_node {} {}'.format(
+                    '\trecursing to node {} {}'.format(
                         edge.node2.title, edge.node2
                     )
                 )
                 return self.last_node_helper(edge.node2)
 
-        if next_tk_node is not None:
-            tk_node = next_tk_node
+        if next_node is not None:
+            node = next_node
             logger.debug(
-                '\tchecking visited tk_node {} {} for new nodes'.format(
-                    tk_node.title, tk_node
+                '\tchecking visited node {} {} for new nodes'.format(
+                    node.title, node
                 )
             )
-            if tk_node.extension == "Join":
-                logger.debug('\t  tk_node is a join node, so look at next')
-                for edge in self.graph.edges(tk_node, direction='out'):
+            if node.extension == "Join":
+                logger.debug('\t  node is a join node, so look at next')
+                for edge in self.graph.edges(node, direction='out'):
                     logger.debug(
-                        '\ttk_node after join node is {} {}'.format(
+                        '\tnode after join node is {} {}'.format(
                             edge.node2.title, edge.node2
                         )
                     )
-                    tk_node = edge.node2
+                    node = edge.node2
 
-            for edge in self.graph.edges(tk_node, direction='out'):
+            for edge in self.graph.edges(node, direction='out'):
                 if edge.node2.visited:
                     logger.debug(
                         '\tnode {} {} has been visited'.format(
@@ -296,14 +359,14 @@ class TkFlowchart(object):
                     )
                 else:
                     logger.debug(
-                        '\trecursing to tk_node {} {}'.format(
+                        '\trecursing to node {} {}'.format(
                             edge.node2.title, edge.node2
                         )
                     )
                     return self.last_node_helper(edge.node2)
 
-        logger.debug('\treturning {} {}'.format(tk_node.title, tk_node))
-        return tk_node
+        logger.debug('\treturning {} {}'.format(node.title, node))
+        return node
 
     def add_edge(self, u, v, name='next', **kwargs):
         """Add a new edge to the graph.
@@ -327,9 +390,22 @@ class TkFlowchart(object):
     def edges(self, node=None, direction='both'):
         return self.graph.edges(node, direction)
 
+    # -------------------------------------------------------------------------
+    # Strings, reading and writing
+    # -------------------------------------------------------------------------
+
     def new_file(self, event=None):
         self.filename = None
         self.clear()
+
+    def from_dict(self, data):
+        """Recreate a flowchart from a dict. Inverse of to_dict."""
+
+        # The base class does most of the work
+        super().from_dict(data)
+
+        # But we need to redraw the picture
+        self.draw()
 
     def help(self, event=None):
         print("Help!!!!")
@@ -347,8 +423,7 @@ class TkFlowchart(object):
         if isinstance(filename, list):
             filename = filename[0]
 
-        self.flowchart.read(filename)
-        self.from_flowchart()
+        self.read(filename)
         self.filename = filename
 
     def clear(self, all=False):
@@ -366,25 +441,23 @@ class TkFlowchart(object):
 
     def create_start_node(self):
         """Create the start node"""
-        tk_start_node = seamm.TkStartNode(
+        start_node = seamm.TkStartNode(
             canvas=self.canvas, x=self.grid_x / 2, y=self.grid_y / 2
         )
 
-        self.graph.add_node(tk_start_node)
+        self.graph.add_node(start_node)
         logger.debug(
             'Created start node {} at {}, {}'.format(
-                tk_start_node, tk_start_node.x, tk_start_node.y
+                start_node, start_node.x, start_node.y
             )
         )
-        return tk_start_node
+        return start_node
 
     def save(self, event=None):
         if self.filename is None:
             self.save_file()
         else:
-            self.update_flowchart()
-            self.flowchart.write(self.filename)
-            self.flowchart.clear()
+            self.write(self.filename)
 
     def save_file(self, event=None):
         filename = tk_filedialog.asksaveasfilename(defaultextension='.flow')
@@ -679,82 +752,6 @@ class TkFlowchart(object):
         self._tmp = None
         self.mouse_op = None
         self.selection = None
-
-    def create_node(self, event):
-        """Create a node using the type in the menu.
-        """
-
-        # We are  not scrolling the left pane yet, so can just use the position
-        item = self.tree.identify_row(event.y)
-
-        # The text is the name of the plugin!
-        plugin_name = self.tree.item(item, option="text")
-
-        logger.debug('creating {} node'.format(plugin_name))
-
-        # Create the graphical node
-        plugin = self.plugin_manager.get(plugin_name)
-        logger.debug('  plugin object: {}'.format(plugin))
-        tk_node = plugin.create_tk_node(
-            canvas=self.canvas,
-            x=0,
-            y=0,
-        )
-        self.graph.add_node(tk_node)
-
-        last_node, x, y, anchor1, anchor2 = self.next_position()
-
-        # Figure out where the node should be
-        # Use the grid approach
-        x0 = last_node.x
-        y0 = last_node.y
-
-        if anchor1 == 's':
-            tk_node.x = x0
-            tk_node.y = y0 + self.grid_y
-        elif anchor1 == 'e':
-            tk_node.x = x0 + self.grid_x
-            tk_node.y = y0
-        else:
-            dx, dy = tk_node.anchor_point(anchor2)
-
-            # flip sign to get direction right
-            tk_node.x = x - dx
-            tk_node.y = y - dy
-
-        edge_name = last_node.default_edge_name()
-        if edge_name is not None:
-            # And connect this to the last node in the existing flowchart,
-            # which is probably what the user wants.
-
-            self.add_edge(
-                last_node,
-                tk_node,
-                name=edge_name,
-                anchor1=anchor1,
-                anchor2=anchor2
-            )
-
-        # And update the picture on screen
-        self.draw()
-
-    def remove_node(self, node):
-        """Remove the given node"""
-
-        # remove the graphical rendering
-        node.undraw()
-
-        # and edges
-        for edge in node.edges():
-            edge.undraw()
-            # remove reference to edge in the other node
-            if edge.node1 == node:
-                edge.node2.remove_edge(edge)
-            else:
-                edge.node1.remove_edge(edge)
-
-        # and the node itself
-        self.graph.remove_node(node)
 
     def next_position(self):
         """Find a reasonable place to position the next step
@@ -1301,80 +1298,17 @@ class TkFlowchart(object):
     def push(self):
         """Save a copy of the current flowchart on the stack.
         """
-        self.update_flowchart()
-        self._stack.append(self.flowchart.to_dict())
+        self._stack.append(self.to_dict())
 
     def pop(self):
         """Replace the current flowchart with the version on the stack.
         """
-        self.flowchart.from_dict(self._stack.pop())
-        self.from_flowchart()
+        self.from_dict(self._stack.pop())
 
     def pop_and_discard(self):
         """Remove the saved copy from the stack
         """
         self._stack.pop()
-
-    def update_flowchart(self):
-        """Update the non-graphical flowchart"""
-        wf = self.flowchart
-
-        # Make sure there is nothing in the flowchart
-        wf.clear(all=True)
-
-        # Add all the non-graphical nodes, making copies so that
-        # when the flowchart is cleared our objects still exist
-        translate = {}
-        for node in self:
-            translate[node] = wf.add_node(copy.copy(node.node))
-            node.update_flowchart()
-
-        # And the edges
-        for edge in self.edges():
-            attr = {}
-            for key in edge:
-                if key not in ('node1', 'node2', 'name', 'canvas'):
-                    attr[key] = edge[key]
-            node1 = translate[edge.node1]
-            node2 = translate[edge.node2]
-            wf.add_edge(node1, node2, edge.name, **attr)
-
-    def from_flowchart(self):
-        """Recreate the graphics from the non-graphical flowchart"""
-        wf = self.flowchart
-
-        self.clear()
-
-        # Add all the non-graphical nodes, making copies so that
-        # when the flowchart is cleared our objects still exist
-        translate = {}
-        for node in wf:
-            extension = node.extension
-            if extension is None:
-                # Start node
-                translate[node] = self.get_node('1')
-            else:
-                new_node = copy.copy(node)
-                logger.debug('creating {} node'.format(extension))
-                plugin = self.plugin_manager.get(extension)
-                logger.debug('  plugin object: {}'.format(plugin))
-                tk_node = plugin.create_tk_node(
-                    tk_flowchart=self, canvas=self.canvas, node=new_node
-                )
-                translate[node] = tk_node
-                tk_node.from_flowchart()
-                self.graph.add_node(tk_node)
-                tk_node.draw()
-
-        # And the edges
-        for edge in wf.edges():
-            node1 = translate[edge.node1]
-            node2 = translate[edge.node2]
-            attr = {}
-            for key in edge:
-                if key not in ('node1', 'node2'):
-                    attr[key] = edge[key]
-            self.add_edge(node1, node2, **attr)
 
     def _bound_to_mousewheel(self, event):
         """Set the bindings on the canvas, used when the

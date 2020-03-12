@@ -108,6 +108,18 @@ class TkNode(seamm.NodeBase, collections.abc.MutableMapping):
         return len(self._widget)
 
     @property
+    def base_module(self):
+        """The module name with 'tk_' removed."""
+        tmp = self.__module__.split('.')
+        tmp[1] = tmp[1][3:]
+        return '.'.join(tmp)
+
+    @property
+    def base_class(self):
+        """The class name with the prefix 'Tk' removed."""
+        return self.__class__.__name__[2:]
+
+    @property
     def x(self):
         """The x-position of the center of the graphical node"""
         return self.graphics['x']
@@ -690,17 +702,6 @@ class TkNode(seamm.NodeBase, collections.abc.MutableMapping):
         """
         pass
 
-    def to_dict(self):
-        """Serialize to a dict"""
-        data = {
-            'x': self._x,
-            'y': self._y,
-            'w': self._w,
-            'h': self._h,
-        }
-
-        return data
-
     def update_flowchart(self, tk_flowchart=None, flowchart=None):
         """Update the nongraphical flowchart. Only used in nodes that contain
         flowcharts"""
@@ -730,48 +731,6 @@ class TkNode(seamm.NodeBase, collections.abc.MutableMapping):
             flowchart.add_edge(
                 node1, node2, edge.edge_type, edge.edge_subtype, **attr
             )
-
-    def from_flowchart(self, tk_flowchart=None, flowchart=None):
-        """Recreate the graphics from the non-graphical flowchart.
-        Only used in nodes that contain flowchart"""
-
-        if tk_flowchart is None or flowchart is None:
-            return
-
-        tk_flowchart.clear()
-
-        # Add all the non-graphical nodes, making copies so that
-        # when the flowchart is cleared our objects still exist
-        translate = {}
-        for node in flowchart:
-            extension = node.extension
-            if extension is None:
-                # Start node
-                translate[node] = tk_flowchart.get_node('1')
-            else:
-                new_node = copy.copy(node)
-                self.logger.debug('creating {} node'.format(extension))
-                plugin = tk_flowchart.plugin_manager.get(extension)
-                self.logger.debug('  plugin object: {}'.format(plugin))
-                tk_node = plugin.create_tk_node(
-                    tk_flowchart=tk_flowchart,
-                    canvas=tk_flowchart.canvas,
-                    node=new_node
-                )
-                translate[node] = tk_node
-                tk_node.from_flowchart()
-                tk_flowchart.graph.add_node(tk_node)
-                tk_node.draw()
-
-        # And the edges
-        for edge in flowchart.edges():
-            node1 = translate[edge.node1]
-            node2 = translate[edge.node2]
-            attr = {}
-            for key in edge:
-                if key not in ('node1', 'node2'):
-                    attr[key] = edge[key]
-            tk_flowchart.add_edge(node1, node2, **attr)
 
     def next_anchor(self):
         """Return where the next node should be positioned. The default is

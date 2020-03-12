@@ -78,7 +78,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'seamm=seamm.__main__:flowchart',
+            'seamm=seamm.__main__:run',
             'run_flowchart=seamm.run_flowchart:run'
         ],
         'org.molssi.seamm': [

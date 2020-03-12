@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import json
-from datetime import datetime
-import logging
-import seamm
-import seamm_util  # MUST come after seamm
-import os
-import os.path
-import stat
 """A flowchart, which is a set of nodes. There must be a single
 'start' node, with other nodes connected via their ports to describe
 the flowchart. There may be isolated nodes or groups of connected nodes;
 however, the flow starts at the 'start' node and follows the connections,
-so isolated nodes and fragments will not be executed."""
+so isolated nodes and fragments will not be executed.
+"""
+
+from datetime import datetime
+import logging
+import os
+import os.path
+import reference_handler
+import seamm
+import seamm_util.printing as printing
+from seamm_util.printing import FormattedText as __
+import sys
+import traceback
 
 logger = logging.getLogger(__name__)
+job = printing.getPrinter()
 
 
-class Flowchart(object):
+class Flowchart(seamm.FlowchartBase):
     """The class variable 'graphics' gives
     the default graphics to use for display, if needed. It defaults to
     'Tk' for the tkinter GUI.
@@ -27,7 +32,6 @@ class Flowchart(object):
 
     def __init__(
         self,
-        parent=None,
         data=None,
         namespace='org.molssi.seamm',
         name=None,
@@ -42,7 +46,6 @@ class Flowchart(object):
         self.graph = seamm.Graph()
 
         self.name = name
-        self.parent = parent
 
         self.output = output  # Where to print output, files, stdout, both
 
@@ -50,7 +53,7 @@ class Flowchart(object):
         self.plugin_manager = seamm.PluginManager(namespace)
 
         # and make sure that the start node exists
-        self.add_node(seamm.StartNode(flowchart=self))
+        self.add_node(seamm.StartNode())
 
         # And the root directory
         self.root_directory = directory
@@ -95,17 +98,11 @@ class Flowchart(object):
     # Node creation and deletion
     # -------------------------------------------------------------------------
 
-    def create_node(self, extension_name):
-        """Create a new node given the extension name"""
-        plugin = self.plugin_manager.get(extension_name)
-        node = plugin.create_node(flowchart=self, extension=extension_name)
-        node.parent = self.parent
+    def create_node(self, plugin_name):
+        """Create a new node given the plug-in name"""
+        plugin = self.plugin_manager.get(plugin_name)
+        node = plugin.create_node()
         return node
-
-    def add_node(self, n, **attr):
-        """Add a single node n, ensuring that it knows the flowchart"""
-        n.flowchart = self
-        return self.graph.add_node(n, **attr)
 
     def remove_node(self, node):
         """Delete a node from the flowchart, and from the graphics if
@@ -125,38 +122,6 @@ class Flowchart(object):
     # Finding nodes
     # -------------------------------------------------------------------------
 
-    def tag_exists(self, tag):
-        """Check if the node with a given tag exists. A tag is a string like
-        'node=<uuid>', where <uuid> is the unique integer id for the node.
-        """
-
-        for node in self:
-            if node.tag == tag:
-                return True
-        return False
-
-    def get_node(self, uuid):
-        """Return the node with a given uuid"""
-        if isinstance(uuid, int):
-            uuid = str(uuid)
-        for node in self:
-            if str(node.uuid) == uuid:
-                return node
-        return None
-
-    def last_node(self, node='1'):
-        """Find the last node walking down the main execution path
-        from the given node, which defaults to the start node"""
-
-        if isinstance(node, str):
-            node = self.get_node(node)
-
-        for edge in self.graph.edges(node, direction='out'):
-            if edge.edge_type == "execution":
-                return self.last_node(edge.node2)
-
-        return node
-
     def clear(self, all=False):
         """Override the underlying clear() to ensure that the start node is present
         """
@@ -164,8 +129,7 @@ class Flowchart(object):
 
         # and make sure that the start node exists
         if not all:
-            start_node = seamm.StartNode(flowchart=self)
-            self.add_node(start_node)
+            self.add_node(seamm.StartNode())
 
     def list_nodes(self):
         """List the nodes, for debugging"""
@@ -175,51 +139,8 @@ class Flowchart(object):
         return result
 
     # -------------------------------------------------------------------------
-    # Taversal
+    # Traversal
     # -------------------------------------------------------------------------
-
-    def reset_visited(self):
-        """Reset the 'visited' flag, which is used to detect
-        loops during traversals
-        """
-
-        for tmp in self:
-            tmp.visited = False
-
-    def set_ids(self, node_id=()):
-        """Sequentially number all nodes, and subnodes"""
-        logger.debug('Setting ids')
-
-        # Clear all ids
-        for node in self:
-            node.reset_id()
-
-        # Reset the visited flag to check for loops
-        self.reset_visited()
-
-        # Get the start node
-        next_node = self.get_node('1')
-
-        # And traverse the nodes.
-        n = 0
-        logger.debug('Setting the ids, start node is ' + str(next_node))
-        while next_node is not None:
-            next_node.visited = True
-            try:
-                edge_subtype = next_node.set_id((*node_id, str(n)))
-            except Exception as e:
-                print(e)
-                raise
-            logger.debug('   edge_subtype = {}'.format(edge_subtype))
-            n += 1
-
-            # Get the next node and check if we have visited it already.
-            next_node = self.next_node(next_node, edge_subtype=edge_subtype)
-            logger.debug('   next node is ' + str(next_node))
-            if next_node is None or next_node.visited:
-                break
-
-        logger.debug('Finished setting ids')
 
     def next_node(self, node, edge_subtype='next'):
         """Return the next node from this one, following the given edge.
@@ -244,168 +165,175 @@ class Flowchart(object):
         logger.debug('Reached the end of the flowchart')
         return None
 
+    def run(self, root=None):
+        """Execute the flowchart.
+
+        Execute the flowchart, starting with the start node, and proceeding to
+        next node, etc. until completion.
+
+        Parameters
+        ----------
+        root    string or path
+            The root directory for running the flowchart.
+        """
+        logger.debug('Running the flowchart, dir = ' + root)
+
+        self.root_directory = root
+
+        # Create the global variable space.
+        logger.debug('Creating global variables space')
+        seamm.flowchart_variables = seamm.Variables()
+
+        # Correctly number the nodes
+        self.set_ids()
+
+        # Write out an initial summary of the flowchart before doing anything
+        # Reset the visited flag for traversal
+        self.reset_visited()
+
+        # Describe the flowchart
+        logger.debug('   Print the description of the flowchart')
+        self.describe()
+
+        # And actually run it!
+        job.job(('Running the flowchart\n' '---------------------'))
+
+        node = self.get_node('1')
+        logger.debug('Running the flowchart, start node is: {}'.format(node))
+        while node is not None:
+            try:
+                node = node.run()
+            except DeprecationWarning as e:
+                print('\nDeprecation warning: ' + str(e))
+                traceback.print_exc(file=sys.stderr)
+                traceback.print_exc(file=sys.stdout)
+            except Exception as e:
+                print(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(node)
+                    )
+                )
+                traceback.print_exc(file=sys.stdout)
+                logger.critical(
+                    'Error running flowchart: {} in {}'.format(
+                        str(e), str(node)
+                    )
+                )
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                traceback.print_exc(file=sys.stdout)
+                logger.critical(
+                    "Unexpected error running flowchart: ",
+                    sys.exc_info()[0]
+                )
+                raise
+            logger.debug('Next node is: {}'.format(node))
+
+        # And print out the references
+        filename = os.path.join(self.root_directory, 'references.db')
+        references = reference_handler.ReferenceHandler(filename)
+
+        if references.total_citations() > 0:
+            tmp = {}
+            citations = references.dump(fmt='text')
+            for citation, text, count, level in citations:
+                if level not in tmp:
+                    tmp[level] = {}
+                tmp[level][citation] = (text, count)
+
+            for level, ref_dict in sorted(tmp.items(), key=lambda x: x[0]):
+                if level == 1:
+                    job.job('\nPrimary references:\n')
+                elif level == 2:
+                    job.job('\nSecondary references:\n')
+                else:
+                    job.job('\nLess important references:\n')
+
+                lines = []
+                for citation in sorted(ref_dict.keys()):
+                    text, count = ref_dict[citation]
+                    if count == 1:
+                        lines.append('\t({:s}) {:s}'.format(citation, text))
+                    else:
+                        lines.append(
+                            '\t({:s}) {:s} (used {:d} times)'.format(
+                                citation, text, count
+                            )
+                        )
+                job.job(
+                    __(
+                        '\n\n'.join(lines),
+                        indent=4 * ' ',
+                        indent_initial=False
+                    )
+                )
+        # Close the reference handler, which should force it to close the
+        # connection.
+        del references
+
     # -------------------------------------------------------------------------
     # Strings, reading and writing
     # -------------------------------------------------------------------------
 
-    def to_json(self):
-        """Ufff. Turn ourselves into JSON"""
-        return json.dumps(self.to_dict())
-
-    def to_dict(self):
-        """Serialize the graph and everything it contains in a dict"""
-
-        data = {
-            'item': 'object',
-            'module': self.__module__,
-            'class': self.__class__.__name__,
-            'extension': None
-        }
-
-        nodes = data['nodes'] = []
+    def describe(self):
+        """Print a description of the flowchart.
+        """
         for node in self:
-            nodes.append(node.to_dict())
+            node.visitied = False
 
-        edges = data['edges'] = []
-        for edge in self.graph.edges():
-            attr = {}
-            for key in edge:
-                if key not in ('node1', 'node2', 'edge_type', 'edge_subtype'):
-                    attr[key] = edge[key]
-            edges.append(
-                {
-                    'item': 'edge',
-                    'node1': edge.node1.uuid,
-                    'node2': edge.node2.uuid,
-                    'edge_type': edge.edge_type,
-                    'edge_subtype': edge.edge_subtype,
-                    'attributes': attr
-                }
+        # Get the start node
+        node = self.get_node('1')
+
+        job.job(
+            (
+                '\nDescription of the flowchart'
+                '\n----------------------------'
             )
+        )
 
-        return data
-
-    def from_dict(self, data):
-        """recreate the flowchart from the dict. Inverse of to_dict."""
-        if 'class' not in data:
-            raise RuntimeError('There is no class information in the data!')
-        if data['class'] != self.__class__.__name__:
-            raise RuntimeError(
-                'The dictionary does not contain a flowchart!'
-                ' It contains a {} class'.format(data['class'])
-            )
-
-        self.clear()
-
-        # Recreate the nodes
-        for node in data['nodes']:
-            if node['class'] == 'StartNode':
-                new_node = self.get_node('1')
-                new_node.from_dict(node)
-                continue
-
-            logger.debug('creating {} node'.format(node['extension']))
-            plugin = self.plugin_manager.get(node['extension'])
-            logger.debug('  plugin object: {}'.format(plugin))
-
-            # Recreate the node
-            new_node = plugin.create_node(
-                flowchart=self, extension=node['extension']
-            )
-            new_node.parent = self.parent
-
-            # set uuid to correct value
-            new_node._uuid = node['attributes']['_uuid']
-
-            # and add to the flowchart
-            self.add_node(new_node)
-
-            new_node.from_dict(node)
-
-            logger.debug(
-                "adding nodes: nodes:\n\t" + "\n\t".join(self.list_nodes())
-            )
-
-        # and the edges connecting them
-        for edge in data['edges']:
-            node1 = self.get_node(edge['node1'])
-            node2 = self.get_node(edge['node2'])
-            self.add_edge(
-                node1,
-                node2,
-                edge_type=edge['edge_type'],
-                edge_subtype=edge['edge_subtype'],
-                **edge['attributes']
-            )
-
-            logger.debug(
-                "Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes())
-            )
-
-    def write(self, filename):
-        """Write the serialized form to disk"""
-        with open(filename, 'w') as fd:
-            fd.write('#!/usr/bin/env run_flowchart\n')
-            fd.write('!MolSSI flowchart 1.0\n')
-            json.dump(self.to_dict(), fd, indent=4, cls=seamm_util.JSONEncoder)
-            logger.info('Wrote json to {}'.format(filename))
-
-        permissions = stat.S_IMODE(os.lstat(filename).st_mode)
-        os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
-
-    def read(self, filename):
-        """Recreate the flowchart from the serialized form on disk"""
-        with open(filename, 'r') as fd:
-            line = fd.readline(256)
-            # There may be exec magic as first line
-            if line[0:2] == '#!':
-                line = fd.readline(256)
-            if line[0:7] != '!MolSSI':
-                raise RuntimeError('File is not a MolSSI file! -- ' + line)
-            tmp = line.split()
-            if len(tmp) < 3:
-                raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line
+        while node is not None:
+            try:
+                logger.debug('      Describing node ' + str(node))
+                node.visited = True
+                node = node.describe()
+            except Exception as e:
+                print(
+                    'Error describing flowchart: {} in {}'.format(
+                        str(e), str(node)
+                    )
                 )
-            if tmp[1] != 'flowchart':
-                raise RuntimeError('File is not a flowchart! -- ' + line)
-            flowchart_version = tmp[2]
-            logger.info(
-                'Reading flowchart version {} from file {}'.format(
-                    flowchart_version, filename
+                logger.critical(
+                    'Error describing flowchart: {} in {}'.format(
+                        str(e), str(node)
+                    )
                 )
-            )
+                raise
+            except:  # noqa: E722
+                print(
+                    "Unexpected error describing flowchart: {} in {}".format(
+                        sys.exc_info()[0], str(node)
+                    )
+                )
+                logger.critical(
+                    "Unexpected error describing flowchart: {} in {}".format(
+                        sys.exc_info()[0], str(node)
+                    )
+                )
+                raise
 
-            data = json.load(fd, cls=seamm_util.JSONDecoder)
-
-        if data['class'] != 'Flowchart':
-            raise RuntimeError(filename + ' does not contain a flowchart')
-
-        self.from_dict(data)
+            logger.debug('  next node is ' + str(node))
+            # Get the next node and check if we have visited it already.
+            if node is None or node.visited:
+                break
+        job.job('')
 
     # -------------------------------------------------------------------------
     # Edges between nodes
     # -------------------------------------------------------------------------
-
-    def edges(self, node=None, direction='both'):
-        return self.graph.edges(node, direction)
-
-    def add_edge(self, u, v, edge_type=None, edge_subtype='next', **attr):
-        return self.graph.add_edge(u, v, edge_type, edge_subtype, **attr)
-
-    def print_edges(self, event=None):
-        '''Print all the edges. Useful for debugging!
-        '''
-
-        print('All edges in flowchart')
-        for edge in self.edges():
-            # print('   {}'.format(edge))
-            print(
-                '   {} {} {} {} {} {}'.format(
-                    edge.node1.tag, edge.anchor1, edge.node2.tag, edge.anchor2,
-                    edge.edge_type, edge.edge_subtype
-                )
-            )
 
     # -------------------------------------------------------------------------
     # Printing

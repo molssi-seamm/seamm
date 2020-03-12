@@ -25,7 +25,7 @@ def raise_app(root: tk):
     root.after(100, lambda: root.attributes("-topmost", False))
 
 
-def flowchart():
+def run():
     """The standalone flowchart app
     """
     global app_name
@@ -65,8 +65,7 @@ def flowchart():
     # and the data
     ##############################################################
 
-    flowchart = seamm.Flowchart()
-    tk_flowchart = seamm.TkFlowchart(master=root, flowchart=flowchart)
+    flowchart = seamm.TkFlowchart(master=root)
     # The data is implicitly initialized to none...
 
     ##################################################
@@ -85,13 +84,11 @@ def flowchart():
         menu.add_cascade(menu=app_menu)
 
         app_menu.add_command(
-            label='About ' + app_name, command=tk_flowchart.about
+            label='About ' + app_name, command=flowchart.about
         )
         app_menu.add_separator()
-        root.createcommand(
-            'tk::mac::ShowPreferences', tk_flowchart.preferences
-        )
-        root.createcommand('tk::mac::OpenDocument', tk_flowchart.open_file)
+        root.createcommand('tk::mac::ShowPreferences', flowchart.preferences)
+        root.createcommand('tk::mac::OpenDocument', flowchart.open_file)
         CmdKey = 'Command-'
     else:
         CmdKey = 'Control-'
@@ -100,20 +97,18 @@ def flowchart():
     filemenu = tk.Menu(menu)
     menu.add_cascade(label="File", menu=filemenu)
     filemenu.add_command(
-        label="New", command=tk_flowchart.new_file, accelerator=CmdKey + 'N'
+        label="New", command=flowchart.new_file, accelerator=CmdKey + 'N'
     )
     filemenu.add_command(
-        label="Save...", command=tk_flowchart.save, accelerator=CmdKey + 'S'
+        label="Save...", command=flowchart.save, accelerator=CmdKey + 'S'
     )
-    filemenu.add_command(label="Save as...", command=tk_flowchart.save_file)
+    filemenu.add_command(label="Save as...", command=flowchart.save_file)
     filemenu.add_command(
-        label="Open...",
-        command=tk_flowchart.open_file,
-        accelerator=CmdKey + 'O'
+        label="Open...", command=flowchart.open_file, accelerator=CmdKey + 'O'
     )
     # filemenu.add_separator()
     # filemenu.add_command(
-    #     label="Run", command=tk_flowchart.run, accelerator=CmdKey + 'R'
+    #     label="Run", command=flowchart.run, accelerator=CmdKey + 'R'
     # )
 
     # Control debugging info
@@ -148,7 +143,7 @@ def flowchart():
     menu.add_cascade(label="Edit", menu=editmenu)
     editmenu.add_command(
         label="Clean layout",
-        command=tk_flowchart.clean_layout,
+        command=flowchart.clean_layout,
         accelerator=CmdKey + 'C'
     )
 
@@ -156,18 +151,18 @@ def flowchart():
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
     if sys.platform.startswith('darwin'):
-        root.createcommand('tk::mac::ShowHelp', tk_flowchart.help)
+        root.createcommand('tk::mac::ShowHelp', flowchart.help)
 
-    root.bind_all('<' + CmdKey + 'N>', tk_flowchart.new_file)
-    root.bind_all('<' + CmdKey + 'n>', tk_flowchart.new_file)
-    root.bind_all('<' + CmdKey + 'O>', tk_flowchart.open_file)
-    root.bind_all('<' + CmdKey + 'o>', tk_flowchart.open_file)
-    # root.bind_all('<' + CmdKey + 'R>', tk_flowchart.run)
-    # root.bind_all('<' + CmdKey + 'r>', tk_flowchart.run)
-    root.bind_all('<' + CmdKey + 'S>', tk_flowchart.save)
-    root.bind_all('<' + CmdKey + 's>', tk_flowchart.save)
-    root.bind_all('<' + CmdKey + 'C>', tk_flowchart.clean_layout)
-    root.bind_all('<' + CmdKey + 'c>', tk_flowchart.clean_layout)
+    root.bind_all('<' + CmdKey + 'N>', flowchart.new_file)
+    root.bind_all('<' + CmdKey + 'n>', flowchart.new_file)
+    root.bind_all('<' + CmdKey + 'O>', flowchart.open_file)
+    root.bind_all('<' + CmdKey + 'o>', flowchart.open_file)
+    # root.bind_all('<' + CmdKey + 'R>', flowchart.run)
+    # root.bind_all('<' + CmdKey + 'r>', flowchart.run)
+    root.bind_all('<' + CmdKey + 'S>', flowchart.save)
+    root.bind_all('<' + CmdKey + 's>', flowchart.save)
+    root.bind_all('<' + CmdKey + 'C>', flowchart.clean_layout)
+    root.bind_all('<' + CmdKey + 'c>', flowchart.clean_layout)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()
@@ -182,13 +177,16 @@ def flowchart():
     logger.debug('Finished initializing the rest of the GUI, drawing window')
 
     # Draw the flowchart
-    tk_flowchart.draw()
+    flowchart.draw()
 
     logger.debug('SEAMM has been drawn. Now raise it to the top')
 
     # bring it to the top of all windows
     root.lift()
-    raise_app(root)
+    try:
+        raise_app(root)
+    except Exception as e:
+        print(e)
 
     # Check to see if the command line has flowcharts to open
     if len(args.flowcharts) > 0:
@@ -196,7 +194,7 @@ def flowchart():
         if len(args.flowcharts) > 1:
             raise RuntimeError('Currently handle only one flowchart at a time')
         for filename in args.flowcharts:
-            tk_flowchart.open(filename)
+            flowchart.open(filename)
 
     logger.debug('and now enter the event loop')
 
@@ -214,4 +212,4 @@ def handle_dbg_level(level):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
 
-    flowchart()
+    run()

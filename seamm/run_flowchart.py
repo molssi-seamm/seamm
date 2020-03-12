@@ -206,8 +206,9 @@ def run():
 
         # And run the flowchart
         try:
-            exec = seamm.ExecFlowchart(flowchart)
-            exec.run(root=wdir)
+            # exec = seamm.ExecFlowchart(flowchart)
+            # exec.run(root=wdir)
+            flowchart.run(root=wdir)
             data['state'] = 'finished'
         except Exception as e:
             data['state'] = 'error'

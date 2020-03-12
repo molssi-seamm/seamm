@@ -45,7 +45,7 @@ class TkEdge(seamm.Edge):
         # Initialize the parent class
         super().__init__(graph, node1, node2, name, **kwargs)
 
-        self._data['canvas'] = canvas
+        self._canvas = canvas
         self.anchor1 = anchor1
         self.anchor2 = anchor2
         if coords is None:
@@ -66,7 +66,7 @@ class TkEdge(seamm.Edge):
 
     @property
     def canvas(self):
-        return self._data['canvas']
+        return self._canvas
 
     @property
     def anchor1(self):

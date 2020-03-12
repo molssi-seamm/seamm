@@ -18,6 +18,7 @@ from seamm.parameters import Parameters  # noqa: F401
 from seamm.variables import Variables  # noqa: F401
 from seamm.variables import flowchart_variables  # noqa: F401
 from seamm.plugin_manager import PluginManager  # noqa: F401
+from seamm.flowchart_base import FlowchartBase  # noqa: F401
 from seamm.flowchart import Flowchart  # noqa: F401
 from seamm.tk_flowchart import TkFlowchart  # noqa: F401
 from seamm.graph import Graph  # noqa: F401

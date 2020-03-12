@@ -24,31 +24,16 @@ logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 
 
-class Node(collections.abc.Hashable):
+class Node(seamm.NodeBase, collections.abc.Hashable):
 
-    def __init__(self, flowchart=None, title='', extension=None, module=None):
+    def __init__(self, flowchart=None, title='', module=None):
         """Initialize a node
 
         Keyword arguments:
         """
+        super().__init__()
 
-        self._uuid = uuid.uuid4().int
-        self.module = module
-        self.parent = None
-        self.flowchart = flowchart
-        self._title = title
-        self._description = ''
-        self._id = None
-        self.extension = extension
-        self._visited = False
         self._references = None
-
-        self.parameters = None  # Object containing control parameters
-
-        self.x = None
-        self.y = None
-        self.w = None
-        self.h = None
 
         # Set up our formatter for printing
         self.formatter = logging.Formatter(fmt='{message:s}', style='{')
@@ -68,77 +53,10 @@ class Node(collections.abc.Hashable):
                 for key, data in tmp.items():
                     self.bibliography[key] = writer._entry_to_bibtex(data)
 
-    def __hash__(self):
-        """Make iterable!"""
-        return self._uuid
-
-    def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__ and
-            self.__hash__() == other.__hash__()
-        )
-
-    @property
-    def uuid(self):
-        """The uuid of the node"""
-        return self._uuid
-
-    @property
-    def title(self):
-        """The title to display"""
-        return self._title
-
-    @title.setter
-    def title(self, value):
-        self._title = value
-
-    @property
-    def tag(self):
-        """The string representation of the uuid of the node"""
-        return 'node=' + str(self._uuid)
-
     @property
     def directory(self):
         """Return the directory we should write output to"""
         return os.path.join(self.flowchart.root_directory, *self._id)
-
-    @property
-    def visited(self):
-        """Whether this node has been visited in a traversal"""
-        return self._visited
-
-    @visited.setter
-    def visited(self, value):
-        self._visited = bool(value)
-
-    @property
-    def description(self):
-        """A textual description of this node"""
-        return self._description
-
-    @description.setter
-    def description(self, value):
-        self._description = value
-
-    @property
-    def indent(self):
-        length = len(self._id)
-        if length <= 1:
-            return ''
-        if length > 2:
-            result = (length - 2) * '  .' + '   '
-        else:
-            result = '   '
-        return result
-
-    @property
-    def header(self):
-        """A printable header for this section of output"""
-        return (
-            'Step {}: {}  {}'.format(
-                '.'.join(str(e) for e in self._id), self.title, self.version
-            )
-        )
 
     @property
     def references(self):
@@ -164,15 +82,6 @@ class Node(collections.abc.Hashable):
 
         # Need to correct all edges to other nodes
         raise NotImplementedError('set_uuid not implemented yet!')
-
-    def set_id(self, node_id):
-        """Set the id for node to a given tuple"""
-        self._id = node_id
-        return 'next'
-
-    def reset_id(self):
-        """Reset the id for node"""
-        self._id = None
 
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
@@ -236,7 +145,7 @@ class Node(collections.abc.Hashable):
         # The description
         job.job(__(self.description_text(), indent=self.indent))
 
-        return 'next'
+        return self.next()
 
     def run(self, printer=None):
         """Do whatever we need to do!
@@ -253,7 +162,7 @@ class Node(collections.abc.Hashable):
             # Setup up the printing for this step
             self.setup_printing(printer)
 
-        return 'next'
+        return self.next()
 
     def get_input(self):
         """Return the input from this subnode, usually used for
@@ -263,52 +172,6 @@ class Node(collections.abc.Hashable):
 
     def to_json(self):
         return json.dumps(self.to_dict(), cls=seamm_util.JSONEncoder)
-
-    def to_dict(self):
-        """serialize this object and everything it contains as a dict"""
-        data = {
-            'item': 'object',
-            'module': self.__module__,
-            'class': self.__class__.__name__,
-            'extension': self.extension
-        }
-        data['attributes'] = {}
-        for key in self.__dict__:
-            if key == 'flowchart':
-                continue
-            if key == 'parent':
-                continue
-            if key == 'formatter':
-                continue
-            if key == 'parser':
-                continue
-            if key == 'options':
-                continue
-            if key == 'unknown':
-                continue
-            if 'flowchart' in key:
-                # Have a subflowchart!
-                data[key] = self.__dict__[key].to_dict()
-            else:
-                data['attributes'][key] = self.__dict__[key]
-        return data
-
-    def from_dict(self, data):
-        """un-serialize object and everything it contains from a dict"""
-        if data['item'] != 'object':
-            raise RuntimeError('The data for restoring the object is invalid')
-        if data['class'] != self.__class__.__name__:
-            raise RuntimeError(
-                'Trying to restore a {}'.format(self.__class__.__name__) +
-                ' from data for a {}'.format(data['class'])
-            )
-        for key in data:
-            if key == 'attributes':
-                attributes = data['attributes']
-                for subkey in attributes:
-                    self.__dict__[subkey] = attributes[subkey]
-            elif 'flowchart' in key:
-                self.__dict__[key].from_dict(data[key])
 
     def default_edge_subtype(self):
         """Return the default subtype of the edge. Usually this is 'next'

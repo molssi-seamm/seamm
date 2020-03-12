@@ -14,6 +14,7 @@ it is not duplicated.
 from abc import ABC, abstractmethod
 import collections.abc
 import logging
+import pprint
 import seamm_util.printing as printing
 import uuid
 
@@ -23,21 +24,13 @@ job = printing.getPrinter()
 
 class NodeBase(ABC, collections.abc.Hashable):
 
-    def __init__(
-        self,
-        title='',
-        extension=None,
-        module=None,
-        parameters=None,
-        graphics=None
-    ):
+    def __init__(self, title='', module=None, parameters=None, graphics=None):
         """Initialize a node
 
         Keyword arguments:
         """
 
         self._uuid = None
-        self.extension = extension
 
         self.parameters = None  # Object containing control parameters
         if graphics is None:  # Dictionary of data for graphics
@@ -46,7 +39,7 @@ class NodeBase(ABC, collections.abc.Hashable):
                 'y': None,
                 'w': None,
                 'h': None,
-                'graphics': 'Tk'
+                'type': 'Tk'
             }
         else:
             self.graphics = graphics
@@ -184,6 +177,33 @@ class NodeBase(ABC, collections.abc.Hashable):
         """
         return len(self.edges(direction='in'))
 
+    @property
+    def base_module(self):
+        """The module name for the object.
+
+        This should be the non-graphical module, so graphical nodes need to
+        override this method and correct the module name.
+        """
+        return self.__module__
+
+    @property
+    def base_class(self):
+        """The class name for this object.
+
+        This should be the non-graphical class name, so graphical nodes need to
+        override this method and correct the class name.
+        """
+        return self.__class__.__name__
+
+    def set_id(self, node_id):
+        """Set the id for node to a given tuple"""
+        self._id = node_id
+        return self.next()
+
+    def reset_id(self):
+        """Reset the id for node"""
+        self._id = None
+
     def add_out_edge(self, edge, name):
         """Store the outgoing edge of type 'name' in the correct place.
         """
@@ -246,6 +266,19 @@ class NodeBase(ABC, collections.abc.Hashable):
             if value == edge:
                 self.edge[key] = None
 
+    def next(self):
+        """Return the next node in the flow.
+
+        Returns
+        -------
+        The next node, or None if there is no next node.
+        """
+        logger.debug(str(self) + ' next, edges = ' + pprint.pformat(self.edge))
+        if self.edge['out'] is None:
+            return None
+        else:
+            return self.edge['out'].node2
+
     def default_edge_name(self):
         """Return the default type (name) of the edge.
 
@@ -270,3 +303,45 @@ class NodeBase(ABC, collections.abc.Hashable):
             return "next"
         else:
             return None
+
+    def to_dict(self):
+        """Convert this node to a dict.
+
+        Save the 'important' data into a dict which can then be serialized as
+        e.g. JSON for storage.
+
+        Returns
+        -------
+        res: dict
+            A dictionary containing the key information from the node.
+        """
+        data = {
+            'item': 'object',
+            'module': self.base_module,
+            'class': self.base_class,
+            'uuid': self.uuid
+        }
+        if self.parameters is not None:
+            data['parameters'] = self.parameters.to_dict()
+        data['graphics'] = dict(self.graphics)
+
+        if 'subflowchart' in self.__dict__ and self.subflowchart is not None:
+            data['subflowchart'] = self.subflowchart.to_dict()
+
+        return data
+
+    def from_dict(self, data):
+        """un-serialize object and everything it contains from a dict"""
+        if data['item'] != 'object':
+            raise RuntimeError('The data for restoring the object is invalid')
+        if data['class'] != self.base_class:
+            raise RuntimeError(
+                'Trying to restore a {}'.format(self.base_class) +
+                ' from data for a {}'.format(data['class'])
+            )
+        if 'parameters' in data:
+            self.parameters.from_dict(data['parameters'])
+        if 'graphics' in data:
+            self.graphics = dict(data['graphics'])
+        elif 'subflowchart' in data:
+            self.subflowchart.from_dict(data['subflowchart'])
