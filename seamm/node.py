@@ -26,12 +26,12 @@ job = printing.getPrinter()
 
 class Node(seamm.NodeBase, collections.abc.Hashable):
 
-    def __init__(self, flowchart=None, title='', module=None):
+    def __init__(self, flowchart=None, title=''):
         """Initialize a node
 
         Keyword arguments:
         """
-        super().__init__()
+        super().__init__(title=title)
 
         self._references = None
 
@@ -40,9 +40,10 @@ class Node(seamm.NodeBase, collections.abc.Hashable):
 
         # Setup the bibliography
         self.bibliography = {}
-        if self.module:
+
+        try:
             filepath = pkg_resources.resource_filename(
-                self.module, 'data/references.bib'
+                self.base_module, 'data/references.bib'
             )
             logger.info("bibliography file path = '{}'".format(filepath))
 
@@ -52,6 +53,8 @@ class Node(seamm.NodeBase, collections.abc.Hashable):
                 writer = bibtexparser.bwriter.BibTexWriter()
                 for key, data in tmp.items():
                     self.bibliography[key] = writer._entry_to_bibtex(data)
+        except KeyError:
+            pass
 
     @property
     def directory(self):

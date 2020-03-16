@@ -203,6 +203,7 @@ class Flowchart(seamm.FlowchartBase):
         while node is not None:
             try:
                 node = node.run()
+                job.job('')
             except DeprecationWarning as e:
                 print('\nDeprecation warning: ' + str(e))
                 traceback.print_exc(file=sys.stderr)
@@ -300,6 +301,7 @@ class Flowchart(seamm.FlowchartBase):
                 logger.debug('      Describing node ' + str(node))
                 node.visited = True
                 node = node.describe()
+                job.job('')
             except Exception as e:
                 print(
                     'Error describing flowchart: {} in {}'.format(
@@ -329,7 +331,6 @@ class Flowchart(seamm.FlowchartBase):
             # Get the next node and check if we have visited it already.
             if node is None or node.visited:
                 break
-        job.job('')
 
     # -------------------------------------------------------------------------
     # Edges between nodes

@@ -24,7 +24,7 @@ job = printing.getPrinter()
 
 class NodeBase(ABC, collections.abc.Hashable):
 
-    def __init__(self, title='', module=None, parameters=None, graphics=None):
+    def __init__(self, title='', parameters=None, graphics=None):
         """Initialize a node
 
         Keyword arguments:
@@ -44,8 +44,6 @@ class NodeBase(ABC, collections.abc.Hashable):
         else:
             self.graphics = graphics
 
-        self.module = module
-        self.parent = None
         self._title = title
         self._description = ''
         self._id = None
@@ -145,7 +143,7 @@ class NodeBase(ABC, collections.abc.Hashable):
         if length <= 1:
             return ''
         if length > 2:
-            result = (length - 2) * '  .' + '   '
+            result = '   ' + (length - 2) * '.  '
         else:
             result = '   '
         return result
@@ -154,7 +152,7 @@ class NodeBase(ABC, collections.abc.Hashable):
     def header(self):
         """A printable header for this section of output"""
         return (
-            'Step {}: {}  {}'.format(
+            self.indent + 'Step {}: {}  {}'.format(
                 '.'.join(str(e) for e in self._id), self.title, self.version
             )
         )
@@ -198,6 +196,16 @@ class NodeBase(ABC, collections.abc.Hashable):
     def set_id(self, node_id):
         """Set the id for node to a given tuple"""
         self._id = node_id
+
+        # If and only if there is a subchart, set its id's
+        try:
+            self.subflowchart
+            if self.subflowchart is not None:
+                self.subflowchart.set_ids(self._id)
+        except NameError:
+            pass
+        except AttributeError:
+            pass
         return self.next()
 
     def reset_id(self):
@@ -332,6 +340,9 @@ class NodeBase(ABC, collections.abc.Hashable):
 
     def from_dict(self, data):
         """un-serialize object and everything it contains from a dict"""
+        logger.debug('node_base.from_dict ' + str(self))
+        logger.debug(pprint.pformat(data))
+
         if data['item'] != 'object':
             raise RuntimeError('The data for restoring the object is invalid')
         if data['class'] != self.base_class:
@@ -343,5 +354,6 @@ class NodeBase(ABC, collections.abc.Hashable):
             self.parameters.from_dict(data['parameters'])
         if 'graphics' in data:
             self.graphics = dict(data['graphics'])
-        elif 'subflowchart' in data:
+        if 'subflowchart' in data:
+            logger.debug('--> subflowchart')
             self.subflowchart.from_dict(data['subflowchart'])

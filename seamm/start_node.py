@@ -14,7 +14,7 @@ printer = printing.getPrinter('start')
 
 class StartNode(seamm.Node):
 
-    def __init__(self):
+    def __init__(self, title='Start'):
         """The special node that anchors the flowchart.
 
         There can be only one start node in a flowchart. Therefore the user
@@ -25,7 +25,7 @@ class StartNode(seamm.Node):
 
         """
         logger.debug('Constructing start node {}'.format(self))
-        super().__init__(title='Start')
+        super().__init__(title=title)
 
         # The start node has the special uuid of 1
         self._uuid = 1
@@ -60,7 +60,7 @@ class StartNode(seamm.Node):
         """
 
         super().run(printer)
-        printer.important(self.header + '\n')
+        printer.important(self.header)
         return self.next()
 
     def setup_printing(self, aprinter):
