@@ -561,7 +561,11 @@ class Node(collections.abc.Hashable):
         self._jinja_env.filters['jsonify'] = json.dumps
 
     def add_graph(
-        self, name, template='line_graph.json', context={}, description=None
+        self,
+        name,
+        template='line.graph_template',
+        context={},
+        description=None
     ):
         """Add a new graph <name> to the graphs.
 
@@ -586,25 +590,26 @@ class Node(collections.abc.Hashable):
             raise RuntimeError("'{}' is already used for a graph".format(name))
 
         _template = self._jinja_env.get_template(template)
+        _json = _template.render(context)
         self._graphs[name] = {
             'template': template,
             'name': name,
             'description': description,
-            'plotly_data': _template.render(context)
+            'plotly_data': json.loads(_json)
         }
 
-        def write_graphs(self, filename):
-            """Write the graph data to a file.
+    def write_graphs(self, filename):
+        """Write the graph data to a file.
 
-            Parameters
-            ----------
-            filename : str or path-like object
-                The file to write.
+        Parameters
+        ----------
+        filename : str or path-like object
+            The file to write.
 
-            Returns
-            -------
-            None
-            """
+        Returns
+        -------
+        None
+        """
 
-            with open(filename, 'w') as fd:
-                json.dump(self._graphs, fd)
+        with open(filename, 'w') as fd:
+            json.dump(self._graphs, fd, indent=4)
