@@ -1,0 +1,54 @@
+{
+    "data": [
+        {
+            "hoverlabel": {
+                "namelength": 0
+            },
+            "hovertemplate": "{{ xlabel }}=%{x}<br>{{ ylabel }}=%{y}",
+            "legendgroup": "",
+            "line": {
+                "color": "#636efa",
+                "dash": "solid"
+            },
+            "mode": "lines",
+            "name": "Density",
+            "showlegend": false,
+            "type": "scattergl",
+	    "x": {{ x|jsonify }},
+            "xaxis": "x",
+	    "y": {{ y|jsonify }},
+            "yaxis": "y"
+        }
+    ],
+    "layout": {
+        "legend": {
+            "title": "",
+            "tracegroupgap": 0
+        },
+        "title": {
+            "x": 0.5,
+            "text": "{{ title }}",
+            "xanchor": "center"
+        },
+        "xaxis": {
+            "anchor": "y",
+            "domain": [
+                0.0,
+                1.0
+            ],
+            "title": {
+                "text": "{{ xlabel }}"
+            }
+        },
+        "yaxis": {
+            "anchor": "x",
+            "domain": [
+                0.0,
+                1.0
+            ],
+            "title": {
+                "text": "{{ ylabel }}"
+            }
+        }
+    }
+}

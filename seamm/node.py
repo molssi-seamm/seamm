@@ -7,6 +7,7 @@
 
 import bibtexparser
 import collections.abc
+import jinja2
 import json
 import logging
 import pkg_resources
@@ -42,6 +43,8 @@ class Node(collections.abc.Hashable):
         self.extension = extension
         self._visited = False
         self._references = None
+        self._jinja_env = None
+        self._graphs = None
 
         self.parameters = None  # Object containing control parameters
 
@@ -530,3 +533,78 @@ class Node(collections.abc.Hashable):
                 row_index = table_handle['current index']
                 if key in data:
                     table.at[row_index, column] = data[key]
+
+    def initialize_graphs(self):
+        """Initialize the graph subsystem.
+
+        The graphs are held as a dictionary of individual graphs. Each graph is
+        represented as a plotly definition in json, usually generated using a
+        jinja template. This method creates the empty dictionary and
+        initializes the jinja template system.
+        """
+
+        self._graphs = {}
+
+        # The order of the loaders is important! They are searched in order,
+        # so the first has precedence. This searches the current package first,
+        # then looks in the main SEAMM templates.
+        self._jinja_env = jinja2.Environment(
+            loader=jinja2.ChoiceLoader(
+                [
+                    jinja2.PackageLoader(__name__),
+                    jinja2.PackageLoader('seamm')
+                ]
+            )
+        )
+
+        # Add a filter to turn Python variable to json
+        self._jinja_env.filters['jsonify'] = json.dumps
+
+    def add_graph(
+        self, name, template='line_graph.json', context={}, description=None
+    ):
+        """Add a new graph <name> to the graphs.
+
+        Parameters
+        ----------
+        name : str
+            A unique name for this graph.
+        template : str, optional
+            The Jinja template for the desired graph. Defaults to
+            'line_graph.json'
+        context : dict(str, any), optional
+            A dictionary of values that Jinja will replace. Default is empty.
+        description : str
+            A readable description of the graph for users.
+
+        Returns
+        -------
+        None
+        """
+
+        if name in self._graphs:
+            raise RuntimeError("'{}' is already used for a graph".format(name))
+
+        _template = self._jinja_env.get_template(template)
+        self._graphs[name] = {
+            'template': template,
+            'name': name,
+            'description': description,
+            'plotly_data': _template.render(context)
+        }
+
+        def write_graphs(self, filename):
+            """Write the graph data to a file.
+
+            Parameters
+            ----------
+            filename : str or path-like object
+                The file to write.
+
+            Returns
+            -------
+            None
+            """
+
+            with open(filename, 'w') as fd:
+                json.dump(self._graphs, fd)
