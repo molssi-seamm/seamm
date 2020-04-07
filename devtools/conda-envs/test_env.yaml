@@ -8,6 +8,7 @@ dependencies:
   - python
   - pip
   - configargparse
+  - jinja2
   - numpy
   - pandas
   - pillow
