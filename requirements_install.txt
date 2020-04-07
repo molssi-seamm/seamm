@@ -1,6 +1,6 @@
 bitmath
 configargparse
-jinja
+jinja2
 numpy
 pandas
 pillow
