@@ -534,82 +534,46 @@ class Node(collections.abc.Hashable):
                 if key in data:
                     table.at[row_index, column] = data[key]
 
-    def initialize_graphs(self):
-        """Initialize the graph subsystem.
-
-        The graphs are held as a dictionary of individual graphs. Each graph is
-        represented as a plotly definition in json, usually generated using a
-        jinja template. This method creates the empty dictionary and
-        initializes the jinja template system.
-        """
-
-        self._graphs = {}
-
-        # The order of the loaders is important! They are searched in order,
-        # so the first has precedence. This searches the current package first,
-        # then looks in the main SEAMM templates.
-        self._jinja_env = jinja2.Environment(
-            loader=jinja2.ChoiceLoader(
-                [
-                    jinja2.PackageLoader(__name__),
-                    jinja2.PackageLoader('seamm')
-                ]
-            )
-        )
-
-        # Add a filter to turn Python variable to json
-        self._jinja_env.filters['jsonify'] = json.dumps
-
-    def add_graph(
-        self,
-        name,
-        template='line.graph_template',
-        context={},
-        description=None
+    def create_figure(
+        self, title='', template='line.graph_template', module_path=None
     ):
-        """Add a new graph <name> to the graphs.
+        """Create a new figure.
 
         Parameters
         ----------
-        name : str
-            A unique name for this graph.
+        title : str, optional
         template : str, optional
             The Jinja template for the desired graph. Defaults to
-            'line_graph.json'
-        context : dict(str, any), optional
-            A dictionary of values that Jinja will replace. Default is empty.
-        description : str
-            A readable description of the graph for users.
+            'line.graph_template'
 
         Returns
         -------
-        None
+        seamm_util.Figure
         """
 
-        if name in self._graphs:
-            raise RuntimeError("'{}' is already used for a graph".format(name))
+        if self._jinja_env is None:
+            # The order of the loaders is important! They are searched
+            # in order, so the first has precedence. This searches the
+            # current package first, then looks in the main SEAMM
+            # templates.
+            if module_path is None:
+                logger.info("Reading graph templates from 'seamm'")
+                loaders = [jinja2.PackageLoader('seamm')]
+            else:
+                logger.info(
+                    "Reading graph templates from the following modules, "
+                    "in order"
+                )
+                loaders = []
+                for module in module_path:
+                    logger.info('\t' + module)
+                    loaders.append(jinja2.PackageLoader(module))
 
-        _template = self._jinja_env.get_template(template)
-        _json = _template.render(context)
-        self._graphs[name] = {
-            'template': template,
-            'name': name,
-            'description': description,
-            'plotly_data': json.loads(_json)
-        }
+            self._jinja_env = jinja2.Environment(
+                loader=jinja2.ChoiceLoader(loaders)
+            )
 
-    def write_graphs(self, filename):
-        """Write the graph data to a file.
-
-        Parameters
-        ----------
-        filename : str or path-like object
-            The file to write.
-
-        Returns
-        -------
-        None
-        """
-
-        with open(filename, 'w') as fd:
-            json.dump(self._graphs, fd, indent=4)
+        figure = seamm_util.Figure(
+            jinja_env=self._jinja_env, template=template, title=title
+        )
+        return figure

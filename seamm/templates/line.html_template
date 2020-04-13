@@ -12,29 +12,49 @@
                     
                 if (document.getElementById("b4d1ccf6-a731-4cfc-95dd-479f770eaa06")) {
                     Plotly.newPlot(
-		    'b4d1ccf6-a731-4cfc-95dd-479f770eaa06',
-		    [
-        		{
-        		    "hoverlabel": {
-        		        "namelength": 0
-        		    },
-        		    "hovertemplate": "{{ xlabel }}=%{x}<br>{{ ylabel }}=%{y}",
-        		    "legendgroup": "",
-        		    "line": {
-        		        "color": "#636efa",
-        		        "dash": "solid"
-        		    },
-        		    "mode": "lines",
-        		    "name": "Density",
-        		    "showlegend": false,
-        		    "type": "scattergl",
-			    "x": {{ x|jsonify }},
-        		    "xaxis": "x",
-			    "y": {{ y|jsonify }},
-        		    "yaxis": "y"
-        		}               
-		    ],
-		    {
+                    'b4d1ccf6-a731-4cfc-95dd-479f770eaa06',
+                    [
+			{%- for trace in traces %}    
+			{
+			    "hoverlabel": {
+				"namelength": 0
+			    },
+			    "hovertemplate": "{{ trace.xlabel }}=%{x} {{ trace.xunits }}<br>{{ trace.ylabel }}=%{y} {{ trace.yunits }}",
+			    "legendgroup": "",
+			    {%- if 'showlegend' in trace %}
+			    "showlegend": {{ trace.showlegend }},
+			    {%- endif %}
+			    "mode": "lines",
+			    "line": {
+				"color": "{{ trace.color|default('#4dbd74') }}",
+				"dash": "{{ trace.dash|default('solid') }}"
+			    },
+			    {%- if 'fill' in trace %}
+			    "fill": "{{ trace.fill }}",
+			    {%- endif %}
+			    {%- if 'fillcolor' in trace %}
+			    "fillcolor": "{{ trace.color|default('lightgray') }}",
+			    {%- endif %}
+			    "name": "{{ trace.name }}",
+			    "type": "scatter",
+			    {%- if 'x' in trace %}
+			    "x": {{ trace.x|jsonify }},
+			    {%- else %}
+			    "x0": {{ trace.x0 }},
+			    "dx": {{ trace.dx }},
+			    {%- endif %}
+			    "xaxis": "{{ trace.xaxis }}",
+			    "y": {{ trace.y|jsonify }},
+			    "yaxis": "{{ trace.yaxis }}"
+			    {%- if loop.last %}
+			}
+			{%- else %}
+			},
+		    {%- endif %}
+		    {%- endfor %}
+                    ],
+                    {
+			"hovermode": "x",
 			"legend": {
 			    "title": "",
 			    "tracegroupgap": 0
@@ -44,27 +64,23 @@
 			    "text": "{{ title }}",
 			    "xanchor": "center"
 			},
-			"xaxis": {
-			    "anchor": "y",
+			{%- for axis in axes %}    
+			"{{ axis.name }}": {
+			    "anchor": "{{ axis.anchor }}",
 			    "domain": [
-				0.0,
-				1.0
+				{{ axis.start }},
+				{{ axis.stop }}
 			    ],
 			    "title": {
-				"text": "{{ xlabel }}"
+				"text": "{{ axis.label }}"
 			    }
+			{%- if loop.last %}
+			}
+			{%- else %}
 			},
-			"yaxis": {
-			    "anchor": "x",
-			    "domain": [
-				0.0,
-				1.0
-			    ],
-			    "title": {
-				"text": "{{ ylabel }}"
-			    }
-			}           
-		    }
+			{%- endif %}
+			{%- endfor %}
+                    }
                     )
                 };
             </script>
