@@ -17,7 +17,8 @@ pytz==2019.3
 pyuca==1.2
 reference-handler==0.8.2
 scipy==1.4.1
-seamm-util==0.8.0
+seamm-util==0.9.0
+seamm-widgets==0.9.0
 six==1.14.0
 statsmodels==0.11.1
 stevedore==1.32.0

@@ -7,6 +7,6 @@ pillow
 Pmw
 pyuca
 reference_handler
-seamm-util>=0.8
-seamm-widgets>=0.8
+seamm-util>=0.9
+seamm-widgets>=0.9
 stevedore
