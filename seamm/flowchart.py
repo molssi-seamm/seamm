@@ -308,13 +308,30 @@ class Flowchart(object):
     def write(self, filename):
         """Write the serialized form to disk"""
         with open(filename, 'w') as fd:
-            fd.write('#!/usr/bin/env run_flowchart\n')
-            fd.write('!MolSSI flowchart 1.0\n')
-            json.dump(self.to_dict(), fd, indent=4, cls=seamm_util.JSONEncoder)
-            logger.info('Wrote json to {}'.format(filename))
+            fd.write(self.to_text())
+
+        logger.info('Wrote flowchart to {}'.format(filename))
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
         os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
+
+    def to_text(self):
+        """Return the text for the flowchart.
+
+        This is the representation written to disk, submitted
+        as jobs, etc. There are two header lines followed by json
+        representing the flowchart.
+
+        Returns
+        -------
+        str : the text representation.
+        """
+        text = '#!/usr/bin/env run_flowchart\n'
+        text += '!MolSSI flowchart 1.0\n'
+        text += json.dumps(
+            self.to_dict(), indent=4, cls=seamm_util.JSONEncoder
+        )
+        return text
 
     def read(self, filename):
         """Recreate the flowchart from the serialized form on disk"""
