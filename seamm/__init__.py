@@ -35,6 +35,7 @@ from seamm.builtins import SplitStep  # noqa: F401
 from seamm.join_node import Join  # noqa: F401
 from seamm.tk_join_node import TkJoin  # noqa: F401
 from seamm.builtins import JoinStep  # noqa: F401
+from seamm.tk_job_handler import TkJobHandler  # noqa: F401
 
 wrap_text = textwrap.TextWrapper(width=120)
 wrap_stdout = textwrap.TextWrapper(width=120)
