@@ -44,14 +44,10 @@ class TkJobHandler(object):
         # Read in the dashboard information if present
         self.get_configuration()
         self.current_dashboard = self.config.get(
-            'global options',
-            'current_dashboard',
-            fallback=None
+            'global options', 'current_dashboard', fallback=None
         )
         self.timeout = self.config.get(
-            'global options',
-            'timeout',
-            fallback=0.5
+            'global options', 'timeout', fallback=0.5
         )
 
         s = ttk.Style()
@@ -63,9 +59,8 @@ class TkJobHandler(object):
         result = []
         for dashboard in self.config:
             if (
-                dashboard not in (
-                    'global options', self.config.default_section
-                )
+                dashboard
+                not in ('global options', self.config.default_section)
             ):
                 result.append(dashboard)
         return sorted(result)
@@ -164,9 +159,7 @@ class TkJobHandler(object):
         # Set up the dashboard and projects if needed
         if len(dashboards) > 0:
             tmp = self.config.get(
-                'global options',
-                'current_dashboard',
-                fallback=dashboards[0]
+                'global options', 'current_dashboard', fallback=dashboards[0]
             )
             if tmp not in dashboards:
                 tmp = dashboards[0]
@@ -229,7 +222,7 @@ class TkJobHandler(object):
                 self.config['global options'] = {}
             defaults = self.config['global options']
             defaults['current_dashboard'] = self.current_dashboard
-            
+
         with self.configfile.open('w') as fd:
             self.config.write(fd)
 
@@ -310,7 +303,7 @@ class TkJobHandler(object):
 
         try:
             response = requests.get(
-                url + '/api/projects', timeout=self.timeout
+                url + '/api/list-projects', timeout=self.timeout
             )
             if response.status_code != 200:
                 logger.warning(
@@ -343,15 +336,15 @@ class TkJobHandler(object):
             return
         except requests.exceptions.ConnectionError:
             logger.warning(
-                'A connection error occurred contacting the dashboard '
-                + dashboard
+                'A connection error occurred contacting the dashboard ' +
+                dashboard
             )
             messagebox.showerror(
                 title='Dashboard error',
                 message=(
                     "A connection error occured reaching dashboard '{}'"
                 ).format(dashboard)
-            )
+            )  # yapf: disable
             if self.current_dashboard is not None:
                 w['dashboard'].set(self.current_dashboard)
             return
@@ -399,7 +392,8 @@ class TkJobHandler(object):
 
         # Button to update all status
         w['update all'] = ttk.Button(
-            d, text="Update Status of All Dashboards",
+            d,
+            text="Update Status of All Dashboards",
             command=self.fill_statuses
         )
         w['update all'].grid()
@@ -413,7 +407,9 @@ class TkJobHandler(object):
             w['selected'].set(self.current_dashboard)
         for dashboard in self.dashboards:
             table[row, 0] = ttk.Radiobutton(
-                f, variable=w['selected'], value=dashboard,
+                f,
+                variable=w['selected'],
+                value=dashboard,
             )
             table[row, 1] = ttk.Label(f, text=dashboard, style='Border.TLabel')
             table[row, 2] = ttk.Label(
@@ -448,7 +444,7 @@ class TkJobHandler(object):
         progress = ttk.Progressbar(
             dialog.interior(),
             orient=tk.HORIZONTAL,
-            maximum=table.nrows+1,
+            maximum=table.nrows + 1,
             mode='determinate',
             value=1
         )
@@ -465,7 +461,7 @@ class TkJobHandler(object):
             table.update()
         progress.destroy()
         dialog.configure(title='Dashboards')
-            
+
     def status(self, dashboard, timeout=1):
         """The status of the given dashboard.
 
@@ -483,9 +479,7 @@ class TkJobHandler(object):
         url = self.config[dashboard]['url']
 
         try:
-            response = requests.get(
-                url + '/api/status', timeout=timeout
-            )
+            response = requests.get(url + '/api/status', timeout=timeout)
             if response.status_code != 200:
                 logger.info(
                     (
@@ -503,8 +497,8 @@ class TkJobHandler(object):
             result = 'down'
         except requests.exceptions.ConnectionError as e:
             logger.info(
-                'A connection error occurred contacting the dashboard '
-                + dashboard
+                'A connection error occurred contacting the dashboard ' +
+                dashboard
             )
             if e.response is not None:
                 logger.info(
@@ -538,7 +532,7 @@ class TkJobHandler(object):
         for trow in range(table.nrows):
             if table[trow, 1].cget('text') == dashboard:
                 break
-        
+
         dialog = Pmw.Dialog(
             self._root,
             buttons=('OK', 'Cancel'),
@@ -583,7 +577,7 @@ class TkJobHandler(object):
         for key, value in self.config.items(dashboard):
             if key not in ('url', 'state', 'status'):
                 row += 1
-                w[key] = sw.LabeledEntry(d, labeltext=key+':')
+                w[key] = sw.LabeledEntry(d, labeltext=key + ':')
                 w[key].set(value)
                 w[key].grid(row=row, columnspan=2, sticky=tk.EW)
                 widgets.append(w[key])
@@ -605,7 +599,7 @@ class TkJobHandler(object):
                 table[trow, 0].configure(value=dashboard)
                 self._widgets['display']['selected'].set(dashboard)
                 self.current_dashboard = dashboard
-            
+
             db_config = self.config[dashboard]
 
             table[trow, 2].configure(text=url.get())
@@ -715,7 +709,7 @@ class TkJobHandler(object):
             progress = ttk.Progressbar(
                 dialog,
                 orient=tk.HORIZONTAL,
-                length=len(self.dashboards)+1,
+                length=len(self.dashboards) + 1,
                 maximum=len(self.dashboards),
                 mode='determinate',
                 value=1
@@ -786,7 +780,7 @@ if __name__ == "__main__":
 
     numeric_level = max(3 - args.verbose_count, 0) * 10
     logging.basicConfig(level=numeric_level)
-    
+
     # Initialize Tk
     root = tk.Tk()
     Pmw.initialise(root)
@@ -815,6 +809,6 @@ if __name__ == "__main__":
         root, text='Dashboards...', command=job_handler.display_dashboards
     )
     status.grid(row=1, sticky=tk.EW)
-                  
+
     # Enter the event loop
     root.mainloop()
