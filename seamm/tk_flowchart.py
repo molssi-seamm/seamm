@@ -43,7 +43,6 @@ anywhere else it just snaps back to its original place.
 import copy
 import logging
 import math
-import seamm
 from PIL import ImageTk, Image
 import pkg_resources
 import pprint  # nopep8
@@ -51,6 +50,8 @@ import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
 import tkinter.ttk as ttk
+
+import seamm
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +80,9 @@ class TkFlowchart(object):
 
         # Setup the plugin handling
         self.plugin_manager = seamm.PluginManager(namespace)
+
+        # Job handler
+        self._job_handler = seamm.TkJobHandler()
 
         self.canvas_width = 500
         self.canvas_height = 500
@@ -1206,9 +1210,9 @@ class TkFlowchart(object):
         """Run the current flowchart"""
 
         self.update_flowchart()
-        exec = seamm.ExecFlowchart(self.flowchart)
-        exec.run()
-        self.update_flowchart()
+        flowchart = self.flowchart.to_text()
+
+        self._job_handler.submit_with_dialog(flowchart=flowchart)
 
     def push(self):
         """Save a copy of the current flowchart on the stack.

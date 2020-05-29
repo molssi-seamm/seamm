@@ -40,7 +40,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run():
+def run(job_id=None, wdir=None):
     """The standalone flowchart app
     """
 
@@ -104,7 +104,11 @@ def run():
         default='files',
         help='whether to put the output in files, direct to stdout, or both'
     )
-    parser.add_argument("filename", help='the filename of the flowchart')
+    parser.add_argument(
+        "filename",
+        nargs='?',
+        help='the filename of the flowchart'
+    )  # yapf: disable
 
     args, unknown = parser.parse_known_args()
 
@@ -119,37 +123,39 @@ def run():
 
     datastore = os.path.expanduser(args.datastore)
 
-    if args.projects is None:
-        projects = ['default']
-    else:
-        projects = args.projects
+    if job_id is None:
+        if args.job_id_file is None:
+            job_id_file = os.path.join(datastore, 'job.id')
 
-    if args.job_id_file is None:
-        job_id_file = os.path.join(datastore, 'job.id')
+        # Get the job_id from the file, creating the file if necessary
+        job_id = get_job_id(job_id_file)
+    if wdir is None:
+        if args.projects is None:
+            projects = ['default']
+        else:
+            projects = args.projects
 
-    # Get the job_id from the file, creating the file if necessary
-    job_id = get_job_id(job_id_file)
-
-    # And put it all together
-    wdir = os.path.abspath(
-        os.path.join(
-            datastore, 'projects', projects[0], 'Job_{:06d}'.format(job_id)
+        # And put it all together
+        wdir = os.path.abspath(
+            os.path.join(
+                datastore, 'projects', projects[0],
+                'Job_{:06d}'.format(job_id)
+            )
         )
-    )
+
+        if os.path.exists(wdir):
+            if args.force:
+                shutil.rmtree(wdir)
+            else:
+                msg = "Directory '{}' exists, use --force to overwrite"\
+                      .format(wdir)
+
+                logging.critical(msg)
+                sys.exit(msg)
+
+        os.makedirs(wdir, exist_ok=False)
 
     logging.info("The working directory is '{}'".format(wdir))
-
-    if os.path.exists(wdir):
-        if args.force:
-            shutil.rmtree(wdir)
-        else:
-            msg = "Directory '{}' exists, use --force to overwrite"\
-                  .format(wdir)
-
-            logging.critical(msg)
-            sys.exit(msg)
-
-    os.makedirs(wdir, exist_ok=False)
 
     # Set up the root printer, and add handlers to print to the file
     # 'job.out' in the working directory and to stdout, as requested
@@ -178,25 +184,36 @@ def run():
     # And ... finally ... run!
     printer.job("Running in directory '{}'".format(wdir))
 
-    # copy the flowchart to the root directory for later reference
-    shutil.copy2(args.filename, os.path.join(wdir, 'flowchart.flow'))
+    flowchart_path = os.path.join(wdir, 'flowchart.flow')
+    if args.filename is not None:
+        # copy the flowchart to the root directory for later reference
+        shutil.copy2(args.filename, flowchart_path)
 
     flowchart = seamm.Flowchart(directory=wdir, output=args.output)
-    flowchart.read(args.filename)
-
-    # Set up the initial metadata for the job.
-    data = cpuinfo.get_cpu_info()
-    data['command line'] = sys.argv
-    data['title'] = args.title
-    data['working directory'] = wdir
-    data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
-    data['state'] = 'started'
-    data['projects'] = projects
-    data['datastore'] = datastore
-    data['job id'] = job_id
+    flowchart.read(flowchart_path)
 
     # Change to the working directory and run the flowchart
     with cd(wdir):
+        if os.path.exists('job_data.json'):
+            with open('job_data.json', 'r') as fd:
+                data = json.load(fd)
+        else:
+            data = {}
+
+        # Set up the initial metadata for the job.
+        data.update(cpuinfo.get_cpu_info())
+        if 'command line' not in data:
+            data['command line'] = sys.argv
+        if 'title' not in data:
+            data['title'] = args.title
+        data['working directory'] = wdir
+        data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+        data['state'] = 'started'
+        if 'projects' not in data:
+            data['projects'] = projects
+        data['datastore'] = datastore
+        data['job id'] = job_id
+
         # Output the initial metadate for the job.
         with open('job_data.json', 'w') as fd:
             json.dump(data, fd, indent=3, sort_keys=True)
