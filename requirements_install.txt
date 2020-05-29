@@ -1,5 +1,6 @@
 bitmath
 configargparse
+fasteners
 jinja2
 numpy
 pandas
