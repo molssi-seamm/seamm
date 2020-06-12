@@ -4,6 +4,7 @@
 
 import collections.abc
 from distutils.util import strtobool
+import importlib
 import json
 import logging
 from seamm_util import Q_
@@ -168,8 +169,8 @@ class Parameter(collections.abc.MutableMapping):
 
     @property
     def kind(self):
-        """The type of the parameter: integer, float, string
-        or enum.
+        """The type of the parameter: integer, float, string,
+        enum or special.
         This can be used to convert the value to the correct
         type in e.g. get_value."""
 
@@ -357,7 +358,9 @@ class Parameter(collections.abc.MutableMapping):
 
     def set(self, value):
         """Set the fields based on the type of value given"""
-        if isinstance(value, tuple) or isinstance(value, list):
+        if self.kind == 'special':
+            self.value = value
+        elif isinstance(value, tuple) or isinstance(value, list):
             if len(value) == 1:
                 self.value = value[0]
             elif len(value) == 2:
@@ -376,6 +379,7 @@ class Parameter(collections.abc.MutableMapping):
         self._data = {
             'default': None,
             'kind': None,
+            'widget': None,
             'default_units': None,
             'enumeration': tuple(),
             'format_string': None,
@@ -401,7 +405,13 @@ class Parameter(collections.abc.MutableMapping):
 
         labeltext = kwargs.pop('labeltext', self.description)
 
-        if self.enumeration:
+        if self.kind == 'special':
+            module_name, class_name = self['widget'].split('.')
+            mdl = importlib.import_module(module_name)
+            cls = getattr(mdl, class_name)
+            w = cls(frame, labeltext=labeltext, **kwargs)
+            w.set(self.value)
+        elif self.enumeration:
             if self.dimensionality is None:
                 logger.debug('    making LabeledCombobox')
                 w = sw.LabeledCombobox(
