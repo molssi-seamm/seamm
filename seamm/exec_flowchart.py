@@ -92,7 +92,7 @@ class ExecFlowchart(object):
         job.job(('Running the flowchart\n' '---------------------'))
 
         next_node = self.flowchart.get_node('1')
-        while next_node:
+        while next_node is not None:
             try:
                 next_node = next_node.run()
             except DeprecationWarning as e:
@@ -126,7 +126,11 @@ class ExecFlowchart(object):
 
         # And print out the references
         filename = os.path.join(self.flowchart.root_directory, 'references.db')
-        references = reference_handler.ReferenceHandler(filename)
+        try:
+            references = reference_handler.Reference_Handler(filename)
+        except Exception as e:
+            job.job('Error with references:')
+            job.job(e)
 
         if references.total_citations() > 0:
             tmp = {}
@@ -136,7 +140,8 @@ class ExecFlowchart(object):
                     tmp[level] = {}
                 tmp[level][citation] = (text, count)
 
-            for level, ref_dict in sorted(tmp.items(), key=lambda x: x[0]):
+            for level in sorted(tmp.keys()):
+                ref_dict = tmp[level]
                 if level == 1:
                     job.job('\nPrimary references:\n')
                 elif level == 2:
@@ -148,10 +153,10 @@ class ExecFlowchart(object):
                 for citation in sorted(ref_dict.keys()):
                     text, count = ref_dict[citation]
                     if count == 1:
-                        lines.append('\t({:s}) {:s}'.format(citation, text))
+                        lines.append('({}) {:s}'.format(citation, text))
                     else:
                         lines.append(
-                            '\t({:s}) {:s} (used {:d} times)'.format(
+                            '({}) {:s} (used {:d} times)'.format(
                                 citation, text, count
                             )
                         )

@@ -40,7 +40,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run(job_id=None, wdir=None):
+def run(job_id=None, wdir=None, setup_logging=True):
     """The standalone flowchart app
     """
 
@@ -112,11 +112,12 @@ def run(job_id=None, wdir=None):
 
     args, unknown = parser.parse_known_args()
 
-    # Set up logging level to WARNING by default, going more verbose
-    # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
+    if setup_logging:
+        # Set up logging level to WARNING by default, going more verbose
+        # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
 
-    numeric_level = max(3 - args.verbose_count, 0) * 10
-    logging.basicConfig(level=numeric_level)
+        numeric_level = max(3 - args.verbose_count, 0) * 10
+        logging.basicConfig(level=numeric_level)
 
     # Create the working directory where files, output, etc. go.
     # At the moment this is datastore/job_id
@@ -168,11 +169,12 @@ def run(job_id=None, wdir=None):
     formatter = logging.Formatter(fmt='{message:s}', style='{')
 
     # A handler for stdout
-    console_handler = logging.StreamHandler()
-    # console_handler.setLevel(printing.JOB)
-    console_handler.setLevel(printing.NORMAL)
-    console_handler.setFormatter(formatter)
-    printer.addHandler(console_handler)
+    if wdir is None:
+        console_handler = logging.StreamHandler()
+        # console_handler.setLevel(printing.JOB)
+        console_handler.setLevel(printing.NORMAL)
+        console_handler.setFormatter(formatter)
+        printer.addHandler(console_handler)
 
     # A handler for the file
     file_handler = logging.FileHandler(os.path.join(wdir, 'job.out'))
