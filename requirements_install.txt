@@ -1,5 +1,6 @@
 bitmath
 configargparse
+cpuinfo
 fasteners
 jinja2
 numpy
