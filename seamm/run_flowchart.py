@@ -54,6 +54,11 @@ def run(job_id=None, wdir=None, setup_logging=True):
     )
 
     parser.add_argument(
+        "--standalone",
+        action='store_true',
+        help="Run this workflow as-is without using the datastore, etc."
+    )
+    parser.add_argument(
         '--seamm-configfile',
         is_config_file=True,
         default=None,
@@ -112,6 +117,10 @@ def run(job_id=None, wdir=None, setup_logging=True):
 
     args, unknown = parser.parse_known_args()
 
+    # Whether to just run as-is, without getting a job_id, using the
+    # datastore, etc.
+    standalone = 'standalone' in args and args.standalone
+
     if setup_logging:
         # Set up logging level to WARNING by default, going more verbose
         # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
@@ -122,39 +131,43 @@ def run(job_id=None, wdir=None, setup_logging=True):
     # Create the working directory where files, output, etc. go.
     # At the moment this is datastore/job_id
 
-    datastore = os.path.expanduser(args.datastore)
+    if standalone:
+        print('Running in standalone mode.')
+        wdir = os.getcwd()
+    else:
+        datastore = os.path.expanduser(args.datastore)
 
-    if job_id is None:
-        if args.job_id_file is None:
-            job_id_file = os.path.join(datastore, 'job.id')
+        if job_id is None:
+            if args.job_id_file is None:
+                job_id_file = os.path.join(datastore, 'job.id')
 
-        # Get the job_id from the file, creating the file if necessary
-        job_id = get_job_id(job_id_file)
-    if wdir is None:
-        if args.projects is None:
-            projects = ['default']
-        else:
-            projects = args.projects
-
-        # And put it all together
-        wdir = os.path.abspath(
-            os.path.join(
-                datastore, 'projects', projects[0],
-                'Job_{:06d}'.format(job_id)
-            )
-        )
-
-        if os.path.exists(wdir):
-            if args.force:
-                shutil.rmtree(wdir)
+            # Get the job_id from the file, creating the file if necessary
+            job_id = get_job_id(job_id_file)
+        if wdir is None:
+            if args.projects is None:
+                projects = ['default']
             else:
-                msg = "Directory '{}' exists, use --force to overwrite"\
-                      .format(wdir)
+                projects = args.projects
 
-                logging.critical(msg)
-                sys.exit(msg)
+            # And put it all together
+            wdir = os.path.abspath(
+                os.path.join(
+                    datastore, 'projects', projects[0],
+                    'Job_{:06d}'.format(job_id)
+                )
+            )
 
-        os.makedirs(wdir, exist_ok=False)
+            if os.path.exists(wdir):
+                if args.force:
+                    shutil.rmtree(wdir)
+                else:
+                    msg = "Directory '{}' exists, use --force to overwrite"\
+                          .format(wdir)
+
+                    logging.critical(msg)
+                    sys.exit(msg)
+
+            os.makedirs(wdir, exist_ok=False)
 
     logging.info("The working directory is '{}'".format(wdir))
 
@@ -169,7 +182,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
     formatter = logging.Formatter(fmt='{message:s}', style='{')
 
     # A handler for stdout
-    if wdir is None:
+    if standalone or wdir is None:
         console_handler = logging.StreamHandler()
         # console_handler.setLevel(printing.JOB)
         console_handler.setLevel(printing.NORMAL)
@@ -178,7 +191,6 @@ def run(job_id=None, wdir=None, setup_logging=True):
 
     # A handler for the file
     file_handler = logging.FileHandler(os.path.join(wdir, 'job.out'))
-    # file_handler.setLevel(printing.JOB)
     file_handler.setLevel(printing.NORMAL)
     file_handler.setFormatter(formatter)
     printer.addHandler(file_handler)
@@ -211,10 +223,11 @@ def run(job_id=None, wdir=None, setup_logging=True):
         data['working directory'] = wdir
         data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
         data['state'] = 'started'
-        if 'projects' not in data:
-            data['projects'] = projects
-        data['datastore'] = datastore
-        data['job id'] = job_id
+        if not standalone:
+            if 'projects' not in data:
+                data['projects'] = projects
+            data['datastore'] = datastore
+            data['job id'] = job_id
 
         # Output the initial metadate for the job.
         with open('job_data.json', 'w') as fd:
