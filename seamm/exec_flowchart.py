@@ -14,6 +14,7 @@ import logging
 import os.path
 import reference_handler
 import seamm
+from seamm_util import to_mmcif
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
 import sys
@@ -123,6 +124,18 @@ class ExecFlowchart(object):
                     sys.exc_info()[0]
                 )
                 raise
+
+        # Write the final structure
+        if seamm.data.structure is not None:
+            filename = os.path.join(
+                self.flowchart.root_directory, 'final_structure.mmcif'
+            )
+            with open(filename, 'w') as fd:
+                print(to_mmcif(seamm.data.structure), file=fd)
+            job.job(
+                "Wrote the final structure to 'final_structure.mmcif' for "
+                'viewing.'
+            )
 
         # And print out the references
         filename = os.path.join(self.flowchart.root_directory, 'references.db')
