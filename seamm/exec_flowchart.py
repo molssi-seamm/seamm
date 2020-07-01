@@ -14,7 +14,7 @@ import logging
 import os.path
 import reference_handler
 import seamm
-from seamm_util import to_mmcif
+from seamm_util import to_mmcif, to_cif
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
 import sys
@@ -127,15 +127,28 @@ class ExecFlowchart(object):
 
         # Write the final structure
         if seamm.data.structure is not None:
+            system = seamm.data.structure
+            # MMCIF file has bonds
             filename = os.path.join(
                 self.flowchart.root_directory, 'final_structure.mmcif'
             )
             with open(filename, 'w') as fd:
-                print(to_mmcif(seamm.data.structure), file=fd)
+                print(to_mmcif(system), file=fd)
             job.job(
-                "Wrote the final structure to 'final_structure.mmcif' for "
+                "\nWrote the final structure to 'final_structure.mmcif' for "
                 'viewing.'
             )
+            # CIF file has cell
+            if system['periodicity'] == 3:
+                filename = os.path.join(
+                    self.flowchart.root_directory, 'final_structure.cif'
+                )
+                with open(filename, 'w') as fd:
+                    print(to_cif(seamm.data.structure), file=fd)
+                job.job(
+                    "\nWrote the final structure to 'final_structure.cif' for "
+                    'viewing.'
+                )
 
         # And print out the references
         filename = os.path.join(self.flowchart.root_directory, 'references.db')
