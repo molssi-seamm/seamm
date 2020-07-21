@@ -1,12 +1,12 @@
 bitmath
 configargparse
-py-cpuinfo
 fasteners
 jinja2
 numpy
 pandas
 pillow
-Pmw
+pmw
+py-cpuinfo
 pyuca
 reference_handler
 seamm-util>=0.9
