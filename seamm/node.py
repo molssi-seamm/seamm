@@ -129,9 +129,9 @@ class Node(collections.abc.Hashable):
         if length <= 1:
             return ''
         if length > 2:
-            result = (length - 2) * '  .' + '   '
+            result = (length - 2) * (3 * ' ' + '.') + 4 * ' '
         else:
-            result = '   '
+            result = 4 * ' '
         return result
 
     @property

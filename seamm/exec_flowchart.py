@@ -12,13 +12,14 @@ contains."""
 
 import logging
 import os.path
+import sys
+import traceback
+
 import reference_handler
 import seamm
 from seamm_util import to_mmcif, to_cif
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
-import sys
-import traceback
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -62,29 +63,21 @@ class ExecFlowchart(object):
         while next_node:
             try:
                 next_node = next_node.describe()
-            except Exception as e:
-                print(
-                    'Error describing flowchart: {} in {}'.format(
-                        str(e), str(next_node)
-                    )
+            except Exception:
+                message = (
+                    'Error describing the flowchart\n\n' +
+                    traceback.format_exc()
                 )
-                logger.critical(
-                    'Error describing flowchart: {} in {}'.format(
-                        str(e), str(next_node)
-                    )
-                )
+                print(message)
+                logger.critical(message)
                 raise
             except:  # noqa: E722
-                print(
-                    "Unexpected error describing flowchart: {} in {}".format(
-                        sys.exc_info()[0], str(next_node)
-                    )
+                message = (
+                    'Unexpected error describing the flowchart\n\n' +
+                    traceback.format_exc()
                 )
-                logger.critical(
-                    "Unexpected error describing flowchart: {} in {}".format(
-                        sys.exc_info()[0], str(next_node)
-                    )
-                )
+                print(message)
+                logger.critical(message)
                 raise
 
         job.job('')
@@ -100,29 +93,20 @@ class ExecFlowchart(object):
                 print('\nDeprecation warning: ' + str(e))
                 traceback.print_exc(file=sys.stderr)
                 traceback.print_exc(file=sys.stdout)
-            except Exception as e:
-                print(
-                    'Error running flowchart: {} in {}'.format(
-                        str(e), str(next_node)
-                    )
+            except Exception:
+                message = (
+                    'Error running the flowchart\n\n' + traceback.format_exc()
                 )
-                traceback.print_exc(file=sys.stdout)
-                logger.critical(
-                    'Error running flowchart: {} in {}'.format(
-                        str(e), str(next_node)
-                    )
-                )
-                raise
+                print(message)
+                logger.critical(message)
+                break
             except:  # noqa: E722
-                print(
-                    "Unexpected error running flowchart: ",
-                    sys.exc_info()[0]
+                message = (
+                    'Unexpected error running the flowchart\n\n' +
+                    traceback.format_exc()
                 )
-                traceback.print_exc(file=sys.stdout)
-                logger.critical(
-                    "Unexpected error running flowchart: ",
-                    sys.exc_info()[0]
-                )
+                print(message)
+                logger.critical(message)
                 raise
 
         # Write the final structure

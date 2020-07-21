@@ -412,12 +412,16 @@ class Parameter(collections.abc.MutableMapping):
             w = cls(frame, labeltext=labeltext, **kwargs)
             w.set(self.value)
         elif self.enumeration:
+            width = max(len(x) for x in self.enumeration)
+            if width < 10:
+                width = 10
             if self.dimensionality is None:
                 logger.debug('    making LabeledCombobox')
                 w = sw.LabeledCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
+                    width=width,
                     **kwargs
                 )
                 w.set(self.value)
@@ -427,6 +431,7 @@ class Parameter(collections.abc.MutableMapping):
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
+                    width=width,
                     **kwargs
                 )
                 w.set(self.value, self.units)
