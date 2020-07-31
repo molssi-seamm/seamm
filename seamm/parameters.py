@@ -318,7 +318,7 @@ class Parameter(collections.abc.MutableMapping):
             result = self.value
 
         # If it is an enum, just return that.
-        if result in self.enumeration:
+        if self.enumeration is not None and result in self.enumeration:
             if self.kind == 'boolean':
                 return bool(strtobool(result))
             else:
@@ -334,7 +334,7 @@ class Parameter(collections.abc.MutableMapping):
                 result = bool(strtobool(result))
             elif not isinstance(result, bool):
                 result = bool(result)
-        elif self.kind == 'list':
+        elif self.kind == 'list' or self.kind == 'periodic table':
             if not isinstance(result, list):
                 if isinstance(result, str) and result[0] != '$':
                     result = json.loads(result)
@@ -358,7 +358,7 @@ class Parameter(collections.abc.MutableMapping):
 
     def set(self, value):
         """Set the fields based on the type of value given"""
-        if self.kind == 'special':
+        if self.kind == 'special' or self.kind == 'periodic table':
             self.value = value
         elif isinstance(value, tuple) or isinstance(value, list):
             if len(value) == 1:
@@ -381,7 +381,7 @@ class Parameter(collections.abc.MutableMapping):
             'kind': None,
             'widget': None,
             'default_units': None,
-            'enumeration': tuple(),
+            'enumeration': None,
             'format_string': None,
             'group': '',
             'description': None,
@@ -411,9 +411,15 @@ class Parameter(collections.abc.MutableMapping):
             cls = getattr(mdl, class_name)
             w = cls(frame, labeltext=labeltext, **kwargs)
             w.set(self.value)
-        elif self.enumeration:
-            width = max(len(x) for x in self.enumeration)
-            if width < 10:
+        elif self.kind == 'periodic table':
+            w = sw.PeriodicTable(frame, **kwargs)
+            w.set(self.value)
+        elif self.enumeration is not None:
+            if len(self.enumeration) > 0:
+                width = max(len(x) for x in self.enumeration)
+                if width < 10:
+                    width = 10
+            else:
                 width = 10
             if self.dimensionality is None:
                 logger.debug('    making LabeledCombobox')
