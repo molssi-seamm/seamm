@@ -299,7 +299,7 @@ class Parameter(collections.abc.MutableMapping):
     def is_expr(self):
         """Is the current value a variable reference or
         expression?"""
-        if isinstance(self.value, str):
+        if isinstance(self.value, str) and len(self.value) > 0:
             return self.value and self.value[0] == '$'
         else:
             return False
@@ -336,7 +336,10 @@ class Parameter(collections.abc.MutableMapping):
                 result = bool(result)
         elif self.kind == 'list' or self.kind == 'periodic table':
             if not isinstance(result, list):
-                if isinstance(result, str) and result[0] != '$':
+                if (
+                    isinstance(result, str) and len(result) > 0 and
+                    result[0] != '$'
+                ):
                     result = json.loads(result)
             return result
         elif self.kind == 'dictionary':
