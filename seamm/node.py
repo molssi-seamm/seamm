@@ -487,12 +487,13 @@ class Node(collections.abc.Hashable):
         for key, value in results.items():
             # Check for storing in a variable
             if 'variable' in value:
-                self.set_variable(value['variable'], data[key])
+                variable = self.get_value(value['variable'])
+                self.set_variable(variable, data[key])
 
             # and table
             if 'table' in value:
                 tablename = value['table']
-                column = value['column']
+                column = self.get_value(value['column'])
                 # Does the table exist?
                 if not self.variable_exists(tablename):
                     if create_tables:
