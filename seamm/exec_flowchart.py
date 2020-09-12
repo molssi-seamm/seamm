@@ -15,6 +15,7 @@ import os.path
 import sys
 import traceback
 
+import molsystem
 import reference_handler
 import seamm
 from seamm_util import to_mmcif, to_cif
@@ -37,8 +38,15 @@ class ExecFlowchart(object):
         if not self.flowchart:
             raise RuntimeError('There is no flowchart to run!')
 
+        # Create the global context
         logger.debug('Creating global variables space')
         seamm.flowchart_variables = seamm.Variables()
+
+        # Create the system handler and default system in the global context
+        systems = molsystem.Systems()
+        system = systems.create_system('seamm')
+        seamm.flowchart_variables.set_variable('_systems', systems)
+        seamm.flowchart_variables.set_variable('_system', system)
 
         self.flowchart.root_directory = root
 
