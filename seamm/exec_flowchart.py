@@ -123,12 +123,24 @@ class ExecFlowchart(object):
             filename = os.path.join(
                 self.flowchart.root_directory, 'final_structure.mmcif'
             )
-            with open(filename, 'w') as fd:
-                print(system.to_mmcif_text(), file=fd)
-            job.job(
-                "\nWrote the final structure to 'final_structure.mmcif' for "
-                'viewing.'
-            )
+            text = None
+            try:
+                text = system.to_mmcif_text()
+            except Exception:
+                message = (
+                    'Error creating the final mmcif file\n\n' +
+                    traceback.format_exc()
+                )
+                print(message)
+                logger.critical(message)
+
+            if text is not None:
+                with open(filename, 'w') as fd:
+                    print(text, file=fd)
+                job.job(
+                    "\nWrote the final structure to 'final_structure.mmcif' "
+                    'for viewing.'
+                )
             # CIF file has cell
             if system.periodicity == 3:
                 filename = os.path.join(
