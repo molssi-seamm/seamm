@@ -58,8 +58,9 @@ class ExecLocal(object):
         if files is not None:
             for filename in files:
                 path = os.path.join(tmpdir, filename)
+                mode = "wb" if type(files[filename]) is bytes else "w"
                 try:
-                    with open(path, "w") as fd:
+                    with open(path, mode) as fd:
                         fd.write(files[filename])
                 except IOError:
                     logging.exception(
@@ -127,6 +128,11 @@ class ExecLocal(object):
                 try:
                     with open(path, "r") as fd:
                         data = fd.read()
+
+                except UnicodeDecodeError:
+                    with open(path, "rb") as fd:
+                        data = fd.read()
+
                 except IOError:
                     exception = sys.exc_info()
                     logging.warning(
