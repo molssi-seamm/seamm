@@ -3,12 +3,14 @@ configargparse
 fasteners
 jinja2
 numpy
+molsystem>=2020.9.23
 pandas
 pillow
 pmw
 py-cpuinfo
 pyuca
 reference_handler
-seamm-util>=0.9
-seamm-widgets>=0.9
+molsystem
+seamm-util>=2020.9.23
+seamm-widgets>=2020.8.1
 stevedore

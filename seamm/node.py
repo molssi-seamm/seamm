@@ -423,11 +423,11 @@ class Node(collections.abc.Hashable):
         # Control output going to the main job printer
         # If we are in a loop, don't print to the job output, except
         # at the JOB level
-        job.setLevel(printing.NORMAL)
-        for segment in self._id:
-            if str(segment)[0:5] == 'iter_':
-                job.setLevel(printing.JOB)
-                break
+        # job.setLevel(printing.NORMAL)
+        # for segment in self._id:
+        #     if str(segment)[0:5] == 'iter_':
+        #         job.setLevel(printing.JOB)
+        #         break
 
         # First remove an existing handlers
         self.close_printing(printer)
