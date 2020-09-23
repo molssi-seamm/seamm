@@ -39,18 +39,10 @@ jobs:
       name: "Check formatting of code for PEP-8"
       os: linux
       language: generic
-      env: PYTHON_VER=3.7
+      env: PYTHON_VER=3.8
       script:
         - flake8 seamm tests
         - yapf --diff --recursive  seamm tests
-
-    - stage: test
-      name: "Tests on MacOS Python 3.6"
-      script:
-        - pytest -v tests/
-      os: osx
-      language: generic
-      env: PYTHON_VER=3.6
 
     - stage: test
       name: "Tests on MacOS Python 3.7"
@@ -61,36 +53,44 @@ jobs:
       env: PYTHON_VER=3.7
 
     - stage: test
-      name: "Tests on Linux Python 3.6"
+      name: "Tests on MacOS Python 3.8"
+      script:
+        - pytest -v tests/
+      os: osx
+      language: generic
+      env: PYTHON_VER=3.8
+
+    - stage: test
+      name: "Tests on Linux Python 3.7"
       script:
         - pytest -v tests/
       os: linux
       language: generic  # No need to set Python version since its conda
-      env: PYTHON_VER=3.6
+      env: PYTHON_VER=3.7
 
     - stage: test
-      name: "Tests and coverage on Linux Python 3.7"
+      name: "Tests and coverage on Linux Python 3.8"
       script:
         - pytest -v --cov=seamm tests/
       after_success:
         - codecov
       os: linux
       language: generic
-      env: PYTHON_VER=3.7
+      env: PYTHON_VER=3.8
 
     - stage: deploy
       name: "Deploy to PyPi"
       if: tag IS present
       os: linux
       dist: xenial
-      python: 3.7
+      python: 3.8
       script: skip
       deploy:
         provider: pypi
         distributions: sdist bdist_wheel
         skip_existing: true
         on:
-          condition: $PYTHON_VER = 3.7
+          condition: $PYTHON_VER = 3.8
           condition: $TRAVIS_OS_NAME = linux
           repo: molssi-seamm/seamm
           tags: true
