@@ -537,12 +537,15 @@ class TkNode(collections.abc.MutableMapping):
 
         return frame
 
-    def setup_results(self, properties, calculation='energy'):
+    def setup_results(self, properties, calculation='energy', method=None):
         """Layout the results tab of the dialog"""
         results = self.node.parameters['results'].value
 
         self.results_widgets = []
         table = self['results']
+
+        table.clear()
+
         frame = table.interior()
 
         row = 0
@@ -553,8 +556,9 @@ class TkNode(collections.abc.MutableMapping):
                 continue
             if 'dimensionality' not in entry:
                 continue
-            if entry['dimensionality'] != 'scalar':
-                continue
+            if method is not None and 'methods' in entry:
+                if method not in entry['methods']:
+                    continue
 
             widgets = []
             widgets.append(key)
@@ -578,20 +582,24 @@ class TkNode(collections.abc.MutableMapping):
                     e.delete(0, tk.END)
                     e.insert(0, results[key]['variable'])
 
-            # table
-            w = ttk.Combobox(frame, width=10)
-            table.cell(row, 3, w)
-            widgets.append(w)
-            e = ttk.Entry(frame, width=15)
-            e.insert(0, key.lower())
-            table.cell(row, 4, e)
-            widgets.append(e)
+            if entry['dimensionality'] == 'scalar':
+                # table
+                w = ttk.Combobox(frame, width=10)
+                table.cell(row, 3, w)
+                widgets.append(w)
+                e = ttk.Entry(frame, width=15)
+                e.insert(0, key.lower())
+                table.cell(row, 4, e)
+                widgets.append(e)
 
-            if key in results:
-                if 'table' in results[key]:
-                    w.set(results[key]['table'])
-                    e.delete(0, tk.END)
-                    e.insert(0, results[key]['column'])
+                if key in results:
+                    if 'table' in results[key]:
+                        w.set(results[key]['table'])
+                        e.delete(0, tk.END)
+                        e.insert(0, results[key]['column'])
+            else:
+                widgets.append(None)
+                widgets.append(None)
 
             self.results_widgets.append(widgets)
             row += 1
@@ -711,8 +719,10 @@ class TkNode(collections.abc.MutableMapping):
                 for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
                     self.logger.debug('  key: {}'.format(key))
                     w_variable.delete(0, tk.END)
-                    w_table.delete(0, tk.END)
-                    w_column.delete(0, tk.END)
+                    if w_table is not None:
+                        w_table.delete(0, tk.END)
+                    if w_column is not None:
+                        w_column.delete(0, tk.END)
                     if key in results:
                         tmp = results[key]
                         self.logger.debug(
@@ -727,17 +737,19 @@ class TkNode(collections.abc.MutableMapping):
                             self.tk_var[key].set(0)
                             w_variable.insert(0, key.lower())
 
-                        if 'table' in tmp:
-                            w_table.insert(0, tmp['table'])
-                            w_column.insert(0, tmp['column'])
-                        else:
-                            w_table.set('')
-                            w_column.insert(0, key.lower())
+                        if w_table is not None:
+                            if 'table' in tmp:
+                                w_table.insert(0, tmp['table'])
+                                w_column.insert(0, tmp['column'])
+                            else:
+                                w_table.set('')
+                                w_column.insert(0, key.lower())
                     else:
                         self.logger.debug('  resetting widgets')
                         self.tk_var[key].set(0)
                         w_variable.insert(0, key.lower())
-                        w_column.insert(0, key.lower())
+                        if w_column is not None:
+                            w_column.insert(0, key.lower())
 
             # Reset the parameters, if any
             if self.node.parameters is not None:
@@ -780,12 +792,13 @@ class TkNode(collections.abc.MutableMapping):
                     if self.tk_var[key].get():
                         tmp = results[key] = dict()
                         tmp['variable'] = w_variable.get()
-                    table = w_table.get()
-                    if table != '':
-                        if key not in results:
-                            tmp = results[key] = dict()
-                        tmp['table'] = table
-                        tmp['column'] = w_column.get()
+                    if w_table is not None:
+                        table = w_table.get()
+                        if table != '':
+                            if key not in results:
+                                tmp = results[key] = dict()
+                            tmp['table'] = table
+                            tmp['column'] = w_column.get()
             # And any keywords
             if 'keywords' in self:
                 P = self.node.parameters
