@@ -2,9 +2,10 @@ name: test
 
 channels:
   - default
+  - conda-forge
 
 dependencies:
-    # Base depends
+  # Base depends
   - python
   - pip
   - configargparse
@@ -14,7 +15,10 @@ dependencies:
   - pillow
   - py-cpuinfo
 
-    # Testing
+  # SEAMM requirements
+  - openbabel  # for molsystem
+
+  # Testing
   - coverage
   - flake8
   - pytest
@@ -27,12 +31,13 @@ dependencies:
     - fasteners
     - Pmw
     - pyuca
+    - molsystem>=2020.9.23
     - reference-handler>=0.8.2
-    - seamm-util>=0.9
-    - seamm-widgets>=0.9
+    - seamm-util>=2020.9.23
+    - seamm-widgets>=2020.8.1
     - stevedore
 
-      # Testing
+    # Testing
     - codecov
     - yapf
 
