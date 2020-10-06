@@ -11,6 +11,7 @@ import jinja2
 import json
 import logging
 import pkg_resources
+import pprint
 import reference_handler
 import seamm
 import seamm_util  # MUST come after seamm
@@ -27,7 +28,14 @@ job = printing.getPrinter()
 
 class Node(collections.abc.Hashable):
 
-    def __init__(self, flowchart=None, title='', extension=None, module=None):
+    def __init__(
+        self,
+        flowchart=None,
+        title='',
+        extension=None,
+        module=None,
+        logger=logger
+    ):
         """Initialize a node
 
         Keyword arguments:
@@ -35,6 +43,7 @@ class Node(collections.abc.Hashable):
 
         self._uuid = uuid.uuid4().int
         self.module = module
+        self.logger = logger
         self.parent = None
         self.flowchart = flowchart
         self._title = title
@@ -57,19 +66,24 @@ class Node(collections.abc.Hashable):
         self.formatter = logging.Formatter(fmt='{message:s}', style='{')
 
         # Setup the bibliography
-        self.bibliography = {}
-        if self.module:
+        self._bibliography = {}
+        if self.module is not None:
             filepath = pkg_resources.resource_filename(
                 self.module, 'data/references.bib'
             )
-            logger.info("bibliography file path = '{}'".format(filepath))
+            self.logger.info("bibliography file path = '{}'".format(filepath))
 
             if os.path.exists(filepath):
+                self.logger.info('   reading the bibliography')
                 with open(filepath) as fd:
                     tmp = bibtexparser.load(fd).entries_dict
                 writer = bibtexparser.bwriter.BibTexWriter()
                 for key, data in tmp.items():
-                    self.bibliography[key] = writer._entry_to_bibtex(data)
+                    self.logger.info(f'      {key}')
+                    self._bibliography[key] = writer._entry_to_bibtex(data)
+                self.logger.debug(
+                    'Bibliography\n' + pprint.pformat(self._bibliography)
+                )
 
     def __hash__(self):
         """Make iterable!"""
@@ -266,9 +280,9 @@ class Node(collections.abc.Hashable):
 
         next_node = self.next()
         if next_node:
-            logger.debug('returning next_node: {}'.format(next_node))
+            self.logger.debug('returning next_node: {}'.format(next_node))
         else:
-            logger.debug('returning next_node: None')
+            self.logger.debug('returning next_node: None')
 
         return next_node
 
@@ -278,10 +292,10 @@ class Node(collections.abc.Hashable):
 
         for edge in self.flowchart.edges(self, direction='out'):
             if edge.edge_subtype == 'next':
-                logger.debug('Next node is: {}'.format(edge.node2))
+                self.logger.debug('Next node is: {}'.format(edge.node2))
                 return edge.node2
 
-        logger.debug('Reached the end of the flowchart')
+        self.logger.debug('Reached the end of the flowchart')
         return None
 
     def previous(self):
@@ -314,18 +328,24 @@ class Node(collections.abc.Hashable):
         }
         data['attributes'] = {}
         for key in self.__dict__:
-            if key == 'flowchart':
+            # Remove unneeded variables
+            if key[0] == '_' and key not in ('_uuid', '_method'):
+                # _method needed because forcefield_step/forcefield.py does not
+                # use parameters yet!
                 continue
-            if key == 'parent':
+            if key in (
+                'bibliography',
+                'flowchart',
+                'formatter',
+                'logger',
+                'options',
+                'parent',
+                'parser',
+                'tmp_table',
+                'unknown'
+            ):  # yapf: disable
                 continue
-            if key == 'formatter':
-                continue
-            if key == 'parser':
-                continue
-            if key == 'options':
-                continue
-            if key == 'unknown':
-                continue
+
             if 'flowchart' in key:
                 # Have a subflowchart!
                 data[key] = self.__dict__[key].to_dict()
@@ -364,7 +384,9 @@ class Node(collections.abc.Hashable):
         # how many outgoing edges are there?
         n_edges = len(self.flowchart.edges(self, direction='out'))
 
-        logger.debug('node.default_edge_subtype, n_edges = {}'.format(n_edges))
+        self.logger.debug(
+            'node.default_edge_subtype, n_edges = {}'.format(n_edges)
+        )
 
         if n_edges == 0:
             return ""
@@ -558,16 +580,16 @@ class Node(collections.abc.Hashable):
             # current package first, then looks in the main SEAMM
             # templates.
             if module_path is None:
-                logger.info("Reading graph templates from 'seamm'")
+                self.logger.info("Reading graph templates from 'seamm'")
                 loaders = [jinja2.PackageLoader('seamm')]
             else:
-                logger.info(
+                self.logger.info(
                     "Reading graph templates from the following modules, "
                     "in order"
                 )
                 loaders = []
                 for module in module_path:
-                    logger.info('\t' + module)
+                    self.logger.info('\t' + module)
                     loaders.append(jinja2.PackageLoader(module))
 
             self._jinja_env = jinja2.Environment(
