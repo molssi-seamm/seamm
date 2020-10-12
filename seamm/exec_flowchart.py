@@ -34,6 +34,7 @@ class ExecFlowchart(object):
         self.flowchart = flowchart
 
     def run(self, root=None):
+
         if not self.flowchart:
             raise RuntimeError('There is no flowchart to run!')
 
