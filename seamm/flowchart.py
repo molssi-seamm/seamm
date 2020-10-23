@@ -207,6 +207,42 @@ class Flowchart(object):
             n += 1
         logger.debug('Finished setting ids')
 
+    def create_parsers(self):
+        """Create the argument parsers for the nodes.
+        """
+        logger.debug('Creating argument parsers.')
+        # Reset the visited flag to check for loops
+        self.reset_visited()
+
+        # Get the start node
+        next_node = self.get_node('1')
+
+        # And traverse the nodes.
+        while next_node:
+            next_node = next_node.create_parser()
+        logger.debug('Finished creating argument parsers.')
+
+    def set_log_level(self, options):
+        """Set the log level for each node based on the options
+        """
+        logger.debug('Setting the log-level')
+
+        for node in self:
+            name = node.__module__.split('.')[0].replace('_', '-')
+            if name == 'seamm':
+                name = node.__module__.split('.')[1]
+                name = name.replace('_', '-') + '-step'
+            logger.debug(f'    checking for node type {name}')
+            if name in options and 'log_level' in options[name]:
+                logger.debug(f"      log_level = {options[name]['log_level']}")
+                try:
+                    node.logger.setLevel(options[name]['log_level'])
+                    logger.debug('        set!')
+                except Exception as e:
+                    print(f'Exception {type(e)}: {e}')
+                    pass
+        logger.debug('Finished setting node log levels.')
+
     # -------------------------------------------------------------------------
     # Strings, reading and writing
     # -------------------------------------------------------------------------

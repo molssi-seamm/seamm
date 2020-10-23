@@ -600,3 +600,57 @@ class Node(collections.abc.Hashable):
             jinja_env=self._jinja_env, template=template, title=title
         )
         return figure
+
+    def create_parser(self, name=None):
+        """Create the parser for this node.
+
+        All nodes have at least --log-level, which is setup here,
+
+        Parameters
+        ----------
+        name : str
+            The name of the parser. Defaults to a name derived from the module.
+
+        Returns
+        -------
+        seamm.Node()
+            The next node in the flowchart.
+        """
+        if self.visited:
+            return None
+
+        self.visited = True
+        result = self.next()
+
+        if name is None:
+            name = self.__module__.split('.')[0].replace('_', '-')
+            if name == 'seamm':
+                name = self.__module__.split('.')[1].replace('_', '-')
+                name += '-step'
+
+        parser = seamm.getParser()
+
+        if not parser.exists(name):
+            parser.add_parser(name)
+
+            parser.add_argument_group(
+                name, 'debugging options',
+                'Options for turning on debugging output and tools'
+            )
+
+            parser.add_argument(
+                name,
+                '--log-level',
+                group='debugging options',
+                default='WARNING',
+                type=str.upper,
+                choices=[
+                    'NOTSET', 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+                ],
+                help=(
+                    "The level of informational output, defaults to "
+                    "'%(default)s'"
+                )
+            )
+
+        return result
