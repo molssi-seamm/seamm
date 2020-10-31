@@ -25,6 +25,7 @@ import cpuinfo
 import seamm
 import seamm_util.printing as printing
 
+logging.basicConfig(level='WARNING')
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
 
@@ -47,28 +48,37 @@ def run(job_id=None, wdir=None, setup_logging=True):
     """The standalone flowchart app
     """
 
-    if sys.argv[1] == '--help' or sys.argv[1] == '-h':
-        # Running run_flowchart by hand ...
-        print('usage: run_flowchart <flowchart> [options]')
-        print('')
-        print('   usually it is simpler to execute the flowchart file itself')
-        exit()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--help' or sys.argv[1] == '-h':
+            # Running run_flowchart by hand ...
+            print('usage: run_flowchart <flowchart> [options]')
+            print('')
+            print('usually it is simpler to execute the flowchart file itself')
+            exit()
 
-    # Slice off 'run_flowchart' from the arguments, leaving the flowchart as
-    # the thing being run.
-    sys.argv = sys.argv[1:]
+        # Slice off 'run_flowchart' from the arguments, leaving the
+        # flowchart as the thing being run.
+        sys.argv = sys.argv[1:]
+
+        filename = sys.argv[0]
+    else:
+        if wdir is None:
+            filename = 'flowchart.flow'
+        else:
+            filename = os.path.join(wdir, 'flowchart.flow')
 
     # Set up the argument parser for this node.
     parser = setup_argument_parser()
 
     # Now we need to get the flowchart so that we can set up all the
     # parsers for the steps in order to provide appropriate help.
-    filename = sys.argv[0]
     if not os.path.exists(filename):
         raise FileNotFoundError(f"The flowchart '{filename}' does not exist.")
 
+    logger.info(f"    reading in flowchart '{filename}'")
     flowchart = seamm.Flowchart()
     flowchart.read(filename)
+    logger.info('   finished reading the flowchart')
 
     # Now traverse the flowchart, setting up the ids and parsers
     flowchart.set_ids()
@@ -76,6 +86,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
 
     # And handle the command-line arguments and ini file options.
     parser.parse_args()
+    logger.info('Parsed the command-line arguments')
     options = parser.get_options('SEAMM')
 
     # Whether to just run as-is, without getting a job_id, using the
@@ -163,10 +174,13 @@ def run(job_id=None, wdir=None, setup_logging=True):
     flowchart_path = os.path.join(wdir, 'flowchart.flow')
 
     # copy the flowchart to the root directory for later reference
-    shutil.copy2(sys.argv[0], flowchart_path)
+    if standalone:
+        shutil.copy2(sys.argv[0], flowchart_path)
 
+    logger.info(f"    reading in flowchart '{filename}' -- 2")
     flowchart = seamm.Flowchart(directory=wdir)
     flowchart.read(flowchart_path)
+    logger.info('   finished reading the flowchart -- 2')
 
     # Change to the working directory and run the flowchart
     with cd(wdir):
@@ -199,6 +213,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
         pt0 = time.process_time()
 
         # And run the flowchart
+        logger.info('Executing the flowchart')
         try:
             exec = seamm.ExecFlowchart(flowchart)
             exec.run(root=wdir)
