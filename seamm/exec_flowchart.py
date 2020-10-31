@@ -10,8 +10,10 @@ given tasks without knowing anything about chemistry. The chemistry
 specialization is contained in the Flowchart and the nodes that it
 contains."""
 
+import calendar
 import logging
 import os.path
+import string
 import sys
 import traceback
 
@@ -30,17 +32,86 @@ class ExecFlowchart(object):
     def __init__(self, flowchart=None):
         """Execute a flowchart, providing support for the actual
         execution of codes """
+        logger.info('In ExecFlowchart.init()')
 
         self.flowchart = flowchart
 
     def run(self, root=None):
-
+        logger.info('In ExecFlowchart.run()')
         if not self.flowchart:
             raise RuntimeError('There is no flowchart to run!')
 
+        # Get the command line options
+        parser = seamm.getParser()
+        options = parser.get_options()
+
+        # Set the options in each step
+        for node in self.flowchart:
+            step_type = node.step_type
+            logger.info(f'    setting options for {step_type}')
+            if step_type in options:
+                node._options = options[step_type]
+            if 'SEAMM' in options:
+                node._global_options = options['SEAMM']
+
         # Create the global context
-        logger.debug('Creating global variables space')
+        logger.info('Creating global variables space')
         seamm.flowchart_variables = seamm.Variables()
+
+        # Setup the citations
+        filename = os.path.join(self.flowchart.root_directory, 'references.db')
+        references = None
+        try:
+            references = reference_handler.Reference_Handler(filename)
+        except Exception as e:
+            job.job('Error with references:')
+            job.job(e)
+
+        if references is not None:
+            try:
+                template = string.Template(
+                    """\
+                    @misc{seamm,
+                          address = {$address},
+                          author = {$author},
+                          month = {$month},
+                          organization = {$organization},
+                          title = {$title},
+                          url = {$url},
+                          version = {$version},
+                          year = $year
+                    }"""
+                )
+
+                version = seamm.__version__
+                year, month = version.split('.')[0:2]
+                month = calendar.month_abbr[int(month)].lower()
+                citation = template.substitute(
+                    address='Virginia Tech, Blacksburg, VA, USA',
+                    author='Jessica Nash, Eliseo Marin-Rimoldi, Paul Saxe',
+                    month=month,
+                    organization=(
+                        'The Molecular Sciences Software Institute (MolSSI)'
+                    ),
+                    title=(
+                        'SEAMM: Simulation Environment for Atomistic and '
+                        'Molecular Modeling'
+                    ),
+                    url='https://github.com/molssi-seamm/seamm',
+                    version=version,
+                    year=year
+                )
+
+                references.cite(
+                    raw=citation,
+                    alias='SEAMM',
+                    module='seamm',
+                    level=1,
+                    note='The principle citation for SEAMM.'
+                )
+            except Exception as e:
+                job.job(f'Exception in citation {type(e)}: {e}')
+                job.job(traceback.format_exc())
 
         # Create the system handler and default system in the global context
         systems = molsystem.Systems()
@@ -69,6 +140,7 @@ class ExecFlowchart(object):
         )
 
         while next_node:
+            # and print the description
             try:
                 next_node = next_node.describe()
             except Exception:
@@ -170,24 +242,29 @@ class ExecFlowchart(object):
                     tmp[level] = {}
                 tmp[level][citation] = (text, count)
 
+            n = 0
             for level in sorted(tmp.keys()):
                 ref_dict = tmp[level]
                 if level == 1:
                     job.job('\nPrimary references:\n')
+                    n = 0
                 elif level == 2:
                     job.job('\nSecondary references:\n')
+                    n = 0
                 else:
                     job.job('\nLess important references:\n')
+                    n = 0
 
                 lines = []
                 for citation in sorted(ref_dict.keys()):
+                    n += 1
                     text, count = ref_dict[citation]
                     if count == 1:
-                        lines.append('({}) {:s}'.format(citation, text))
+                        lines.append('({}) {:s}'.format(n, text))
                     else:
                         lines.append(
                             '({}) {:s} (used {:d} times)'.format(
-                                citation, text, count
+                                n, text, count
                             )
                         )
                 job.job(
