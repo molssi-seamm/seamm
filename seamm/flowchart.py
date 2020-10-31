@@ -228,15 +228,14 @@ class Flowchart(object):
         logger.debug('Setting the log-level')
 
         for node in self:
-            name = node.__module__.split('.')[0].replace('_', '-')
-            if name == 'seamm':
-                name = node.__module__.split('.')[1]
-                name = name.replace('_', '-') + '-step'
-            logger.debug(f'    checking for node type {name}')
-            if name in options and 'log_level' in options[name]:
-                logger.debug(f"      log_level = {options[name]['log_level']}")
+            step_type = node.step_type
+            logger.debug(f'    checking for node type {step_type}')
+            if step_type in options and 'log_level' in options[step_type]:
+                logger.debug(
+                    f"      log_level = {options[step_type]['log_level']}"
+                )
                 try:
-                    node.logger.setLevel(options[name]['log_level'])
+                    node.logger.setLevel(options[step_type]['log_level'])
                     logger.debug('        set!')
                 except Exception as e:
                     print(f'Exception {type(e)}: {e}')
