@@ -153,13 +153,6 @@ class ArgumentParser(object):
         # 1. Process the command-line arguments, breaking them into
         #    sections corresponding to the subparsers.
 
-        # parser = argparse.ArgumentParser(prefix_chars='+')
-        # parser.add_argument('SEAMM', nargs='*', default='')
-        # for section in self._parsers:
-        #     parser.add_argument(f'++{section}', nargs='*', default='')
-        # arg_sections = vars(parser.parse_args(args))
-        # del parser
-
         arg_sections = self.split_args(args)
 
         # 2. Read the .ini files, if any.
