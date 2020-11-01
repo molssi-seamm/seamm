@@ -316,7 +316,7 @@ def setup_argument_parser():
     Returns
     -------
     ArgumentParser
-        The configargparse ArgumentParser for handling commandline and
+        The seamm.ArgumentParser for handling commandline and
         config-file parsing.
     """
     parser = seamm.getParser(
