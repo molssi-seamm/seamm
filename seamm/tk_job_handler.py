@@ -58,6 +58,8 @@ class TkJobHandler(object):
         """The list of dashboards."""
         result = []
         for dashboard in self.config:
+            if dashboard == 'global options':
+                continue
             if (
                 dashboard
                 not in ('global options', self.config.default_section)
@@ -302,8 +304,9 @@ class TkJobHandler(object):
         url = self.config[dashboard]['url']
 
         try:
+            # url + '/api/list-projects', timeout=self.timeout
             response = requests.get(
-                url + '/api/list-projects', timeout=self.timeout
+                url + '/api/projects/list', timeout=self.timeout
             )
             if response.status_code != 200:
                 logger.warning(

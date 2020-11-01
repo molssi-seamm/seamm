@@ -232,6 +232,22 @@ class TkNode(collections.abc.MutableMapping):
     def border(self, value):
         self._border = value
 
+    @staticmethod
+    def is_expr(value):
+        """Return whether the value is an expression or constant.
+
+        Parameters
+        ----------
+        value : str
+            The value to test
+
+        Returns
+        -------
+        bool
+           True for an expression, False otherwise.
+        """
+        return len(value) > 0 and value[0] == '$'
+
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
 

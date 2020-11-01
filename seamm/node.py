@@ -7,10 +7,13 @@
 
 import bibtexparser
 import collections.abc
+try:
+    import importlib.metadata as implib
+except Exception:
+    import importlib_metadata as implib
 import jinja2
 import json
 import logging
-import pkg_resources
 import pprint
 import reference_handler
 import seamm
@@ -42,7 +45,6 @@ class Node(collections.abc.Hashable):
         """
 
         self._uuid = uuid.uuid4().int
-        self.module = module
         self.logger = logger
         self.parent = None
         self.flowchart = flowchart
@@ -54,6 +56,9 @@ class Node(collections.abc.Hashable):
         self._references = None
         self._jinja_env = None
         self._graphs = None
+        self._options = {}  # Command-line options for this step
+        self._global_options = {}  # Command-line global options
+        self._step_type = None
 
         self.parameters = None  # Object containing control parameters
 
@@ -67,23 +72,23 @@ class Node(collections.abc.Hashable):
 
         # Setup the bibliography
         self._bibliography = {}
-        if self.module is not None:
-            filepath = pkg_resources.resource_filename(
-                self.module, 'data/references.bib'
-            )
-            self.logger.info("bibliography file path = '{}'".format(filepath))
+        package = self.__module__.split('.')[0]
+        files = [
+            p for p in implib.files(package) if 'references.bib' in str(p)
+        ]
+        if len(files) > 0:
+            path = files[0]
+            self.logger.info(f"bibliography file path = '{path}'")
 
-            if os.path.exists(filepath):
-                self.logger.info('   reading the bibliography')
-                with open(filepath) as fd:
-                    tmp = bibtexparser.load(fd).entries_dict
-                writer = bibtexparser.bwriter.BibTexWriter()
-                for key, data in tmp.items():
-                    self.logger.info(f'      {key}')
-                    self._bibliography[key] = writer._entry_to_bibtex(data)
-                self.logger.debug(
-                    'Bibliography\n' + pprint.pformat(self._bibliography)
-                )
+            data = path.read_text()
+            tmp = bibtexparser.loads(data).entries_dict
+            writer = bibtexparser.bwriter.BibTexWriter()
+            for key, data in tmp.items():
+                self.logger.info(f'      {key}')
+                self._bibliography[key] = writer._entry_to_bibtex(data)
+            self.logger.debug(
+                'Bibliography\n' + pprint.pformat(self._bibliography)
+            )
 
     def __hash__(self):
         """Make iterable!"""
@@ -123,6 +128,28 @@ class Node(collections.abc.Hashable):
     def visited(self):
         """Whether this node has been visited in a traversal"""
         return self._visited
+
+    @property
+    def step_type(self):
+        """The step type, e.g. 'lammps-step', used for e.g. options"""
+        if self._step_type is None:
+            name = self.__module__.split('.')[0].replace('_', '-')
+            if name == 'seamm':
+                name = self.__module__.split('.')[1].replace('_', '-')
+                name += '-step'
+            self._step_type = name
+
+        return self._step_type
+
+    @property
+    def options(self):
+        """Dictionary of options for this step"""
+        return self._options
+
+    @property
+    def global_options(self):
+        """Dictionary of global options"""
+        return self._global_options
 
     @visited.setter
     def visited(self, value):
@@ -175,6 +202,22 @@ class Node(collections.abc.Hashable):
             self._references.__del__()
 
         self._references = value
+
+    @staticmethod
+    def is_expr(value):
+        """Return whether the value is an expression or constant.
+
+        Parameters
+        ----------
+        value : str
+            The value to test
+
+        Returns
+        -------
+        bool
+           True for an expression, False otherwise.
+        """
+        return len(value) > 0 and value[0] == '$'
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
@@ -329,7 +372,7 @@ class Node(collections.abc.Hashable):
         data['attributes'] = {}
         for key in self.__dict__:
             # Remove unneeded variables
-            if key[0] == '_' and key not in ('_uuid', '_method'):
+            if key[0] == '_' and key not in ('_uuid', '_method', '_title'):
                 # _method needed because forcefield_step/forcefield.py does not
                 # use parameters yet!
                 continue
@@ -600,3 +643,52 @@ class Node(collections.abc.Hashable):
             jinja_env=self._jinja_env, template=template, title=title
         )
         return figure
+
+    def create_parser(self, name=None):
+        """Create the parser for this node.
+
+        All nodes have at least --log-level, which is setup here,
+
+        Parameters
+        ----------
+        name : str
+            The name of the parser. Defaults to a name derived from the module.
+
+        Returns
+        -------
+        seamm.Node()
+            The next node in the flowchart.
+        """
+        if self.visited:
+            return None
+
+        self.visited = True
+        result = self.next()
+
+        step_type = self.step_type
+        parser = seamm.getParser()
+
+        if not parser.exists(step_type):
+            parser.add_parser(step_type)
+
+            parser.add_argument_group(
+                step_type, 'debugging options',
+                'Options for turning on debugging output and tools'
+            )
+
+            parser.add_argument(
+                step_type,
+                '--log-level',
+                group='debugging options',
+                default='WARNING',
+                type=str.upper,
+                choices=[
+                    'NOTSET', 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+                ],
+                help=(
+                    "The level of informational output, defaults to "
+                    "'%(default)s'"
+                )
+            )
+
+        return result

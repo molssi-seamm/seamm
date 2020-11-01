@@ -6,22 +6,26 @@ SEAMM flowcharts have a 'magic' line, so that they can be executed directly.
 Or, run_flowchart can be invoked with the name of flowchart.
 """
 
-import configargparse
-import cpuinfo
+import argparse
 import datetime
 import fasteners
 import json
 import locale
 import logging
-import seamm
-import seamm_util.printing as printing
 import os
 import os.path
 import re
 import shutil
 import sys
+import textwrap
 import time
 
+import cpuinfo
+
+import seamm
+import seamm_util.printing as printing
+
+logging.basicConfig(level='WARNING')
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
 
@@ -44,89 +48,58 @@ def run(job_id=None, wdir=None, setup_logging=True):
     """The standalone flowchart app
     """
 
-    parser = configargparse.ArgParser(
-        auto_env_var_prefix='',
-        default_config_files=[
-            '/etc/seamm/seamm.ini',
-            '~/.seamm/seamm.ini',
-        ],
-        description='Execute a SEAMM flowchart'
-    )
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--help' or sys.argv[1] == '-h':
+            # Running run_flowchart by hand ...
+            print('usage: run_flowchart <flowchart> [options]')
+            print('')
+            print('usually it is simpler to execute the flowchart file itself')
+            exit()
 
-    parser.add_argument(
-        "--standalone",
-        action='store_true',
-        help="Run this workflow as-is without using the datastore, etc."
-    )
-    parser.add_argument(
-        '--seamm-configfile',
-        is_config_file=True,
-        default=None,
-        help='a configuration file to override others'
-    )
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        dest="verbose_count",
-        action="count",
-        default=0,
-        help="increases log verbosity for each occurence."
-    )
-    parser.add_argument(
-        "--title",
-        dest="title",
-        default='',
-        action="store",
-        env_var='SEAMM_TITLE',
-        help="The title for this run."
-    )
-    parser.add_argument(
-        "--datastore",
-        dest="datastore",
-        default='.',
-        action="store",
-        env_var='SEAMM_DATASTORE',
-        help="The datastore (directory) for this run."
-    )
-    parser.add_argument(
-        "--job-id-file",
-        dest="job_id_file",
-        default=None,
-        action="store",
-        help="The job_id file to use."
-    )
-    parser.add_argument(
-        "--project",
-        dest="projects",
-        action="append",
-        env_var='SEAMM_PROJECT',
-        help="The project(s) for this job."
-    )
-    parser.add_argument("--force", dest="force", action='store_true')
-    parser.add_argument(
-        "--output",
-        choices=['files', 'stdout', 'both'],
-        default='files',
-        help='whether to put the output in files, direct to stdout, or both'
-    )
-    parser.add_argument(
-        "filename",
-        nargs='?',
-        help='the filename of the flowchart'
-    )  # yapf: disable
+        # Slice off 'run_flowchart' from the arguments, leaving the
+        # flowchart as the thing being run.
+        sys.argv = sys.argv[1:]
 
-    args, unknown = parser.parse_known_args()
+        filename = sys.argv[0]
+    else:
+        if wdir is None:
+            filename = 'flowchart.flow'
+        else:
+            filename = os.path.join(wdir, 'flowchart.flow')
+
+    # Set up the argument parser for this node.
+    parser = setup_argument_parser()
+
+    # Now we need to get the flowchart so that we can set up all the
+    # parsers for the steps in order to provide appropriate help.
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"The flowchart '{filename}' does not exist.")
+
+    logger.info(f"    reading in flowchart '{filename}'")
+    flowchart = seamm.Flowchart()
+    flowchart.read(filename)
+    logger.info('   finished reading the flowchart')
+
+    # Now traverse the flowchart, setting up the ids and parsers
+    flowchart.set_ids()
+    flowchart.create_parsers()
+
+    # And handle the command-line arguments and ini file options.
+    parser.parse_args()
+    logger.info('Parsed the command-line arguments')
+    options = parser.get_options('SEAMM')
 
     # Whether to just run as-is, without getting a job_id, using the
     # datastore, etc.
-    standalone = 'standalone' in args and args.standalone
+    standalone = 'standalone' in options and options['standalone']
 
+    # Setup the logging
     if setup_logging:
-        # Set up logging level to WARNING by default, going more verbose
-        # for each new -v, to INFO and then DEBUG and finally ALL with 3 -v's
+        if 'log_level' in options:
+            logging.basicConfig(level=options['log_level'])
 
-        numeric_level = max(3 - args.verbose_count, 0) * 10
-        logging.basicConfig(level=numeric_level)
+        # Set the log level for the plug-ins
+        flowchart.set_log_level(parser.get_options())
 
     # Create the working directory where files, output, etc. go.
     # At the moment this is datastore/job_id
@@ -135,19 +108,19 @@ def run(job_id=None, wdir=None, setup_logging=True):
         print('Running in standalone mode.')
         wdir = os.getcwd()
     else:
-        datastore = os.path.expanduser(args.datastore)
+        datastore = os.path.expanduser(options['datastore'])
 
         if job_id is None:
-            if args.job_id_file is None:
+            if options['job_id_file'] is None:
                 job_id_file = os.path.join(datastore, 'job.id')
 
             # Get the job_id from the file, creating the file if necessary
             job_id = get_job_id(job_id_file)
         if wdir is None:
-            if args.projects is None:
+            if options['projects'] is None:
                 projects = ['default']
             else:
-                projects = args.projects
+                projects = options['projects']
 
             # And put it all together
             wdir = os.path.abspath(
@@ -158,7 +131,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
             )
 
             if os.path.exists(wdir):
-                if args.force:
+                if options['force']:
                     shutil.rmtree(wdir)
                 else:
                     msg = "Directory '{}' exists, use --force to overwrite"\
@@ -199,12 +172,15 @@ def run(job_id=None, wdir=None, setup_logging=True):
     printer.job("Running in directory '{}'".format(wdir))
 
     flowchart_path = os.path.join(wdir, 'flowchart.flow')
-    if args.filename is not None:
-        # copy the flowchart to the root directory for later reference
-        shutil.copy2(args.filename, flowchart_path)
 
-    flowchart = seamm.Flowchart(directory=wdir, output=args.output)
+    # copy the flowchart to the root directory for later reference
+    if standalone:
+        shutil.copy2(sys.argv[0], flowchart_path)
+
+    logger.info(f"    reading in flowchart '{filename}' -- 2")
+    flowchart = seamm.Flowchart(directory=wdir)
     flowchart.read(flowchart_path)
+    logger.info('   finished reading the flowchart -- 2')
 
     # Change to the working directory and run the flowchart
     with cd(wdir):
@@ -219,7 +195,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
         if 'command line' not in data:
             data['command line'] = sys.argv
         if 'title' not in data:
-            data['title'] = args.title
+            data['title'] = options['title']
         data['working directory'] = wdir
         data['start time'] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
         data['state'] = 'started'
@@ -237,6 +213,7 @@ def run(job_id=None, wdir=None, setup_logging=True):
         pt0 = time.process_time()
 
         # And run the flowchart
+        logger.info('Executing the flowchart')
         try:
             exec = seamm.ExecFlowchart(flowchart)
             exec.run(root=wdir)
@@ -331,6 +308,161 @@ def get_job_id(filename):
         )
 
     return job_id
+
+
+def setup_argument_parser():
+    """Setup the command-line argument parser.
+
+    Returns
+    -------
+    ArgumentParser
+        The configargparse ArgumentParser for handling commandline and
+        config-file parsing.
+    """
+    parser = seamm.getParser(
+        ini_files=[
+            'etc/seamm/seamm.ini',
+            os.path.expanduser('~/.seamm/seamm.ini'), 'seamm.ini'
+        ],
+    )
+
+    parser.add_parser(
+        'SEAMM',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        prog=sys.argv[0],
+        usage='%(prog)s [options] plug-in [options] plug-in [options] ...',
+        epilog=textwrap.dedent(
+            """
+            The plug-ins in this flowchart are listed above.
+            Options, if any, for plug-ins are placed after
+            the name of the plug-in, e.g.:
+
+               test.flow lammps-step --log-level DEBUG --np 4
+
+            To get help for a plug-in, use --help or -h after the
+            plug-in name. E.g.
+
+               test.flow lammps-step --help
+            """
+        )
+    )
+
+    # Debugging options
+    parser.add_argument_group(
+        'SEAMM', 'debugging options',
+        'Options for turning on debugging output and tools'
+    )
+
+    parser.add_argument(
+        'SEAMM',
+        '--log-level',
+        group='debugging options',
+        default='WARNING',
+        type=str.upper,
+        choices=['NOTSET', 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        help=(
+            "The level of informational output, defaults to "
+            "'%(default)s'"
+        )
+    )
+
+    # Datastore options
+    parser.add_argument_group(
+        'SEAMM', 'datastore options',
+        'Options controlling the use of the datastore'
+    )
+
+    parser.add_argument(
+        'SEAMM',
+        "--standalone",
+        group='datastore options',
+        action='store_true',
+        help="Run this workflow as-is without using the datastore, etc."
+    )
+    parser.add_argument(
+        'SEAMM',
+        "--datastore",
+        group='datastore options',
+        dest="datastore",
+        default='.',
+        action="store",
+        help="The datastore (directory) for this run."
+    )
+    parser.add_argument(
+        'SEAMM',
+        "--title",
+        group='datastore options',
+        dest="title",
+        default='',
+        action="store",
+        help="The title for this run."
+    )
+    parser.add_argument(
+        'SEAMM',
+        "--job-id-file",
+        group='datastore options',
+        dest="job_id_file",
+        default=None,
+        action="store",
+        help="The job_id file to use."
+    )
+    parser.add_argument(
+        'SEAMM',
+        "--project",
+        group='datastore options',
+        dest="projects",
+        action="append",
+        help="The project(s) for this job."
+    )
+    parser.add_argument(
+        'SEAMM',
+        "--force",
+        group='datastore options',
+        dest="force",
+        action='store_true'
+    )
+
+    # Datastore options
+    parser.add_argument_group(
+        'SEAMM', 'hardware options', (
+            'Options about memory limits, parallelism and other details '
+            'connected with hardware.'
+        )
+    )
+
+    parser.add_argument(
+        'SEAMM',
+        '--parallelism',
+        group='hardware options',
+        default='any',
+        choices=['none', 'mpi', 'openmp', 'any'],
+        help='Whether to limit parallel usage to certain types.'
+    )
+
+    parser.add_argument(
+        'SEAMM',
+        '--ncores',
+        group='hardware options',
+        default='available',
+        help=(
+            'The maximum number of cores/threads to use in any step. '
+            'Default: all available cores.'
+        )
+    )
+
+    parser.add_argument(
+        'SEAMM',
+        '--memory',
+        group='hardware options',
+        default='available',
+        help=(
+            'The maximum amount of memory to use in any step, which can be '
+            "'all' or 'available', or a number, which may use k, Ki, "
+            'M, Mi, etc. suffixes. Default: available.'
+        )
+    )
+
+    return parser
 
 
 if __name__ == "__main__":
