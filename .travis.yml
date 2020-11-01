@@ -82,16 +82,13 @@ jobs:
       name: "Deploy to PyPi"
       if: tag IS present
       os: linux
-      dist: xenial
-      python: 3.8
+      env: PYTHON_VER=3.8
       script: skip
       deploy:
         provider: pypi
         distributions: sdist bdist_wheel
         skip_existing: true
         on:
-          condition: $PYTHON_VER = 3.8
-          condition: $TRAVIS_OS_NAME = linux
           repo: molssi-seamm/seamm
           tags: true
         username: seamm
