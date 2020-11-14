@@ -6,6 +6,7 @@
 """
 
 import bibtexparser
+import calendar
 import collections.abc
 try:
     import importlib.metadata as implib
@@ -14,16 +15,20 @@ except Exception:
 import jinja2
 import json
 import logging
-import pprint
-import reference_handler
-import seamm
-import seamm_util  # MUST come after seamm
-from seamm_util.printing import FormattedText as __
-import seamm_util.printing as printing
-import numpy as np
 import os.path
+import pprint
+import string
+import traceback
+
+import numpy as np
 import pandas
 import uuid
+
+import reference_handler
+import seamm
+import seamm_util
+from seamm_util.printing import FormattedText as __
+import seamm_util.printing as printing
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -321,6 +326,36 @@ class Node(collections.abc.Hashable):
             # Setup up the printing for this step
             self.setup_printing(printer)
 
+        # Add a citation for this plug-in
+        package = self.__module__.split('.')[0]
+        if package in self._bibliography:
+            try:
+                template = string.Template(self._bibliography[package])
+
+                version = self.version
+                year, month = version.split('.')[0:2]
+                month = calendar.month_abbr[int(month)].lower()
+                citation = template.substitute(
+                    month=month, version=version, year=year
+                )
+
+                title = package.split('_')
+                title = ' '.join([s.capitalize() for s in title[0:-2]])
+                self.references.cite(
+                    raw=citation,
+                    alias=package,
+                    module=package,
+                    level=2,
+                    note=(
+                        f'The principle citation for the {title} step in '
+                        'SEAMM.'
+                    )
+                )
+
+            except Exception as e:
+                printer.important(f'Exception in citation {type(e)}: {e}')
+                printer.important(traceback.format_exc())
+
         next_node = self.next()
         if next_node:
             self.logger.debug('returning next_node: {}'.format(next_node))
@@ -553,6 +588,9 @@ class Node(collections.abc.Hashable):
             # Check for storing in a variable
             if 'variable' in value:
                 variable = self.get_value(value['variable'])
+                self.logger.debug(
+                    f"results: setting '{variable}' = {data[key]} (key={key})"
+                )
                 self.set_variable(variable, data[key])
 
             # and table
