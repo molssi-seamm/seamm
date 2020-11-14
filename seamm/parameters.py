@@ -349,7 +349,9 @@ class Parameter(collections.abc.MutableMapping):
 
         # format if requested
         if formatted:
-            result = self.format_string.format(result)
+            fstring = self.format_string
+            if fstring is not None and fstring != '':
+                result = f'{result:{fstring}}'
             if self.units is not None and self.units != '':
                 result += ' ' + self.units
 
@@ -362,6 +364,8 @@ class Parameter(collections.abc.MutableMapping):
     def set(self, value):
         """Set the fields based on the type of value given"""
         if self.kind == 'special' or self.kind == 'periodic table':
+            self.value = value
+        elif self.kind == 'list':
             self.value = value
         elif isinstance(value, tuple) or isinstance(value, list):
             if len(value) == 1:
