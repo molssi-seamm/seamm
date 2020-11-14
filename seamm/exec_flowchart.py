@@ -58,6 +58,9 @@ class ExecFlowchart(object):
         logger.info('Creating global variables space')
         seamm.flowchart_variables = seamm.Variables()
 
+        # And add the printer
+        seamm.flowchart_variables.set_variable('printer', job)
+
         # Setup the citations
         filename = os.path.join(self.flowchart.root_directory, 'references.db')
         references = None
