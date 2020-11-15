@@ -44,7 +44,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run(job_id=None, wdir=None, setup_logging=True):
+def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     """The standalone flowchart app
     """
 
@@ -155,9 +155,8 @@ def run(job_id=None, wdir=None, setup_logging=True):
     formatter = logging.Formatter(fmt='{message:s}', style='{')
 
     # A handler for stdout
-    if standalone or wdir is None:
+    if not in_jobserver:
         console_handler = logging.StreamHandler()
-        # console_handler.setLevel(printing.JOB)
         console_handler.setLevel(printing.NORMAL)
         console_handler.setFormatter(formatter)
         printer.addHandler(console_handler)
@@ -174,10 +173,10 @@ def run(job_id=None, wdir=None, setup_logging=True):
     flowchart_path = os.path.join(wdir, 'flowchart.flow')
 
     # copy the flowchart to the root directory for later reference
-    if standalone:
+    if not in_jobserver:
         shutil.copy2(sys.argv[0], flowchart_path)
 
-    logger.info(f"    reading in flowchart '{filename}' -- 2")
+    logger.info(f"    reading in flowchart '{flowchart_path}' -- 2")
     flowchart = seamm.Flowchart(directory=wdir)
     flowchart.read(flowchart_path)
     logger.info('   finished reading the flowchart -- 2')
