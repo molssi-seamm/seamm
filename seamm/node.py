@@ -151,6 +151,10 @@ class Node(collections.abc.Hashable):
         """Dictionary of options for this step"""
         return self._options
 
+    @options.setter
+    def options(self, value):
+        self._options = value
+
     @property
     def global_options(self):
         """Dictionary of global options"""
