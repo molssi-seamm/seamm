@@ -70,7 +70,7 @@ jobs:
 
       run: |
         flake8 seamm tests
-        yapf --diff --recursive dftblus_step tests
+        yapf --diff --recursive seamm tests
       
   test:
     name: Test ${{ matrix.os }} Py${{ matrix.python-version }}
