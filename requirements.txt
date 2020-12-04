@@ -1,5 +1,4 @@
 bitmath==1.3.3.1
-configargparse==1.2.3
 fasteners==0.15
 jinja2==2.11.2
 numpy==1.18.5
@@ -7,8 +6,8 @@ pandas==1.0.5
 pillow==7.2.0
 pmw==2.0.1
 pyuca==1.2
-molsystem>=2020.9.23
+molsystem>=2020.12.3
 reference-handler==0.8.2
-seamm-util>=2020.9.23
-seamm-widgets>=2020.9.28
+seamm-util>=2020.12.2
+seamm-widgets>=2020.12.4
 stevedore==1.32.0

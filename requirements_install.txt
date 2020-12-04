@@ -1,9 +1,7 @@
 bitmath
-configargparse
 fasteners
-jinja2
 numpy
-molsystem>=2020.9.23
+molsystem>=2020.12.2
 pandas
 pillow
 pmw
@@ -11,6 +9,6 @@ py-cpuinfo
 pyuca
 reference_handler
 molsystem
-seamm-util>=2020.9.23
-seamm-widgets>=2020.9.28
+seamm-util>=2020.12.2
+seamm-widgets>=2020.12.2
 stevedore

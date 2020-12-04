@@ -1,15 +1,12 @@
 name: test
 
 channels:
-  - default
   - conda-forge
 
 dependencies:
   # Base depends
   - python
   - pip
-  - configargparse
-  - jinja2
   - numpy
   - pandas
   - pillow
@@ -19,11 +16,10 @@ dependencies:
   - openbabel  # for molsystem
 
   # Testing
-  - coverage
+  - codecov
   - flake8
   - pytest
   - pytest-cov
-  - pytest-runner
 
   # Pip-only installs
   - pip:
@@ -31,13 +27,12 @@ dependencies:
     - fasteners
     - Pmw
     - pyuca
-    - molsystem>=2020.9.23
+    - molsystem>=2020.12.2
     - reference-handler>=0.8.2
-    - seamm-util>=2020.9.23
-    - seamm-widgets>=2020.8.1
+    - seamm-util>=2020.12.2
+    - seamm-widgets>=2020.12.2
     - stevedore
 
     # Testing
-    - codecov
     - yapf
 
