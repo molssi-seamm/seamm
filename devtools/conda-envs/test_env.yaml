@@ -7,13 +7,14 @@ dependencies:
   # Base depends
   - python
   - pip
+
+  # SEAMM requirements
+  - jinja2
   - numpy
+  - openbabel  # for molsystem
   - pandas
   - pillow
   - py-cpuinfo
-
-  # SEAMM requirements
-  - openbabel  # for molsystem
 
   # Testing
   - codecov

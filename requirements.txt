@@ -2,11 +2,12 @@ bitmath==1.3.3.1
 fasteners==0.15
 jinja2==2.11.2
 numpy==1.18.5
+molsystem>=2020.12.3
 pandas==1.0.5
 pillow==7.2.0
 pmw==2.0.1
+py-cpuinfo==7.0.0
 pyuca==1.2
-molsystem>=2020.12.3
 reference-handler==0.8.2
 seamm-util>=2020.12.2
 seamm-widgets>=2020.12.4
