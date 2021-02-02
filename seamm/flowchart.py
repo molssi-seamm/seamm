@@ -239,7 +239,6 @@ class Flowchart(object):
                     logger.debug('        set!')
                 except Exception as e:
                     print(f'Exception {type(e)}: {e}')
-                    pass
         logger.debug('Finished setting node log levels.')
 
     # -------------------------------------------------------------------------

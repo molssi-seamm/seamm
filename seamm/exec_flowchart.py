@@ -17,7 +17,7 @@ import string
 import sys
 import traceback
 
-import molsystem
+from molsystem import SystemDB
 import reference_handler
 import seamm
 import seamm_util.printing as printing
@@ -116,11 +116,13 @@ class ExecFlowchart(object):
                 job.job(f'Exception in citation {type(e)}: {e}')
                 job.job(traceback.format_exc())
 
-        # Create the system handler and default system in the global context
-        systems = molsystem.Systems()
-        system = systems.create_system('seamm')
-        seamm.flowchart_variables.set_variable('_systems', systems)
-        seamm.flowchart_variables.set_variable('_system', system)
+        # Create the system database, default system and configuration
+        db = SystemDB(filename='file:seamm.db')
+        system = db.system = db.create_system(name='default')
+        system.configuration = system.create_configuration(name='default')
+
+        # Put the system database in the global context for access.
+        seamm.flowchart_variables.set_variable('_system_db', db)
 
         self.flowchart.root_directory = root
 
@@ -193,15 +195,16 @@ class ExecFlowchart(object):
                 raise
 
         # Write the final structure
-        system = seamm.flowchart_variables.get_variable('_system')
-        if system.n_atoms() > 0:
+        db = seamm.flowchart_variables.get_variable('_system_db')
+        configuration = db.system.configuration
+        if configuration.n_atoms() > 0:
             # MMCIF file has bonds
             filename = os.path.join(
                 self.flowchart.root_directory, 'final_structure.mmcif'
             )
             text = None
             try:
-                text = system.to_mmcif_text()
+                text = configuration.to_mmcif_text()
             except Exception:
                 message = (
                     'Error creating the final mmcif file\n\n' +
@@ -218,12 +221,12 @@ class ExecFlowchart(object):
                     'for viewing.'
                 )
             # CIF file has cell
-            if system.periodicity == 3:
+            if configuration.periodicity == 3:
                 filename = os.path.join(
                     self.flowchart.root_directory, 'final_structure.cif'
                 )
                 with open(filename, 'w') as fd:
-                    print(system.to_cif_text(), file=fd)
+                    print(configuration.to_cif_text(), file=fd)
                 job.job(
                     "\nWrote the final structure to 'final_structure.cif' for "
                     'viewing.'
@@ -277,6 +280,3 @@ class ExecFlowchart(object):
                         indent_initial=False
                     )
                 )
-        # Close the reference handler, which should force it to close the
-        # connection.
-        del references
