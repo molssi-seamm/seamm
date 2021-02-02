@@ -12,7 +12,6 @@ or in the ini file, labeled by the type of section.
 import argparse
 import configparser
 import os
-import pprint  # noqa: F401
 import sys
 
 

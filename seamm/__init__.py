@@ -7,9 +7,6 @@ Simulation Environment for Atomistic and Molecular Modeling.
 
 import textwrap
 
-# Text handling
-from textwrap import dedent  # noqa: F401
-
 # Bring up the classes so that they appear to be directly in
 # the seamm package.
 

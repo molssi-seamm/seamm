@@ -53,7 +53,7 @@ class TkSplit(seamm.TkNode):
         x1 = x0 + self.w
         y0 = self.y
         y1 = y0 + self.h
-        self._border = self.canvas.create_oval(
+        self.border = self.canvas.create_oval(
             x0,
             y0,
             x1,

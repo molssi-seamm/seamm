@@ -67,6 +67,10 @@ class TkEdge(seamm.Edge):
         )
         self._finalizer.atexit = False
 
+    def __eq__(self, other):
+        """Return a boolean if this object is equal to another"""
+        return super().__eq__(other)
+
     @property
     def canvas(self):
         return self._data['canvas']

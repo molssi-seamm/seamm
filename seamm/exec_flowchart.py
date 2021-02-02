@@ -280,6 +280,3 @@ class ExecFlowchart(object):
                         indent_initial=False
                     )
                 )
-        # Close the reference handler, which should force it to close the
-        # connection.
-        del references

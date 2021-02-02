@@ -42,14 +42,15 @@ class Node(collections.abc.Hashable):
         title='',
         extension=None,
         module=None,
-        logger=logger
+        logger=logger,
+        uid=uuid.uuid4().int
     ):
         """Initialize a node
 
         Keyword arguments:
         """
 
-        self._uuid = uuid.uuid4().int
+        self._uuid = uid
         self.logger = logger
         self.parent = None
         self.flowchart = flowchart
@@ -134,6 +135,10 @@ class Node(collections.abc.Hashable):
         """Whether this node has been visited in a traversal"""
         return self._visited
 
+    @visited.setter
+    def visited(self, value):
+        self._visited = bool(value)
+
     @property
     def step_type(self):
         """The step type, e.g. 'lammps-step', used for e.g. options"""
@@ -208,7 +213,6 @@ class Node(collections.abc.Hashable):
     def references(self, value):
         if self._references is not None:
             self._references.conn.commit()
-            self._references.__del__()
 
         self._references = value
 
