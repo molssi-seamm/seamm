@@ -28,7 +28,7 @@ dependencies:
     - fasteners
     - Pmw
     - pyuca
-    - molsystem>=2020.12.2
+    - molsystem>=2021.2.2
     - reference-handler>=0.8.2
     - seamm-util>=2020.12.2
     - seamm-widgets>=2020.12.2
