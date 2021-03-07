@@ -26,18 +26,18 @@ class Graph(object):
         return self._node.values().__iter__()
 
     def __contains__(self, node):
-        return node.__hash__() in self._node
+        return node.uuid in self._node
 
     def add_node(self, node):
         if node in self:
             raise RuntimeError('node is already in the graph')
-        self._node[node.__hash__()] = node
+        self._node[node.uuid] = node
         return node
 
     def remove_node(self, node):
         if node not in self:
             raise RuntimeError('node is not in the graph')
-        del self._node[node.__hash__()]
+        del self._node[node.uuid]
 
     def clear(self):
         self._node = {}
@@ -59,7 +59,7 @@ class Graph(object):
         if v not in self:
             self.add_node(v)
 
-        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
+        key = (u.uuid, v.uuid, edge_type, edge_subtype)
         if edge_class is None:
             self._edge[key] = seamm.Edge(
                 self,
@@ -81,7 +81,7 @@ class Graph(object):
         return self._edge[key]
 
     def remove_edge(self, u, v, edge_type=None, edge_subtype=None):
-        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
+        key = (u.uuid, v.uuid, edge_type, edge_subtype)
         if key not in self._edge:
             raise RuntimeError('edge does not exist!')
         del self._edge[key]
@@ -91,7 +91,7 @@ class Graph(object):
         if node is None:
             return self._edge.values()
         else:
-            h = node.__hash__()
+            h = node.uuid
             if direction == 'both':
                 for key in self._edge:
                     h1, h2, edge_type, edge_subtype = key
@@ -117,7 +117,7 @@ class Graph(object):
         return result
 
     def has_edge(self, u, v, edge_type=None, edge_subtype=None):
-        key = (u.__hash__(), v.__hash__(), edge_type, edge_subtype)
+        key = (u.uuid, v.uuid, edge_type, edge_subtype)
         return key in self._edge
 
 
