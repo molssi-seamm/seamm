@@ -19,11 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class Flowchart(object):
-
-    """The class variable 'graphics' gives the default graphics to use
-    for display, if needed. It defaults to 'Tk' for the tkinter GUI.
-    """
     graphics = 'Tk'
+    """str: The default graphics to use for display, if
+    needed. Default: 'Tk'
+    """
 
     def __init__(
         self,
