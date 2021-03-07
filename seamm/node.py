@@ -43,12 +43,15 @@ class Node(collections.abc.Hashable):
         extension=None,
         module=None,
         logger=logger,
-        uid=uuid.uuid4().int
+        uid=None
     ):
         """Initialize a node
 
         Keyword arguments:
         """
+
+        if uid is None:
+            uid = uuid.uuid4().int
 
         self._uuid = uid
         self.logger = logger
