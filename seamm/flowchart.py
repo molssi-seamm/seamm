@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""A flowchart, which is a set of nodes. There must be a single
+'start' node, with other nodes connected via their ports to describe
+the flowchart. There may be isolated nodes or groups of connected nodes;
+however, the flow starts at the 'start' node and follows the connections,
+so isolated nodes and fragments will not be executed."""
+
 import json
 from datetime import datetime
 import logging
@@ -8,22 +14,15 @@ import seamm_util  # MUST come after seamm
 import os
 import os.path
 import stat
-"""A flowchart, which is a set of nodes. There must be a single
-'start' node, with other nodes connected via their ports to describe
-the flowchart. There may be isolated nodes or groups of connected nodes;
-however, the flow starts at the 'start' node and follows the connections,
-so isolated nodes and fragments will not be executed."""
 
 logger = logging.getLogger(__name__)
 
 
 class Flowchart(object):
-    """The class variable 'graphics' gives
-    the default graphics to use for display, if needed. It defaults to
-    'Tk' for the tkinter GUI.
-    """
-
     graphics = 'Tk'
+    """str: The default graphics to use for display, if
+    needed. Default: 'Tk'
+    """
 
     def __init__(
         self,
@@ -34,10 +33,23 @@ class Flowchart(object):
         directory=None,
         output='files'
     ):
-        '''Initialize the flowchart
+        """Initialize the flowchart.
 
-        Keyword arguments:
-        '''
+        Parameters
+        ----------
+        parent : Object
+            The parent of the nodes in this flowchart.
+        data : dict
+            An initial graph.
+        namespace : str
+            The namespace for locating plug-ins.
+        name : str
+            A name for this flowchart.
+        directory : str
+            The root directory for files for this flowchart.
+        output : str
+            Where to direct output. Currently not used.
+        """
 
         self.graph = seamm.Graph()
 
