@@ -4,7 +4,7 @@ jinja2==2.11.3
 numpy==1.18.5
 molsystem>=2021.2.2
 pandas==1.0.5
-pillow==7.2.0
+pillow==8.1.1
 pmw==2.0.1
 py-cpuinfo==7.0.0
 pyuca==1.2
