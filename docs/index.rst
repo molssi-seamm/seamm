@@ -24,3 +24,22 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+--------
+   
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   Main SEAMM documentation <https://molssi-seamm.github.io>
+
+Documentation Versions
+======================
+
+.. raw:: html
+
+   <iframe
+   src="https://molssi-seamm.github.io/seamm/dev/versions.html"
+   title="Documentation Versions"  style="border:none;">
+   </iframe>
+  
