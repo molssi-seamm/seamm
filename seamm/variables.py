@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 A dictionary-like object for holding variables accessible to the
 executing flowchart.
