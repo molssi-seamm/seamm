@@ -34,7 +34,6 @@ class TkJobHandler(object):
         ----------
         root : Tk window
             The root Tk window.
-
         """
         self._root = root
         self.config = configparser.ConfigParser()
@@ -691,8 +690,8 @@ class TkJobHandler(object):
     def get_all_status(self, show_progress=True, master=None):
         """Get the status of all the dashboards.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         show_progress : Boolean, optional
             Show a dialog with progress, default is True
         """

@@ -83,8 +83,11 @@ class Variables(collections.abc.MutableMapping):
 
             <name>
             $<name>
+
         or
+
             ${<name>}
+
         """
 
         name = self.variable(variable)
@@ -96,8 +99,11 @@ class Variables(collections.abc.MutableMapping):
 
             <name>
             $<name>
+
         or
+
             ${<name>}
+
         """
 
         name = self.variable(variable)
@@ -114,8 +120,11 @@ class Variables(collections.abc.MutableMapping):
 
             <name>
             $<name>
+
         or
+
             ${<name>}
+
         """
 
         return self.variable(variable) in self._data
@@ -127,8 +136,11 @@ class Variables(collections.abc.MutableMapping):
 
             <name>
             $<name>
+
         or
+
             ${<name>}
+
         """
 
         name = self.variable(variable)
@@ -142,8 +154,11 @@ class Variables(collections.abc.MutableMapping):
 
             <string>
             $<string>
+
         or
+
             ${<string>}
+
         """
 
         if string[0] == '$':
