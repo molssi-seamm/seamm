@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+A dictionary-like object for holding variables accessible to the
+executing flowchart.
+"""
 
 import collections.abc
 import logging
 import seamm
 import pprint
-"""A dictionary-like object for holding variables accessible to the
-executing flowchart.
-"""
 
 logger = logging.getLogger(__name__)
 # Module level variable to be used in other modules

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""The graphical interface for submitting SEAMM jobs.
+"""
+The graphical interface for submitting SEAMM jobs.
 
 A job in SEAMM is composed of a flowchart and any other files that the
 flowchart requires. This module provides the TkJobHandler class, which
