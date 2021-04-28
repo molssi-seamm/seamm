@@ -75,7 +75,7 @@ do
 	make -C docs clean
 
 	# Build the documentation for the code
-	sphinx-apidoc -o docs/developer seamm
+	sphinx-apidoc -o docs seamm
 
 	# HTML #
 	sphinx-build -b html docs/ docs/_build/html/${current_language}/${current_version} -D language="${current_language}"
