@@ -75,7 +75,7 @@ do
 	make -C docs clean
 
 	# Build the documentation for the code
-	sphinx-apidoc -o docs/developer dftbplus_step
+	sphinx-apidoc -o docs/developer seamm
 
 	# HTML #
 	sphinx-build -b html docs/ docs/_build/html/${current_language}/${current_version} -D language="${current_language}"
@@ -119,10 +119,10 @@ cat > "${docroot}/dev/index.html" <<EOF
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Documentation for the DFTB+ plug-in for SEAMM</title>
+      <title>Documentation for the SEAMM module in SEAMM</title>
    </head>
    <body>
-      <h1>Documentation for the DFTB+ plug-in for SEAMM</h1>
+      <h1>Documentation for the SEAMM module in SEAMM</h1>
       <h2>Branches</h2>
       <ul>
 EOF
@@ -131,7 +131,7 @@ cat > "${docroot}/dev/versions.html" <<EOF
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Documentation for the DFTB+ plug-in for SEAMM</title>
+      <title>Documentation for the SEAMM module in SEAMM</title>
    </head>
    <body>
       <ul>
