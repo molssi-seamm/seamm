@@ -2,13 +2,13 @@ bitmath
 fasteners
 jinja2
 numpy
-molsystem>=2020.12.3
+molsystem>=2021.5.5
 pandas
 pillow
 pmw
 py-cpuinfo
 pyuca
-reference_handler
-seamm-util>=2020.12.2
-seamm-widgets>=2020.12.4
+reference_handler>=0.9.1
+seamm-util>=2021.5.6
+seamm-widgets>=2021.5.6
 stevedore
