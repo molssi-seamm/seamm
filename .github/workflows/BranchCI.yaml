@@ -1,0 +1,50 @@
+name: BranchCI
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+
+jobs:
+  light-ci:
+    name: LightCI ubuntu-latest Py3.8
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Additional info about the build
+      shell: bash
+      run: |
+        uname -a
+        df -h
+        ulimit -a
+    # More info on options: https://github.com/conda-incubator/setup-miniconda
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.8
+        environment-file: devtools/conda-envs/test_env.yaml
+        activate-environment: test
+        auto-update-conda: false
+        auto-activate-base: false
+        show-channel-urls: true
+    - name: Install package
+      # conda setup requires this special shell
+      shell: bash -l {0}
+      run: |
+        python -m pip install . --no-deps
+        conda list
+    - name: Run linters
+      shell: bash -l {0}
+      run: |
+        black --check --diff seamm tests
+        flake8 seamm tests
+    - name: Run tests
+      shell: bash -l {0}
+      run: |
+        pytest -v --cov=seamm --cov-report=xml --color=yes tests/
+    - name: CodeCov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-ubuntu-latest-py3.8
+        

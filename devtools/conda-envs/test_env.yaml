@@ -23,23 +23,22 @@ dependencies:
   - pytest
   - pytest-cov
 
+  # Documentation
+  - pygments
+
   # Pip-only installs
   - pip:
     - bitmath
     - fasteners
     - Pmw
     - pyuca
-    - molsystem>=2021.2.2
-    - reference-handler>=0.8.2
-    - seamm-util>=2020.12.2
-    - seamm-widgets>=2020.12.2
+    - molsystem>=2021.5.5
+    - reference-handler>=0.9.1
+    - seamm-util>=2021.5.6
+    - seamm-widgets>=2021.5.6
     - stevedore
-
-    # Testing
-    - yapf
 
     # Documentation
     - rinohtype
-    - pygments
     - sphinx-rtd-theme
     - pystemmer

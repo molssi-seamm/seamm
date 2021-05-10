@@ -61,14 +61,11 @@ def grey(value):
 
 
 class TkFlowchart(object):
-
-    def __init__(
-        self, master=None, flowchart=None, namespace='org.molssi.seamm.tk'
-    ):
-        '''Initialize a Flowchart object
+    def __init__(self, master=None, flowchart=None, namespace="org.molssi.seamm.tk"):
+        """Initialize a Flowchart object
 
         Keyword arguments:
-        '''
+        """
 
         self.toplevel = None
         self.master = master
@@ -109,9 +106,7 @@ class TkFlowchart(object):
         for group in self.plugin_manager.groups():
             self.tree.insert("", "end", group, text=group)
             for plugin in self.plugin_manager.plugins(group):
-                self.tree.insert(
-                    group, "end", plugin, text=plugin, tags="node"
-                )
+                self.tree.insert(group, "end", plugin, text=plugin, tags="node")
         self.tree.tag_bind(
             "node", sequence="<ButtonPress-1>", callback=self.create_node
         )
@@ -134,7 +129,7 @@ class TkFlowchart(object):
             height=self.canvas_height,
             xscrollcommand=self.xscrollbar.set,
             yscrollcommand=self.yscrollbar.set,
-            scrollregion=(0, 0, 2000, 2000)
+            scrollregion=(0, 0, 2000, 2000),
         )
         self.canvas.grid(row=0, column=0, sticky=tk.NSEW)
         self.xscrollbar.config(command=self.xview)
@@ -143,11 +138,11 @@ class TkFlowchart(object):
         self.pw.add(self.canvas_frame)
 
         # Set up scrolling on the canvas with the mouse scrollwheel or similar
-        self.canvas.bind('<Enter>', self._bound_to_mousewheel)
-        self.canvas.bind('<Leave>', self._unbound_to_mousewheel)
+        self.canvas.bind("<Enter>", self._bound_to_mousewheel)
+        self.canvas.bind("<Leave>", self._unbound_to_mousewheel)
 
         # background image
-        filepath = pkg_resources.resource_filename(__name__, 'data/SEAMM.png')
+        filepath = pkg_resources.resource_filename(__name__, "data/SEAMM.png")
         logger.info(filepath)
 
         self.image = Image.open(filepath)
@@ -166,23 +161,23 @@ class TkFlowchart(object):
         #     image=self.photo,
         #     anchor='center')
         self.background = self.canvas.create_image(
-            0, 0, image=self.photo, anchor='center'
+            0, 0, image=self.photo, anchor="center"
         )
 
         # The gui partner for the start node...
         self.create_start_node()
 
         # Set up the bindings
-        self.canvas.bind('<Configure>', self.canvas_configure)
-        self.canvas.bind('<Motion>', self.mouse_motion)
-        self.canvas.bind('<ButtonPress-1>', self.click)
-        self.canvas.bind('<Double-ButtonPress-1>', self.double_click)
-        if sys.platform.startswith('darwin'):
-            self.canvas.bind('<ButtonPress-2>', self.right_click)
+        self.canvas.bind("<Configure>", self.canvas_configure)
+        self.canvas.bind("<Motion>", self.mouse_motion)
+        self.canvas.bind("<ButtonPress-1>", self.click)
+        self.canvas.bind("<Double-ButtonPress-1>", self.double_click)
+        if sys.platform.startswith("darwin"):
+            self.canvas.bind("<ButtonPress-2>", self.right_click)
         else:
-            self.canvas.bind('<ButtonPress-3>', self.right_click)
+            self.canvas.bind("<ButtonPress-3>", self.right_click)
 
-        logger.debug('Finished initializing tk_flowchart')
+        logger.debug("Finished initializing tk_flowchart")
 
     def __iter__(self):
         return self.graph.__iter__()
@@ -223,16 +218,16 @@ class TkFlowchart(object):
                 return node
         return None
 
-    def last_node(self, tk_node='1'):
+    def last_node(self, tk_node="1"):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
-        logger.debug('Finding last node')
+        logger.debug("Finding last node")
         # Handle loops!
         for node in self:
             node.node.visited = False
             logger.debug(
-                '   reset visited {} {} = {}'.format(
+                "   reset visited {} {} = {}".format(
                     node.node.visited, node.title, node
                 )
             )
@@ -247,26 +242,26 @@ class TkFlowchart(object):
             tk_node = self.get_node(tk_node)
 
         logger.debug(
-            '   last tk_node helper: {} {} = {}'.format(
+            "   last tk_node helper: {} {} = {}".format(
                 tk_node.node.visited, tk_node.title, tk_node
             )
         )
 
         tk_node.node.visited = True
         next_tk_node = None
-        for edge in self.graph.edges(tk_node, direction='out'):
+        for edge in self.graph.edges(tk_node, direction="out"):
             if edge.edge_type == "execution":
 
                 if edge.node2.node.visited:
                     logger.debug(
-                        '\ttk_node {} {} has been visited'.format(
+                        "\ttk_node {} {} has been visited".format(
                             edge.node2.title, edge.node2
                         )
                     )
                     next_tk_node = edge.node2
                 else:
                     logger.debug(
-                        '\trecursing to tk_node {} {}'.format(
+                        "\trecursing to tk_node {} {}".format(
                             edge.node2.title, edge.node2
                         )
                     )
@@ -275,43 +270,41 @@ class TkFlowchart(object):
         if next_tk_node is not None:
             tk_node = next_tk_node
             logger.debug(
-                '\tchecking visited tk_node {} {} for new nodes'.format(
+                "\tchecking visited tk_node {} {} for new nodes".format(
                     tk_node.title, tk_node
                 )
             )
             if tk_node.node.extension == "Join":
-                logger.debug('\t  tk_node is a join node, so look at next')
-                for edge in self.graph.edges(tk_node, direction='out'):
+                logger.debug("\t  tk_node is a join node, so look at next")
+                for edge in self.graph.edges(tk_node, direction="out"):
                     if edge.edge_type == "execution":
                         logger.debug(
-                            '\ttk_node after join node is {} {}'.format(
+                            "\ttk_node after join node is {} {}".format(
                                 edge.node2.title, edge.node2
                             )
                         )
                         tk_node = edge.node2
 
-            for edge in self.graph.edges(tk_node, direction='out'):
+            for edge in self.graph.edges(tk_node, direction="out"):
                 if edge.edge_type == "execution":
                     if edge.node2.node.visited:
                         logger.debug(
-                            '\tnode {} {} has been visited'.format(
+                            "\tnode {} {} has been visited".format(
                                 edge.node2.title, edge.node2
                             )
                         )
                     else:
                         logger.debug(
-                            '\trecursing to tk_node {} {}'.format(
+                            "\trecursing to tk_node {} {}".format(
                                 edge.node2.title, edge.node2
                             )
                         )
                         return self.last_node_helper(edge.node2)
 
-        logger.debug('\treturning {} {}'.format(tk_node.title, tk_node))
+        logger.debug("\treturning {} {}".format(tk_node.title, tk_node))
         return tk_node
 
-    def add_edge(
-        self, u, v, edge_type='execution', edge_subtype='next', **kwargs
-    ):
+    def add_edge(self, u, v, edge_type="execution", edge_subtype="next", **kwargs):
         edge = self.graph.add_edge(
             u,
             v,
@@ -324,7 +317,7 @@ class TkFlowchart(object):
         edge.draw()
         return edge
 
-    def edges(self, node=None, direction='both'):
+    def edges(self, node=None, direction="both"):
         return self.graph.edges(node, direction)
 
     def new_file(self, event=None):
@@ -338,8 +331,8 @@ class TkFlowchart(object):
         print(event)
 
     def open_file(self, event=None):
-        filename = tk_filedialog.askopenfilename(defaultextension='.flow')
-        if filename == '':
+        filename = tk_filedialog.askopenfilename(defaultextension=".flow")
+        if filename == "":
             return
         self.open(filename)
 
@@ -367,7 +360,7 @@ class TkFlowchart(object):
     def create_start_node(self):
         """Create the start node"""
         # Check if the start node exists
-        start_node = self.flowchart.get_node('1')
+        start_node = self.flowchart.get_node("1")
         if start_node is None:
             start_node = seamm.StartNode()
 
@@ -376,12 +369,12 @@ class TkFlowchart(object):
             canvas=self.canvas,
             node=start_node,
             x=self.grid_x / 2,
-            y=self.grid_y / 2
+            y=self.grid_y / 2,
         )
 
         self.graph.add_node(tk_start_node)
         logger.debug(
-            'Created start node {} at {}, {}'.format(
+            "Created start node {} at {}, {}".format(
                 tk_start_node, start_node.x, start_node.y
             )
         )
@@ -396,19 +389,19 @@ class TkFlowchart(object):
             self.flowchart.clear()
 
     def save_file(self, event=None):
-        filename = tk_filedialog.asksaveasfilename(defaultextension='.flow')
-        if filename != '':
+        filename = tk_filedialog.asksaveasfilename(defaultextension=".flow")
+        if filename != "":
             # suffixes = pathlib.Path(filename).suffixes
             # if len(suffixes) == 0 or '.flow' not in suffixes:
             #     filename = filename + '.flow'
             self.filename = filename
             self.save()
 
-    def about(self, text='In about'):
+    def about(self, text="In about"):
         print(text)
 
     def preferences(self):
-        print('In preferences')
+        print("In preferences")
 
     def draw(self):
         for tk_node in self:
@@ -447,15 +440,13 @@ class TkFlowchart(object):
         self.canvas.itemconfigure(self.background, image=None)
         # self.canvas.coords(self.background, cw / 2, ch / 2)
         self.canvas.coords(self.background, 0, 0)
-        del (self.working_image)
+        del self.working_image
         self.working_image = self.prepared_image.resize((w, h))
-        del (self.photo)
+        del self.photo
         self.photo = ImageTk.PhotoImage(self.working_image)
         # self.canvas.itemconfigure(
         #     self.background, image=self.photo, anchor='center')
-        self.canvas.itemconfigure(
-            self.background, image=self.photo, anchor='nw'
-        )
+        self.canvas.itemconfigure(self.background, image=self.photo, anchor="nw")
 
     def click(self, event):
         """Handle a left-click on the canvas by finding out what the
@@ -469,63 +460,66 @@ class TkFlowchart(object):
         self.selection = []
         for item in items:
             tags = self.get_tags(item)
-            if 'type' in tags and \
-               (tags['type'] == 'arrow_base' or tags['type'] == 'arrow_head'):
-                arrow = int(tags['arrow'])
+            if "type" in tags and (
+                tags["type"] == "arrow_base" or tags["type"] == "arrow_head"
+            ):
+                arrow = int(tags["arrow"])
                 xys = self.canvas.coords(item)
                 x0 = xys[0]
                 y0 = xys[1]
                 x1 = xys[-2]
                 y1 = xys[-1]
                 self.data = self.get_tags(arrow)
-                self.data['arrow'] = arrow
+                self.data["arrow"] = arrow
                 self.data.update(self.get_tags(arrow))
-                self.data['x0'] = x0
-                self.data['y0'] = y0
-                self.data['x1'] = x1
-                self.data['y1'] = y1
+                self.data["x0"] = x0
+                self.data["y0"] = y0
+                self.data["x1"] = x1
+                self.data["y1"] = y1
                 self._x0 = cx
                 self._y0 = cy
 
-                logger.debug('self.data for dragging arrow head or base')
-                logger.debug('{}'.format(self.data))
+                logger.debug("self.data for dragging arrow head or base")
+                logger.debug("{}".format(self.data))
 
-                if tags['type'] == 'arrow_base':
-                    self.data['arrow_base'] = item
-                    self.data['arrow_head'] = \
-                        self.canvas.find_withtag('type=arrow_head')
-                    self.mouse_op = 'drag arrow base'
-                    self.canvas.bind('<B1-Motion>', self.drag_arrow_base)
-                    self.canvas.bind('<ButtonRelease-1>', self.drop_arrow_base)
-                else:
-                    self.data['arrow_base'] = \
-                        self.canvas.find_withtag('type=arrow_base')
-                    self.data['arrow_head'] = item
-                    self.mouse_op = 'drag arrow head'
-                    self.canvas.bind('<B1-Motion>', self.drag_arrow_head)
-                    self.canvas.bind('<ButtonRelease-1>', self.drop_arrow_head)
-
-            if 'node' in tags:
-                node = tags['node']
-                if tags['type'] == 'active_anchor':
-                    # Connecting from an anchor to another node
-                    x, y = node.anchor_point(tags['anchor'])
-                    self.mouse_op = 'Connect'
-                    arrow = self.canvas.create_line(
-                        x, y, cx, cy, arrow=tk.LAST, tags='type=active_arrow'
+                if tags["type"] == "arrow_base":
+                    self.data["arrow_base"] = item
+                    self.data["arrow_head"] = self.canvas.find_withtag(
+                        "type=arrow_head"
                     )
-                    self.data = (node, tags['anchor'], x, y, arrow)
-                    self.canvas.bind('<B1-Motion>', self.drag_arrow)
-                    self.canvas.bind('<ButtonRelease-1>', self.drop_arrow)
+                    self.mouse_op = "drag arrow base"
+                    self.canvas.bind("<B1-Motion>", self.drag_arrow_base)
+                    self.canvas.bind("<ButtonRelease-1>", self.drop_arrow_base)
+                else:
+                    self.data["arrow_base"] = self.canvas.find_withtag(
+                        "type=arrow_base"
+                    )
+                    self.data["arrow_head"] = item
+                    self.mouse_op = "drag arrow head"
+                    self.canvas.bind("<B1-Motion>", self.drag_arrow_head)
+                    self.canvas.bind("<ButtonRelease-1>", self.drop_arrow_head)
+
+            if "node" in tags:
+                node = tags["node"]
+                if tags["type"] == "active_anchor":
+                    # Connecting from an anchor to another node
+                    x, y = node.anchor_point(tags["anchor"])
+                    self.mouse_op = "Connect"
+                    arrow = self.canvas.create_line(
+                        x, y, cx, cy, arrow=tk.LAST, tags="type=active_arrow"
+                    )
+                    self.data = (node, tags["anchor"], x, y, arrow)
+                    self.canvas.bind("<B1-Motion>", self.drag_arrow)
+                    self.canvas.bind("<ButtonRelease-1>", self.drop_arrow)
                 else:
                     if node.is_inside(cx, cy, self.halo):
                         self.selection.append(node)
                         node.selected = True
                         self._x0 = cx
                         self._y0 = cy
-                        self.mouse_op = 'Move'
-                        self.canvas.bind('<B1-Motion>', self.move)
-                        self.canvas.bind('<ButtonRelease-1>', self.end_move)
+                        self.mouse_op = "Move"
+                        self.canvas.bind("<B1-Motion>", self.move)
+                        self.canvas.bind("<ButtonRelease-1>", self.end_move)
                     else:
                         node.selected = False
 
@@ -540,19 +534,19 @@ class TkFlowchart(object):
         self.selection = []
         if result is None:
             # Handle a right-click out side anything
-            print('Double-click outside objects')
+            print("Double-click outside objects")
             return
 
-        if result[0] == 'node':
+        if result[0] == "node":
             node = result[1]
             if node.is_inside(cx, cy):
                 node.double_click(event)
                 return
 
-        if result[0] == 'item':
+        if result[0] == "item":
             item = result[1]
             tags = self.get_tags(item)
-            if 'type' in tags and tags['type'] == 'arrow':
+            if "type" in tags and tags["type"] == "arrow":
                 self.right_click_on_arrow(event, item, tags)
 
     def right_click(self, event):
@@ -567,24 +561,23 @@ class TkFlowchart(object):
         self.selection = []
         if result is None:
             # Handle a right-click out side anything
-            print('Right-click outside objects')
+            print("Right-click outside objects")
             return
 
-        if result[0] == 'node':
+        if result[0] == "node":
             node = result[1]
             if node.is_inside(cx, cy):
                 node.right_click(event)
                 return
 
-        if result[0] == 'item':
+        if result[0] == "item":
             item = result[1]
             tags = self.get_tags(item)
-            if 'type' in tags and tags['type'] == 'arrow':
+            if "type" in tags and tags["type"] == "arrow":
                 self.right_click_on_arrow(event, item, tags)
 
     def move(self, event):
-        '''Move selected items
-        '''
+        """Move selected items"""
 
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
@@ -598,10 +591,9 @@ class TkFlowchart(object):
             item.move(deltax, deltay)
 
     def end_move(self, event):
-        '''End the move of selected items
-        '''
-        self.canvas.bind('<B1-Motion>', '')
-        self.canvas.bind('<ButtonRelease-1>', '')
+        """End the move of selected items"""
+        self.canvas.bind("<B1-Motion>", "")
+        self.canvas.bind("<ButtonRelease-1>", "")
 
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
@@ -630,14 +622,14 @@ class TkFlowchart(object):
         (last_node, x, y, anchor1, anchor2) = self.next_position()
         edge_subtype = last_node.default_edge_subtype()
 
-        logger.debug('creating {} node'.format(plugin_name))
+        logger.debug("creating {} node".format(plugin_name))
 
         # The node.
         node = self.flowchart.create_node(plugin_name)
 
         # The graphics partner
         plugin = self.plugin_manager.get(plugin_name)
-        logger.debug('  plugin object: {}'.format(plugin))
+        logger.debug("  plugin object: {}".format(plugin))
         tk_node = plugin.create_tk_node(
             tk_flowchart=self, canvas=self.canvas, x=0, y=0, node=node
         )
@@ -648,10 +640,10 @@ class TkFlowchart(object):
         x0 = last_node.x
         y0 = last_node.y
 
-        if anchor1 == 's':
+        if anchor1 == "s":
             tk_node.x = x0
             tk_node.y = y0 + self.grid_y
-        elif anchor1 == 'e':
+        elif anchor1 == "e":
             tk_node.x = x0 + self.grid_x
             tk_node.y = y0
         else:
@@ -667,10 +659,10 @@ class TkFlowchart(object):
         self.add_edge(
             last_node,
             tk_node,
-            'execution',
+            "execution",
             anchor1=anchor1,
             anchor2=anchor2,
-            edge_subtype=edge_subtype
+            edge_subtype=edge_subtype,
         )
 
         # And update the picture on screen
@@ -683,7 +675,7 @@ class TkFlowchart(object):
         node.undraw()
 
         # and edges
-        node.remove_edge('all')
+        node.remove_edge("all")
 
         # and the node itself
         self.graph.remove_node(node)
@@ -701,7 +693,7 @@ class TkFlowchart(object):
         # Get the anchor point the last node wants to use
         anchor1 = last_node.next_anchor()
         # and the inverse for the new node
-        anchor2 = anchor1.translate(''.maketrans('news', 'swen'))
+        anchor2 = anchor1.translate("".maketrans("news", "swen"))
 
         # Find the point 'gap' past the anchor point of the last
         # node, looking from the center (0, 0)
@@ -736,24 +728,26 @@ class TkFlowchart(object):
 
         result = None
 
-        self.canvas.delete('type=active_anchor')
-        self.canvas.delete('type=arrow_base')
-        self.canvas.delete('type=arrow_head')
+        self.canvas.delete("type=active_anchor")
+        self.canvas.delete("type=arrow_base")
+        self.canvas.delete("type=arrow_head")
 
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
 
         active = []
         items = self.canvas.find_overlapping(
-            cx + self.halo / 2, cy + self.halo / 2, cx - self.halo / 2,
-            cy - self.halo / 2
+            cx + self.halo / 2,
+            cy + self.halo / 2,
+            cx - self.halo / 2,
+            cy - self.halo / 2,
         )
         if len(items) == 0:
             # If we are within e.g. a rectangle, it may not overlap
             # but will be the current item, so if nothing overlaps
             # use the current item (if there is one).
 
-            items = self.canvas.find_withtag('current')
+            items = self.canvas.find_withtag("current")
 
         # Loop backwards since the 'top' item is at the end of the list
         # and is probably the item we want.
@@ -764,7 +758,7 @@ class TkFlowchart(object):
             tags = self.get_tags(item)
 
             # on an arrow?
-            if 'type' in tags and tags['type'] == 'arrow':
+            if "type" in tags and tags["type"] == "arrow":
                 xys = self.canvas.coords(item)
                 x0 = xys[0]
                 y0 = xys[1]
@@ -775,28 +769,22 @@ class TkFlowchart(object):
                     y0 - self.halo / 2,
                     x0 + self.halo / 2,
                     y0 + self.halo / 2,
-                    tags=[
-                        'type=arrow_base', 'arrow=' + str(item),
-                        tags['edge'].tag()
-                    ],
-                    outline='red',
-                    fill='red'
+                    tags=["type=arrow_base", "arrow=" + str(item), tags["edge"].tag()],
+                    outline="red",
+                    fill="red",
                 )
                 self.canvas.create_rectangle(
                     x1 - self.halo / 2,
                     y1 - self.halo / 2,
                     x1 + self.halo / 2,
                     y1 + self.halo / 2,
-                    tags=[
-                        'type=arrow_head', 'arrow=' + str(item),
-                        tags['edge'].tag()
-                    ],
-                    outline='red',
-                    fill='red'
+                    tags=["type=arrow_head", "arrow=" + str(item), tags["edge"].tag()],
+                    outline="red",
+                    fill="red",
                 )
                 break
-            if 'node' in tags:
-                node = tags['node']
+            if "node" in tags:
+                node = tags["node"]
                 if node.is_inside(cx, cy, self.halo):
                     active.append(node)
                     if node not in self.active_nodes:
@@ -805,7 +793,7 @@ class TkFlowchart(object):
                     # are we close to any anchor points?
                     point = node.check_anchor_points(cx, cy, self.halo)
                     if point is None:
-                        self.canvas.delete('type=active_anchor')
+                        self.canvas.delete("type=active_anchor")
                     else:
                         node.activate_anchor_point(point, self.halo)
                         result = (node, point)
@@ -835,15 +823,14 @@ class TkFlowchart(object):
         """
 
         items = self.canvas.find_overlapping(
-            x + self.halo / 2, y + self.halo / 2, x - self.halo / 2,
-            y - self.halo / 2
+            x + self.halo / 2, y + self.halo / 2, x - self.halo / 2, y - self.halo / 2
         )
         if len(items) == 0:
             # If we are within e.g. a rectangle, it may not overlap
             # but will be the current item, so if nothing overlaps
             # use the current item (if there is one).
 
-            items = self.canvas.find_withtag('current')
+            items = self.canvas.find_withtag("current")
 
         # Loop backwards since the 'top' item is at the end of the list
         # and is probably the item we want.
@@ -853,75 +840,71 @@ class TkFlowchart(object):
                 continue
 
             tags = self.get_tags(item)
-            if 'node' in tags:
-                node = tags['node']
+            if "node" in tags:
+                node = tags["node"]
                 if node.is_inside(x, y, self.halo):
                     # are we close to any anchor points?
                     point = node.check_anchor_points(x, y, self.halo)
-                    return ('node', node, point)
-            return ('item', item)
+                    return ("node", node, point)
+            return ("item", item)
         return None
 
     def get_tags(self, item):
-        '''Return the tags of "item" as a dict. Any added tags
+        """Return the tags of "item" as a dict. Any added tags
         like "active" are added to the "extra" dict entry.
-        '''
+        """
 
         tags = {}
-        tags['extra'] = []
+        tags["extra"] = []
         for x in self.canvas.gettags(item):
-            if '=' in x:
-                key, value = x.split('=')
-                if 'node' in key:
+            if "=" in x:
+                key, value = x.split("=")
+                if "node" in key:
                     tags[key] = self.get_node(value)
-                elif 'edge' == key:
+                elif "edge" == key:
                     tags[key] = seamm.TkEdge.str_to_object[value]
                 else:
                     tags[key] = value
             else:
-                tags['extra'].append(x)
+                tags["extra"].append(x)
         return tags
 
     def drag_arrow(self, event):
-        '''Drag an arrow from the anchor on the node to the mouse
+        """Drag an arrow from the anchor on the node to the mouse
         Used when creating a new edge.
-        '''
+        """
 
-        logger.debug('drag arrow')
+        logger.debug("drag arrow")
         node, anchor, x, y, arrow = self.data
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
         logger.debug(
-            '  x = {}, y = {}, cx = {}, cy = {}, arrow = {}'.format(
-                x, y, cx, cy, arrow
-            )
+            "  x = {}, y = {}, cx = {}, cy = {}, arrow = {}".format(x, y, cx, cy, arrow)
         )
         self.canvas.coords(arrow, x, y, cx, cy)
         # Check for being near another nodes anchor point
         result = self.find_items(cx, cy, exclude=(arrow,))
-        logger.debug('  result = {}'.format(result))
-        if result is not None and result[0] == 'node':
-            logger.debug('       node = {}'.format(node))
-            logger.debug('  result[1] = {}'.format(result[1]))
+        logger.debug("  result = {}".format(result))
+        if result is not None and result[0] == "node":
+            logger.debug("       node = {}".format(node))
+            logger.debug("  result[1] = {}".format(result[1]))
             if node == result[1]:
-                self.canvas.delete('type=active_anchor')
-                logger.debug('  deactivate {}'.format(result[1]))
+                self.canvas.delete("type=active_anchor")
+                logger.debug("  deactivate {}".format(result[1]))
                 result[1].deactivate()
             else:
-                logger.debug(
-                    '  activate_node {} {}'.format(result[1], result[2])
-                )
+                logger.debug("  activate_node {} {}".format(result[1], result[2]))
                 self.activate_node(result[1], result[2])
 
     def drop_arrow(self, event):
-        '''The user has dropped a new arrow somewhere!
+        """The user has dropped a new arrow somewhere!
         If it is on another node, make the connection.
         If it is in empty space or on the original node,
         just cancel the operation.
-        '''
+        """
 
-        self.canvas.bind('<B1-Motion>', '')
-        self.canvas.bind('<ButtonRelease-1>', '')
+        self.canvas.bind("<B1-Motion>", "")
+        self.canvas.bind("<ButtonRelease-1>", "")
 
         node, anchor, x, y, arrow = self.data
         cx = int(self.canvas.canvasx(event.x))
@@ -931,32 +914,29 @@ class TkFlowchart(object):
         result = self.find_items(cx, cy)
         self.canvas.delete(arrow)
 
-        if result is not None and result[0] == 'node':
+        if result is not None and result[0] == "node":
             other_node, point = result[1:]
             if node != other_node and point is not None:
                 edge_subtype = node.default_edge_subtype()
                 self.add_edge(
                     node,
                     other_node,
-                    'execution',
+                    "execution",
                     anchor1=anchor,
                     anchor2=point,
-                    edge_subtype=edge_subtype
+                    edge_subtype=edge_subtype,
                 )
 
         self.data = None
         self.mouse_op = None
 
     def drag_arrow_base(self, event):
-        '''Drag the base of an exisiting arrow
-        '''
+        """Drag the base of an exisiting arrow"""
 
         # move arrow
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
-        self.canvas.coords(
-            self.data['arrow'], cx, cy, self.data['x1'], self.data['y1']
-        )
+        self.canvas.coords(self.data["arrow"], cx, cy, self.data["x1"], self.data["y1"])
 
         # move base icon
         deltax = cx - self._x0
@@ -965,38 +945,34 @@ class TkFlowchart(object):
         self._x0 = cx
         self._y0 = cy
 
-        self.canvas.move(self.data['arrow_base'], deltax, deltay)
+        self.canvas.move(self.data["arrow_base"], deltax, deltay)
 
         # move the label if there is one
-        edge = self.data['edge']
+        edge = self.data["edge"]
         if edge.has_label:
             self.canvas.coords(
                 edge.label_id,
-                edge.label_position(cx, cy, self.data['x1'], self.data['y1'])
+                edge.label_position(cx, cy, self.data["x1"], self.data["y1"]),
             )
-            self.canvas.coords(
-                edge.label_bg_id, self.canvas.bbox(edge.label_id)
-            )
+            self.canvas.coords(edge.label_bg_id, self.canvas.bbox(edge.label_id))
 
         # Check for being near another nodes anchor point
         result = self.find_items(
-            cx, cy, exclude=(self.data['arrow'], self.data['arrow_base'])
+            cx, cy, exclude=(self.data["arrow"], self.data["arrow_base"])
         )
 
-        if result is not None and result[0] == 'node':
-            self.activate_node(
-                result[1], result[2], exclude=(self.data['edge'].node2,)
-            )
+        if result is not None and result[0] == "node":
+            self.activate_node(result[1], result[2], exclude=(self.data["edge"].node2,))
 
     def activate_node(self, node, point=None, exclude=()):
-        '''Activate a node, i.e. display the anchor points,
+        """Activate a node, i.e. display the anchor points,
         unless it is in the exclusion list. Also, if the
         anchor point is given, make it active.
-        '''
+        """
 
         active = []
         if node in exclude:
-            self.canvas.delete('type=active_anchor')
+            self.canvas.delete("type=active_anchor")
             node.deactivate()
         else:
             active.append(node)
@@ -1004,7 +980,7 @@ class TkFlowchart(object):
                 node.activate()
                 self.active_nodes.append(node)
             if point is None:
-                self.canvas.delete('type=active_anchor')
+                self.canvas.delete("type=active_anchor")
             else:
                 node.activate_anchor_point(point, self.halo)
 
@@ -1015,28 +991,28 @@ class TkFlowchart(object):
         self.active_nodes = active
 
     def drop_arrow_base(self, event):
-        '''The user has dropped the arrow somewhere!
+        """The user has dropped the arrow somewhere!
         If it is on another node, make the connection.
         If it is in empty space or on the original node,
         just cancel the operation.
-        '''
+        """
 
-        self.canvas.bind('<B1-Motion>', '')
-        self.canvas.bind('<ButtonRelease-1>', '')
+        self.canvas.bind("<B1-Motion>", "")
+        self.canvas.bind("<ButtonRelease-1>", "")
 
         # Check for being near another nodes anchor point
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
         result = self.find_items(cx, cy)
 
-        edge = self.data['edge']
+        edge = self.data["edge"]
 
         if result is None:
             # dropped on empty space
-            self.canvas.delete('type=arrow_base')
-            self.canvas.delete('type=arrow_head')
+            self.canvas.delete("type=arrow_base")
+            self.canvas.delete("type=arrow_head")
             edge.draw()
-        elif result[0] == 'node':
+        elif result[0] == "node":
             # dropped on another node
             node1, anchor1 = result[1:]
             if edge.node1 == node1:
@@ -1051,12 +1027,12 @@ class TkFlowchart(object):
                 anchor2 = edge.anchor2
                 edge_subtype = edge.edge_subtype
 
-                self.remove_edge(self.data['arrow'])
+                self.remove_edge(self.data["arrow"])
 
                 self.add_edge(
                     node1,
                     node2,
-                    edge_type='execution',
+                    edge_type="execution",
                     edge_subtype=edge_subtype,
                     anchor1=anchor1,
                     anchor2=anchor2,
@@ -1066,15 +1042,12 @@ class TkFlowchart(object):
         self.mouse_op = None
 
     def drag_arrow_head(self, event):
-        '''Drag the head of an arrow
-        '''
+        """Drag the head of an arrow"""
 
         # move arrow
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
-        self.canvas.coords(
-            self.data['arrow'], self.data['x0'], self.data['y0'], cx, cy
-        )
+        self.canvas.coords(self.data["arrow"], self.data["x0"], self.data["y0"], cx, cy)
 
         # move base icon
         deltax = cx - self._x0
@@ -1083,52 +1056,48 @@ class TkFlowchart(object):
         self._x0 = cx
         self._y0 = cy
 
-        self.canvas.move(self.data['arrow_head'], deltax, deltay)
+        self.canvas.move(self.data["arrow_head"], deltax, deltay)
 
         # move the label if there is one
-        edge = self.data['edge']
+        edge = self.data["edge"]
         if edge.has_label:
             self.canvas.coords(
                 edge.label_id,
-                edge.label_position(self.data['x0'], self.data['y0'], cx, cy)
+                edge.label_position(self.data["x0"], self.data["y0"], cx, cy),
             )
-            self.canvas.coords(
-                edge.label_bg_id, self.canvas.bbox(edge.label_id)
-            )
+            self.canvas.coords(edge.label_bg_id, self.canvas.bbox(edge.label_id))
 
         # Check for being near another nodes anchor point
         result = self.find_items(
-            cx, cy, exclude=(self.data['arrow'], self.data['arrow_head'])
+            cx, cy, exclude=(self.data["arrow"], self.data["arrow_head"])
         )
 
-        if result is not None and result[0] == 'node':
-            self.activate_node(
-                result[1], result[2], exclude=(self.data['edge'].node1,)
-            )
+        if result is not None and result[0] == "node":
+            self.activate_node(result[1], result[2], exclude=(self.data["edge"].node1,))
 
     def drop_arrow_head(self, event):
-        '''The user has dropped the arrow somewhere!
+        """The user has dropped the arrow somewhere!
         If it is on another node, make the connection.
         If it is in empty space or on the original node,
         just cancel the operation.
-        '''
+        """
 
-        self.canvas.bind('<B1-Motion>', '')
-        self.canvas.bind('<ButtonRelease-1>', '')
+        self.canvas.bind("<B1-Motion>", "")
+        self.canvas.bind("<ButtonRelease-1>", "")
 
         # Check for being near another nodes anchor point
         cx = int(self.canvas.canvasx(event.x))
         cy = int(self.canvas.canvasy(event.y))
         result = self.find_items(cx, cy)
 
-        edge = self.data['edge']
+        edge = self.data["edge"]
 
         if result is None:
             # dropped on empty space
-            self.canvas.delete('type=arrow_base')
-            self.canvas.delete('type=arrow_head')
+            self.canvas.delete("type=arrow_base")
+            self.canvas.delete("type=arrow_head")
             edge.draw()
-        elif result[0] == 'node':
+        elif result[0] == "node":
             # dropped on another node
             node2, anchor2 = result[1:]
             if edge.node2 == node2:
@@ -1142,22 +1111,17 @@ class TkFlowchart(object):
                 node1 = edge.node1
                 anchor1 = edge.anchor1
 
-                self.remove_edge(self.data['arrow'])
+                self.remove_edge(self.data["arrow"])
 
                 self.add_edge(
-                    node1,
-                    node2,
-                    'execution',
-                    anchor1=anchor1,
-                    anchor2=anchor2
+                    node1, node2, "execution", anchor1=anchor1, anchor2=anchor2
                 )
 
         self.data = None
         self.mouse_op = None
 
     def right_click_on_arrow(self, event, item, tags):
-        '''Handle a right click on an arrow
-        '''
+        """Handle a right click on an arrow"""
 
         if self.popup_menu is not None:
             self.popup_menu.destroy()
@@ -1170,11 +1134,10 @@ class TkFlowchart(object):
         self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
 
     def remove_edge(self, item):
-        '''Remove an edge from the graph and visually
-        '''
+        """Remove an edge from the graph and visually"""
 
         tags = self.get_tags(item)
-        edge = tags['edge']
+        edge = tags["edge"]
         tag = edge.tag()
         self.graph.remove_edge(
             edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
@@ -1182,29 +1145,31 @@ class TkFlowchart(object):
 
         # Delete the tag, not item, so that we get all labels, etc.
         self.canvas.delete(tag)
-        self.canvas.delete('type=arrow_base')
-        self.canvas.delete('type=arrow_head')
+        self.canvas.delete("type=arrow_base")
+        self.canvas.delete("type=arrow_head")
 
     def print_edges(self, event=None):
-        '''Print all the edges. Useful for debugging!
-        '''
+        """Print all the edges. Useful for debugging!"""
 
-        print('All edges in tk_flowchart')
+        print("All edges in tk_flowchart")
         for edge in self.edges():
             print(
-                '   {} {} {} {} {} {}'.format(
-                    edge.node1.tag, edge.anchor1, edge.node2.tag, edge.anchor2,
-                    edge.edge_type, edge.edge_subtype
+                "   {} {} {} {} {} {}".format(
+                    edge.node1.tag,
+                    edge.anchor1,
+                    edge.node2.tag,
+                    edge.anchor2,
+                    edge.edge_type,
+                    edge.edge_subtype,
                 )
             )
 
     def print_items(self):
-        """Print all the items on the canvas, for debugging
-        """
+        """Print all the items on the canvas, for debugging"""
 
         print()
-        for item in self.canvas.find_withtag('type=arrow'):
-            print('{}: {}'.format(item, self.canvas.gettags(item)))
+        for item in self.canvas.find_withtag("type=arrow"):
+            print("{}: {}".format(item, self.canvas.gettags(item)))
 
     def run(self, event=None):
         """Run the current flowchart"""
@@ -1215,20 +1180,17 @@ class TkFlowchart(object):
         self._job_handler.submit_with_dialog(flowchart=flowchart)
 
     def push(self):
-        """Save a copy of the current flowchart on the stack.
-        """
+        """Save a copy of the current flowchart on the stack."""
         self.update_flowchart()
         self._stack.append(self.flowchart.to_dict())
 
     def pop(self):
-        """Replace the current flowchart with the version on the stack.
-        """
+        """Replace the current flowchart with the version on the stack."""
         self.flowchart.from_dict(self._stack.pop())
         self.from_flowchart()
 
     def pop_and_discard(self):
-        """Remove the saved copy from the stack
-        """
+        """Remove the saved copy from the stack"""
         self._stack.pop()
 
     def update_flowchart(self):
@@ -1249,15 +1211,11 @@ class TkFlowchart(object):
         for edge in self.edges():
             attr = {}
             for key in edge:
-                if key not in (
-                    'node1', 'node2', 'edge_type', 'edge_subtype', 'canvas'
-                ):
+                if key not in ("node1", "node2", "edge_type", "edge_subtype", "canvas"):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            wf.add_edge(
-                node1, node2, edge.edge_type, edge.edge_subtype, **attr
-            )
+            wf.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
 
     def from_flowchart(self):
         """Recreate the graphics from the non-graphical flowchart"""
@@ -1272,12 +1230,12 @@ class TkFlowchart(object):
             extension = node.extension
             if extension is None:
                 # Start node
-                translate[node] = self.get_node('1')
+                translate[node] = self.get_node("1")
             else:
                 new_node = copy.copy(node)
-                logger.debug('creating {} node'.format(extension))
+                logger.debug("creating {} node".format(extension))
                 plugin = self.plugin_manager.get(extension)
-                logger.debug('  plugin object: {}'.format(plugin))
+                logger.debug("  plugin object: {}".format(plugin))
                 tk_node = plugin.create_tk_node(
                     tk_flowchart=self, canvas=self.canvas, node=new_node
                 )
@@ -1292,7 +1250,7 @@ class TkFlowchart(object):
             node2 = translate[edge.node2]
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2'):
+                if key not in ("node1", "node2"):
                     attr[key] = edge[key]
             self.add_edge(node1, node2, **attr)
 
@@ -1331,80 +1289,73 @@ class TkFlowchart(object):
 
         self.canvas.yview_scroll(delta, "units")
 
-        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        x0, y0, x1, y1 = self.canvas.cget("scrollregion").split(" ")
         f0, f1 = self.canvas.yview()
         y = (int(y1) - int(y0)) * f0
 
-        tk._default_root.tk.call(self.canvas, 'moveto', self.background, 0, y)
+        tk._default_root.tk.call(self.canvas, "moveto", self.background, 0, y)
 
     def xview(self, command, amount, *args):
-        """Scroll in the x direction, keeping the background picture stationary
-        """
+        """Scroll in the x direction, keeping the background picture stationary"""
         self.canvas.xview(command, amount, *args)
 
-        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        x0, y0, x1, y1 = self.canvas.cget("scrollregion").split(" ")
         f0, f1 = self.canvas.xview()
         x = (int(x1) - int(x0)) * f0
         f0, f1 = self.canvas.yview()
         y = (int(y1) - int(y0)) * f0
 
-        tk._default_root.tk.call(self.canvas, 'moveto', self.background, x, y)
+        tk._default_root.tk.call(self.canvas, "moveto", self.background, x, y)
 
     def yview(self, command, amount, *args):
-        """Scroll in the y direction, keeping the background picture stationary
-        """
+        """Scroll in the y direction, keeping the background picture stationary"""
         self.canvas.yview(command, amount, *args)
 
-        x0, y0, x1, y1 = self.canvas.cget('scrollregion').split(' ')
+        x0, y0, x1, y1 = self.canvas.cget("scrollregion").split(" ")
         f0, f1 = self.canvas.xview()
         x = (int(x1) - int(x0)) * f0
         f0, f1 = self.canvas.yview()
         y = (int(y1) - int(y0)) * f0
 
-        tk._default_root.tk.call(self.canvas, 'moveto', self.background, x, y)
+        tk._default_root.tk.call(self.canvas, "moveto", self.background, x, y)
 
     def clean_layout(self, event=None):
-        """Clean the visual layout of the flowchart
-        """
+        """Clean the visual layout of the flowchart"""
 
         # clear the visited flag
         for node in self:
             node.node.visited = False
 
         # get the node to start the traversal
-        node = self.get_node('1')
+        node = self.get_node("1")
 
         # traverse the nodes, finding what loops they are in
         self._loops = {}  # what loops a node is in
-        self._in_loop = {  # ordered list of nodes directly in a loop
-            'start': []
-        }
+        self._in_loop = {"start": []}  # ordered list of nodes directly in a loop
         loops = tuple()
 
         self._loop_helper(loops, node)
 
-        logger.debug('\nloops\n\n{}'.format(pprint.pformat(self._loops)))
-        logger.debug('\nin loops\n\n{}'.format(pprint.pformat(self._in_loop)))
+        logger.debug("\nloops\n\n{}".format(pprint.pformat(self._loops)))
+        logger.debug("\nin loops\n\n{}".format(pprint.pformat(self._in_loop)))
 
         # Move the nodes to the correct place on the grid
         x = 0
         y = 0
-        self._loopxy = {'start': (0, 0)}
-        self._layout_nodes('start', x, y)
+        self._loopxy = {"start": (0, 0)}
+        self._layout_nodes("start", x, y)
 
-        logger.debug('\nmax x,y\n\n{}'.format(pprint.pformat(self._loopxy)))
+        logger.debug("\nmax x,y\n\n{}".format(pprint.pformat(self._loopxy)))
 
         # Fix the edges
         for edge in self.edges():
             # only work on edges that go upwards
             x0, y0 = edge.node1.anchor_point(edge.anchor1)
             x1, y1 = edge.node2.anchor_point(edge.anchor2)
-            logger.debug(
-                '   edge {}: {}, {} to {}, {}'.format(edge, x0, y0, x1, y1)
-            )
+            logger.debug("   edge {}: {}, {} to {}, {}".format(edge, x0, y0, x1, y1))
             if y1 < y0:
                 edge.coords = [x0, y0]
-                logger.debug('   edge.node1 = {}'.format(edge.node1))
+                logger.debug("   edge.node1 = {}".format(edge.node1))
                 loop = self._loops[edge.node1][-1]
                 xmax, ymax = self._loopxy[loop]
                 xmax = (xmax + 1) * self.grid_x
@@ -1436,8 +1387,7 @@ class TkFlowchart(object):
         del self._loopxy
 
     def _layout_nodes(self, loop, x, y):
-        """Recursively position nodes
-        """
+        """Recursively position nodes"""
         for node in self._in_loop[loop]:
             x0 = int(node.x)
             y0 = int(node.y)
@@ -1445,7 +1395,7 @@ class TkFlowchart(object):
             node.y = int((y + 0.5) * self.grid_y)
 
             logger.debug(
-                'node {} {} = {:3d} {:3d} ({:3d} {:3d}) {}'.format(
+                "node {} {} = {:3d} {:3d} ({:3d} {:3d}) {}".format(
                     x, y, int(node.x), int(node.y), x0, y0, node
                 )
             )
@@ -1467,38 +1417,35 @@ class TkFlowchart(object):
         return x, y
 
     def _loop_helper(self, loops, node):
-        """A helper to traverse graph finding the grid locations of the nodes
-        """
+        """A helper to traverse graph finding the grid locations of the nodes"""
         node.node.visited = True
         self._loops[node] = loops
 
-        logger.debug('node = {}, loops = {}'.format(node, loops))
+        logger.debug("node = {}, loops = {}".format(node, loops))
 
         if len(loops) == 0:
-            self._in_loop['start'].append(node)
+            self._in_loop["start"].append(node)
         else:
             self._in_loop[loops[-1]].append(node)
 
-        if node.node_type == 'loop':
+        if node.node_type == "loop":
             loops = loops + (node,)
             self._in_loop[node] = []
             # nodes in the loop
-            for edge in self.graph.edges(node, direction='out'):
-                if edge.edge_type == "execution" and \
-                   edge.edge_subtype == 'loop':
+            for edge in self.graph.edges(node, direction="out"):
+                if edge.edge_type == "execution" and edge.edge_subtype == "loop":
                     node2 = edge.node2
                     if not node2.node.visited:
                         self._loop_helper(loops, node2)
             loops = loops[0:-1]
             # end exiting the loop
-            for edge in self.graph.edges(node, direction='out'):
-                if edge.edge_type == "execution" and \
-                   edge.edge_subtype == 'exit':
+            for edge in self.graph.edges(node, direction="out"):
+                if edge.edge_type == "execution" and edge.edge_subtype == "exit":
                     node2 = edge.node2
                     if not node2.node.visited:
                         self._loop_helper(loops, node2)
         else:
-            for edge in self.graph.edges(node, direction='out'):
+            for edge in self.graph.edges(node, direction="out"):
                 if edge.edge_type == "execution":
                     node2 = edge.node2
                     if not node2.node.visited:

@@ -9,31 +9,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
-printer = printing.getPrinter('join')
+printer = printing.getPrinter("join")
 
 
 class Join(seamm.Node):
-
-    def __init__(self, flowchart=None, extension='Join'):
-        '''Initialize a node for joining the flow together again
+    def __init__(self, flowchart=None, extension="Join"):
+        """Initialize a node for joining the flow together again
 
         Keyword arguments:
-        '''
-        logger.debug('Constructing join node {}'.format(self))
-        super().__init__(
-            flowchart=flowchart, title='Join', extension=extension
-        )
+        """
+        logger.debug("Constructing join node {}".format(self))
+        super().__init__(flowchart=flowchart, title="Join", extension=extension)
 
     @property
     def version(self):
-        """The semantic version of this module.
-        """
+        """The semantic version of this module."""
         return seamm.__version__
 
     @property
     def git_revision(self):
-        """The git version of this module.
-        """
+        """The git version of this module."""
         return seamm.__git_revision__
 
     def description_text(self, P=None):
@@ -46,12 +41,12 @@ class Join(seamm.Node):
             P: a dictionary of parameter values, which may be variables
                 or final values. If None, then the parameters values will
                 be used as is.
-            """
+        """
 
         # if not P:
         #     P = self.parameters.values_to_dict()
 
-        text = ''
-        text += 'Join threads together'
+        text = ""
+        text += "Join threads together"
 
-        return self.header + '\n' + __(text, indent=4 * ' ').__str__()
+        return self.header + "\n" + __(text, indent=4 * " ").__str__()

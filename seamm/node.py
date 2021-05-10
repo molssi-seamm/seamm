@@ -8,6 +8,7 @@
 import bibtexparser
 import calendar
 import collections.abc
+
 try:
     import importlib.metadata as implib
 except Exception:
@@ -35,15 +36,14 @@ job = printing.getPrinter()
 
 
 class Node(collections.abc.Hashable):
-
     def __init__(
         self,
         flowchart=None,
-        title='',
+        title="",
         extension=None,
         module=None,
         logger=logger,
-        uid=None
+        uid=None,
     ):
         """Initialize a node
 
@@ -58,7 +58,7 @@ class Node(collections.abc.Hashable):
         self.parent = None
         self.flowchart = flowchart
         self._title = title
-        self._description = ''
+        self._description = ""
         self._id = None
         self.extension = extension
         self._visited = False
@@ -77,14 +77,12 @@ class Node(collections.abc.Hashable):
         self.h = None
 
         # Set up our formatter for printing
-        self.formatter = logging.Formatter(fmt='{message:s}', style='{')
+        self.formatter = logging.Formatter(fmt="{message:s}", style="{")
 
         # Setup the bibliography
         self._bibliography = {}
-        package = self.__module__.split('.')[0]
-        files = [
-            p for p in implib.files(package) if 'references.bib' in str(p)
-        ]
+        package = self.__module__.split(".")[0]
+        files = [p for p in implib.files(package) if "references.bib" in str(p)]
         if len(files) > 0:
             path = files[0]
             self.logger.info(f"bibliography file path = '{path}'")
@@ -93,21 +91,16 @@ class Node(collections.abc.Hashable):
             tmp = bibtexparser.loads(data).entries_dict
             writer = bibtexparser.bwriter.BibTexWriter()
             for key, data in tmp.items():
-                self.logger.info(f'      {key}')
+                self.logger.info(f"      {key}")
                 self._bibliography[key] = writer._entry_to_bibtex(data)
-            self.logger.debug(
-                'Bibliography\n' + pprint.pformat(self._bibliography)
-            )
+            self.logger.debug("Bibliography\n" + pprint.pformat(self._bibliography))
 
     def __hash__(self):
         """Make iterable!"""
         return self._uuid
 
     def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__ and
-            self.__hash__() == other.__hash__()
-        )
+        return self.__class__ == other.__class__ and self.__hash__() == other.__hash__()
 
     @property
     def uuid(self):
@@ -126,7 +119,7 @@ class Node(collections.abc.Hashable):
     @property
     def tag(self):
         """The string representation of the uuid of the node"""
-        return 'node=' + str(self._uuid)
+        return "node=" + str(self._uuid)
 
     @property
     def directory(self):
@@ -146,10 +139,10 @@ class Node(collections.abc.Hashable):
     def step_type(self):
         """The step type, e.g. 'lammps-step', used for e.g. options"""
         if self._step_type is None:
-            name = self.__module__.split('.')[0].replace('_', '-')
-            if name == 'seamm':
-                name = self.__module__.split('.')[1].replace('_', '-')
-                name += '-step'
+            name = self.__module__.split(".")[0].replace("_", "-")
+            if name == "seamm":
+                name = self.__module__.split(".")[1].replace("_", "-")
+                name += "-step"
             self._step_type = name
 
         return self._step_type
@@ -185,29 +178,25 @@ class Node(collections.abc.Hashable):
     def indent(self):
         length = len(self._id)
         if length <= 1:
-            return ''
+            return ""
         if length > 2:
-            result = (length - 2) * (3 * ' ' + '.') + 4 * ' '
+            result = (length - 2) * (3 * " " + ".") + 4 * " "
         else:
-            result = 4 * ' '
+            result = 4 * " "
         return result
 
     @property
     def header(self):
         """A printable header for this section of output"""
-        return (
-            'Step {}: {}  {}'.format(
-                '.'.join(str(e) for e in self._id), self.title, self.version
-            )
+        return "Step {}: {}  {}".format(
+            ".".join(str(e) for e in self._id), self.title, self.version
         )
 
     @property
     def references(self):
         """The reference handle for citations."""
         if self._references is None:
-            filename = os.path.join(
-                self.flowchart.root_directory, 'references.db'
-            )
+            filename = os.path.join(self.flowchart.root_directory, "references.db")
             self._references = reference_handler.Reference_Handler(filename)
 
         return self._references
@@ -233,13 +222,13 @@ class Node(collections.abc.Hashable):
         bool
            True for an expression, False otherwise.
         """
-        return len(value) > 0 and value[0] == '$'
+        return len(value) > 0 and value[0] == "$"
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int
 
         # Need to correct all edges to other nodes
-        raise NotImplementedError('set_uuid not implemented yet!')
+        raise NotImplementedError("set_uuid not implemented yet!")
 
     def set_id(self, node_id):
         """Set the id for node to a given tuple"""
@@ -281,10 +270,9 @@ class Node(collections.abc.Hashable):
         return result
 
     def remove_edge(self, edge):
-        """Remove a given edge, or all edges if 'all' is given
-        """
+        """Remove a given edge, or all edges if 'all' is given"""
 
-        if isinstance(edge, str) and edge == 'all':
+        if isinstance(edge, str) and edge == "all":
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
@@ -304,14 +292,13 @@ class Node(collections.abc.Hashable):
                 be used as is.
         """
         return (
-            'This node has no specific description. '
+            "This node has no specific description. "
             "Override the method 'description_text' "
-            'to provide the description.'
+            "to provide the description."
         )
 
     def describe(self):
-        """Write out information about what this node will do
-        """
+        """Write out information about what this node will do"""
 
         self.visited = True
 
@@ -338,62 +325,54 @@ class Node(collections.abc.Hashable):
             self.setup_printing(printer)
 
         # Add a citation for this plug-in
-        package = self.__module__.split('.')[0]
+        package = self.__module__.split(".")[0]
         if package in self._bibliography:
             try:
                 template = string.Template(self._bibliography[package])
 
                 version = self.version
-                year, month = version.split('.')[0:2]
+                year, month = version.split(".")[0:2]
                 month = calendar.month_abbr[int(month)].lower()
-                citation = template.substitute(
-                    month=month, version=version, year=year
-                )
+                citation = template.substitute(month=month, version=version, year=year)
 
-                title = package.split('_')
-                title = ' '.join([s.capitalize() for s in title[0:-2]])
+                title = package.split("_")
+                title = " ".join([s.capitalize() for s in title[0:-2]])
                 self.references.cite(
                     raw=citation,
                     alias=package,
                     module=package,
                     level=2,
-                    note=(
-                        f'The principle citation for the {title} step in '
-                        'SEAMM.'
-                    )
+                    note=(f"The principle citation for the {title} step in " "SEAMM."),
                 )
 
             except Exception as e:
-                printer.important(f'Exception in citation {type(e)}: {e}')
+                printer.important(f"Exception in citation {type(e)}: {e}")
                 printer.important(traceback.format_exc())
 
         next_node = self.next()
         if next_node:
-            self.logger.debug('returning next_node: {}'.format(next_node))
+            self.logger.debug("returning next_node: {}".format(next_node))
         else:
-            self.logger.debug('returning next_node: None')
+            self.logger.debug("returning next_node: None")
 
         return next_node
 
     def next(self):
-        """Return the next node in the flow
-        """
+        """Return the next node in the flow"""
 
-        for edge in self.flowchart.edges(self, direction='out'):
-            if edge.edge_subtype == 'next':
-                self.logger.debug('Next node is: {}'.format(edge.node2))
+        for edge in self.flowchart.edges(self, direction="out"):
+            if edge.edge_subtype == "next":
+                self.logger.debug("Next node is: {}".format(edge.node2))
                 return edge.node2
 
-        self.logger.debug('Reached the end of the flowchart')
+        self.logger.debug("Reached the end of the flowchart")
         return None
 
     def previous(self):
-        """Return the previous node in the flow
-        """
+        """Return the previous node in the flow"""
 
-        for edge in self.flowchart.edges(self, direction='in'):
-            if edge.edge_type == 'execution' and \
-               edge.edge_subtype == 'next':
+        for edge in self.flowchart.edges(self, direction="in"):
+            if edge.edge_type == "execution" and edge.edge_subtype == "next":
                 return edge.node1
 
         return None
@@ -402,7 +381,7 @@ class Node(collections.abc.Hashable):
         """Return the input from this subnode, usually used for
         building up the input for the executable."""
 
-        return ''
+        return ""
 
     def to_json(self):
         return json.dumps(self.to_dict(), cls=seamm_util.JSONEncoder)
@@ -410,53 +389,53 @@ class Node(collections.abc.Hashable):
     def to_dict(self):
         """serialize this object and everything it contains as a dict"""
         data = {
-            'item': 'object',
-            'module': self.__module__,
-            'class': self.__class__.__name__,
-            'extension': self.extension
+            "item": "object",
+            "module": self.__module__,
+            "class": self.__class__.__name__,
+            "extension": self.extension,
         }
-        data['attributes'] = {}
+        data["attributes"] = {}
         for key in self.__dict__:
             # Remove unneeded variables
-            if key[0] == '_' and key not in ('_uuid', '_method', '_title'):
+            if key[0] == "_" and key not in ("_uuid", "_method", "_title"):
                 # _method needed because forcefield_step/forcefield.py does not
                 # use parameters yet!
                 continue
             if key in (
-                'bibliography',
-                'flowchart',
-                'formatter',
-                'logger',
-                'options',
-                'parent',
-                'parser',
-                'tmp_table',
-                'unknown'
+                "bibliography",
+                "flowchart",
+                "formatter",
+                "logger",
+                "options",
+                "parent",
+                "parser",
+                "tmp_table",
+                "unknown",
             ):  # yapf: disable
                 continue
 
-            if 'flowchart' in key:
+            if "flowchart" in key:
                 # Have a subflowchart!
                 data[key] = self.__dict__[key].to_dict()
             else:
-                data['attributes'][key] = self.__dict__[key]
+                data["attributes"][key] = self.__dict__[key]
         return data
 
     def from_dict(self, data):
         """un-serialize object and everything it contains from a dict"""
-        if data['item'] != 'object':
-            raise RuntimeError('The data for restoring the object is invalid')
-        if data['class'] != self.__class__.__name__:
+        if data["item"] != "object":
+            raise RuntimeError("The data for restoring the object is invalid")
+        if data["class"] != self.__class__.__name__:
             raise RuntimeError(
-                'Trying to restore a {}'.format(self.__class__.__name__) +
-                ' from data for a {}'.format(data['class'])
+                "Trying to restore a {}".format(self.__class__.__name__)
+                + " from data for a {}".format(data["class"])
             )
         for key in data:
-            if key == 'attributes':
-                attributes = data['attributes']
+            if key == "attributes":
+                attributes = data["attributes"]
                 for subkey in attributes:
                     self.__dict__[subkey] = attributes[subkey]
-            elif 'flowchart' in key:
+            elif "flowchart" in key:
                 self.__dict__[key].from_dict(data[key])
 
     def default_edge_subtype(self):
@@ -471,20 +450,17 @@ class Node(collections.abc.Hashable):
         """
 
         # how many outgoing edges are there?
-        n_edges = len(self.flowchart.edges(self, direction='out'))
+        n_edges = len(self.flowchart.edges(self, direction="out"))
 
-        self.logger.debug(
-            'node.default_edge_subtype, n_edges = {}'.format(n_edges)
-        )
+        self.logger.debug("node.default_edge_subtype, n_edges = {}".format(n_edges))
 
         if n_edges == 0:
             return ""
         else:
             return "too many"
 
-    def analyze(self, indent='', **kwargs):
-        """Analyze the output of the calculation
-        """
+    def analyze(self, indent="", **kwargs):
+        """Analyze the output of the calculation"""
         return
 
     def get_value(self, variable_or_value):
@@ -502,8 +478,7 @@ class Node(collections.abc.Hashable):
         return seamm.flowchart_variables.value(variable_or_value)
 
     def get_variable(self, variable):
-        """Get the value of a variable, which must exist
-        """
+        """Get the value of a variable, which must exist"""
 
         return seamm.flowchart_variables.get_variable(variable)
 
@@ -515,14 +490,12 @@ class Node(collections.abc.Hashable):
         seamm.flowchart_variables.set_variable(variable, value)
 
     def variable_exists(self, variable):
-        """Return whether a varable exists in the workspace
-        """
+        """Return whether a varable exists in the workspace"""
 
         return seamm.flowchart_variables.exists(variable)
 
     def delete_variable(self, variable):
-        """Delete a variable in the workspace
-        """
+        """Delete a variable in the workspace"""
 
         seamm.flowchart_variables.delete(variable)
 
@@ -551,7 +524,7 @@ class Node(collections.abc.Hashable):
 
         # A handler for the file
         file_handler = logging.FileHandler(
-            os.path.join(self.directory, 'step.out'), delay=True
+            os.path.join(self.directory, "step.out"), delay=True
         )
         file_handler.setLevel(printing.NORMAL)
         file_handler.setFormatter(self.formatter)
@@ -576,9 +549,7 @@ class Node(collections.abc.Hashable):
         """Temporary!"""
         job.job(text)
 
-    def store_results(
-        self, data={}, properties=None, results=None, create_tables=True
-    ):
+    def store_results(self, data={}, properties=None, results=None, create_tables=True):
         """Store results in variables and tables, as requested
 
         Keywords:
@@ -597,29 +568,30 @@ class Node(collections.abc.Hashable):
 
         for key, value in results.items():
             # Check for storing in a variable
-            if 'variable' in value:
-                variable = self.get_value(value['variable'])
+            if "variable" in value:
+                variable = self.get_value(value["variable"])
                 self.logger.debug(
                     f"results: setting '{variable}' = {data[key]} (key={key})"
                 )
                 self.set_variable(variable, data[key])
 
             # and table
-            if 'table' in value:
-                tablename = value['table']
-                column = self.get_value(value['column'])
+            if "table" in value:
+                tablename = value["table"]
+                column = self.get_value(value["column"])
                 # Does the table exist?
                 if not self.variable_exists(tablename):
                     if create_tables:
                         table = pandas.DataFrame()
                         self.set_variable(
-                            tablename, {
-                                'type': 'pandas',
-                                'table': table,
-                                'defaults': {},
-                                'loop index': False,
-                                'current index': 0
-                            }
+                            tablename,
+                            {
+                                "type": "pandas",
+                                "table": table,
+                                "defaults": {},
+                                "loop index": False,
+                                "current index": 0,
+                            },
                         )
                     else:
                         raise RuntimeError(
@@ -627,31 +599,29 @@ class Node(collections.abc.Hashable):
                         )
 
                 table_handle = self.get_variable(tablename)
-                table = table_handle['table']
+                table = table_handle["table"]
 
                 # create the column as needed
                 if column not in table.columns:
-                    kind = properties[key]['type']
-                    if kind == 'boolean':
+                    kind = properties[key]["type"]
+                    if kind == "boolean":
                         default = False
-                    elif kind == 'integer':
+                    elif kind == "integer":
                         default = 0
-                    elif kind == 'float':
+                    elif kind == "float":
                         default = np.nan
                     else:
-                        default = ''
+                        default = ""
 
-                    table_handle['defaults'][column] = default
+                    table_handle["defaults"][column] = default
                     table[column] = default
 
                 # and put the value in (finally!!!)
-                row_index = table_handle['current index']
+                row_index = table_handle["current index"]
                 if key in data:
                     table.at[row_index, column] = data[key]
 
-    def create_figure(
-        self, title='', template='line.graph_template', module_path=None
-    ):
+    def create_figure(self, title="", template="line.graph_template", module_path=None):
         """Create a new figure.
 
         Parameters
@@ -673,20 +643,17 @@ class Node(collections.abc.Hashable):
             # templates.
             if module_path is None:
                 self.logger.info("Reading graph templates from 'seamm'")
-                loaders = [jinja2.PackageLoader('seamm')]
+                loaders = [jinja2.PackageLoader("seamm")]
             else:
                 self.logger.info(
-                    "Reading graph templates from the following modules, "
-                    "in order"
+                    "Reading graph templates from the following modules, " "in order"
                 )
                 loaders = []
                 for module in module_path:
-                    self.logger.info('\t' + module)
+                    self.logger.info("\t" + module)
                     loaders.append(jinja2.PackageLoader(module))
 
-            self._jinja_env = jinja2.Environment(
-                loader=jinja2.ChoiceLoader(loaders)
-            )
+            self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
 
         figure = seamm_util.Figure(
             jinja_env=self._jinja_env, template=template, title=title
@@ -721,23 +688,21 @@ class Node(collections.abc.Hashable):
             parser.add_parser(step_type)
 
             parser.add_argument_group(
-                step_type, 'debugging options',
-                'Options for turning on debugging output and tools'
+                step_type,
+                "debugging options",
+                "Options for turning on debugging output and tools",
             )
 
             parser.add_argument(
                 step_type,
-                '--log-level',
-                group='debugging options',
-                default='WARNING',
+                "--log-level",
+                group="debugging options",
+                default="WARNING",
                 type=str.upper,
-                choices=[
-                    'NOTSET', 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
-                ],
+                choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
                 help=(
-                    "The level of informational output, defaults to "
-                    "'%(default)s'"
-                )
+                    "The level of informational output, defaults to " "'%(default)s'"
+                ),
             )
 
         return result

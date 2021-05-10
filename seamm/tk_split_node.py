@@ -12,37 +12,22 @@ class TkSplit(seamm.TkNode):
     """The Tk-based graphical representation of a splitting node"""
 
     anchor_points = {
-        'n': (0, 0),
-        's': (0, 1),
-        'e': (0.5, 0.5),
-        'w': (-0.5, 0.5),
+        "n": (0, 0),
+        "s": (0, 1),
+        "e": (0.5, 0.5),
+        "w": (-0.5, 0.5),
     }
 
     def __init__(
-        self,
-        tk_flowchart=None,
-        node=None,
-        canvas=None,
-        x=120,
-        y=20,
-        w=10,
-        h=10
+        self, tk_flowchart=None, node=None, canvas=None, x=120, y=20, w=10, h=10
     ):
-        '''Initialize a node
+        """Initialize a node
 
         Keyword arguments:
-        '''
-        logger.debug(
-            'Creating TkSplit, {} {} {} {} {}'.format(node, x, y, w, h)
-        )
+        """
+        logger.debug("Creating TkSplit, {} {} {} {} {}".format(node, x, y, w, h))
         super().__init__(
-            tk_flowchart=tk_flowchart,
-            node=node,
-            canvas=canvas,
-            x=x,
-            y=y,
-            w=w,
-            h=h
+            tk_flowchart=tk_flowchart, node=node, canvas=canvas, x=x, y=y, w=w, h=h
         )
 
     def draw(self):
@@ -58,6 +43,6 @@ class TkSplit(seamm.TkNode):
             y0,
             x1,
             y1,
-            tags=[self.tag, 'type=outline'],
-            fill='black',
+            tags=[self.tag, "type=outline"],
+            fill="black",
         )

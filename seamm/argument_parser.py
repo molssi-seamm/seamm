@@ -31,13 +31,13 @@ class ArgumentParser(object):
         self,
         *args,
         ini_files=[
-            'etc/seamm/seamm.ini',
-            os.path.expanduser('~/.seamm.ini'), 'seamm.ini'
+            "etc/seamm/seamm.ini",
+            os.path.expanduser("~/.seamm.ini"),
+            "seamm.ini",
         ],
-        **kwargs
+        **kwargs,
     ):
-        """Command-line and .ini parser for SEAMM
-        """
+        """Command-line and .ini parser for SEAMM"""
 
         self._parsers = {}
         self._ini_files = ini_files
@@ -54,12 +54,12 @@ class ArgumentParser(object):
         epilog=None,
         parents=[],
         formatter_class=argparse.HelpFormatter,
-        prefix_chars='-',
+        prefix_chars="-",
         fromfile_prefix_chars=None,
         argument_default=None,
-        conflict_handler='error',
+        conflict_handler="error",
         add_help=True,
-        allow_abbrev=True
+        allow_abbrev=True,
     ):
         """Capture the information needed to create a subparser.
 
@@ -94,20 +94,20 @@ class ArgumentParser(object):
         """
         if section in self._parsers:
             raise ValueError(f"Parser '{section}' already exists")
-        data = self._parsers[section] = {'arguments': [], 'groups': {}}
-        data['init_args'] = {
-            'prog': prog,
-            'usage': usage,
-            'description': description,
-            'epilog': epilog,
-            'parents': parents,
-            'formatter_class': formatter_class,
-            'prefix_chars': prefix_chars,
-            'fromfile_prefix_chars': fromfile_prefix_chars,
-            'argument_default': argument_default,
-            'conflict_handler': conflict_handler,
-            'add_help': add_help,
-            'allow_abbrev': allow_abbrev,
+        data = self._parsers[section] = {"arguments": [], "groups": {}}
+        data["init_args"] = {
+            "prog": prog,
+            "usage": usage,
+            "description": description,
+            "epilog": epilog,
+            "parents": parents,
+            "formatter_class": formatter_class,
+            "prefix_chars": prefix_chars,
+            "fromfile_prefix_chars": fromfile_prefix_chars,
+            "argument_default": argument_default,
+            "conflict_handler": conflict_handler,
+            "add_help": add_help,
+            "allow_abbrev": allow_abbrev,
         }
 
     def exists(self, name):
@@ -116,12 +116,12 @@ class ArgumentParser(object):
     def add_argument(self, section, *args, **kwargs):
         if section not in self._parsers:
             raise KeyError(f"Parser '{section}' does not exist.")
-        self._parsers[section]['arguments'].append((args, kwargs))
+        self._parsers[section]["arguments"].append((args, kwargs))
 
     def add_argument_group(self, section, title, description=None):
         if section not in self._parsers:
             raise KeyError(f"Parser '{section}' does not exist.")
-        self._parsers[section]['groups'][title] = {'description': description}
+        self._parsers[section]["groups"][title] = {"description": description}
 
     def parse_args(self, args=None):
         """Parse the .ini file and command-line arguments.
@@ -145,7 +145,7 @@ class ArgumentParser(object):
             args = sys.argv[1:]
 
         # Check for help!
-        if '-h' in args or '--help' in args:
+        if "-h" in args or "--help" in args:
             self.print_help(args)
             exit()
 
@@ -171,56 +171,51 @@ class ArgumentParser(object):
         groups = {}
         for section, data in self._parsers.items():
             # The parser
-            parser = argparse.ArgumentParser(**data['init_args'])
+            parser = argparse.ArgumentParser(**data["init_args"])
 
             # Any groups
-            for group, kwargs in data['groups'].items():
+            for group, kwargs in data["groups"].items():
                 groups[group] = parser.add_argument_group(group, **kwargs)
 
             # Need to add or replace default if the variable was in a .ini
             # file. This next code is straight for argparse to make sure we
             # have the variable's name in 'dest'.
-            for args, kwargs in data['arguments']:
-                if (
-                    not args or
-                    len(args) == 1 and args[0][0] not in parser.prefix_chars
-                ):
+            for args, kwargs in data["arguments"]:
+                if not args or len(args) == 1 and args[0][0] not in parser.prefix_chars:
                     variable = args[0]
                 else:
                     kwargs = parser._get_optional_kwargs(*args, **kwargs)
-                    variable = kwargs['dest']
-                    args = kwargs['option_strings']
-                    del kwargs['option_strings']
+                    variable = kwargs["dest"]
+                    args = kwargs["option_strings"]
+                    del kwargs["option_strings"]
                 # See if it was in the .ini files
                 try:
-                    tmp = variable.replace('_', '-')
+                    tmp = variable.replace("_", "-")
                     if config.has_section(section):
                         default = config.get(section, tmp)
                     else:
                         default = config.get(configparser.DEFAULTSECT, tmp)
-                    kwargs['default'] = default
+                    kwargs["default"] = default
                     # Track what the default is and where it comes from
-                    defaults[variable] = {'origin': 'configfile'}
+                    defaults[variable] = {"origin": "configfile"}
                     # May need to convert the type of the default
-                    if 'type' in kwargs:
-                        default = kwargs['type'](default)
-                    kwargs['default'] = default
+                    if "type" in kwargs:
+                        default = kwargs["type"](default)
+                    kwargs["default"] = default
                 except Exception:
                     # Track what the default is and where it comes from
-                    defaults[variable] = {'origin': 'default'}
+                    defaults[variable] = {"origin": "default"}
 
                 # and finally add the argument to the parser.
-                group = kwargs.pop('group', None)
+                group = kwargs.pop("group", None)
                 if group is not None:
                     if group not in groups:
-                        raise ValueError(
-                            f"argument group '{group}' is not defined"
-                        )
+                        raise ValueError(f"argument group '{group}' is not defined")
                     groups[group].add_argument(*args, **kwargs)
                 else:
                     parser.add_argument(*args, **kwargs)
 
-                defaults[variable]['value'] = parser.get_default(variable)
+                defaults[variable]["value"] = parser.get_default(variable)
 
             # 4. Parse each section of the command-line with the correct parser
             tmp = parser.parse_args(arg_sections[section])
@@ -229,12 +224,12 @@ class ArgumentParser(object):
             origin = self._origins[section] = {}
             for variable, value in self._options[section].items():
                 if variable in defaults:
-                    if value == defaults[variable]['value']:
-                        origin[variable] = defaults[variable]['origin']
+                    if value == defaults[variable]["value"]:
+                        origin[variable] = defaults[variable]["origin"]
                     else:
-                        origin[variable] = 'commandline'
+                        origin[variable] = "commandline"
                 else:
-                    origin[variable] = 'commandline'
+                    origin[variable] = "commandline"
 
         return self._options
 
@@ -314,28 +309,26 @@ class ArgumentParser(object):
         # the SEAMM section, print its help plus the plug-ins. Otherwise,
         # print the help for that plug-in.
 
-        section_args = arg_sections['SEAMM']
-        if '--help' in section_args or '-h' in section_args:
+        section_args = arg_sections["SEAMM"]
+        if "--help" in section_args or "-h" in section_args:
             # set up any SEAMM options
             groups = {}
-            if 'SEAMM' in self._parsers:
-                data = self._parsers['SEAMM']
+            if "SEAMM" in self._parsers:
+                data = self._parsers["SEAMM"]
 
                 # The parser
-                parser = argparse.ArgumentParser(**data['init_args'])
+                parser = argparse.ArgumentParser(**data["init_args"])
 
                 # Any groups
-                for group, kwargs in data['groups'].items():
+                for group, kwargs in data["groups"].items():
                     groups[group] = parser.add_argument_group(group, **kwargs)
 
                 # and the arguments
-                for args, kwargs in data['arguments']:
-                    group = kwargs.pop('group', None)
+                for args, kwargs in data["arguments"]:
+                    group = kwargs.pop("group", None)
                     if group is not None:
                         if group not in groups:
-                            raise ValueError(
-                                f"argument group '{group}' is not defined"
-                            )
+                            raise ValueError(f"argument group '{group}' is not defined")
                         groups[group].add_argument(*args, **kwargs)
                     else:
                         parser.add_argument(*args, **kwargs)
@@ -344,20 +337,17 @@ class ArgumentParser(object):
 
             # and then the plug-ins
             plugins = parser.add_argument_group(
-                'plug-ins',
+                "plug-ins",
                 description=(
-                    "The plug-ins in this flowchart, which have their own "
-                    "options."
-                )
+                    "The plug-ins in this flowchart, which have their own " "options."
+                ),
             )
             for section, data in self._parsers.items():
-                if section == 'SEAMM':
+                if section == "SEAMM":
                     continue
-                init_args = data['init_args']
-                if 'description' in init_args:
-                    plugins.add_argument(
-                        section, help=init_args['description']
-                    )
+                init_args = data["init_args"]
+                if "description" in init_args:
+                    plugins.add_argument(section, help=init_args["description"])
                 else:
                     plugins.add_argument(section)
             return parser.format_help()
@@ -366,21 +356,19 @@ class ArgumentParser(object):
         groups = {}
         for section, data in self._parsers.items():
             section_args = arg_sections[section]
-            if '--help' in section_args or '-h' in section_args:
+            if "--help" in section_args or "-h" in section_args:
                 # The parser
-                parser = argparse.ArgumentParser(**data['init_args'])
+                parser = argparse.ArgumentParser(**data["init_args"])
 
                 # Any groups
-                for group, kwargs in data['groups'].items():
+                for group, kwargs in data["groups"].items():
                     groups[group] = parser.add_argument_group(group, **kwargs)
 
-                for args, kwargs in data['arguments']:
-                    group = kwargs.pop('group', None)
+                for args, kwargs in data["arguments"]:
+                    group = kwargs.pop("group", None)
                     if group is not None:
                         if group not in groups:
-                            raise ValueError(
-                                f"argument group '{group}' is not defined"
-                            )
+                            raise ValueError(f"argument group '{group}' is not defined")
                         groups[group].add_argument(*args, **kwargs)
                     else:
                         parser.add_argument(*args, **kwargs)
@@ -401,9 +389,9 @@ class ArgumentParser(object):
         """
         sections = self._parsers.keys()
         result = {x: [] for x in sections}
-        result['SEAMM'] = []
+        result["SEAMM"] = []
 
-        section = 'SEAMM'
+        section = "SEAMM"
         for arg in args:
             if arg in sections:
                 section = arg
@@ -419,7 +407,7 @@ class ArgumentParser(object):
 _parsers = {}
 
 
-def getParser(name='_default_', **kwargs):
+def getParser(name="_default_", **kwargs):
 
     global _parsers
     if name not in _parsers:

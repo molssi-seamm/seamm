@@ -15,37 +15,33 @@ dbg_level = 30
 
 def raise_app(root: tk):
     root.attributes("-topmost", True)
-    if platform.system() == 'Darwin':
+    if platform.system() == "Darwin":
         tmpl = (
             'tell application "System Events" to set frontmost '
-            'of every process whose unix id is {} to true'
+            "of every process whose unix id is {} to true"
         )
         script = tmpl.format(os.getpid())
-        subprocess.check_call(['/usr/bin/osascript', '-e', script])
+        subprocess.check_call(["/usr/bin/osascript", "-e", script])
     root.after(100, lambda: root.attributes("-topmost", False))
 
 
 def flowchart():
-    """The standalone flowchart app
-    """
+    """The standalone flowchart app"""
     global app_name
-    app_name = 'MolSSI SEAMM'
+    app_name = "MolSSI SEAMM"
     global dbg_level
 
-    parser = argparse.ArgumentParser(description='MolSSI SEAMM')
+    parser = argparse.ArgumentParser(description="MolSSI SEAMM")
     parser.add_argument(
         "-v",
         "--verbose",
         dest="verbose_count",
         action="count",
         default=0,
-        help="increases log verbosity for each occurence."
+        help="increases log verbosity for each occurence.",
     )
     parser.add_argument(
-        "flowcharts",
-        nargs='*',
-        default=[],
-        help='flowcharts to open initially'
+        "flowcharts", nargs="*", default=[], help="flowcharts to open initially"
     )
 
     args, unknown = parser.parse_known_args()
@@ -72,7 +68,7 @@ def flowchart():
     ##################################################
     # Initialize the rest of the GUI, such as menus
     ##################################################
-    logger.debug('Initializing the rest of the GUI')
+    logger.debug("Initializing the rest of the GUI")
 
     root.title(app_name)
 
@@ -80,40 +76,34 @@ def flowchart():
     menu = tk.Menu(root)
 
     # Set the about and preferences menu items on Mac
-    if sys.platform.startswith('darwin'):
-        app_menu = tk.Menu(menu, name='apple')
+    if sys.platform.startswith("darwin"):
+        app_menu = tk.Menu(menu, name="apple")
         menu.add_cascade(menu=app_menu)
 
-        app_menu.add_command(
-            label='About ' + app_name, command=tk_flowchart.about
-        )
+        app_menu.add_command(label="About " + app_name, command=tk_flowchart.about)
         app_menu.add_separator()
-        root.createcommand(
-            'tk::mac::ShowPreferences', tk_flowchart.preferences
-        )
-        root.createcommand('tk::mac::OpenDocument', tk_flowchart.open_file)
-        CmdKey = 'Command-'
+        root.createcommand("tk::mac::ShowPreferences", tk_flowchart.preferences)
+        root.createcommand("tk::mac::OpenDocument", tk_flowchart.open_file)
+        CmdKey = "Command-"
     else:
-        CmdKey = 'Control-'
+        CmdKey = "Control-"
 
     root.config(menu=menu)
     filemenu = tk.Menu(menu)
     menu.add_cascade(label="File", menu=filemenu)
     filemenu.add_command(
-        label="New", command=tk_flowchart.new_file, accelerator=CmdKey + 'N'
+        label="New", command=tk_flowchart.new_file, accelerator=CmdKey + "N"
     )
     filemenu.add_command(
-        label="Save...", command=tk_flowchart.save, accelerator=CmdKey + 'S'
+        label="Save...", command=tk_flowchart.save, accelerator=CmdKey + "S"
     )
     filemenu.add_command(label="Save as...", command=tk_flowchart.save_file)
     filemenu.add_command(
-        label="Open...",
-        command=tk_flowchart.open_file,
-        accelerator=CmdKey + 'O'
+        label="Open...", command=tk_flowchart.open_file, accelerator=CmdKey + "O"
     )
     filemenu.add_separator()
     filemenu.add_command(
-        label="Run", command=tk_flowchart.run, accelerator=CmdKey + 'R'
+        label="Run", command=tk_flowchart.run, accelerator=CmdKey + "R"
     )
 
     # Control debugging info
@@ -121,22 +111,22 @@ def flowchart():
     debug_menu = tk.Menu(menu)
     filemenu.add_cascade(label="Debug", menu=debug_menu)
     debug_menu.add_radiobutton(
-        label='normal',
+        label="normal",
         value=30,
         variable=dbg_level,
-        command=lambda arg0=30: handle_dbg_level(arg0)
+        command=lambda arg0=30: handle_dbg_level(arg0),
     )
     debug_menu.add_radiobutton(
-        label='info',
+        label="info",
         value=20,
         variable=dbg_level,
-        command=lambda arg0=20: handle_dbg_level(arg0)
+        command=lambda arg0=20: handle_dbg_level(arg0),
     )
     debug_menu.add_radiobutton(
-        label='debug',
+        label="debug",
         value=10,
         variable=dbg_level,
-        command=lambda arg0=10: handle_dbg_level(arg0)
+        command=lambda arg0=10: handle_dbg_level(arg0),
     )
 
     # Exiting
@@ -149,25 +139,25 @@ def flowchart():
     editmenu.add_command(
         label="Clean layout",
         command=tk_flowchart.clean_layout,
-        accelerator=CmdKey + 'C'
+        accelerator=CmdKey + "C",
     )
 
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
-    if sys.platform.startswith('darwin'):
-        root.createcommand('tk::mac::ShowHelp', tk_flowchart.help)
+    if sys.platform.startswith("darwin"):
+        root.createcommand("tk::mac::ShowHelp", tk_flowchart.help)
 
-    root.bind_all('<' + CmdKey + 'N>', tk_flowchart.new_file)
-    root.bind_all('<' + CmdKey + 'n>', tk_flowchart.new_file)
-    root.bind_all('<' + CmdKey + 'O>', tk_flowchart.open_file)
-    root.bind_all('<' + CmdKey + 'o>', tk_flowchart.open_file)
-    root.bind_all('<' + CmdKey + 'R>', tk_flowchart.run)
-    root.bind_all('<' + CmdKey + 'r>', tk_flowchart.run)
-    root.bind_all('<' + CmdKey + 'S>', tk_flowchart.save)
-    root.bind_all('<' + CmdKey + 's>', tk_flowchart.save)
-    root.bind_all('<' + CmdKey + 'C>', tk_flowchart.clean_layout)
-    root.bind_all('<' + CmdKey + 'c>', tk_flowchart.clean_layout)
+    root.bind_all("<" + CmdKey + "N>", tk_flowchart.new_file)
+    root.bind_all("<" + CmdKey + "n>", tk_flowchart.new_file)
+    root.bind_all("<" + CmdKey + "O>", tk_flowchart.open_file)
+    root.bind_all("<" + CmdKey + "o>", tk_flowchart.open_file)
+    root.bind_all("<" + CmdKey + "R>", tk_flowchart.run)
+    root.bind_all("<" + CmdKey + "r>", tk_flowchart.run)
+    root.bind_all("<" + CmdKey + "S>", tk_flowchart.save)
+    root.bind_all("<" + CmdKey + "s>", tk_flowchart.save)
+    root.bind_all("<" + CmdKey + "C>", tk_flowchart.clean_layout)
+    root.bind_all("<" + CmdKey + "c>", tk_flowchart.clean_layout)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()
@@ -177,14 +167,14 @@ def flowchart():
     x = int(0.1 * sw / 2)
     y = int(0.2 * sh / 2)
 
-    root.geometry('{}x{}+{}+{}'.format(w, h, x, y))
+    root.geometry("{}x{}+{}+{}".format(w, h, x, y))
 
-    logger.debug('Finished initializing the rest of the GUI, drawing window')
+    logger.debug("Finished initializing the rest of the GUI, drawing window")
 
     # Draw the flowchart
     tk_flowchart.draw()
 
-    logger.debug('SEAMM has been drawn. Now raise it to the top')
+    logger.debug("SEAMM has been drawn. Now raise it to the top")
 
     # bring it to the top of all windows
     root.lift()
@@ -192,13 +182,13 @@ def flowchart():
 
     # Check to see if the command line has flowcharts to open
     if len(args.flowcharts) > 0:
-        logger.debug('open the following flowcharts:')
+        logger.debug("open the following flowcharts:")
         if len(args.flowcharts) > 1:
-            raise RuntimeError('Currently handle only one flowchart at a time')
+            raise RuntimeError("Currently handle only one flowchart at a time")
         for filename in args.flowcharts:
             tk_flowchart.open(filename)
 
-    logger.debug('and now enter the event loop')
+    logger.debug("and now enter the event loop")
 
     # enter the event loop
     root.mainloop()
@@ -212,6 +202,6 @@ def handle_dbg_level(level):
 
 
 if __name__ == "__main__":
-    locale.setlocale(locale.LC_ALL, '')
+    locale.setlocale(locale.LC_ALL, "")
 
     flowchart()

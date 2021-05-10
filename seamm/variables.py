@@ -16,7 +16,6 @@ flowchart_variables = None
 
 
 class Variables(collections.abc.MutableMapping):
-
     def __init__(self, **kwargs):
         self._data = dict(**kwargs)
 
@@ -70,7 +69,7 @@ class Variables(collections.abc.MutableMapping):
         If it is not a variable, return the original string unchanged
         """
 
-        if isinstance(string, str) and string[0] == '$':
+        if isinstance(string, str) and string[0] == "$":
             expression = self.filter_expression(string)
 
             result = eval(expression, seamm.flowchart_variables._data)
@@ -109,9 +108,7 @@ class Variables(collections.abc.MutableMapping):
 
         name = self.variable(variable)
         if name not in self._data:
-            raise RuntimeError(
-                "Workspace variable '{}' does not exist.".format(name)
-            )
+            raise RuntimeError("Workspace variable '{}' does not exist.".format(name))
         return self._data[name]
 
     def exists(self, variable):
@@ -162,12 +159,10 @@ class Variables(collections.abc.MutableMapping):
 
         """
 
-        if string[0] == '$':
-            if string[1] == '{':
-                if string[-1] != '}':
-                    raise RuntimeError(
-                        "'" + string + "'is not a valid string name"
-                    )
+        if string[0] == "$":
+            if string[1] == "{":
+                if string[-1] != "}":
+                    raise RuntimeError("'" + string + "'is not a valid string name")
                 else:
                     return string[2:-1]
             else:
@@ -185,38 +180,38 @@ class Variables(collections.abc.MutableMapping):
         the Python interpreter.
         """
 
-        result = ''
-        state = ''
+        result = ""
+        state = ""
         for char in string:
-            if state == 'in single quotes':
+            if state == "in single quotes":
                 result += char
                 if char == "'":
-                    state = ''
-            elif state == 'in double quotes':
+                    state = ""
+            elif state == "in double quotes":
                 result += char
                 if char == '"':
-                    state = ''
-            elif state == 'protected':
+                    state = ""
+            elif state == "protected":
                 result += char
-                state = ''
-            elif state == 'in variable name':
-                if char == '}':
-                    state = ''
-                elif char == '{':
+                state = ""
+            elif state == "in variable name":
+                if char == "}":
+                    state = ""
+                elif char == "{":
                     pass
                 else:
                     result += char
             else:
-                if char == '$':
-                    state = 'in variable name'
+                if char == "$":
+                    state = "in variable name"
                 elif char == "'":
                     result += char
-                    state = 'in single quotes'
+                    state = "in single quotes"
                 elif char == '"':
                     result += char
-                    state = 'in double quotes'
-                elif char == '\\':
-                    state = 'protected'
+                    state = "in double quotes"
+                elif char == "\\":
+                    state = "protected"
                 else:
                     result += char
 
