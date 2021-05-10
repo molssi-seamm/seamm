@@ -12,34 +12,21 @@ class TkJoin(seamm.TkNode):
     """The Tk-based graphical representation of a joining node"""
 
     anchor_points = {
-        'n': (0, -0.5),
-        's': (0, 0.5),
-        'e': (0.5, 0.0),
-        'w': (-0.5, 0.0),
+        "n": (0, -0.5),
+        "s": (0, 0.5),
+        "e": (0.5, 0.0),
+        "w": (-0.5, 0.0),
     }
 
     def __init__(
-        self,
-        tk_flowchart=None,
-        node=None,
-        canvas=None,
-        x=120,
-        y=20,
-        w=10,
-        h=10
+        self, tk_flowchart=None, node=None, canvas=None, x=120, y=20, w=10, h=10
     ):
-        '''Initialize a node
+        """Initialize a node
 
         Keyword arguments:
-        '''
+        """
         super().__init__(
-            tk_flowchart=tk_flowchart,
-            node=node,
-            canvas=canvas,
-            x=x,
-            y=y,
-            w=w,
-            h=h
+            tk_flowchart=tk_flowchart, node=node, canvas=canvas, x=x, y=y, w=w, h=h
         )
 
     def draw(self):
@@ -57,8 +44,8 @@ class TkJoin(seamm.TkNode):
             y0,
             x1,
             y1,
-            tags=[self.tag, 'type=outline'],
-            fill='black',
+            tags=[self.tag, "type=outline"],
+            fill="black",
         )
 
         for direction, edge in self.connections():

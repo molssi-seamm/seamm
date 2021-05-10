@@ -25,11 +25,11 @@ class TkEdge(seamm.Edge):
         graph,
         node1,
         node2,
-        edge_type='execution',
-        edge_subtype='next',
+        edge_type="execution",
+        edge_subtype="next",
         canvas=None,
-        anchor1='s',
-        anchor2='n',
+        anchor1="s",
+        anchor2="n",
         coords=None,
         **kwargs
     ):
@@ -39,16 +39,14 @@ class TkEdge(seamm.Edge):
         Keyword arguments:
         """
         self._data = []
-        logger.debug('Creating TkEdge {}'.format(self))
-        logger.debug('\tnode1 = {}'.format(node1))
-        logger.debug('\tnode2 = {}'.format(node2))
+        logger.debug("Creating TkEdge {}".format(self))
+        logger.debug("\tnode1 = {}".format(node1))
+        logger.debug("\tnode2 = {}".format(node2))
 
         # Initialize the parent class
-        super().__init__(
-            graph, node1, node2, edge_type, edge_subtype, **kwargs
-        )
+        super().__init__(graph, node1, node2, edge_type, edge_subtype, **kwargs)
 
-        self._data['canvas'] = canvas
+        self._data["canvas"] = canvas
         self.anchor1 = anchor1
         self.anchor2 = anchor2
         if coords is None:
@@ -62,9 +60,7 @@ class TkEdge(seamm.Edge):
         TkEdge.str_to_object[str(id(self))] = self
 
         # Arrange that the graphics are deleted when we are
-        self._finalizer = weakref.finalize(
-            self, self.canvas.delete, self.tag()
-        )
+        self._finalizer = weakref.finalize(self, self.canvas.delete, self.tag())
         self._finalizer.atexit = False
 
     def __eq__(self, other):
@@ -73,47 +69,47 @@ class TkEdge(seamm.Edge):
 
     @property
     def canvas(self):
-        return self._data['canvas']
+        return self._data["canvas"]
 
     @property
     def anchor1(self):
-        return self._data['anchor1']
+        return self._data["anchor1"]
 
     @anchor1.setter
     def anchor1(self, value):
-        self._data['anchor1'] = value
+        self._data["anchor1"] = value
 
     @property
     def anchor2(self):
-        return self._data['anchor2']
+        return self._data["anchor2"]
 
     @anchor2.setter
     def anchor2(self, value):
-        self._data['anchor2'] = value
+        self._data["anchor2"] = value
 
     @property
     def coords(self):
-        return self._data['coords']
+        return self._data["coords"]
 
     @coords.setter
     def coords(self, value):
-        self._data['coords'] = value
+        self._data["coords"] = value
 
     @property
     def has_label(self):
-        return 'label_id' in self._data
+        return "label_id" in self._data
 
     @property
     def label_id(self):
-        return self._data['label_id']
+        return self._data["label_id"]
 
     @property
     def label_bg_id(self):
-        return self._data['label_bg_id']
+        return self._data["label_bg_id"]
 
     def tag(self):
         """Return a string tag for self"""
-        return 'edge=' + str(id(self))
+        return "edge=" + str(id(self))
 
     def draw(self):
         """Draw the arrow for this edge"""
@@ -130,30 +126,30 @@ class TkEdge(seamm.Edge):
         self.coords[-1] = y1
 
         # the arrow
-        self.canvas.delete(self.tag() + '&& type=arrow')
+        self.canvas.delete(self.tag() + "&& type=arrow")
         arrow_id = self.canvas.create_line(
-            self.coords, arrow=tk.LAST, tags=[self.tag(), 'type=arrow']
+            self.coords, arrow=tk.LAST, tags=[self.tag(), "type=arrow"]
         )
-        self._data['arrow_id'] = arrow_id
+        self._data["arrow_id"] = arrow_id
 
         # and the label
         if self.edge_subtype != "next":
-            self.canvas.delete(self.tag() + '&& type=label')
+            self.canvas.delete(self.tag() + "&& type=label")
             text = self.canvas.create_text(
                 self.label_position(x0, y0, x1, y1),
                 text=self.edge_subtype,
-                font=font.Font(family='Helvetica', size=8),
-                tags=[self.tag(), 'type=label']
+                font=font.Font(family="Helvetica", size=8),
+                tags=[self.tag(), "type=label"],
             )
-            self._data['label_id'] = text
-            self.canvas.delete(self.tag() + '&& type=label_bg')
+            self._data["label_id"] = text
+            self.canvas.delete(self.tag() + "&& type=label_bg")
             bg = self.canvas.create_rectangle(
                 self.canvas.bbox(text),
                 outline="white",
                 fill="white",
-                tags=[self.tag(), 'type=label_bg']
+                tags=[self.tag(), "type=label_bg"],
             )
-            self._data['label_bg_id'] = bg
+            self._data["label_bg_id"] = bg
             self.canvas.tag_lower(bg, text)
 
     def label_position(self, x0, y0, x1, y1, offset=15):
@@ -165,16 +161,16 @@ class TkEdge(seamm.Edge):
             offset = int(length / 2)
         xy = [
             x0 if dx == 0.0 else x0 + dx / length * offset,
-            y0 if dy == 0.0 else y0 + dy / length * offset
+            y0 if dy == 0.0 else y0 + dy / length * offset,
         ]
         return xy
 
     def undraw(self):
         """Remove any graphics"""
         self.canvas.delete(self.tag())
-        if 'arrow_id' in self._data:
-            del self._data['arrow_id']
-        if 'label_id' in self._data:
-            del self._data['label_id']
-        if 'label_bg_id' in self._data:
-            del self._data['label_bg_id']
+        if "arrow_id" in self._data:
+            del self._data["arrow_id"]
+        if "label_id" in self._data:
+            del self._data["label_id"]
+        if "label_bg_id" in self._data:
+            del self._data["label_bg_id"]

@@ -9,6 +9,7 @@ import seamm
 import seamm_widgets as sw
 import tkinter as tk
 import tkinter.ttk as ttk
+
 """A graphical node using Tk on a canvas"""
 
 logger = logging.getLogger(__name__)
@@ -18,29 +19,29 @@ class TkNode(collections.abc.MutableMapping):
     """The abstract base class for all Tk-based nodes"""
 
     anchor_points = {
-        's': (+0.00, +0.50),
-        'sse': (+0.25, +0.50),
-        'se': (+0.50, +0.50),
-        'ese': (+0.50, +0.25),
-        'e': (+0.50, +0.00),
-        'ene': (+0.50, -0.25),
-        'ne': (+0.50, -0.50),
-        'nne': (+0.25, -0.50),
-        'n': (+0.00, -0.50),
-        'nnw': (-0.25, -0.50),
-        'nw': (-0.50, -0.50),
-        'wnw': (-0.50, -0.25),
-        'w': (-0.50, +0.00),
-        'wsw': (-0.50, +0.25),
-        'sw': (-0.50, +0.50),
-        'ssw': (-0.25, +0.50)
+        "s": (+0.00, +0.50),
+        "sse": (+0.25, +0.50),
+        "se": (+0.50, +0.50),
+        "ese": (+0.50, +0.25),
+        "e": (+0.50, +0.00),
+        "ene": (+0.50, -0.25),
+        "ne": (+0.50, -0.50),
+        "nne": (+0.25, -0.50),
+        "n": (+0.00, -0.50),
+        "nnw": (-0.25, -0.50),
+        "nw": (-0.50, -0.50),
+        "wnw": (-0.50, -0.25),
+        "w": (-0.50, +0.00),
+        "wsw": (-0.50, +0.25),
+        "sw": (-0.50, +0.50),
+        "ssw": (-0.25, +0.50),
     }
 
     def __init__(
         self,
         tk_flowchart=None,
         node=None,
-        node_type='simple',
+        node_type="simple",
         canvas=None,
         x=None,
         y=None,
@@ -48,7 +49,7 @@ class TkNode(collections.abc.MutableMapping):
         h=None,
         my_logger=logger,
         keyword_metadata=None,
-        keywords=None
+        keywords=None,
     ):
         """Initialize a node
 
@@ -92,10 +93,7 @@ class TkNode(collections.abc.MutableMapping):
         return self.node.uuid
 
     def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__ and
-            self.__hash__() == other.__hash__()
-        )
+        return self.__class__ == other.__class__ and self.__hash__() == other.__hash__()
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -208,9 +206,9 @@ class TkNode(collections.abc.MutableMapping):
     def selected(self, value):
         self._selected = value
         if value:
-            self.canvas.itemconfigure(self.border, outline='red')
+            self.canvas.itemconfigure(self.border, outline="red")
         else:
-            self.canvas.itemconfigure(self.border, outline='black')
+            self.canvas.itemconfigure(self.border, outline="black")
 
     @property
     def canvas(self):
@@ -246,7 +244,7 @@ class TkNode(collections.abc.MutableMapping):
         bool
            True for an expression, False otherwise.
         """
-        return len(value) > 0 and value[0] == '$'
+        return len(value) > 0 and value[0] == "$"
 
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
@@ -264,21 +262,20 @@ class TkNode(collections.abc.MutableMapping):
             y0,
             x1,
             y1,
-            tags=[self.tag, 'type=outline'],
-            fill='white',
+            tags=[self.tag, "type=outline"],
+            fill="white",
         )
 
         # the label in the middle
         self.title_label = self.canvas.create_text(
-            self.x, self.y, text=self.title, tags=[self.tag, 'type=title']
+            self.x, self.y, text=self.title, tags=[self.tag, "type=title"]
         )
 
         for direction, edge in self.connections():
             edge.move()
 
     def undraw(self):
-        """Remove all of our visual components
-        """
+        """Remove all of our visual components"""
 
         self.canvas.delete(self.tag)
 
@@ -315,8 +312,7 @@ class TkNode(collections.abc.MutableMapping):
 
         self.popup_menu = tk.Menu(self.canvas, tearoff=0)
         self.popup_menu.add_command(
-            label="Delete",
-            command=lambda: self.tk_flowchart.remove_node(self)
+            label="Delete", command=lambda: self.tk_flowchart.remove_node(self)
         )
 
         if type(self) is seamm.tk_node.TkNode:
@@ -336,7 +332,7 @@ class TkNode(collections.abc.MutableMapping):
         cursor
         """
 
-        self.canvas.delete(self.tag + ' && type=anchor')
+        self.canvas.delete(self.tag + " && type=anchor")
         for pt, x, y in self.anchor_point("all"):
             x0 = x - 2
             y0 = y - 2
@@ -347,17 +343,16 @@ class TkNode(collections.abc.MutableMapping):
                 y0,
                 x1,
                 y1,
-                fill='red',
-                outline='red',
-                tags=[self.tag, 'type=anchor', 'anchor=' + pt]
+                fill="red",
+                outline="red",
+                tags=[self.tag, "type=anchor", "anchor=" + pt],
             )
 
     def deactivate(self):
-        """Remove the decorations indicate the anchor points
-        """
+        """Remove the decorations indicate the anchor points"""
 
-        self.canvas.delete(self.tag + ' && type=anchor')
-        self.canvas.delete(self.tag + ' && type=active_anchor')
+        self.canvas.delete(self.tag + " && type=anchor")
+        self.canvas.delete(self.tag + " && type=active_anchor")
 
     def anchor_point(self, anchor="all"):
         """Where the anchor points are located. If "all" is given
@@ -367,18 +362,14 @@ class TkNode(collections.abc.MutableMapping):
             result = []
             for pt in type(self).anchor_points:
                 a, b = type(self).anchor_points[pt]
-                result.append(
-                    (pt, int(self.x + a * self.w), int(self.y + b * self.h))
-                )
+                result.append((pt, int(self.x + a * self.w), int(self.y + b * self.h)))
             return result
 
         if anchor in type(self).anchor_points:
             a, b = type(self).anchor_points[anchor]
             return (int(self.x + a * self.w), int(self.y + b * self.h))
 
-        raise NotImplementedError(
-            "anchor position '{}' not implemented".format(anchor)
-        )
+        raise NotImplementedError("anchor position '{}' not implemented".format(anchor))
 
     def check_anchor_points(self, x, y, halo):
         """If the position x, y is within halo or one of the anchor points
@@ -387,14 +378,13 @@ class TkNode(collections.abc.MutableMapping):
 
         points = []
         for direction, edge in self.connections():
-            if direction == 'out':
+            if direction == "out":
                 points.append(edge.anchor1)
             else:
                 points.append(edge.anchor2)
 
         for point, x0, y0 in self.anchor_point():
-            if x >= x0 - halo and x <= x0 + halo and \
-               y >= y0 - halo and y <= y0 + halo:
+            if x >= x0 - halo and x <= x0 + halo and y >= y0 - halo and y <= y0 + halo:
                 if point in points:
                     return None
                 else:
@@ -428,16 +418,15 @@ class TkNode(collections.abc.MutableMapping):
             y - halo,
             x + halo,
             y + halo,
-            fill='red',
-            outline='red',
-            tags=[self.tag, 'type=active_anchor', 'anchor=' + point]
+            fill="red",
+            outline="red",
+            tags=[self.tag, "type=active_anchor", "anchor=" + point],
         )
 
     def remove_edge(self, edge):
-        """Remove a given edge, or all edges if 'all' is given
-        """
+        """Remove a given edge, or all edges if 'all' is given"""
 
-        if isinstance(edge, str) and edge == 'all':
+        if isinstance(edge, str) and edge == "all":
             for direction, obj in self.connections():
                 self.remove_edge(obj)
         else:
@@ -465,100 +454,97 @@ class TkNode(collections.abc.MutableMapping):
         if self.tk_subflowchart is not None:
             self.tk_subflowchart.push()
 
-        self.dialog.activate(geometry='centerscreenfirst')
+        self.dialog.activate(geometry="centerscreenfirst")
 
     def create_dialog(
         self,
-        title='Edit step',
-        widget='frame',
+        title="Edit step",
+        widget="frame",
         results_tab=False,
     ):
         """Create the base dialog for editing the parameters for a step.
 
         At the moment I have removed the Help button.
         """
-        self.logger.debug('Create dialog in tk_node base class')
+        self.logger.debug("Create dialog in tk_node base class")
         self.dialog = Pmw.Dialog(
             self.toplevel,
-            buttons=('OK', 'Cancel'),
+            buttons=("OK", "Cancel"),
             master=self.toplevel,
             title=title,
-            command=self.handle_dialog
+            command=self.handle_dialog,
         )
         self.dialog.withdraw()
 
-        if widget == 'frame':
+        if widget == "frame":
             # Create a frame to hold everything
             frame = ttk.Frame(self.dialog.interior())
             frame.pack(expand=tk.YES, fill=tk.BOTH)
-            self['frame'] = frame
+            self["frame"] = frame
             return frame
-        elif (
-            widget == 'notebook' or results_tab or
-            self._keyword_metadata is not None
-        ):
+        elif widget == "notebook" or results_tab or self._keyword_metadata is not None:
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
-            notebook.pack(side='top', fill=tk.BOTH, expand=tk.YES)
-            self['notebook'] = notebook
+            notebook.pack(side="top", fill=tk.BOTH, expand=tk.YES)
+            self["notebook"] = notebook
 
             # Main frame holding the widgets
             frame = ttk.Frame(notebook)
-            self['frame'] = frame
-            notebook.add(frame, text='Parameters', sticky=tk.NW)
+            self["frame"] = frame
+            notebook.add(frame, text="Parameters", sticky=tk.NW)
 
         if results_tab:
             # Second tab for results if requested
-            rframe = self['results frame'] = ttk.Frame(notebook)
-            notebook.add(rframe, text='Results', sticky=tk.NSEW)
+            rframe = self["results frame"] = ttk.Frame(notebook)
+            notebook.add(rframe, text="Results", sticky=tk.NSEW)
 
             # Shortcut for parameters
             P = self.node.parameters
 
-            var = self.tk_var['create tables'] = tk.IntVar()
-            if P['create tables'].value == 'yes':
+            var = self.tk_var["create tables"] = tk.IntVar()
+            if P["create tables"].value == "yes":
                 var.set(1)
             else:
                 var.set(0)
-            self['create tables'] = ttk.Checkbutton(
-                rframe, text='Create tables if needed', variable=var
+            self["create tables"] = ttk.Checkbutton(
+                rframe, text="Create tables if needed", variable=var
             )
-            self['create tables'].grid(row=0, column=0, sticky=tk.W)
+            self["create tables"].grid(row=0, column=0, sticky=tk.W)
 
-            self['results'] = sw.ScrolledColumns(
+            self["results"] = sw.ScrolledColumns(
                 rframe,
                 columns=[
-                    'Result',
-                    'Save',
-                    'Variable name',
-                    'In table',
-                    'Column name',
-                ]
+                    "Result",
+                    "Save",
+                    "Variable name",
+                    "In table",
+                    "Column name",
+                ],
             )
-            self['results'].grid(row=1, column=0, sticky=tk.NSEW)
+            self["results"].grid(row=1, column=0, sticky=tk.NSEW)
             rframe.columnconfigure(0, weight=1)
             rframe.rowconfigure(1, weight=1)
 
         if self._keyword_metadata is not None:
             # Next tab to handle adding keywords manually
-            self.logger.debug('Adding the keyword tab')
-            kframe = self['add_to_input'] = ttk.Frame(notebook)
-            notebook.add(kframe, text='Add to input', sticky=tk.NSEW)
-            self['keywords'] = sw.Keywords(
+            self.logger.debug("Adding the keyword tab")
+            kframe = self["add_to_input"] = ttk.Frame(notebook)
+            notebook.add(kframe, text="Add to input", sticky=tk.NSEW)
+            self["keywords"] = sw.Keywords(
                 kframe,
                 metadata=self._keyword_metadata,
-                keywords=self.node.parameters['extra keywords'].value
+                keywords=self.node.parameters["extra keywords"].value,
             )
-            self['keywords'].pack(expand='yes', fill='both')
+            self["keywords"].pack(expand="yes", fill="both")
 
         return frame
 
-    def setup_results(self, properties, calculation='energy', method=None):
+    def setup_results(self, properties, calculation="energy", method=None):
         """Layout the results tab of the dialog"""
-        results = self.node.parameters['results'].value
+        results = self.node.parameters["results"].value
 
         self.results_widgets = []
-        table = self['results']
+        table = self["results"]
 
         table.clear()
 
@@ -566,20 +552,20 @@ class TkNode(collections.abc.MutableMapping):
 
         row = 0
         for key, entry in properties.items():
-            if 'calculation' not in entry:
+            if "calculation" not in entry:
                 continue
-            if calculation not in entry['calculation']:
+            if calculation not in entry["calculation"]:
                 continue
-            if 'dimensionality' not in entry:
+            if "dimensionality" not in entry:
                 continue
-            if method is not None and 'methods' in entry:
-                if method not in entry['methods']:
+            if method is not None and "methods" in entry:
+                if method not in entry["methods"]:
                     continue
 
             widgets = []
             widgets.append(key)
 
-            table.cell(row, 0, entry['description'])
+            table.cell(row, 0, entry["description"])
 
             # variable
             var = self.tk_var[key] = tk.IntVar()
@@ -593,12 +579,12 @@ class TkNode(collections.abc.MutableMapping):
             widgets.append(e)
 
             if key in results:
-                if 'variable' in results[key]:
+                if "variable" in results[key]:
                     var.set(1)
                     e.delete(0, tk.END)
-                    e.insert(0, results[key]['variable'])
+                    e.insert(0, results[key]["variable"])
 
-            if entry['dimensionality'] == 'scalar':
+            if entry["dimensionality"] == "scalar":
                 # table
                 w = ttk.Combobox(frame, width=10)
                 table.cell(row, 3, w)
@@ -609,10 +595,10 @@ class TkNode(collections.abc.MutableMapping):
                 widgets.append(e)
 
                 if key in results:
-                    if 'table' in results[key]:
-                        w.set(results[key]['table'])
+                    if "table" in results[key]:
+                        w.set(results[key]["table"])
                         e.delete(0, tk.END)
-                        e.insert(0, results[key]['column'])
+                        e.insert(0, results[key]["column"])
             else:
                 widgets.append(None)
                 widgets.append(None)
@@ -624,8 +610,8 @@ class TkNode(collections.abc.MutableMapping):
         """Resize and fit the dialog to the current contents and the
         constraint of the window.
         """
-        self.logger.debug('Entering fit_dialog')
-        frame = self['frame']
+        self.logger.debug("Entering fit_dialog")
+        frame = self["frame"]
         frame.update_idletasks()
         width = frame.winfo_width()
         height = frame.winfo_height()
@@ -633,24 +619,22 @@ class TkNode(collections.abc.MutableMapping):
         sh = frame.winfo_screenheight()
 
         self.logger.debug(
-            '  frame wxh = {} x {}, screen = {} x {}'.format(
-                width, height, sw, sh
-            )
+            "  frame wxh = {} x {}, screen = {} x {}".format(width, height, sw, sh)
         )
 
         mw = 0
         mh = 0
-        if 'notebook' in self:
-            for tab in self['notebook'].tabs():
+        if "notebook" in self:
+            for tab in self["notebook"].tabs():
                 widget = frame.nametowidget(tab)
                 widget.update_idletasks()
-                self.logger.debug('  widget = {}'.format(widget))
+                self.logger.debug("  widget = {}".format(widget))
                 ww = widget.winfo_width()
                 hh = widget.winfo_height()
                 w = widget.winfo_reqwidth()
                 h = widget.winfo_reqheight()
                 self.logger.debug(
-                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                    "  tab {} wxh = {} x {}, requested = {} x {}".format(
                         tab, ww, hh, w, h
                     )
                 )
@@ -663,16 +647,16 @@ class TkNode(collections.abc.MutableMapping):
                 if hh > height:
                     height = hh
             # Need to do results again using the inside of the scrolled table..
-            if 'results' in self:
-                widget = self['results'].interior()
-                self.logger.debug('  widget = {}'.format(widget))
+            if "results" in self:
+                widget = self["results"].interior()
+                self.logger.debug("  widget = {}".format(widget))
                 widget.update_idletasks()
                 ww = widget.winfo_width()
                 hh = widget.winfo_height()
                 w = widget.winfo_reqwidth()
                 h = widget.winfo_reqheight()
                 self.logger.debug(
-                    '  tab {} wxh = {} x {}, requested = {} x {}'.format(
+                    "  tab {} wxh = {} x {}, requested = {} x {}".format(
                         tab, ww, hh, w, h
                     )
                 )
@@ -687,7 +671,7 @@ class TkNode(collections.abc.MutableMapping):
         else:
             mw = frame.winfo_reqwidth()
             mh = frame.winfo_reqheight()
-            self.logger.debug('  frame requested = {} x {}'.format(mw, mh))
+            self.logger.debug("  frame requested = {} x {}".format(mw, mh))
 
         if width < mw:
             width = mw
@@ -700,7 +684,7 @@ class TkNode(collections.abc.MutableMapping):
         if height > 0.9 * sh:
             height = int(0.9 * sh)
 
-        self.dialog.geometry('{}x{}'.format(width, height))
+        self.dialog.geometry("{}x{}".format(width, height))
 
     def reset_dialog(self, widget=None):
         """Reset the layout of the dialog as needed for the parameters.
@@ -711,9 +695,8 @@ class TkNode(collections.abc.MutableMapping):
         pass
 
     def handle_dialog(self, result):
-        """Do the right thing when the dialog is closed.
-        """
-        if result is None or result == 'Cancel':
+        """Do the right thing when the dialog is closed."""
+        if result is None or result == "Cancel":
             self.dialog.deactivate(result)
 
             # If there is a subflowchart, revert to the saved copy
@@ -722,18 +705,24 @@ class TkNode(collections.abc.MutableMapping):
 
             # Reset the results widgets if they exist
             if self.results_widgets is not None:
-                results = self.node.parameters['results']['value']
-                self.logger.debug('Resetting results on Cancel')
+                results = self.node.parameters["results"]["value"]
+                self.logger.debug("Resetting results on Cancel")
                 if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug('  results dict\n---------')
+                    self.logger.debug("  results dict\n---------")
                     for key, item in results.items():
                         self.logger.debug(key)
                         self.logger.debug(
                             json.dumps(results[key], sort_keys=True, indent=3)
                         )
 
-                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
-                    self.logger.debug('  key: {}'.format(key))
+                for (
+                    key,
+                    w_check,
+                    w_variable,
+                    w_table,
+                    w_column,
+                ) in self.results_widgets:  # noqa: E501
+                    self.logger.debug("  key: {}".format(key))
                     w_variable.delete(0, tk.END)
                     if w_table is not None:
                         w_table.delete(0, tk.END)
@@ -742,26 +731,26 @@ class TkNode(collections.abc.MutableMapping):
                     if key in results:
                         tmp = results[key]
                         self.logger.debug(
-                            '  key dict\n---------\n' +
-                            json.dumps(tmp, sort_keys=True, indent=3) +
-                            '\n-----'
+                            "  key dict\n---------\n"
+                            + json.dumps(tmp, sort_keys=True, indent=3)
+                            + "\n-----"
                         )
-                        if 'variable' in tmp:
+                        if "variable" in tmp:
                             self.tk_var[key].set(1)
-                            w_variable.insert(0, tmp['variable'])
+                            w_variable.insert(0, tmp["variable"])
                         else:
                             self.tk_var[key].set(0)
                             w_variable.insert(0, key.lower())
 
                         if w_table is not None:
-                            if 'table' in tmp:
-                                w_table.insert(0, tmp['table'])
-                                w_column.insert(0, tmp['column'])
+                            if "table" in tmp:
+                                w_table.insert(0, tmp["table"])
+                                w_column.insert(0, tmp["column"])
                             else:
-                                w_table.set('')
+                                w_table.set("")
                                 w_column.insert(0, key.lower())
                     else:
-                        self.logger.debug('  resetting widgets')
+                        self.logger.debug("  resetting widgets")
                         self.tk_var[key].set(0)
                         w_variable.insert(0, key.lower())
                         if w_column is not None:
@@ -772,15 +761,15 @@ class TkNode(collections.abc.MutableMapping):
                 self.node.parameters.reset_widgets()
 
             # Reset any keywords
-            if 'keywords' in self:
-                self['keywords'].reset()
+            if "keywords" in self:
+                self["keywords"].reset()
 
             # Reset the layout to make sure it is correct
             self.reset_dialog()
 
-        elif result == 'Help':
+        elif result == "Help":
             self.help()
-        elif result == 'OK':
+        elif result == "OK":
             self.dialog.deactivate(result)
 
             # Capture the parameters from the widgets
@@ -797,34 +786,38 @@ class TkNode(collections.abc.MutableMapping):
                 P = self.node.parameters
 
                 # and from the results tab...
-                if self.tk_var['create tables'].get():
-                    P['create tables'].value = 'yes'
+                if self.tk_var["create tables"].get():
+                    P["create tables"].value = "yes"
                 else:
-                    P['create tables'].value = 'no'
+                    P["create tables"].value = "no"
 
-                results = P['results'].value = {}
-                for key, w_check, w_variable, w_table, w_column in self.results_widgets:  # noqa: E501
+                results = P["results"].value = {}
+                for (
+                    key,
+                    w_check,
+                    w_variable,
+                    w_table,
+                    w_column,
+                ) in self.results_widgets:  # noqa: E501
 
                     if self.tk_var[key].get():
                         tmp = results[key] = dict()
-                        tmp['variable'] = w_variable.get()
+                        tmp["variable"] = w_variable.get()
                     if w_table is not None:
                         table = w_table.get()
-                        if table != '':
+                        if table != "":
                             if key not in results:
                                 tmp = results[key] = dict()
-                            tmp['table'] = table
-                            tmp['column'] = w_column.get()
+                            tmp["table"] = table
+                            tmp["column"] = w_column.get()
             # And any keywords
-            if 'keywords' in self:
+            if "keywords" in self:
                 P = self.node.parameters
-                P['extra keywords'].value = self['keywords'].get_keywords()
-                self['keywords'].keywords = P['extra keywords'].value
+                P["extra keywords"].value = self["keywords"].get_keywords()
+                self["keywords"].keywords = P["extra keywords"].value
         else:
             self.dialog.deactivate(result)
-            raise RuntimeError(
-                "Don't recognize dialog result '{}'".format(result)
-            )
+            raise RuntimeError("Don't recognize dialog result '{}'".format(result))
 
     def help(self):
         """Base class for presenting help, does nothing.
@@ -836,10 +829,10 @@ class TkNode(collections.abc.MutableMapping):
     def to_dict(self):
         """Serialize to a dict"""
         data = {
-            'x': self._x,
-            'y': self._y,
-            'w': self._w,
-            'h': self._h,
+            "x": self._x,
+            "y": self._y,
+            "w": self._w,
+            "h": self._h,
         }
 
         return data
@@ -864,15 +857,11 @@ class TkNode(collections.abc.MutableMapping):
         for edge in tk_flowchart.edges():
             attr = {}
             for key in edge:
-                if key not in (
-                    'node1', 'node2', 'edge_type', 'edge_subtype', 'canvas'
-                ):
+                if key not in ("node1", "node2", "edge_type", "edge_subtype", "canvas"):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            flowchart.add_edge(
-                node1, node2, edge.edge_type, edge.edge_subtype, **attr
-            )
+            flowchart.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
 
     def from_flowchart(self, tk_flowchart=None, flowchart=None):
         """Recreate the graphics from the non-graphical flowchart.
@@ -890,16 +879,14 @@ class TkNode(collections.abc.MutableMapping):
             extension = node.extension
             if extension is None:
                 # Start node
-                translate[node] = tk_flowchart.get_node('1')
+                translate[node] = tk_flowchart.get_node("1")
             else:
                 new_node = copy.copy(node)
-                self.logger.debug('creating {} node'.format(extension))
+                self.logger.debug("creating {} node".format(extension))
                 plugin = tk_flowchart.plugin_manager.get(extension)
-                self.logger.debug('  plugin object: {}'.format(plugin))
+                self.logger.debug("  plugin object: {}".format(plugin))
                 tk_node = plugin.create_tk_node(
-                    tk_flowchart=tk_flowchart,
-                    canvas=tk_flowchart.canvas,
-                    node=new_node
+                    tk_flowchart=tk_flowchart, canvas=tk_flowchart.canvas, node=new_node
                 )
                 translate[node] = tk_node
                 tk_node.from_flowchart()
@@ -912,7 +899,7 @@ class TkNode(collections.abc.MutableMapping):
             node2 = translate[edge.node2]
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2'):
+                if key not in ("node1", "node2"):
                     attr[key] = edge[key]
             tk_flowchart.add_edge(node1, node2, **attr)
 
@@ -928,11 +915,9 @@ class TkNode(collections.abc.MutableMapping):
         """
 
         # how many outgoing edges are there?
-        n_edges = len(self.tk_flowchart.edges(self, direction='out'))
+        n_edges = len(self.tk_flowchart.edges(self, direction="out"))
 
-        self.logger.debug(
-            'node.default_edge_label, n_edges = {}'.format(n_edges)
-        )
+        self.logger.debug("node.default_edge_label, n_edges = {}".format(n_edges))
 
         if n_edges == 0:
             return "next"
@@ -944,4 +929,4 @@ class TkNode(collections.abc.MutableMapping):
         <gap> below the 's' anchor point.
         """
 
-        return 's'
+        return "s"

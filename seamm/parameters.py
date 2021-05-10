@@ -36,7 +36,7 @@ class Parameter(collections.abc.MutableMapping):
     def __init__(self, *args, **kwargs):
         """Initialize this parameter"""
 
-        logger.debug('\nParameter.__init__')
+        logger.debug("\nParameter.__init__")
 
         self._data = {}
         self.dimensionality = None
@@ -49,11 +49,11 @@ class Parameter(collections.abc.MutableMapping):
             if isinstance(data, dict):
                 self.update(data)
             else:
-                raise RuntimeError('Positional arguments must be dicts')
+                raise RuntimeError("Positional arguments must be dicts")
 
         self.update(kwargs)
 
-        logger.debug('Finished constructing Parameter\n')
+        logger.debug("Finished constructing Parameter\n")
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -77,49 +77,52 @@ class Parameter(collections.abc.MutableMapping):
 
     def __repr__(self):
         """The official string representation of this object"""
-        if self.units is None or self.units == '':
+        if self.units is None or self.units == "":
             return self.value
         else:
-            return ('{} {}').format(self.value, self.units)
+            return ("{} {}").format(self.value, self.units)
 
     def __str__(self):
-        if self.units is None or self.units == '':
-            if self.kind == 'integer':
+        if self.units is None or self.units == "":
+            if self.kind == "integer":
                 try:
                     value = int(self.value)
-                    return ('{:' + self.format_string + '}').format(value)
+                    return ("{:" + self.format_string + "}").format(value)
                 except Exception:
-                    return ('{}').format(self.value)
-            if self.kind == 'float':
+                    return ("{}").format(self.value)
+            if self.kind == "float":
                 try:
                     value = float(self.value)
-                    return ('{:' + self.format_string + '}').format(value)
+                    return ("{:" + self.format_string + "}").format(value)
                 except ValueError:
-                    return ('{}').format(self.value)
-            if self.format_string == '':
+                    return ("{}").format(self.value)
+            if self.format_string == "":
                 return str(self.value)
             else:
-                return ('{:' + self.format_string + '}').format(self.value)
+                return ("{:" + self.format_string + "}").format(self.value)
         else:
-            if self.kind == 'integer':
+            if self.kind == "integer":
                 try:
                     value = int(self.value)
-                    return ('{:' + self.format_string +
-                            '} {}').format(value, self.units)
+                    return ("{:" + self.format_string + "} {}").format(
+                        value, self.units
+                    )
                 except ValueError:
-                    return ('{} {}').format(self.value, self.units)
-            if self.kind == 'float':
+                    return ("{} {}").format(self.value, self.units)
+            if self.kind == "float":
                 try:
                     value = float(self.value)
-                    return ('{:' + self.format_string +
-                            '} {}').format(value, self.units)
+                    return ("{:" + self.format_string + "} {}").format(
+                        value, self.units
+                    )
                 except Exception:
-                    return ('{} {}').format(self.value, self.units)
-            if self.format_string == '':
-                return '{} {}'.format(self.value, self.units)
+                    return ("{} {}").format(self.value, self.units)
+            if self.format_string == "":
+                return "{} {}".format(self.value, self.units)
             else:
-                return ('{:' + self.format_string +
-                        '} {}').format(self.value, self.units)
+                return ("{:" + self.format_string + "} {}").format(
+                    self.value, self.units
+                )
 
     def __contains__(self, item):
         """Return a boolean indicating if a key exists."""
@@ -141,18 +144,18 @@ class Parameter(collections.abc.MutableMapping):
         Python expression containing variables prefix with $,
         standard operators or parentheses."""
 
-        if 'value' not in self._data:
-            self._data['value'] = self._data['default']
+        if "value" not in self._data:
+            self._data["value"] = self._data["default"]
 
-        result = self._data['value']
+        result = self._data["value"]
         if result is None:
-            result = self._data['default']
+            result = self._data["default"]
 
         return result
 
     @value.setter
     def value(self, value):
-        self._data['value'] = value
+        self._data["value"] = value
 
     @property
     def default(self):
@@ -161,11 +164,11 @@ class Parameter(collections.abc.MutableMapping):
         standard operators or parenthesise, or a pint units
         quantity."""
 
-        return self._data['default']
+        return self._data["default"]
 
     @default.setter
     def default(self, value):
-        self._data['default'] = value
+        self._data["default"] = value
 
     @property
     def kind(self):
@@ -174,35 +177,35 @@ class Parameter(collections.abc.MutableMapping):
         This can be used to convert the value to the correct
         type in e.g. get_value."""
 
-        return self._data['kind']
+        return self._data["kind"]
 
     @kind.setter
     def kind(self, value):
-        if value not in ('integer', 'float', 'string'):
+        if value not in ("integer", "float", "string"):
             raise RuntimeError(
                 "The 'kind' must be 'integer', 'float', or "
                 "'string', not '{}'".format(value)
             )
-        self._data['kind'] = value
+        self._data["kind"] = value
 
     @property
     def units(self):
         """The units, as a string. These need to be compatible with
         pint"""
-        if 'units' not in self._data:
-            self._data['units'] = self._data['default_units']
+        if "units" not in self._data:
+            self._data["units"] = self._data["default_units"]
 
-        if self._data['units'] is None:
-            return self['default_units']
+        if self._data["units"] is None:
+            return self["default_units"]
 
-        return self._data['units']
+        return self._data["units"]
 
     @units.setter
     def units(self, value):
 
         logger.debug("units: value = '{}'".format(value))
 
-        if value == '':
+        if value == "":
             value = None
         if value is None:
             self.dimensionality = None
@@ -212,9 +215,7 @@ class Parameter(collections.abc.MutableMapping):
             if self.dimensionality is None:
                 self.dimensionality = tmp.dimensionality
 
-            logger.debug(
-                "   dimensionality = '{}'".format(self.dimensionality)
-            )
+            logger.debug("   dimensionality = '{}'".format(self.dimensionality))
 
             if tmp.dimensionality != self.dimensionality:
                 raise RuntimeError(
@@ -223,17 +224,17 @@ class Parameter(collections.abc.MutableMapping):
                         "the parameters: '{}' != '{}'"
                     ).format(value, tmp.dimensionality, self.dimensionality)
                 )
-        self._data['units'] = value
+        self._data["units"] = value
 
     @property
     def default_units(self):
         """The default units, as a string. These need to be compatible with
         pint"""
-        return self._data['default_units']
+        return self._data["default_units"]
 
     @default_units.setter
     def default_units(self, value):
-        if value == '':
+        if value == "":
             value = None
         if value is None:
             self.dimensionality = None
@@ -250,48 +251,48 @@ class Parameter(collections.abc.MutableMapping):
                         "'{}' != '{}'"
                     ).format(value, tmp.dimensionality, self.dimensionality)
                 )
-        self._data['default_units'] = value
+        self._data["default_units"] = value
 
     @property
     def enumeration(self):
         """The possible values for an enumerated type."""
-        return self._data['enumeration']
+        return self._data["enumeration"]
 
     @property
     def format_string(self):
         """The format string for the value"""
-        return self._data['format_string']
+        return self._data["format_string"]
 
     @format_string.setter
     def format_string(self, value):
-        self._data['format_string'] = value
+        self._data["format_string"] = value
 
     @property
     def description(self):
         """Short description of this parameter, preferable just a
         few words"""
-        return self._data['description']
+        return self._data["description"]
 
     @description.setter
     def description(self, value):
-        self._data['description'] = value
+        self._data["description"] = value
 
     @property
     def help_text(self):
         """A longer description of this parameter that is suitable
         for e.g. help text."""
-        return self._data['help_text']
+        return self._data["help_text"]
 
     @help_text.setter
     def help_text(self, value):
-        self._data['help_text'] = value
+        self._data["help_text"] = value
 
     @property
     def has_units(self):
         """Does this parameter have units associated?"""
         if self.dimensionality is None:
             return False
-        if self.dimensionality == '':
+        if self.dimensionality == "":
             return False
         return True
 
@@ -300,7 +301,7 @@ class Parameter(collections.abc.MutableMapping):
         """Is the current value a variable reference or
         expression?"""
         if isinstance(self.value, str) and len(self.value) > 0:
-            return self.value and self.value[0] == '$'
+            return self.value and self.value[0] == "$"
         else:
             return False
 
@@ -310,7 +311,7 @@ class Parameter(collections.abc.MutableMapping):
             if context is None:
                 global root_context
                 if root_context is None:
-                    raise RuntimeError('No context available')
+                    raise RuntimeError("No context available")
                 result = eval(self.value[1:], root_context)
             else:
                 result = eval(self.value[1:], context)
@@ -319,30 +320,27 @@ class Parameter(collections.abc.MutableMapping):
 
         # If it is an enum, just return that.
         if self.enumeration is not None and result in self.enumeration:
-            if self.kind == 'boolean':
+            if self.kind == "boolean":
                 return bool(strtobool(result))
             else:
                 return result
 
         # convert to proper type
-        if self.kind == 'integer':
+        if self.kind == "integer":
             result = int(result)
-        elif self.kind == 'float':
+        elif self.kind == "float":
             result = float(result)
-        elif self.kind == 'boolean':
+        elif self.kind == "boolean":
             if isinstance(result, str):
                 result = bool(strtobool(result))
             elif not isinstance(result, bool):
                 result = bool(result)
-        elif self.kind == 'list' or self.kind == 'periodic table':
+        elif self.kind == "list" or self.kind == "periodic table":
             if not isinstance(result, list):
-                if (
-                    isinstance(result, str) and len(result) > 0 and
-                    result[0] != '$'
-                ):
+                if isinstance(result, str) and len(result) > 0 and result[0] != "$":
                     result = json.loads(result)
             return result
-        elif self.kind == 'dictionary':
+        elif self.kind == "dictionary":
             if not isinstance(result, dict):
                 result = json.loads(result)
             return result
@@ -350,22 +348,22 @@ class Parameter(collections.abc.MutableMapping):
         # format if requested
         if formatted:
             fstring = self.format_string
-            if fstring is not None and fstring != '':
-                result = f'{result:{fstring}}'
-            if self.units is not None and self.units != '':
-                result += ' ' + self.units
+            if fstring is not None and fstring != "":
+                result = f"{result:{fstring}}"
+            if self.units is not None and self.units != "":
+                result += " " + self.units
 
         # and run into pint quantity if requested
-        if units and self.units is not None and self.units != '':
+        if units and self.units is not None and self.units != "":
             result = Q_(result, self.units)
 
         return result
 
     def set(self, value):
         """Set the fields based on the type of value given"""
-        if self.kind == 'special' or self.kind == 'periodic table':
+        if self.kind == "special" or self.kind == "periodic table":
             self.value = value
-        elif self.kind == 'list':
+        elif self.kind == "list":
             self.value = value
         elif isinstance(value, tuple) or isinstance(value, list):
             if len(value) == 1:
@@ -384,15 +382,15 @@ class Parameter(collections.abc.MutableMapping):
     def reset(self):
         """Reset to an empty state"""
         self._data = {
-            'default': None,
-            'kind': None,
-            'widget': None,
-            'default_units': None,
-            'enumeration': None,
-            'format_string': None,
-            'group': '',
-            'description': None,
-            'help_text': None,
+            "default": None,
+            "kind": None,
+            "widget": None,
+            "default_units": None,
+            "enumeration": None,
+            "format_string": None,
+            "group": "",
+            "description": None,
+            "help_text": None,
         }
         self.dimensionality = None
 
@@ -401,24 +399,24 @@ class Parameter(collections.abc.MutableMapping):
         # Will this keep the graphics isolated?
         import seamm_widgets as sw
 
-        logger.debug('Creating widget for {}'.format(type(self)))
+        logger.debug("Creating widget for {}".format(type(self)))
 
         if self._widget is not None:
-            logger.debug('   Destroying existing widget.')
+            logger.debug("   Destroying existing widget.")
             try:
                 self._widget.destroy()
             except Exception:
                 pass
 
-        labeltext = kwargs.pop('labeltext', self.description)
+        labeltext = kwargs.pop("labeltext", self.description)
 
-        if self.kind == 'special':
-            module_name, class_name = self['widget'].split('.')
+        if self.kind == "special":
+            module_name, class_name = self["widget"].split(".")
             mdl = importlib.import_module(module_name)
             cls = getattr(mdl, class_name)
             w = cls(frame, labeltext=labeltext, **kwargs)
             w.set(self.value)
-        elif self.kind == 'periodic table':
+        elif self.kind == "periodic table":
             w = sw.PeriodicTable(frame, **kwargs)
             w.set(self.value)
         elif self.enumeration is not None:
@@ -429,49 +427,47 @@ class Parameter(collections.abc.MutableMapping):
             else:
                 width = 10
             if self.dimensionality is None:
-                logger.debug('    making LabeledCombobox')
+                logger.debug("    making LabeledCombobox")
                 w = sw.LabeledCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
                     width=width,
-                    **kwargs
+                    **kwargs,
                 )
                 w.set(self.value)
             else:
-                logger.debug('   making UnitCombobox')
+                logger.debug("   making UnitCombobox")
                 w = sw.UnitCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
                     width=width,
-                    **kwargs
+                    **kwargs,
                 )
                 w.set(self.value, self.units)
         else:
             if self.dimensionality is None:
-                logger.debug('   making LabeledEntry')
+                logger.debug("   making LabeledEntry")
                 w = sw.LabeledEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value)
             else:
-                logger.debug('   making UnitEntry')
+                logger.debug("   making UnitEntry")
                 w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value, self.units)
 
         self._widget = w
 
-        logger.debug('   returning {}'.format(w))
+        logger.debug("   returning {}".format(w))
         return w
 
     def set_from_widget(self):
-        """Set the value from the widget, ignoring if there is no widget.
-        """
+        """Set the value from the widget, ignoring if there is no widget."""
         if self._widget is not None:
             self.set(self._widget.get())
 
     def reset_widget(self):
-        """Reset the values in the widget, if it has been created.
-        """
+        """Reset the values in the widget, if it has been created."""
         if self._widget is not None:
             if self.dimensionality is None:
                 self._widget.set(self.value)
@@ -487,8 +483,8 @@ class Parameter(collections.abc.MutableMapping):
         #     result['value'] = json.dumps(self.value)
         # else:
         #     result['value'] = self.value
-        result['value'] = self.value
-        result['units'] = self.units
+        result["value"] = self.value
+        result["units"] = self.units
         return result
 
     def update(self, data):
@@ -498,34 +494,32 @@ class Parameter(collections.abc.MutableMapping):
         'default' has been created already.
         """
 
-        logger.debug('Parameter.update....')
+        logger.debug("Parameter.update....")
         for key, value in data.items():
-            logger.debug('{:>10s} {}'.format(key, value))
-            if key in ('value', 'default'):
+            logger.debug("{:>10s} {}".format(key, value))
+            if key in ("value", "default"):
                 # if self['kind'] in ('list', 'dictionary'):
                 #     self._data[key] = json.loads(value)
                 # else:
                 self._data[key] = value
-            elif key == 'units':
+            elif key == "units":
                 self._data[key] = value
             elif key not in self:
                 raise RuntimeError(
-                    'update: dictionary not compatible with Parameters,'
+                    "update: dictionary not compatible with Parameters,"
                     " which do not have an attribute '{}'".format(key)
                 )
             else:
                 self._data[key] = value
 
         # Update the dimensionality if needed
-        if 'units' in self._data:
-            self.units = self._data['units']
-        if 'default_units' in self._data:
-            self.default_units = self._data['default_units']
+        if "units" in self._data:
+            self.units = self._data["units"]
+        if "default_units" in self._data:
+            self.default_units = self._data["default_units"]
 
     def debug_print(self):
-        logger.debug(
-            '\nParameter instance:\n{}'.format(pprint.pformat(self._data))
-        )
+        logger.debug("\nParameter instance:\n{}".format(pprint.pformat(self._data)))
 
 
 class Parameters(collections.abc.MutableMapping):
@@ -534,11 +528,11 @@ class Parameters(collections.abc.MutableMapping):
     def __init__(self, defaults={}, data=None):
         """Create an instance, optionally from a dict"""
 
-        logger.debug('\nParameters.__init__')
+        logger.debug("\nParameters.__init__")
         logger.debug(pprint.pformat(defaults))
 
         self.defaults = defaults
-        logger.debug('\ndefaults:\n{}'.format(pprint.pformat(defaults)))
+        logger.debug("\ndefaults:\n{}".format(pprint.pformat(defaults)))
 
         self._data = {}
 
@@ -547,9 +541,7 @@ class Parameters(collections.abc.MutableMapping):
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("\nafter defaults:")
             for key, value in self.items():
-                logger.debug(
-                    '  {}: {}'.format(key, pprint.pformat(value._data))
-                )
+                logger.debug("  {}: {}".format(key, pprint.pformat(value._data)))
 
         if data:
             if isinstance(data, dict):
@@ -559,13 +551,11 @@ class Parameters(collections.abc.MutableMapping):
                     logger.debug("\nafter data:")
                     for key, value in self.items():
                         logger.debug(
-                            '  {}: {}'.format(
-                                key, pprint.pformat(value._data)
-                            )
+                            "  {}: {}".format(key, pprint.pformat(value._data))
                         )
             else:
                 raise RuntimeError(
-                    'A Parameters object can be initialized with a dict object'
+                    "A Parameters object can be initialized with a dict object"
                 )
 
     def __getitem__(self, key):
@@ -622,14 +612,11 @@ class Parameters(collections.abc.MutableMapping):
                 data[key] = self[key].to_dict()
             except:  # noqa: E722
                 logger.critical(
-                    (
-                        "An error occurred in Parameters.to_dict "
-                        "with key '{}'"
-                    ).format(key)
+                    ("An error occurred in Parameters.to_dict " "with key '{}'").format(
+                        key
+                    )
                 )
-                logger.critical(
-                    ("The type of the key is '{}'").format(type(self[key]))
-                )
+                logger.critical(("The type of the key is '{}'").format(type(self[key])))
                 raise
         return data
 
@@ -659,22 +646,18 @@ class Parameters(collections.abc.MutableMapping):
                 data[key] = str(self[key])
             except Exception as e:
                 logger.warning("Cannot format '{}': {}".format(key, str(e)))
-                data[key] = '#err#'
+                data[key] = "#err#"
 
         return data
 
-    def current_values_to_dict(
-        self, context=None, formatted=False, units=True
-    ):
+    def current_values_to_dict(self, context=None, formatted=False, units=True):
         """Return the current values of the parameters, resolving
         any expressions, etc. in the given context or the root
         context is none is given."""
 
         data = {}
         for key in self:
-            data[key] = self[key].get(
-                context=context, formatted=formatted, units=units
-            )
+            data[key] = self[key].get(context=context, formatted=formatted, units=units)
 
         return data
 
@@ -689,9 +672,7 @@ class Parameters(collections.abc.MutableMapping):
             try:
                 self[key].reset_widget()
             except ValueError as e:
-                logger.warning(
-                    'Error resetting widget for {}: {}'.format(key, str(e))
-                )
+                logger.warning("Error resetting widget for {}: {}".format(key, str(e)))
                 raise
             except Exception:
                 raise

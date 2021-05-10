@@ -43,8 +43,8 @@ wrap_stdout = textwrap.TextWrapper(width=120)
 from ._version import get_versions  # noqa: E402
 
 __author__ = """Paul Saxe"""
-__email__ = 'psaxe@molssi.org'
+__email__ = "psaxe@molssi.org"
 versions = get_versions()
-__version__ = versions['version']
-__git_revision__ = versions['full-revisionid']
+__version__ = versions["version"]
+__git_revision__ = versions["full-revisionid"]
 del get_versions, versions

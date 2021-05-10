@@ -10,9 +10,9 @@ import seamm
 
 class SplitStep(object):
     my_description = {
-        'description': 'An interface for a node to split the control flow',
-        'group': 'Control',
-        'name': 'Split'
+        "description": "An interface for a node to split the control flow",
+        "group": "Control",
+        "name": "Split",
     }
 
     def __init__(self, flowchart=None, gui=None):
@@ -23,8 +23,7 @@ class SplitStep(object):
         pass
 
     def description(self):
-        """Return a description of what this extension does
-        """
+        """Return a description of what this extension does"""
         return SplitStep.my_description
 
     def create_node(self, flowchart=None, **kwargs):
@@ -38,9 +37,9 @@ class SplitStep(object):
 
 class JoinStep(object):
     my_description = {
-        'description': 'An interface for a node to join the control flow',
-        'group': 'Control',
-        'name': 'Join'
+        "description": "An interface for a node to join the control flow",
+        "group": "Control",
+        "name": "Join",
     }
 
     def __init__(self, flowchart=None, gui=None):
@@ -51,8 +50,7 @@ class JoinStep(object):
         pass
 
     def description(self):
-        """Return a description of what this extension does
-        """
+        """Return a description of what this extension does"""
         return JoinStep.my_description
 
     def create_node(self, flowchart=None, **kwargs):

@@ -18,7 +18,7 @@ import sys
 import tempfile
 import time
 
-if platform.system() != 'Windows':
+if platform.system() != "Windows":
     import grp
     import pwd
 
@@ -26,10 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 class ExecLocal(object):
-
     def __init__(self):
         """Execute a flowchart, providing support for the actual
-        execution of codes """
+        execution of codes"""
 
         # times for formating 'ls' like output
         self.now = int(time.time())
@@ -53,7 +52,7 @@ class ExecLocal(object):
         tmpdir = tempfile.mkdtemp()
         # Ensure the file is read/write by the creator only
         saved_umask = os.umask(0o077)
-        logging.info('Runnning locally in {}'.format(tmpdir))
+        logging.info("Runnning locally in {}".format(tmpdir))
 
         if files is not None:
             for filename in files:
@@ -71,8 +70,7 @@ class ExecLocal(object):
                     return None
                 except Exception:
                     logging.exception(
-                        "An unexpected error occured writing file '{}'"
-                        .format(path)
+                        "An unexpected error occured writing file '{}'".format(path)
                     )
                     os.remove(path)
                     os.umask(saved_umask)
@@ -82,7 +80,7 @@ class ExecLocal(object):
         os.umask(saved_umask)
 
         # Now execute the program in the temp directory
-        logger.debug('about to run ' + ' '.join(cmd))
+        logger.debug("about to run " + " ".join(cmd))
 
         p = subprocess.run(
             cmd,
@@ -92,39 +90,41 @@ class ExecLocal(object):
             universal_newlines=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            shell=shell
+            shell=shell,
         )
 
-        logger.debug('\n' + pprint.pformat(p))
+        logger.debug("\n" + pprint.pformat(p))
 
         # capture the return code and output
         result = {
-            'returncode': p.returncode,
-            'stdout': p.stdout,
-            'stderr': p.stderr,
+            "returncode": p.returncode,
+            "stdout": p.stdout,
+            "stderr": p.stderr,
         }
 
         # capture the list of files in the directory
         c = pyuca.Collator()
-        listing = ''
+        listing = ""
         self.now = int(time.time())
         self.recent = self.now - (6 * 30 * 24 * 60 * 60)  # 6 months ago
         for dirpath, dirs, files in os.walk(tmpdir):
             # Do locale sensitive sort of files to list
-            listing += dirpath + '\n' + '\n\t'.join(
-                self.ls_format(dirpath, sorted(files, key=c.sort_key))
+            listing += (
+                dirpath
+                + "\n"
+                + "\n\t".join(self.ls_format(dirpath, sorted(files, key=c.sort_key)))
             )
-        result['listing'] = listing
+        result["listing"] = listing
 
         # capture the requested files
-        result['files'] = []
+        result["files"] = []
         for pattern in return_files:
             filenames = glob.glob(os.path.join(tmpdir, pattern))
             for path in filenames:
                 filename = os.path.basename(path)
                 data = None
                 exception = None
-                result['files'].append(filename)
+                result["files"].append(filename)
                 try:
                     with open(path, "r") as fd:
                         data = fd.read()
@@ -136,19 +136,19 @@ class ExecLocal(object):
                 except IOError:
                     exception = sys.exc_info()
                     logging.warning(
-                        "An I/O error occured reading file '{}'"
-                        .format(filename),
-                        exc_info=exception
+                        "An I/O error occured reading file '{}'".format(filename),
+                        exc_info=exception,
                     )
                 except Exception:
                     exception = sys.exc_info()
                     logging.warning(
-                        "An unexpected error occured reading file '{}'"
-                        .format(filename),
-                        exc_info=exception
+                        "An unexpected error occured reading file '{}'".format(
+                            filename
+                        ),
+                        exc_info=exception,
                     )
                 finally:
-                    result[filename] = {'exception': exception, 'data': data}
+                    result[filename] = {"exception": exception, "data": data}
 
         # Clean up the temporary directory
         shutil.rmtree(tmpdir)
@@ -195,9 +195,9 @@ class ExecLocal(object):
 
             nlink = "%4d" % stat_info.st_nlink  # formatting strings
 
-            if platform.system() == 'Windows':
-                name = 8 * ' '
-                group = 8 * ' '
+            if platform.system() == "Windows":
+                name = 8 * " "
+                group = 8 * " "
             else:
                 try:
                     name = "%-8s" % pwd.getpwuid(stat_info.st_uid)[0]
@@ -209,8 +209,10 @@ class ExecLocal(object):
                 except KeyError:
                     group = "%-8s" % stat_info.st_gid
 
-            size = bitmath.Byte(stat_info.st_size).best_prefix().format(
-                "{value:.1f} {unit}"
+            size = (
+                bitmath.Byte(stat_info.st_size)
+                .best_prefix()
+                .format("{value:.1f} {unit}")
             )  # noqa: E124
 
             # Get time stamp of file
@@ -222,7 +224,7 @@ class ExecLocal(object):
             time_str = time.strftime(time_fmt, time.gmtime(ts))
 
             # Format the result
-            tmp = '{} {} {} {} {} {} {}'.format(
+            tmp = "{} {} {} {} {} {} {}".format(
                 perms, nlink, name, group, size, time_str, filename
             )
 

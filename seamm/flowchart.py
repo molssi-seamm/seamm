@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class Flowchart(object):
-    graphics = 'Tk'
+    graphics = "Tk"
     """str: The default graphics to use for display, if
     needed. Default: 'Tk'
     """
@@ -28,10 +28,10 @@ class Flowchart(object):
         self,
         parent=None,
         data=None,
-        namespace='org.molssi.seamm',
+        namespace="org.molssi.seamm",
         name=None,
         directory=None,
-        output='files'
+        output="files",
     ):
         """Initialize the flowchart.
 
@@ -75,8 +75,7 @@ class Flowchart(object):
         """The root directory for files, etc for this flowchart"""
         if self._root_directory is None:
             self._root_directory = os.path.join(
-                os.getcwd(),
-                datetime.now().isoformat(sep='_', timespec='seconds')
+                os.getcwd(), datetime.now().isoformat(sep="_", timespec="seconds")
             )
         return self._root_directory
 
@@ -87,15 +86,15 @@ class Flowchart(object):
     @property
     def output(self):
         """Where to print output:
-            files:  to files in subdirectories
-            stdout: to standard output (for intereactive use)
-            both:   to both files and standard output
+        files:  to files in subdirectories
+        stdout: to standard output (for intereactive use)
+        both:   to both files and standard output
         """
         return self._output
 
     @output.setter
     def output(self, value):
-        if value in ('files', 'stdout', 'both'):
+        if value in ("files", "stdout", "both"):
             self._output = value
         else:
             raise RuntimeError(
@@ -128,7 +127,7 @@ class Flowchart(object):
         node.undraw()
 
         # and any edges, including graphics if appropriate
-        node.remove_edge('all')
+        node.remove_edge("all")
 
         # and the node
         self.graph.remove_node(node)
@@ -156,22 +155,21 @@ class Flowchart(object):
                 return node
         return None
 
-    def last_node(self, node='1'):
+    def last_node(self, node="1"):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
 
         if isinstance(node, str):
             node = self.get_node(node)
 
-        for edge in self.graph.edges(node, direction='out'):
+        for edge in self.graph.edges(node, direction="out"):
             if edge.edge_type == "execution":
                 return self.last_node(edge.node2)
 
         return node
 
     def clear(self, all=False):
-        """Override the underlying clear() to ensure that the start node is present
-        """
+        """Override the underlying clear() to ensure that the start node is present"""
         self.graph.clear()
 
         # and make sure that the start node exists
@@ -200,7 +198,7 @@ class Flowchart(object):
 
     def set_ids(self, node_id=()):
         """Sequentially number all nodes, and subnodes"""
-        logger.debug('Setting ids')
+        logger.debug("Setting ids")
 
         # Clear all ids
         for node in self:
@@ -210,48 +208,44 @@ class Flowchart(object):
         self.reset_visited()
 
         # Get the start node
-        next_node = self.get_node('1')
+        next_node = self.get_node("1")
 
         # And traverse the nodes.
         n = 0
         while next_node:
             next_node = next_node.set_id((*node_id, str(n)))
             n += 1
-        logger.debug('Finished setting ids')
+        logger.debug("Finished setting ids")
 
     def create_parsers(self):
-        """Create the argument parsers for the nodes.
-        """
-        logger.debug('Creating argument parsers.')
+        """Create the argument parsers for the nodes."""
+        logger.debug("Creating argument parsers.")
         # Reset the visited flag to check for loops
         self.reset_visited()
 
         # Get the start node
-        next_node = self.get_node('1')
+        next_node = self.get_node("1")
 
         # And traverse the nodes.
         while next_node:
             next_node = next_node.create_parser()
-        logger.debug('Finished creating argument parsers.')
+        logger.debug("Finished creating argument parsers.")
 
     def set_log_level(self, options):
-        """Set the log level for each node based on the options
-        """
-        logger.debug('Setting the log-level')
+        """Set the log level for each node based on the options"""
+        logger.debug("Setting the log-level")
 
         for node in self:
             step_type = node.step_type
-            logger.debug(f'    checking for node type {step_type}')
-            if step_type in options and 'log_level' in options[step_type]:
-                logger.debug(
-                    f"      log_level = {options[step_type]['log_level']}"
-                )
+            logger.debug(f"    checking for node type {step_type}")
+            if step_type in options and "log_level" in options[step_type]:
+                logger.debug(f"      log_level = {options[step_type]['log_level']}")
                 try:
-                    node.logger.setLevel(options[step_type]['log_level'])
-                    logger.debug('        set!')
+                    node.logger.setLevel(options[step_type]["log_level"])
+                    logger.debug("        set!")
                 except Exception as e:
-                    print(f'Exception {type(e)}: {e}')
-        logger.debug('Finished setting node log levels.')
+                    print(f"Exception {type(e)}: {e}")
+        logger.debug("Finished setting node log levels.")
 
     # -------------------------------------------------------------------------
     # Strings, reading and writing
@@ -265,30 +259,30 @@ class Flowchart(object):
         """Serialize the graph and everything it contains in a dict"""
 
         data = {
-            'item': 'object',
-            'module': self.__module__,
-            'class': self.__class__.__name__,
-            'extension': None
+            "item": "object",
+            "module": self.__module__,
+            "class": self.__class__.__name__,
+            "extension": None,
         }
 
-        nodes = data['nodes'] = []
+        nodes = data["nodes"] = []
         for node in self:
             nodes.append(node.to_dict())
 
-        edges = data['edges'] = []
+        edges = data["edges"] = []
         for edge in self.graph.edges():
             attr = {}
             for key in edge:
-                if key not in ('node1', 'node2', 'edge_type', 'edge_subtype'):
+                if key not in ("node1", "node2", "edge_type", "edge_subtype"):
                     attr[key] = edge[key]
             edges.append(
                 {
-                    'item': 'edge',
-                    'node1': edge.node1.uuid,
-                    'node2': edge.node2.uuid,
-                    'edge_type': edge.edge_type,
-                    'edge_subtype': edge.edge_subtype,
-                    'attributes': attr
+                    "item": "edge",
+                    "node1": edge.node1.uuid,
+                    "node2": edge.node2.uuid,
+                    "edge_type": edge.edge_type,
+                    "edge_subtype": edge.edge_subtype,
+                    "attributes": attr,
                 }
             )
 
@@ -296,67 +290,61 @@ class Flowchart(object):
 
     def from_dict(self, data):
         """recreate the flowchart from the dict. Inverse of to_dict."""
-        if 'class' not in data:
-            raise RuntimeError('There is no class information in the data!')
-        if data['class'] != self.__class__.__name__:
+        if "class" not in data:
+            raise RuntimeError("There is no class information in the data!")
+        if data["class"] != self.__class__.__name__:
             raise RuntimeError(
-                'The dictionary does not contain a flowchart!'
-                ' It contains a {} class'.format(data['class'])
+                "The dictionary does not contain a flowchart!"
+                " It contains a {} class".format(data["class"])
             )
 
         self.clear()
 
         # Recreate the nodes
-        for node in data['nodes']:
-            if node['class'] == 'StartNode':
-                new_node = self.get_node('1')
+        for node in data["nodes"]:
+            if node["class"] == "StartNode":
+                new_node = self.get_node("1")
                 new_node.from_dict(node)
                 continue
 
-            logger.debug('creating {} node'.format(node['extension']))
-            plugin = self.plugin_manager.get(node['extension'])
-            logger.debug('  plugin object: {}'.format(plugin))
+            logger.debug("creating {} node".format(node["extension"]))
+            plugin = self.plugin_manager.get(node["extension"])
+            logger.debug("  plugin object: {}".format(plugin))
 
             # Recreate the node
-            new_node = plugin.create_node(
-                flowchart=self, extension=node['extension']
-            )
+            new_node = plugin.create_node(flowchart=self, extension=node["extension"])
             new_node.parent = self.parent
 
             # set uuid to correct value
-            new_node._uuid = node['attributes']['_uuid']
+            new_node._uuid = node["attributes"]["_uuid"]
 
             # and add to the flowchart
             self.add_node(new_node)
 
             new_node.from_dict(node)
 
-            logger.debug(
-                "adding nodes: nodes:\n\t" + "\n\t".join(self.list_nodes())
-            )
+            logger.debug("adding nodes: nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
         # and the edges connecting them
-        for edge in data['edges']:
-            node1 = self.get_node(edge['node1'])
-            node2 = self.get_node(edge['node2'])
+        for edge in data["edges"]:
+            node1 = self.get_node(edge["node1"])
+            node2 = self.get_node(edge["node2"])
             self.add_edge(
                 node1,
                 node2,
-                edge_type=edge['edge_type'],
-                edge_subtype=edge['edge_subtype'],
-                **edge['attributes']
+                edge_type=edge["edge_type"],
+                edge_subtype=edge["edge_subtype"],
+                **edge["attributes"],
             )
 
-            logger.debug(
-                "Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes())
-            )
+            logger.debug("Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
     def write(self, filename):
         """Write the serialized form to disk"""
-        with open(filename, 'w') as fd:
+        with open(filename, "w") as fd:
             fd.write(self.to_text())
 
-        logger.info('Wrote flowchart to {}'.format(filename))
+        logger.info("Wrote flowchart to {}".format(filename))
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
         os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
@@ -372,40 +360,36 @@ class Flowchart(object):
         -------
         str : the text representation.
         """
-        text = '#!/usr/bin/env run_flowchart\n'
-        text += '!MolSSI flowchart 1.0\n'
-        text += json.dumps(
-            self.to_dict(), indent=4, cls=seamm_util.JSONEncoder
-        )
+        text = "#!/usr/bin/env run_flowchart\n"
+        text += "!MolSSI flowchart 1.0\n"
+        text += json.dumps(self.to_dict(), indent=4, cls=seamm_util.JSONEncoder)
         return text
 
     def read(self, filename):
         """Recreate the flowchart from the serialized form on disk"""
-        with open(filename, 'r') as fd:
+        with open(filename, "r") as fd:
             line = fd.readline(256)
             # There may be exec magic as first line
-            if line[0:2] == '#!':
+            if line[0:2] == "#!":
                 line = fd.readline(256)
-            if line[0:7] != '!MolSSI':
-                raise RuntimeError('File is not a MolSSI file! -- ' + line)
+            if line[0:7] != "!MolSSI":
+                raise RuntimeError("File is not a MolSSI file! -- " + line)
             tmp = line.split()
             if len(tmp) < 3:
-                raise RuntimeError(
-                    'File is not a proper MolSSI file! -- ' + line
-                )
-            if tmp[1] != 'flowchart':
-                raise RuntimeError('File is not a flowchart! -- ' + line)
+                raise RuntimeError("File is not a proper MolSSI file! -- " + line)
+            if tmp[1] != "flowchart":
+                raise RuntimeError("File is not a flowchart! -- " + line)
             flowchart_version = tmp[2]
             logger.info(
-                'Reading flowchart version {} from file {}'.format(
+                "Reading flowchart version {} from file {}".format(
                     flowchart_version, filename
                 )
             )
 
             data = json.load(fd, cls=seamm_util.JSONDecoder)
 
-        if data['class'] != 'Flowchart':
-            raise RuntimeError(filename + ' does not contain a flowchart')
+        if data["class"] != "Flowchart":
+            raise RuntimeError(filename + " does not contain a flowchart")
 
         self.from_dict(data)
 
@@ -413,23 +397,26 @@ class Flowchart(object):
     # Edges between nodes
     # -------------------------------------------------------------------------
 
-    def edges(self, node=None, direction='both'):
+    def edges(self, node=None, direction="both"):
         return self.graph.edges(node, direction)
 
-    def add_edge(self, u, v, edge_type=None, edge_subtype='next', **attr):
+    def add_edge(self, u, v, edge_type=None, edge_subtype="next", **attr):
         return self.graph.add_edge(u, v, edge_type, edge_subtype, **attr)
 
     def print_edges(self, event=None):
-        '''Print all the edges. Useful for debugging!
-        '''
+        """Print all the edges. Useful for debugging!"""
 
-        print('All edges in flowchart')
+        print("All edges in flowchart")
         for edge in self.edges():
             # print('   {}'.format(edge))
             print(
-                '   {} {} {} {} {} {}'.format(
-                    edge.node1.tag, edge.anchor1, edge.node2.tag, edge.anchor2,
-                    edge.edge_type, edge.edge_subtype
+                "   {} {} {} {} {} {}".format(
+                    edge.node1.tag,
+                    edge.anchor1,
+                    edge.node2.tag,
+                    edge.anchor2,
+                    edge.edge_type,
+                    edge.edge_subtype,
                 )
             )
 
