@@ -48,20 +48,15 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	find . -name '.pytype' -exec rm -fr {} +
 
-lint: ## check style with yapf
-	yapf --diff --recursive  seamm tests
-	flake8  seamm tests
-
-flake: ## check the style with flake8
-	flake8  seamm tests
+lint: ## check style with black and flake8
+	black --check --diff $(MODULE) tests
+	flake8 $(MODULE) tests
 
 format: ## reformat with with yapf and isort
-	yapf --recursive --in-place  seamm tests
-	#isort --recursive --atomic  seamm tests
+	black $(MODULE) tests
 
 typing: ## check typing
 	pytype seamm_ff_util
-#	mypy -p seamm_ff_util
 
 test: ## run tests quickly with the default Python
 	pytest
@@ -82,6 +77,8 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
+	rm -f docs/seamm.rst
+	rm -f docs/modules.rst
 
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
