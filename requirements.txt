@@ -1,5 +1,5 @@
-bitmath==1.3.3.1
 fasteners==0.16
+humanize==3.5.0
 jinja2==2.11.3
 numpy==1.20.3
 molsystem>=2021.5.5

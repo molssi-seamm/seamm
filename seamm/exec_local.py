@@ -3,8 +3,8 @@
 """The ExecLocal object does what it name implies: it executes, or
 runs, an executable locally."""
 
-import bitmath
 import glob
+import humanize
 import logging
 import os
 import os.path
@@ -209,11 +209,7 @@ class ExecLocal(object):
                 except KeyError:
                     group = "%-8s" % stat_info.st_gid
 
-            size = (
-                bitmath.Byte(stat_info.st_size)
-                .best_prefix()
-                .format("{value:.1f} {unit}")
-            )  # noqa: E124
+            size = humanize.naturalsize(stat_info.st_size)
 
             # Get time stamp of file
             ts = stat_info.st_mtime

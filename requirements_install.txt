@@ -1,5 +1,5 @@
-bitmath
 fasteners
+humanize
 jinja2
 numpy
 molsystem>=2021.5.5
