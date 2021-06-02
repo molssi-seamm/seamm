@@ -682,7 +682,7 @@ class Node(collections.abc.Hashable):
         result = self.next()
 
         step_type = self.step_type
-        parser = seamm.getParser()
+        parser = seamm_util.seamm_parser()
 
         if not parser.exists(step_type):
             parser.add_parser(step_type)

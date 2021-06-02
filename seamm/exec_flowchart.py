@@ -22,6 +22,7 @@ import reference_handler
 import seamm
 import seamm_util.printing as printing
 from seamm_util.printing import FormattedText as __  # noqa: F401
+from seamm_util import getParser
 
 logger = logging.getLogger(__name__)
 job = printing.getPrinter()
@@ -41,7 +42,7 @@ class ExecFlowchart(object):
             raise RuntimeError("There is no flowchart to run!")
 
         # Get the command line options
-        parser = seamm.getParser()
+        parser = getParser(name="SEAMM")
         options = parser.get_options()
 
         # Set the options in each step
@@ -184,7 +185,7 @@ class ExecFlowchart(object):
         # Write the final structure
         db = seamm.flowchart_variables.get_variable("_system_db")
         configuration = db.system.configuration
-        if configuration.n_atoms() > 0:
+        if configuration.n_atoms > 0:
             # MMCIF file has bonds
             filename = os.path.join(
                 self.flowchart.root_directory, "final_structure.mmcif"

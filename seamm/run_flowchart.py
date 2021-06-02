@@ -23,7 +23,7 @@ import time
 import cpuinfo
 
 import seamm
-import seamm_util.printing as printing
+import seamm_util
 
 logging.basicConfig(level="WARNING")
 logger = logging.getLogger(__name__)
@@ -67,7 +67,101 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
             filename = os.path.join(wdir, "flowchart.flow")
 
     # Set up the argument parser for this node.
-    parser = setup_argument_parser()
+    parser = seamm_util.seamm_parser()
+
+    parser.epilog = textwrap.dedent(
+        """
+        The plug-ins in this flowchart are listed above.
+        Options, if any, for plug-ins are placed after
+        the name of the plug-in, e.g.:
+
+           test.flow lammps-step --log-level DEBUG --np 4
+
+        To get help for a plug-in, use --help or -h after the
+        plug-in name. E.g.
+
+           test.flow lammps-step --help
+        """
+    )
+    parser.usage = "%(prog)s [options] plug-in [options] plug-in [options] ..."
+
+    # add options for the job
+    parser.add_argument_group("SEAMM", "job options", "Options for jobs")
+
+    parser.add_argument(
+        "SEAMM",
+        "--standalone",
+        group="job options",
+        action="store_true",
+        help="Run this workflow as-is without using the job, etc.",
+    )
+    parser.add_argument(
+        "SEAMM",
+        "--project",
+        group="job options",
+        dest="projects",
+        action="append",
+        help="The project(s) for this job.",
+    )
+    parser.add_argument(
+        "SEAMM",
+        "--title",
+        group="job options",
+        dest="title",
+        default="",
+        action="store",
+        help="The title for this run.",
+    )
+    parser.add_argument(
+        "SEAMM",
+        "--force",
+        group="job options",
+        dest="force",
+        action="store_true",
+        help="Overwrite the job output if it exists.",
+    )
+
+    # Hardware options
+    parser.add_argument_group(
+        "SEAMM",
+        "hardware options",
+        (
+            "Options about memory limits, parallelism and other details "
+            "connected with hardware."
+        ),
+    )
+
+    parser.add_argument(
+        "SEAMM",
+        "--parallelism",
+        group="hardware options",
+        default="any",
+        choices=["none", "mpi", "openmp", "any"],
+        help="Whether to limit parallel usage to certain types.",
+    )
+
+    parser.add_argument(
+        "SEAMM",
+        "--ncores",
+        group="hardware options",
+        default="available",
+        help=(
+            "The maximum number of cores/threads to use in any step. "
+            "Default: all available cores."
+        ),
+    )
+
+    parser.add_argument(
+        "SEAMM",
+        "--memory",
+        group="hardware options",
+        default="available",
+        help=(
+            "The maximum amount of memory to use in any step, which can be "
+            "'all' or 'available', or a number, which may use k, Ki, "
+            "M, Mi, etc. suffixes. Default: available."
+        ),
+    )
 
     # Now we need to get the flowchart so that we can set up all the
     # parsers for the steps in order to provide appropriate help.
@@ -112,6 +206,8 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
         if job_id is None:
             if options["job_id_file"] is None:
                 job_id_file = os.path.join(datastore, "job.id")
+            else:
+                job_id_file = options["job_id_file"]
 
             # Get the job_id from the file, creating the file if necessary
             job_id = get_job_id(job_id_file)
@@ -146,7 +242,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     # in the options. Since all printers are children of the root
     # printer, all output at the right levels will flow here
 
-    printer = printing.getPrinter()
+    printer = seamm_util.printing.getPrinter()
 
     # Set up our formatter
     formatter = logging.Formatter(fmt="{message:s}", style="{")
@@ -154,13 +250,13 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     # A handler for stdout
     if not in_jobserver:
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(printing.NORMAL)
+        console_handler.setLevel(seamm_util.printing.NORMAL)
         console_handler.setFormatter(formatter)
         printer.addHandler(console_handler)
 
     # A handler for the file
     file_handler = logging.FileHandler(os.path.join(wdir, "job.out"))
-    file_handler.setLevel(printing.NORMAL)
+    file_handler.setLevel(seamm_util.printing.NORMAL)
     file_handler.setFormatter(formatter)
     printer.addHandler(file_handler)
 
@@ -247,6 +343,8 @@ def get_job_id(filename):
     ids are unique and monotonically increasing.
     """
 
+    filename = os.path.expanduser(filename)
+
     lock_file = filename + ".lock"
     lock = fasteners.InterProcessLock(lock_file)
     locked = lock.acquire(blocking=True, timeout=5)
@@ -299,16 +397,10 @@ def setup_argument_parser():
     Returns
     -------
     ArgumentParser
-        The seamm.ArgumentParser for handling commandline and
+        The seamm_util.ArgumentParser for handling commandline and
         config-file parsing.
     """
-    parser = seamm.getParser(
-        ini_files=[
-            "etc/seamm/seamm.ini",
-            os.path.expanduser("~/.seamm/seamm.ini"),
-            "seamm.ini",
-        ],
-    )
+    parser = seamm_util.getParser(name="SEAMM")
 
     parser.add_parser(
         "SEAMM",

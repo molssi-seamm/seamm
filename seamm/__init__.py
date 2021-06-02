@@ -10,7 +10,6 @@ import textwrap
 # Bring up the classes so that they appear to be directly in
 # the seamm package.
 
-from seamm.argument_parser import getParser  # noqa: F401
 from seamm.parameters import Parameter  # noqa: F401
 from seamm.parameters import Parameters  # noqa: F401
 from seamm.variables import Variables  # noqa: F401
