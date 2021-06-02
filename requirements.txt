@@ -9,6 +9,7 @@ pmw==2.0.1
 py-cpuinfo==8.0.0
 pyuca==1.2
 reference-handler==0.9.1
+requests==2.25.1
 seamm-util>=2021.5.6
 seamm-widgets>=2021.5.6
 stevedore==3.3.0

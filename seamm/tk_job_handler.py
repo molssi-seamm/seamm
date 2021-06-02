@@ -13,6 +13,7 @@ files and submit the job to a dashboard.
 import configparser
 import logging
 from pathlib import Path
+import pkg_resources
 import requests
 import tkinter as tk
 from tkinter import messagebox
@@ -20,6 +21,7 @@ import tkinter.ttk as ttk
 
 import Pmw
 
+import seamm_util
 import seamm_widgets as sw
 
 logger = logging.getLogger(__name__)
@@ -36,16 +38,31 @@ class TkJobHandler(object):
         """
         self._root = root
         self.config = configparser.ConfigParser()
-        self.configfile = Path.home() / ".seamm" / "dashboards.ini"
         self.dialog = None
         self._widgets = {}
+        self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
+
+        # Get the location of the dashboards configuration file
+        parser = seamm_util.seamm_parser()
+        options = parser.get_options()
+        if "dashboards" in options:
+            self.configfile = Path(options["dashboards"]).expanduser()
+        else:
+            self.configfile = Path.home() / "SEAMM" / "dashboards.ini"
+
+        # Create the file if it doesn't exist
+        if not self.configfile.exists():
+            self.configfile.parent.mkdir(parents=True, exist_ok=True)
+            path = self.resource_path / "dashboards.ini"
+            text = path.read_text()
+            self.configfile.write_text(text)
 
         # Read in the dashboard information if present
         self.get_configuration()
         self.current_dashboard = self.config.get(
-            "global options", "current_dashboard", fallback=None
+            "GENERAL", "current_dashboard", fallback=None
         )
-        self.timeout = self.config.get("global options", "timeout", fallback=0.5)
+        self.timeout = self.config.get("GENERAL", "timeout", fallback=0.5)
 
         s = ttk.Style()
         s.configure("Border.TLabel", relief="ridge", anchor=tk.W, padding=5)
@@ -55,9 +72,7 @@ class TkJobHandler(object):
         """The list of dashboards."""
         result = []
         for dashboard in self.config:
-            if dashboard == "global options":
-                continue
-            if dashboard not in ("global options", self.config.default_section):
+            if dashboard not in ("GENERAL", self.config.default_section):
                 result.append(dashboard)
         return sorted(result)
 
@@ -95,9 +110,12 @@ class TkJobHandler(object):
 
         url = self.config[dashboard]["url"]
 
+        logger.info(f"Submitting job to {dashboard} ({url})")
+        logger.debug(f"flowchart:\n{flowchart}\n\n")
+
         response = requests.post(url + "/api/jobs", json=job)
         if response.status_code != 201:
-            raise RuntimeError("POST /api/jobs/ {}".format(response.status_code))
+            raise RuntimeError("POST /api/jobs {}".format(response.status_code))
         job_id = response.json()["id"]
         logger.info("Submitted job #{}".format(job_id))
         return job_id
@@ -118,7 +136,7 @@ class TkJobHandler(object):
         d = self.dialog.interior()
 
         # Dashboard
-        dashboards = sorted(self.config.sections())
+        dashboards = self.dashboards
         w["dashboard"] = sw.LabeledCombobox(
             d, labeltext="Dashboard:", values=dashboards
         )
@@ -148,7 +166,7 @@ class TkJobHandler(object):
         # Set up the dashboard and projects if needed
         if len(dashboards) > 0:
             tmp = self.config.get(
-                "global options", "current_dashboard", fallback=dashboards[0]
+                "GENERAL", "current_dashboard", fallback=dashboards[0]
             )
             if tmp not in dashboards:
                 tmp = dashboards[0]
@@ -204,9 +222,9 @@ class TkJobHandler(object):
 
         # Update the current dashboard
         if self.current_dashboard is not None:
-            if "global options" not in self.config:
-                self.config["global options"] = {}
-            defaults = self.config["global options"]
+            if "GENERAL" not in self.config:
+                self.config["GENERAL"] = {}
+            defaults = self.config["GENERAL"]
             defaults["current_dashboard"] = self.current_dashboard
 
         with self.configfile.open("w") as fd:
@@ -276,7 +294,7 @@ class TkJobHandler(object):
 
         # And reset the list in the dashboard combobox
         c = self._widgets["dashboard"]
-        c.combobox.config({"value": self.config.sections()})
+        c.combobox.config({"value": self.dashboards})
         c.set(name)
 
     def dashboard_cb(self, event=None):
@@ -287,12 +305,11 @@ class TkJobHandler(object):
         url = self.config[dashboard]["url"]
 
         try:
-            # url + '/api/list-projects', timeout=self.timeout
-            response = requests.get(url + "/api/projects/list", timeout=self.timeout)
+            response = requests.get(url + "/api/projects", timeout=self.timeout)
             if response.status_code != 200:
                 logger.warning(
                     (
-                        "Encountered an error getting the projects from "
+                        "Encountered an error getting the status from "
                         "dashboard '{}', error code: {}"
                     ).format(dashboard, response.status_code)
                 )
@@ -306,7 +323,7 @@ class TkJobHandler(object):
                     w["dashboard"].set(self.current_dashboard)
                 return
             else:
-                projects = response.json()["projects"]
+                data = response.json()
         except requests.exceptions.Timeout:
             logger.warning("A timeout occurred contacting the dashboard " + dashboard)
             messagebox.showerror(
@@ -329,6 +346,9 @@ class TkJobHandler(object):
             if self.current_dashboard is not None:
                 w["dashboard"].set(self.current_dashboard)
             return
+
+        # get the projects
+        projects = [i["name"] for i in data]
 
         # All OK, changed the widgets
         w["project"].combobox.config({"value": projects})
@@ -661,7 +681,7 @@ class TkJobHandler(object):
             dialog.grab_set()  # make a modal window
             dialog.transient(master)  # show only one window in the task bar
 
-            dialog.title(u"Getting Status of Dashboards")
+            dialog.title("Getting Status of Dashboards")
             dialog.resizable(False, False)  # window is not resizable
             # dialog.close gets fired when the window is destroyed
             # dialog.protocol(u'WM_DELETE_WINDOW', dialog.close)
