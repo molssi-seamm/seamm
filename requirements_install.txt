@@ -4,6 +4,7 @@ jinja2
 numpy
 molsystem>=2021.5.5
 pandas
+packaging
 pillow
 pmw
 py-cpuinfo

@@ -8,12 +8,16 @@ so isolated nodes and fragments will not be executed."""
 
 import json
 from datetime import datetime
+import hashlib
 import logging
-import seamm
-import seamm_util  # MUST come after seamm
 import os
 import os.path
 import stat
+
+from packaging.version import Version
+
+import seamm
+import seamm_util
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +33,8 @@ class Flowchart(object):
         parent=None,
         data=None,
         namespace="org.molssi.seamm",
-        name=None,
+        name="",
+        description="",
         directory=None,
         output="files",
     ):
@@ -45,6 +50,8 @@ class Flowchart(object):
             The namespace for locating plug-ins.
         name : str
             A name for this flowchart.
+        description : str
+            The description of the flowchart
         directory : str
             The root directory for files for this flowchart.
         output : str
@@ -54,6 +61,7 @@ class Flowchart(object):
         self.graph = seamm.Graph()
 
         self.name = name
+        self.description = description
         self.parent = parent
 
         self.output = output  # Where to print output, files, stdout, both
@@ -185,7 +193,7 @@ class Flowchart(object):
         return result
 
     # -------------------------------------------------------------------------
-    # Taversal
+    # Traversal
     # -------------------------------------------------------------------------
 
     def reset_visited(self):
@@ -250,6 +258,38 @@ class Flowchart(object):
     # -------------------------------------------------------------------------
     # Strings, reading and writing
     # -------------------------------------------------------------------------
+
+    def digest(self, strict=False):
+        """Generate a unique hash key for this flowchart.
+
+        Parameters
+        ----------
+        strict: bool
+            Whether to include version information. Default: False
+
+        Returns
+        -------
+        string
+        """
+        hasher = hashlib.sha256()
+
+        # Hash the nodes and edges in the graph by traversing the graph
+
+        # Reset the visited flag to check for loops
+        self.reset_visited()
+
+        # Get the start node
+        next_node = self.get_node("1")
+
+        # And traverse the nodes.
+        while next_node:
+            if next_node.visited:
+                break
+            next_node.visited = True
+            hasher.update(bytes(next_node.digest(strict=strict), "utf-8"))
+            next_node = next_node.next()
+
+        return hasher.hexdigest()
 
     def to_json(self):
         """Ufff. Turn ourselves into JSON"""
@@ -344,7 +384,7 @@ class Flowchart(object):
         with open(filename, "w") as fd:
             fd.write(self.to_text())
 
-        logger.info("Wrote flowchart to {}".format(filename))
+        logger.info(f"Wrote flowchart to {filename}")
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
         os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
@@ -361,8 +401,21 @@ class Flowchart(object):
         str : the text representation.
         """
         text = "#!/usr/bin/env run_flowchart\n"
-        text += "!MolSSI flowchart 1.0\n"
+        text += "!MolSSI flowchart 2.0\n"
+        text += "#metadata\n"
+        metadata = {
+            "sha256": self.digest(),
+            "sha256_strict": self.digest(strict=True),
+            "name": self.name,
+            "description": self.description,
+        }
+        text += json.dumps(metadata, indent=4)
+        text += "\n"
+        text += "#flowchart\n"
         text += json.dumps(self.to_dict(), indent=4, cls=seamm_util.JSONEncoder)
+        text += "\n"
+        text += "#end\n"
+
         return text
 
     def read(self, filename):
@@ -380,15 +433,52 @@ class Flowchart(object):
             if tmp[1] != "flowchart":
                 raise RuntimeError("File is not a flowchart! -- " + line)
             flowchart_version = tmp[2]
+            version = Version(flowchart_version)
             logger.info(
-                "Reading flowchart version {} from file {}".format(
-                    flowchart_version, filename
-                )
+                f"Reading flowchart version {flowchart_version} from file {filename}"
             )
 
-            data = json.load(fd, cls=seamm_util.JSONDecoder)
+            if version < Version("2.0"):
+                metadata = {}
+                data = json.load(fd, cls=seamm_util.JSONDecoder)
+            else:
+                # Read the metadata
+                text = ""
+                in_section = False
+                for line in fd:
+                    if line.strip() == "":
+                        continue
+                    if in_section:
+                        if line[0] == "#":
+                            metadata = json.loads(text)
+                            self.name = metadata["name"]
+                            self.description = metadata["description"]
+                            break
+                        text += line
+                    elif line[0] == "#":
+                        if line == "#metadata\n":
+                            in_section = True
 
-        if data["class"] != "Flowchart":
+                # Read the flowchart
+                data = {}
+                text = ""
+                if line == "#flowchart\n":
+                    in_section = True
+                else:
+                    in_section = False
+                for line in fd:
+                    if line.strip() == "":
+                        continue
+                    if in_section:
+                        if line[0] == "#":
+                            data = json.loads(text, cls=seamm_util.JSONDecoder)
+                            break
+                        text += line
+                    elif line[0] == "#":
+                        if line == "#flowchart\n":
+                            in_section = True
+
+        if "class" not in data or data["class"] != "Flowchart":
             raise RuntimeError(filename + " does not contain a flowchart")
 
         self.from_dict(data)

@@ -19,6 +19,7 @@ import shutil
 import sys
 import textwrap
 import time
+import uuid
 
 import cpuinfo
 
@@ -28,6 +29,7 @@ import seamm_util
 logging.basicConfig(level="WARNING")
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
+header_line = "!MolSSI job_data 1.0\n"
 
 
 class cd:
@@ -198,21 +200,19 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
 
     # Change to the working directory and run the flowchart
     with cd(wdir):
-        if os.path.exists("job_data.json"):
-            with open("job_data.json", "r") as fd:
-                data = json.load(fd)
-        else:
-            data = {}
-
         # Set up the initial metadata for the job.
-        data.update(cpuinfo.get_cpu_info())
-        if "command line" not in data:
-            data["command line"] = sys.argv
-        if "title" not in data:
-            data["title"] = options["title"]
-        data["working directory"] = wdir
-        data["start time"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
-        data["state"] = "started"
+        data = {
+            "command line": sys.argv,
+            "data_version": "1.0",
+            "flowchart_digest": flowchart.digest(),
+            "flowchart_digest_strict": flowchart.digest(strict=True),
+            "start time": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
+            "state": "started",
+            "title": options["title"],
+            "uuid": uuid.uuid4().hex,
+            "working directory": wdir,
+            "~cpuinfo": cpuinfo.get_cpu_info(),
+        }
         if not standalone:
             if "projects" not in data:
                 data["projects"] = projects
@@ -221,7 +221,9 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
 
         # Output the initial metadate for the job.
         with open("job_data.json", "w") as fd:
+            fd.write(header_line)
             json.dump(data, fd, indent=3, sort_keys=True)
+            fd.write("\n")
 
         t0 = time.time()
         pt0 = time.process_time()
@@ -247,7 +249,9 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
         data["process time"] = pt
 
         with open("job_data.json", "w") as fd:
+            fd.write(header_line)
             json.dump(data, fd, indent=3, sort_keys=True)
+            fd.write("\n")
 
         printer.job(
             "\nProcess time: {} ({:.3f} s)".format(datetime.timedelta(seconds=pt), pt)

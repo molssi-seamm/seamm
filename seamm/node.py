@@ -8,6 +8,7 @@
 import bibtexparser
 import calendar
 import collections.abc
+import hashlib
 
 try:
     import importlib.metadata as implib
@@ -100,7 +101,7 @@ class Node(collections.abc.Hashable):
         return self._uuid
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.__hash__() == other.__hash__()
+        return self.__class__ == other.__class__ and self.digest() == other.digest()
 
     @property
     def uuid(self):
@@ -312,6 +313,40 @@ class Node(collections.abc.Hashable):
         else:
             return next_node
 
+    def digest(self, strict=False):
+        """Generate a unique hash key for this node.
+
+        Parameters
+        ----------
+        strict: bool
+            Whether to include version information. Default: False
+
+        Returns
+        -------
+        string
+        """
+        hasher = hashlib.sha256()
+        if strict:
+            hasher.update(bytes(self.version, "utf-8"))
+
+        for key in self.__dict__:
+            if key == "subflowchart":
+                # Have a subflowchart!
+                hasher.update(bytes(self.__dict__[key].digest(strict=strict), "utf-8"))
+            elif key == "parameters":
+                if self.parameters is not None:
+                    hasher.update(bytes(str(self.parameters.to_dict()), "utf-8"))
+                else:
+                    if self.__class__.__name__ not in (
+                        "StartNode",
+                        "LAMMPS",
+                        "MOPAC",
+                        "Psi4",
+                    ):
+                        print(f"{self.__class__.__name__} has no parameters")
+
+        return hasher.hexdigest()
+
     def run(self, printer=None):
         """Do whatever we need to do! The base class does nothing except
         return the next node.
@@ -392,6 +427,7 @@ class Node(collections.abc.Hashable):
             "item": "object",
             "module": self.__module__,
             "class": self.__class__.__name__,
+            "version": self.version,
             "extension": self.extension,
         }
         data["attributes"] = {}
