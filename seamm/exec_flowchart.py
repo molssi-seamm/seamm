@@ -116,8 +116,6 @@ class ExecFlowchart(object):
 
         # Create the system database, default system and configuration
         db = SystemDB(filename="file:seamm.db")
-        system = db.system = db.create_system(name="default")
-        system.configuration = system.create_configuration(name="default")
 
         # Put the system database in the global context for access.
         seamm.flowchart_variables.set_variable("_system_db", db)

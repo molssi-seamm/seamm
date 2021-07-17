@@ -262,6 +262,70 @@ class Node(collections.abc.Hashable):
                 self._gui_data[gui] = {}
             self._gui_data[gui][key] = value
 
+    def get_system_configuration(self, P, structure_handling=False):
+        """Get the current system and configuration.
+
+        Optionally use the standard structure handling to create new
+        configuration or new system and configuration based on user
+        input.
+
+        Note that if the system or configuration do not exist, they are
+        automatically created as needed. This allows flowcharts to be started
+        with and empty system database and "do the right" thing if a plug-in
+        wants to use the curent configuration.
+
+        Parameters
+        ----------
+        P : dict(str, any)
+            The diction of options and values.
+        structure_handling : bool = False
+            Use the standard structure handling to determine whether to
+            create new configuration or new system.
+
+        Returns
+        -------
+        (System, Configuration)
+            The system and configuration.
+        """
+        # Get the system
+        system_db = self.get_variable("_system_db")
+
+        if structure_handling:
+            # Honor the user's request for how to handle the structure.
+            # If the system or configuration do not exist they are automatically
+            # created.
+            handling = P["structure handling"]
+            if handling == "Overwrite the current configuration":
+                system = system_db.system
+                if system is None:
+                    system = system_db.create_system()
+                configuration = system.configuration
+                if configuration is None:
+                    configuration = system.create_configuration()
+                configuration.clear()
+            elif handling == "Create a new configuration":
+                system = system_db.system
+                if system is None:
+                    system = system_db.create_system()
+                configuration = system.create_configuration()
+            elif handling == "Create a new system and configuration":
+                system = system_db.create_system()
+                configuration = system.create_configuration()
+            else:
+                raise ValueError(
+                    f"Do not understand how to handle the structure: '{handling}'"
+                )
+        else:
+            # Just return the current system and configuration, creating if needed.
+            system = system_db.system
+            if system is None:
+                system = system_db.create_system()
+            configuration = system.configuration
+            if configuration is None:
+                configuration = system.create_configuration()
+
+        return (system, configuration)
+
     def connections(self):
         """Return a list of all the incoming and outgoing edges
         for this node, giving the anchor points and other node

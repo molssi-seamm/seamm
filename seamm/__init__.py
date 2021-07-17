@@ -12,6 +12,7 @@ import textwrap
 
 from seamm.parameters import Parameter  # noqa: F401
 from seamm.parameters import Parameters  # noqa: F401
+import seamm.standard_parameters  # noqa: F401
 from seamm.variables import Variables  # noqa: F401
 from seamm.variables import flowchart_variables  # noqa: F401
 from seamm.plugin_manager import PluginManager  # noqa: F401
