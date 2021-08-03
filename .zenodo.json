@@ -1,0 +1,35 @@
+{
+    "creators": [
+        {   
+            "name": "Nash, Jessica",
+            "orcid": "0000-0003-1967-5094",
+            "affiliation": "Molecular Sciences Software Institute"
+        },
+        {   
+            "name": "Marin-Rimoldi, Eliseo",
+            "orcid": "0000-0003-1721-4366",
+            "affiliation": "Molecular Sciences Software Institute"
+        },
+        {   
+            "name": "Saxe, Paul",
+            "orcid": "0000-0002-8641-9448",
+            "affiliation": "Molecular Sciences Software Institute"
+        }
+    ],    
+
+    "license": "LGPL-3.0+",
+
+    "title": "SEAMM: Simulation Environment for Atomistic and Molecular Modeling",
+
+    "keywords": ["computational chemistry", "computational materials science"],
+
+    "communities": [
+        {"identifier": "molssi"},
+        {"identifier": "seamm"},
+        {"identifier": "seamm-core"},
+    ],
+
+    "grants": [{"id": "10.13039/100000001::1547580"}, {"id": "10.13039/100000001::2136142"}],
+
+    "notes": "Funding: NSF OAC-1547580 and CHE-2136142"
+}
