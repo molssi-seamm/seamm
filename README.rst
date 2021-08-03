@@ -30,6 +30,10 @@ Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
    :target: https://pypi.python.org/pypi/seamm
    :alt: PyPi VERSION
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5153984.svg
+   :target: https://doi.org/10.5281/zenodo.5153984
+   :alt: DOI
+
 The MolSSI Simulation Environment for computational molecular and materials science (CMS)
 
 

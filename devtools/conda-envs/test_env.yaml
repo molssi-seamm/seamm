@@ -9,16 +9,22 @@ dependencies:
   - pip
 
   # SEAMM requirements
+  - bibtexparser
   - fasteners
   - humanize
   - jinja2
+  - molsystem
   - numpy
-  - openbabel  # for molsystem
+  - packaging
   - pandas
   - pillow
   - pmw
   - pyuca
   - py-cpuinfo
+  - reference-handler
+  - requests
+  - seamm-util
+  - seamm-widgets
   - stevedore
 
   # Testing
@@ -33,11 +39,6 @@ dependencies:
 
   # Pip-only installs
   - pip:
-    - molsystem>=2021.5.5
-    - reference-handler>=0.9.1
-    - seamm-util>=2021.5.6
-    - seamm-widgets>=2021.5.6
-
     # Documentation
     - rinohtype
     - sphinx-rtd-theme
