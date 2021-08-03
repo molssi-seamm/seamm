@@ -71,34 +71,32 @@ class ExecFlowchart(object):
             job.job(e)
 
         if references is not None:
-            try:
-                template = string.Template(
-                    """\
-                    @misc{seamm,
-                          address = {$address},
-                          author = {$author},
-                          month = {$month},
-                          organization = {$organization},
-                          title = {$title},
-                          url = {$url},
-                          version = {$version},
-                          year = $year
-                    }"""
-                )
+            template = string.Template(
+                """\
+                @misc{seamm,
+                  address      = {Virginia Tech, Blacksburg, VA, USA},
+                  author       = {Jessica Nash and
+                                  Eliseo Marin-Rimoldi and
+                                  Paul Saxe},
+                  doi          = {10.5281/zenodo.5153984},
+                  month        = {$month},
+                  note         = {Funding: NSF OAC-1547580 and CHE-2136142},
+                  organization = {The Molecular Sciences Software Institute (MolSSI)},
+                  publisher    = {Zenodo},
+                  title        = {SEAMM: Simulation Environment for Atomistic and
+                                  Molecular Modeling},
+                  url          = {https://doi.org/10.5281/zenodo.5153984},
+                  version      = {$version},
+                  year         = $year
+                }"""
+            )
 
+            try:
                 version = seamm.__version__
                 year, month = version.split(".")[0:2]
                 month = calendar.month_abbr[int(month)].lower()
                 citation = template.substitute(
-                    address="Virginia Tech, Blacksburg, VA, USA",
-                    author="Jessica Nash, Eliseo Marin-Rimoldi, Paul Saxe",
                     month=month,
-                    organization=("The Molecular Sciences Software Institute (MolSSI)"),
-                    title=(
-                        "SEAMM: Simulation Environment for Atomistic and "
-                        "Molecular Modeling"
-                    ),
-                    url="https://github.com/molssi-seamm/seamm",
                     version=version,
                     year=year,
                 )
