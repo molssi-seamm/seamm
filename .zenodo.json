@@ -26,7 +26,7 @@
     "communities": [
         {"identifier": "molssi"},
         {"identifier": "seamm"},
-        {"identifier": "seamm-core"},
+        {"identifier": "seamm-core"}
     ],
 
     "grants": [{"id": "10.13039/100000001::1547580"}, {"id": "10.13039/100000001::2136142"}],
