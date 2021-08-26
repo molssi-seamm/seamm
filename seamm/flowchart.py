@@ -6,10 +6,12 @@ the flowchart. There may be isolated nodes or groups of connected nodes;
 however, the flow starts at the 'start' node and follows the connections,
 so isolated nodes and fragments will not be executed."""
 
-import json
+import configparser
 from datetime import datetime
 import hashlib
+import json
 import logging
+from pathlib import Path
 import os
 import os.path
 import stat
@@ -48,10 +50,6 @@ class Flowchart(object):
             An initial graph.
         namespace : str
             The namespace for locating plug-ins.
-        name : str
-            A name for this flowchart.
-        description : str
-            The description of the flowchart
         directory : str
             The root directory for files for this flowchart.
         output : str
@@ -59,12 +57,10 @@ class Flowchart(object):
         """
 
         self.graph = seamm.Graph()
-
-        self.name = name
-        self.description = description
         self.parent = parent
-
         self.output = output  # Where to print output, files, stdout, both
+        self.metadata = {}
+        self.reset_metadata(title=name, description=description)
 
         # Setup the plugin handling
         self.plugin_manager = seamm.PluginManager(namespace)
@@ -77,6 +73,14 @@ class Flowchart(object):
 
     def __iter__(self):
         return self.graph.__iter__()
+
+    @property
+    def is_development(self):
+        """Check if any of nodes are development versions."""
+        for node in self:
+            if Version(node.version).is_prerelease:
+                return True
+        return False
 
     @property
     def root_directory(self):
@@ -403,13 +407,9 @@ class Flowchart(object):
         text = "#!/usr/bin/env run_flowchart\n"
         text += "!MolSSI flowchart 2.0\n"
         text += "#metadata\n"
-        metadata = {
-            "sha256": self.digest(),
-            "sha256_strict": self.digest(strict=True),
-            "name": self.name,
-            "description": self.description,
-        }
-        text += json.dumps(metadata, indent=4)
+        self.metadata["sha256"] = self.digest()
+        self.metadata["sha256_strict"] = self.digest(strict=True)
+        text += json.dumps(self.metadata, indent=4)
         text += "\n"
         text += "#flowchart\n"
         text += json.dumps(self.to_dict(), indent=4, cls=seamm_util.JSONEncoder)
@@ -418,70 +418,84 @@ class Flowchart(object):
 
         return text
 
+    def from_text(self, text):
+        """Recreate the flowchart from text"""
+        lines = iter(text.splitlines())
+
+        line = next(lines)
+        # There may be exec magic as first line
+        if line[0:2] == "#!":
+            line = next(lines)
+        if line[0:7] != "!MolSSI":
+            raise RuntimeError("File is not a MolSSI file! -- " + line)
+        tmp = line.split()
+        if len(tmp) < 3:
+            raise RuntimeError("File is not a proper MolSSI file! -- " + line)
+        if tmp[1] != "flowchart":
+            raise RuntimeError("File is not a flowchart! -- " + line)
+        flowchart_version = tmp[2]
+        version = Version(flowchart_version)
+        logger.info(f"Reading flowchart version {flowchart_version}")
+
+        if version < Version("2.0"):
+            self.metadata = {}
+            rest = "\n".join([x for x in lines])
+            data = json.loads(rest, cls=seamm_util.JSONDecoder)
+        else:
+            sections = {}
+            in_section = False
+            for line in lines:
+                if line.strip() == "":
+                    continue
+                if line[0] == "#":
+                    section = line.strip()[1:]
+                    if section == "end":
+                        in_section = False
+                    else:
+                        tmp = sections[section] = []
+                        in_section = True
+                    continue
+                elif in_section:
+                    tmp.append(line)
+
+            self.metadata = json.loads("\n".join(sections["metadata"]))
+            data = json.loads("\n".join(tmp), cls=seamm_util.JSONDecoder)
+
+        if "class" not in data or data["class"] != "Flowchart":
+            raise RuntimeError("Text does not contain a flowchart")
+
+        self.from_dict(data)
+
     def read(self, filename):
         """Recreate the flowchart from the serialized form on disk"""
         with open(filename, "r") as fd:
-            line = fd.readline(256)
-            # There may be exec magic as first line
-            if line[0:2] == "#!":
-                line = fd.readline(256)
-            if line[0:7] != "!MolSSI":
-                raise RuntimeError("File is not a MolSSI file! -- " + line)
-            tmp = line.split()
-            if len(tmp) < 3:
-                raise RuntimeError("File is not a proper MolSSI file! -- " + line)
-            if tmp[1] != "flowchart":
-                raise RuntimeError("File is not a flowchart! -- " + line)
-            flowchart_version = tmp[2]
-            version = Version(flowchart_version)
-            logger.info(
-                f"Reading flowchart version {flowchart_version} from file {filename}"
-            )
+            text = fd.read()
 
-            if version < Version("2.0"):
-                metadata = {}
-                data = json.load(fd, cls=seamm_util.JSONDecoder)
-            else:
-                # Read the metadata
-                text = ""
-                in_section = False
-                for line in fd:
-                    if line.strip() == "":
-                        continue
-                    if in_section:
-                        if line[0] == "#":
-                            metadata = json.loads(text)
-                            self.name = metadata["name"]
-                            self.description = metadata["description"]
-                            break
-                        text += line
-                    elif line[0] == "#":
-                        if line == "#metadata\n":
-                            in_section = True
+        self.from_text(text)
 
-                # Read the flowchart
-                data = {}
-                text = ""
-                if line == "#flowchart\n":
-                    in_section = True
-                else:
-                    in_section = False
-                for line in fd:
-                    if line.strip() == "":
-                        continue
-                    if in_section:
-                        if line[0] == "#":
-                            data = json.loads(text, cls=seamm_util.JSONDecoder)
-                            break
-                        text += line
-                    elif line[0] == "#":
-                        if line == "#flowchart\n":
-                            in_section = True
+    def reset_metadata(self, **kwargs):
+        """Setup the metadata initially."""
+        self.metadata = {
+            "title": "",
+            "description": "",
+            "keywords": [],
+            "creators": [],
+        }
+        # See if the user info is in the SEAMM.ini file...
+        path = Path("~/SEAMM/seamm.ini").expanduser()
+        if path.exists:
+            config = configparser.ConfigParser()
+            config.read(path)
+            if "USER" in config:
+                user = config["USER"]
+                if "name" in user:
+                    author = {"name": user["name"]}
+                    for key in ("orcid", "affiliation"):
+                        if key in user:
+                            author[key] = user[key]
+                    self.metadata["creators"].append(author)
 
-        if "class" not in data or data["class"] != "Flowchart":
-            raise RuntimeError(filename + " does not contain a flowchart")
-
-        self.from_dict(data)
+        self.metadata.update(kwargs)
 
     # -------------------------------------------------------------------------
     # Edges between nodes

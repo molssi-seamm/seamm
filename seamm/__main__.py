@@ -95,12 +95,13 @@ def flowchart():
         label="New", command=tk_flowchart.new_file, accelerator=CmdKey + "N"
     )
     filemenu.add_command(
+        label="Open...", command=tk_flowchart.flowchart_search, accelerator=CmdKey + "O"
+    )
+    filemenu.add_command(
         label="Save...", command=tk_flowchart.save, accelerator=CmdKey + "S"
     )
     filemenu.add_command(label="Save as...", command=tk_flowchart.save_file)
-    filemenu.add_command(
-        label="Open...", command=tk_flowchart.open_file, accelerator=CmdKey + "O"
-    )
+    filemenu.add_command(label="Publish...", command=tk_flowchart.publish)
     filemenu.add_separator()
     filemenu.add_command(
         label="Run", command=tk_flowchart.run, accelerator=CmdKey + "R"
@@ -136,10 +137,11 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
+    editmenu.add_command(label="Description...", command=tk_flowchart.properties)
     editmenu.add_command(
         label="Clean layout",
         command=tk_flowchart.clean_layout,
-        accelerator=CmdKey + "C",
+        accelerator=CmdKey + "l",
     )
 
     # Help menu
@@ -150,14 +152,14 @@ def flowchart():
 
     root.bind_all("<" + CmdKey + "N>", tk_flowchart.new_file)
     root.bind_all("<" + CmdKey + "n>", tk_flowchart.new_file)
-    root.bind_all("<" + CmdKey + "O>", tk_flowchart.open_file)
-    root.bind_all("<" + CmdKey + "o>", tk_flowchart.open_file)
+    root.bind_all("<" + CmdKey + "O>", tk_flowchart.flowchart_search)
+    root.bind_all("<" + CmdKey + "o>", tk_flowchart.flowchart_search)
     root.bind_all("<" + CmdKey + "R>", tk_flowchart.run)
     root.bind_all("<" + CmdKey + "r>", tk_flowchart.run)
     root.bind_all("<" + CmdKey + "S>", tk_flowchart.save)
     root.bind_all("<" + CmdKey + "s>", tk_flowchart.save)
-    root.bind_all("<" + CmdKey + "C>", tk_flowchart.clean_layout)
-    root.bind_all("<" + CmdKey + "c>", tk_flowchart.clean_layout)
+    root.bind_all("<" + CmdKey + "L>", tk_flowchart.clean_layout)
+    root.bind_all("<" + CmdKey + "l>", tk_flowchart.clean_layout)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()

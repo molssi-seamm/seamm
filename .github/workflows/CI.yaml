@@ -15,7 +15,7 @@ on:
 
 jobs:
   lint:
-    name: Lint ubuntu-latest Py3.8
+    name: Lint ubuntu-latest Py3.9
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -31,7 +31,7 @@ jobs:
     # More info on options: https://github.com/conda-incubator/setup-miniconda
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.8
+        python-version: 3.9
         environment-file: devtools/conda-envs/test_env.yaml
         activate-environment: test
         auto-update-conda: false
@@ -56,7 +56,7 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
-        python-version: [3.7, 3.8]
+        python-version: [3.8, 3.9]
     steps:
     - uses: actions/checkout@v1
     - name: Additional info about the build
