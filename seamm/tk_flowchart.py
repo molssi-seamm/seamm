@@ -43,7 +43,6 @@ anywhere else it just snaps back to its original place.
 import copy
 import logging
 import math
-from PIL import ImageTk, Image
 import pkg_resources
 import pprint  # nopep8
 import sys
@@ -51,7 +50,11 @@ import tkinter as tk
 import tkinter.filedialog as tk_filedialog
 import tkinter.ttk as ttk
 
+from PIL import ImageTk, Image
+
 import seamm
+from .tk_open import TkOpen
+from .tk_publish import TkPublish
 
 logger = logging.getLogger(__name__)
 
@@ -312,7 +315,7 @@ class TkFlowchart(object):
             edge_subtype,
             edge_class=seamm.TkEdge,
             canvas=self.canvas,
-            **kwargs
+            **kwargs,
         )
         edge.draw()
         return edge
@@ -323,6 +326,8 @@ class TkFlowchart(object):
     def new_file(self, event=None):
         self.filename = None
         self.clear()
+        # Reset the metadata
+        self.flowchart.reset_metadata()
 
     def help(self, event=None):
         print("Help!!!!")
@@ -343,6 +348,15 @@ class TkFlowchart(object):
         self.flowchart.read(filename)
         self.from_flowchart()
         self.filename = filename
+
+    def flowchart_search(self, event=None):
+        """Open a flowchart from Zenodo."""
+        opener = TkOpen(self.toplevel)
+        data = opener.open()
+        if data is not None:
+            self.flowchart.from_text(data)
+            self.filename = None
+            self.from_flowchart()
 
     def clear(self, all=False):
         """Clear our graphics"""
@@ -379,6 +393,18 @@ class TkFlowchart(object):
             )
         )
         return tk_start_node
+
+    def properties(self):
+        """Get and set the properties of the flowchart."""
+        start_node = self.get_node("1")
+        start_node.edit()
+
+    def publish(self, event=None):
+        """Publish the flowchart to a repository such as Zenodo."""
+        self.update_flowchart()
+
+        publisher = TkPublish(self)
+        publisher.edit()
 
     def save(self, event=None):
         if self.filename is None:
