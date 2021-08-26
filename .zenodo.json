@@ -17,7 +17,7 @@
         }
     ],    
 
-    "license": "LGPL-3.0+",
+    "license": "LGPL-3.0-or-later",
 
     "title": "SEAMM: Simulation Environment for Atomistic and Molecular Modeling",
 
@@ -28,8 +28,6 @@
         {"identifier": "seamm"},
         {"identifier": "seamm-core"}
     ],
-
-    "grants": [{"id": "10.13039/100000001::1547580"}],
 
     "notes": "Funding: NSF OAC-1547580 and CHE-2136142"
 }
