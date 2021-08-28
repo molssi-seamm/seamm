@@ -26,6 +26,8 @@ import cpuinfo
 import seamm
 import seamm_util
 
+printer = seamm_util.printing.getPrinter()
+
 logging.basicConfig(level="WARNING")
 logger = logging.getLogger(__name__)
 variables = seamm.Variables()
@@ -48,6 +50,7 @@ class cd:
 
 def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     """The standalone flowchart app"""
+    global print
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "--help" or sys.argv[1] == "-h":
@@ -123,7 +126,8 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
 
     if standalone:
         print("Running in standalone mode.")
-        wdir = os.getcwd()
+        if wdir is None:
+            wdir = os.getcwd()
     else:
         datastore = os.path.expanduser(options["datastore"])
 
@@ -165,8 +169,6 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     # 'job.out' in the working directory and to stdout, as requested
     # in the options. Since all printers are children of the root
     # printer, all output at the right levels will flow here
-
-    printer = seamm_util.printing.getPrinter()
 
     # Set up our formatter
     formatter = logging.Formatter(fmt="{message:s}", style="{")
@@ -238,27 +240,26 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
             data["state"] = "error"
             data["error type"] = type(e).__name__
             data["error message"] = str(e)
+            raise
+        finally:
+            # Wrap things up
+            t1 = time.time()
+            pt1 = time.process_time()
+            data["end time"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+            t = t1 - t0
+            pt = pt1 - pt0
+            data["elapsed time"] = t
+            data["process time"] = pt
 
-        # Wrap things up
-        t1 = time.time()
-        pt1 = time.process_time()
-        data["end time"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
-        t = t1 - t0
-        pt = pt1 - pt0
-        data["elapsed time"] = t
-        data["process time"] = pt
+            with open("job_data.json", "w") as fd:
+                fd.write(header_line)
+                json.dump(data, fd, indent=3, sort_keys=True)
+                fd.write("\n")
 
-        with open("job_data.json", "w") as fd:
-            fd.write(header_line)
-            json.dump(data, fd, indent=3, sort_keys=True)
-            fd.write("\n")
-
-        printer.job(
-            "\nProcess time: {} ({:.3f} s)".format(datetime.timedelta(seconds=pt), pt)
-        )
-        printer.job(
-            "Elapsed time: {} ({:.3f} s)".format(datetime.timedelta(seconds=t), t)
-        )
+            printer.job(
+                f"\nProcess time: {datetime.timedelta(seconds=pt)} ({pt:.3f} s)"
+            )
+            printer.job(f"Elapsed time: {datetime.timedelta(seconds=t)} ({t:.3f} s)")
 
 
 def get_job_id(filename):
