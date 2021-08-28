@@ -9,6 +9,7 @@ pandas
 pillow
 pmw
 py-cpuinfo
+python-dateutil
 pyuca
 reference_handler>=0.9.1
 requests

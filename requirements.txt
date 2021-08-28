@@ -9,6 +9,7 @@ pandas==1.2.4
 pillow==8.3.0
 pmw==2.0.1
 py-cpuinfo==8.0.0
+python-dateutil
 pyuca==1.2
 reference-handler==0.9.1
 requests==2.25.1
