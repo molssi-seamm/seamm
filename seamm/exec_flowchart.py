@@ -156,102 +156,91 @@ class ExecFlowchart(object):
         # And actually run it!
         job.job(("Running the flowchart\n" "---------------------"))
 
-        next_node = self.flowchart.get_node("1")
-        while next_node is not None:
-            try:
-                next_node = next_node.run()
-            except DeprecationWarning as e:
-                print("\nDeprecation warning: " + str(e))
-                traceback.print_exc(file=sys.stderr)
-                traceback.print_exc(file=sys.stdout)
-            except Exception:
-                message = "Error running the flowchart\n\n" + traceback.format_exc()
-                print(message)
-                logger.critical(message)
-                break
-            except:  # noqa: E722
-                message = (
-                    "Unexpected error running the flowchart\n\n"
-                    + traceback.format_exc()
-                )
-                print(message)
-                logger.critical(message)
-                raise
-
-        # Write the final structure
-        db = seamm.flowchart_variables.get_variable("_system_db")
-        configuration = db.system.configuration
-        if configuration.n_atoms > 0:
-            # MMCIF file has bonds
-            filename = os.path.join(
-                self.flowchart.root_directory, "final_structure.mmcif"
-            )
-            text = None
-            try:
-                text = configuration.to_mmcif_text()
-            except Exception:
-                message = (
-                    "Error creating the final mmcif file\n\n" + traceback.format_exc()
-                )
-                print(message)
-                logger.critical(message)
-
-            if text is not None:
-                with open(filename, "w") as fd:
-                    print(text, file=fd)
-                job.job(
-                    "\nWrote the final structure to 'final_structure.mmcif' "
-                    "for viewing."
-                )
-            # CIF file has cell
-            if configuration.periodicity == 3:
-                filename = os.path.join(
-                    self.flowchart.root_directory, "final_structure.cif"
-                )
-                with open(filename, "w") as fd:
-                    print(configuration.to_cif_text(), file=fd)
-                job.job(
-                    "\nWrote the final structure to 'final_structure.cif' for "
-                    "viewing."
-                )
-
-        # And print out the references
-        filename = os.path.join(self.flowchart.root_directory, "references.db")
         try:
-            references = reference_handler.Reference_Handler(filename)
-        except Exception as e:
-            job.job("Error with references:")
-            job.job(e)
+            next_node = self.flowchart.get_node("1")
+            while next_node is not None:
+                try:
+                    next_node = next_node.run()
+                except DeprecationWarning as e:
+                    print("\nDeprecation warning: " + str(e))
+                    traceback.print_exc(file=sys.stderr)
+                    traceback.print_exc(file=sys.stdout)
+        finally:
+            # Write the final structure
+            db = seamm.flowchart_variables.get_variable("_system_db")
+            configuration = db.system.configuration
+            output = []
+            if configuration.n_atoms > 0:
+                # MMCIF file has bonds
+                filename = os.path.join(
+                    self.flowchart.root_directory, "final_structure.mmcif"
+                )
+                text = None
+                try:
+                    text = configuration.to_mmcif_text()
+                except Exception:
+                    message = (
+                        "Error creating the final mmcif file\n\n"
+                        + traceback.format_exc()
+                    )
+                    print(message)
+                    logger.critical(message)
 
-        if references.total_citations() > 0:
-            tmp = {}
-            citations = references.dump(fmt="text")
-            for citation, text, count, level in citations:
-                if level not in tmp:
-                    tmp[level] = {}
-                tmp[level][citation] = (text, count)
+                if text is not None:
+                    with open(filename, "w") as fd:
+                        print(text, file=fd)
+                    output.append("final_structure.mmcif")
+                # CIF file has cell
+                if configuration.periodicity == 3:
+                    filename = os.path.join(
+                        self.flowchart.root_directory, "final_structure.cif"
+                    )
+                    with open(filename, "w") as fd:
+                        print(configuration.to_cif_text(), file=fd)
+                        output.append("final_structure.cif")
+                if len(output) > 0:
+                    files = "' and '".join(output)
+                    job.job(f"\nWrote the final structure to '{files}' for viewing.")
 
-            n = 0
-            for level in sorted(tmp.keys()):
-                ref_dict = tmp[level]
-                if level == 1:
-                    job.job("\nPrimary references:\n")
-                    n = 0
-                elif level == 2:
-                    job.job("\nSecondary references:\n")
-                    n = 0
-                else:
-                    job.job("\nLess important references:\n")
-                    n = 0
+            # And print out the references
+            filename = os.path.join(self.flowchart.root_directory, "references.db")
+            try:
+                references = reference_handler.Reference_Handler(filename)
+            except Exception as e:
+                job.job("Error with references:")
+                job.job(e)
 
-                lines = []
-                for citation in sorted(ref_dict.keys()):
-                    n += 1
-                    text, count = ref_dict[citation]
-                    if count == 1:
-                        lines.append("({}) {:s}".format(n, text))
+            if references.total_citations() > 0:
+                tmp = {}
+                citations = references.dump(fmt="text")
+                for citation, text, count, level in citations:
+                    if level not in tmp:
+                        tmp[level] = {}
+                    tmp[level][citation] = (text, count)
+
+                n = 0
+                for level in sorted(tmp.keys()):
+                    ref_dict = tmp[level]
+                    if level == 1:
+                        job.job("\nPrimary references:\n")
+                        n = 0
+                    elif level == 2:
+                        job.job("\nSecondary references:\n")
+                        n = 0
                     else:
-                        lines.append(
-                            "({}) {:s} (used {:d} times)".format(n, text, count)
-                        )
-                job.job(__("\n\n".join(lines), indent=4 * " ", indent_initial=False))
+                        job.job("\nLess important references:\n")
+                        n = 0
+
+                    lines = []
+                    for citation in sorted(ref_dict.keys()):
+                        n += 1
+                        text, count = ref_dict[citation]
+                        if count == 1:
+                            lines.append("({}) {:s}".format(n, text))
+                        else:
+                            lines.append(
+                                "({}) {:s} (used {:d} times)".format(n, text, count)
+                            )
+                    job.job(
+                        __("\n\n".join(lines), indent=4 * " ", indent_initial=False)
+                    )
