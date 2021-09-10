@@ -406,6 +406,8 @@ class Node(collections.abc.Hashable):
                         "LAMMPS",
                         "MOPAC",
                         "Psi4",
+                        "Join",
+                        "Table",
                     ):
                         print(f"{self.__class__.__name__} has no parameters")
 
