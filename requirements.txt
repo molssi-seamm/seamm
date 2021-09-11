@@ -6,7 +6,7 @@ numpy==1.20.3
 molsystem>=2021.5.5
 packaging
 pandas==1.2.4
-pillow==8.3.0
+pillow==8.3.2
 pmw==2.0.1
 py-cpuinfo==8.0.0
 python-dateutil
