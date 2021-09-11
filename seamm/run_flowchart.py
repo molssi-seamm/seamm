@@ -139,12 +139,11 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
 
             # Get the job_id from the file, creating the file if necessary
             job_id = get_job_id(job_id_file)
+        if options["projects"] is None:
+            projects = ["default"]
+        else:
+            projects = options["projects"]
         if wdir is None:
-            if options["projects"] is None:
-                projects = ["default"]
-            else:
-                projects = options["projects"]
-
             # And put it all together
             wdir = os.path.abspath(
                 os.path.join(
