@@ -262,7 +262,15 @@ class Node(collections.abc.Hashable):
                 self._gui_data[gui] = {}
             self._gui_data[gui][key] = value
 
-    def get_system_configuration(self, P, structure_handling=False):
+    def get_system_configuration(
+        self,
+        P,
+        structure_handling=False,
+        same_as=None,
+        same_atoms=True,
+        same_bonds=True,
+        same_cell=True,
+    ):
         """Get the current system and configuration.
 
         Optionally use the standard structure handling to create new
@@ -281,6 +289,15 @@ class Node(collections.abc.Hashable):
         structure_handling : bool = False
             Use the standard structure handling to determine whether to
             create new configuration or new system.
+        same_as : _Configuration = None
+            Share atoms, bonds, or cell with this configuration, depending
+            on other flags. Defaults to None, meaning ignore.
+        same_atoms : bool = True
+            Whether to share atoms with the <same_as> configuration
+        same_bonds : bool = True
+            Whether to share bonds with the <same_as> configuration.
+        same_cells : bool = True
+            Whether to share the cell with the <same_as> configuration.
 
         Returns
         -------
@@ -307,7 +324,17 @@ class Node(collections.abc.Hashable):
                 system = system_db.system
                 if system is None:
                     system = system_db.create_system()
-                configuration = system.create_configuration()
+                # See if sharing atoms, bonds and/or cell
+                if same_as is None:
+                    configuration = system.create_configuration()
+                else:
+                    atoms = same_as.atomset if same_atoms else None
+                    bonds = same_as.bondset if same_bonds else None
+                    cell = same_as.cell_id if same_cell else None
+
+                    configuration = system.create_configuration(
+                        cell_id=cell, atomset=atoms, bondset=bonds
+                    )
             elif handling == "Create a new system and configuration":
                 system = system_db.create_system()
                 configuration = system.create_configuration()
