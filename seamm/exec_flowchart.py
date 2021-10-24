@@ -13,6 +13,7 @@ contains."""
 import calendar
 import logging
 import os.path
+from pathlib import Path
 import string
 import sys
 import traceback
@@ -113,7 +114,20 @@ class ExecFlowchart(object):
                 job.job(traceback.format_exc())
 
         # Create the system database, default system and configuration
-        db = SystemDB(filename="file:seamm.db")
+        if "SEAMM" in options:
+            seamm_options = options["SEAMM"]
+            read_only = "read_only" in seamm_options and seamm_options["read_only"]
+            db_file = seamm_options["database"]
+            if ":memory:" in db_file:
+                db = SystemDB(filename=db_file)
+            else:
+                path = Path(db_file).expanduser().resolve()
+                uri = "file:" + str(path)
+                if read_only:
+                    uri += "?mode=ro"
+                db = SystemDB(filename=uri)
+        else:
+            db = SystemDB(filename="file:seamm.db")
 
         # Put the system database in the global context for access.
         seamm.flowchart_variables.set_variable("_system_db", db)
