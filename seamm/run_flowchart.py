@@ -7,6 +7,7 @@ Or, run_flowchart can be invoked with the name of flowchart.
 """
 
 import argparse
+import configparser
 import datetime
 import fasteners
 import json
@@ -14,6 +15,8 @@ import locale
 import logging
 import os
 import os.path
+from pathlib import Path
+import platform
 import re
 import shutil
 import sys
@@ -24,6 +27,7 @@ import uuid
 import cpuinfo
 
 import seamm
+import seamm_datastore
 import seamm_util
 
 printer = seamm_util.printing.getPrinter()
@@ -202,23 +206,81 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     # Change to the working directory and run the flowchart
     with cd(wdir):
         # Set up the initial metadata for the job.
-        data = {
-            "command line": sys.argv,
-            "data_version": "1.0",
-            "flowchart_digest": flowchart.digest(),
-            "flowchart_digest_strict": flowchart.digest(strict=True),
-            "start time": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
-            "state": "started",
-            "title": options["title"],
-            "uuid": uuid.uuid4().hex,
-            "working directory": wdir,
-            "~cpuinfo": cpuinfo.get_cpu_info(),
-        }
-        if not standalone:
+        if in_jobserver:
+            with open("job_data.json", "r") as fd:
+                data = json.load(fd)
+        else:
+            data = {
+                "data_version": "1.0",
+                "command line": sys.argv,
+                "title": options["title"],
+                "working directory": wdir,
+            }
+        data.update(
+            {
+                "flowchart_digest": flowchart.digest(),
+                "flowchart_digest_strict": flowchart.digest(strict=True),
+                "start time": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
+                "state": "started",
+                "uuid": uuid.uuid4().hex,
+                "~cpuinfo": cpuinfo.get_cpu_info(),
+            }
+        )
+        if not in_jobserver and not standalone:
+            current_time = datetime.datetime.now()
             if "projects" not in data:
                 data["projects"] = projects
             data["datastore"] = datastore
             data["job id"] = job_id
+
+            # Add to the database
+            db_path = Path(datastore).expanduser().resolve() / "seamm.db"
+            db_uri = "sqlite:///" + str(db_path)
+            db = seamm_datastore.connect(
+                database_uri=db_uri,
+                datastore_location=datastore,
+            )
+
+            # Get the user information for the datastore
+            path = Path("~/.seammrc").expanduser()
+            if not path.exists:
+                raise RuntimeError(
+                    "You need a '~/.seammrc' file to run jobs from the commandline. "
+                    "See the documentation for more details."
+                )
+
+            config = configparser.ConfigParser()
+            config.read(path)
+
+            user = None
+            password = None
+
+            for section in [platform.node(), "localhost"]:
+                if section in config:
+                    if user is None and "user" in config[section]:
+                        user = config[section]["user"]
+                    if password is None and "password" in config[section]:
+                        password = config[section]["password"]
+
+            if user is None or password is None:
+                raise RuntimeError(
+                    "You need credentials in '~/.seammrc' file to run jobs from the "
+                    "commandline. See the documentation for more details."
+                )
+
+            db.login(user, password)
+            db.submit_job(
+                job_id,
+                flowchart_filename=flowchart_path,
+                project_names=data["projects"],
+                path=wdir,
+                title=data["title"],
+                submitted=current_time,
+                started=current_time,
+                description="Run from the command-line.",
+                status="started",
+            )
+            del db
 
         # Output the initial metadate for the job.
         with open("job_data.json", "w") as fd:
@@ -259,6 +321,19 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
                 f"\nProcess time: {datetime.timedelta(seconds=pt)} ({pt:.3f} s)"
             )
             printer.job(f"Elapsed time: {datetime.timedelta(seconds=t)} ({t:.3f} s)")
+
+            if not in_jobserver and not standalone:
+                # Let the datastore know that the job finished.
+                current_time = datetime.datetime.now()
+
+                # Add to the database
+                db = seamm_datastore.connect(
+                    database_uri=db_uri,
+                    datastore_location=datastore,
+                )
+                db.login(user, password)
+                db.finish_job(job_id, current_time, data["state"])
+                del db
 
 
 def get_job_id(filename):
