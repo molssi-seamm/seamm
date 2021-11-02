@@ -103,19 +103,98 @@ class TkJobHandler(object):
         else:
             return None
 
-    def submit(self, flowchart, dashboard, **job):
+    def submit(
+        self,
+        flowchart,
+        dashboard,
+        username=None,
+        project="default",
+        title="",
+        description="",
+    ):
         """Submit the job to the given dashboard."""
-        job["flowchart"] = flowchart
-        job["path"] = "unset"
-
         url = self.config[dashboard]["url"]
 
         logger.info(f"Submitting job to {dashboard} ({url})")
         logger.debug(f"flowchart:\n{flowchart}\n\n")
 
-        response = requests.post(url + "/api/jobs", json=job)
+        # Get the user information for the datastore
+        path = Path("~/.seammrc").expanduser()
+        if not path.exists:
+            tk.messagebox.showwarning(
+                title="Credentials needed",
+                message=(
+                    "You need credentials in '~/.seammrc' file for the dashboard "
+                    f"{dashboard} to run.\n"
+                    "See the documentation for more details."
+                ),
+            )
+            return
+
+        parser = configparser.ConfigParser()
+        parser.read(path)
+
+        user = None
+        password = None
+
+        if dashboard in parser:
+            if user is None and "user" in parser[dashboard]:
+                user = parser[dashboard]["user"]
+            if password is None and "password" in parser[dashboard]:
+                password = parser[dashboard]["password"]
+
+        if user is None or password is None:
+            tk.messagebox.showwarning(
+                title="Credentials needed",
+                message=(
+                    "You need credentials in '~/.seammrc' file for the dashboard "
+                    f"{dashboard} to run.\n"
+                    "See the documentation for more details."
+                ),
+            )
+            return
+
+        # Authenticate
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        # Login in to the Dashboard
+        session = requests.session()
+        response = session.post(url + "/api/auth/token", json=authentication)
+
+        cookie_jar = response.cookies
+        tmp = cookie_jar.get_dict()
+        csrf_token = tmp["csrf_access_token"]
+
+        # Prepare the data
+        data = {
+            "username": user,
+            "flowchart": flowchart,
+            "project": project,
+            "title": title,
+            "description": description,
+        }
+
+        response = session.post(
+            url + "/api/jobs", json=data, headers={"X-CSRF-TOKEN": csrf_token}
+        )
+
         if response.status_code != 201:
-            raise RuntimeError("POST /api/jobs {}".format(response.status_code))
+            logger.warning(
+                f"There was an error submitting the job to {dashboard}.\n"
+                f"    code = {response.status_code}\n{response.text()}"
+            )
+            tk.messagebox.showerror(
+                title="Error submitting the job",
+                message=(
+                    f"There was an error submitting the job to {dashboard}./n"
+                    "See the console for more information."
+                ),
+            )
+            return
+
         job_id = response.json()["id"]
         logger.info("Submitted job #{}".format(job_id))
         return job_id
