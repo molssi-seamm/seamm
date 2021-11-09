@@ -14,6 +14,7 @@ import configparser
 import logging
 from pathlib import Path
 import pkg_resources
+import pprint
 import requests
 import tkinter as tk
 from tkinter import messagebox
@@ -39,6 +40,12 @@ class TkJobHandler(object):
         self._root = root
         self.config = configparser.ConfigParser()
         self.dialog = None
+
+        self._credentials = None
+        self._password = None
+        self._projects = None
+        self._user = None
+
         self._widgets = {}
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
@@ -68,6 +75,16 @@ class TkJobHandler(object):
         s.configure("Border.TLabel", relief="ridge", anchor=tk.W, padding=5)
 
     @property
+    def credentials(self):
+        """The data from ~/.seammrc, if it exists."""
+        if self._credentials is None:
+            self._credentials = configparser.ConfigParser()
+            path = Path("~/.seammrc").expanduser()
+            if path.exists():
+                self._credentials.read(path)
+        return self._credentials
+
+    @property
     def dashboards(self):
         """The list of dashboards."""
         result = []
@@ -76,128 +93,54 @@ class TkJobHandler(object):
                 result.append(dashboard)
         return sorted(result)
 
-    def submit_with_dialog(self, flowchart=None):
-        """
-        Allow the user to choose the dashboard and other parameters,
-        and submit the job as requested.
+    @property
+    def projects(self):
+        """The available projects."""
+        if self._projects is None:
+            pass
+        return self._projects
 
-        Parameters
-        ----------
-        flowchart : text, optional
-            The flowchart to use. If not given, prompt the user for
-            one.
-
-        Returns
-        -------
-        job_id : integer
-            The id of the submitted job.
-        """
-        if self.dialog is None:
-            self.create_submit_dialog()
-
-        result = self.dialog.activate(geometry="centerscreenfirst")
-
-        if result is not None:
-            job_id = self.submit(flowchart, **result)
-            return job_id
-        else:
-            return None
-
-    def submit(
-        self,
-        flowchart,
-        dashboard,
-        username=None,
-        project="default",
-        title="",
-        description="",
-    ):
-        """Submit the job to the given dashboard."""
-        url = self.config[dashboard]["url"]
-
-        logger.info(f"Submitting job to {dashboard} ({url})")
-        logger.debug(f"flowchart:\n{flowchart}\n\n")
-
-        # Get the user information for the datastore
-        path = Path("~/.seammrc").expanduser()
-        if not path.exists:
-            tk.messagebox.showwarning(
-                title="Credentials needed",
-                message=(
-                    "You need credentials in '~/.seammrc' file for the dashboard "
-                    f"{dashboard} to run.\n"
-                    "See the documentation for more details."
-                ),
-            )
-            return
-
-        parser = configparser.ConfigParser()
-        parser.read(path)
-
-        user = None
-        password = None
-
-        if dashboard in parser:
-            if user is None and "user" in parser[dashboard]:
-                user = parser[dashboard]["user"]
-            if password is None and "password" in parser[dashboard]:
-                password = parser[dashboard]["password"]
-
-        if user is None or password is None:
-            tk.messagebox.showwarning(
-                title="Credentials needed",
-                message=(
-                    "You need credentials in '~/.seammrc' file for the dashboard "
-                    f"{dashboard} to run.\n"
-                    "See the documentation for more details."
-                ),
-            )
-            return
-
-        # Authenticate
-        authentication = {
-            "username": user,
-            "password": password,
-        }
-
-        # Login in to the Dashboard
-        session = requests.session()
-        response = session.post(url + "/api/auth/token", json=authentication)
-
-        cookie_jar = response.cookies
-        tmp = cookie_jar.get_dict()
-        csrf_token = tmp["csrf_access_token"]
-
-        # Prepare the data
-        data = {
-            "username": user,
-            "flowchart": flowchart,
-            "project": project,
-            "title": title,
-            "description": description,
-        }
-
-        response = session.post(
-            url + "/api/jobs", json=data, headers={"X-CSRF-TOKEN": csrf_token}
+    def add_dashboard_cb(self):
+        """Post a dialog for adding a dashboard to the list."""
+        dialog = Pmw.Dialog(
+            self._root,
+            buttons=("OK", "Cancel"),
+            master=self._root,
+            title="Add Dashboard to list",
+            command=self.handle_add_dialog,
         )
+        dialog.withdraw()
+        w = self._widgets["add"] = {"dialog": dialog}
 
-        if response.status_code != 201:
-            logger.warning(
-                f"There was an error submitting the job to {dashboard}.\n"
-                f"    code = {response.status_code}\n{response.text()}"
-            )
-            tk.messagebox.showerror(
-                title="Error submitting the job",
-                message=(
-                    f"There was an error submitting the job to {dashboard}./n"
-                    "See the console for more information."
-                ),
-            )
-            return
+        d = dialog.interior()
+        name = sw.LabeledEntry(d, labeltext="Name", width=50)
+        url = sw.LabeledEntry(d, labeltext="URL")
+        protocol = sw.LabeledCombobox(
+            d, labeltext="Protocol", values=["http", "sshtunnel"]
+        )
+        protocol.set("http")
 
-        job_id = response.json()["id"]
-        logger.info("Submitted job #{}".format(job_id))
-        return job_id
+        w["name"] = name
+        w["url"] = url
+        w["protocol"] = protocol
+
+        name.grid(row=0, column=0, sticky=tk.EW)
+        url.grid(row=1, column=0, sticky=tk.EW)
+        protocol.grid(row=2, column=0, sticky=tk.W)
+
+        sw.align_labels([name, url, protocol])
+
+        dialog.activate(geometry="centerscreenfirst")
+
+    def ask_for_credentials(self, user=None, password=None):
+        raise NotImplementedError()
+
+    def check_status_cb(self):
+        """Helper for checking the status of a dashboard."""
+        w = self._widgets["edit dashboard"]
+        dashboard = w["dashboard"]
+        status = self.status(dashboard)
+        w["status"].set(status)
 
     def create_submit_dialog(self):
         """Create the dialog for submitting a job."""
@@ -270,112 +213,6 @@ class TkJobHandler(object):
         d.rowconfigure(3, weight=1)
         d.columnconfigure(1, weight=1)
 
-    def handle_dialog(self, result):
-        """Handle the submit dialog being completed."""
-        if result is None or result == "Cancel":
-            self.dialog.deactivate(None)
-        else:
-            w = self._widgets
-            self.dialog.deactivate(
-                {
-                    "username": w["username"].get(),
-                    "project": w["project"].get(),
-                    "title": w["title"].get(),
-                    "dashboard": w["dashboard"].get(),
-                    "description": w["description"].get(1.0, tk.END),
-                }
-            )
-
-    def get_configuration(self):
-        """Get the list of dashboards from the config file."""
-        # The path to the configfile
-        if self.configfile.exists():
-            self.config.read(self.configfile)
-        else:
-            self.config.clear()
-
-    def save_configuration(self):
-        """Save the list of dashboards to disk."""
-        # Make sure the directory exists
-        self.configfile.parent.mkdir(exist_ok=True)
-
-        # Update the current dashboard
-        if self.current_dashboard is not None:
-            if "GENERAL" not in self.config:
-                self.config["GENERAL"] = {}
-            defaults = self.config["GENERAL"]
-            defaults["current_dashboard"] = self.current_dashboard
-
-        with self.configfile.open("w") as fd:
-            self.config.write(fd)
-
-    def add_dashboard_cb(self):
-        """Post a dialog for adding a dashboard to the list."""
-        dialog = Pmw.Dialog(
-            self._root,
-            buttons=("OK", "Cancel"),
-            master=self._root,
-            title="Add Dashboard to list",
-            command=self.handle_add_dialog,
-        )
-        dialog.withdraw()
-        w = self._widgets["add"] = {"dialog": dialog}
-
-        d = dialog.interior()
-        name = sw.LabeledEntry(d, labeltext="Name", width=50)
-        url = sw.LabeledEntry(d, labeltext="URL")
-        protocol = sw.LabeledCombobox(
-            d, labeltext="Protocol", values=["http", "sshtunnel"]
-        )
-        protocol.set("http")
-
-        w["name"] = name
-        w["url"] = url
-        w["protocol"] = protocol
-
-        name.grid(row=0, column=0, sticky=tk.EW)
-        url.grid(row=1, column=0, sticky=tk.EW)
-        protocol.grid(row=2, column=0, sticky=tk.W)
-
-        sw.align_labels([name, url, protocol])
-
-        dialog.activate(geometry="centerscreenfirst")
-
-    def handle_add_dialog(self, result):
-        """Handle the dialog to add a dashboard to the list."""
-        w = self._widgets["add"]
-        dialog = w["dialog"]
-        if result is None or result == "Cancel":
-            dialog.deactivate(result)
-        else:
-            name = w["name"].get()
-            url = w["url"].get()
-            protocol = w["protocol"].get()
-
-            if name in self.config:
-                messagebox.showwarning(
-                    "Duplicate name",
-                    (
-                        "There is already a dashboard called '{}'\n"
-                        "Use a different name."
-                    ).format(name),
-                )
-                return
-
-            dialog.deactivate(result)
-        dialog.destroy()
-        del self._widgets["add"]
-
-        # Now add to the configuration
-        self.config[name] = {"url": url, "protocol": protocol}
-
-        self.save_configuration()
-
-        # And reset the list in the dashboard combobox
-        c = self._widgets["dashboard"]
-        c.combobox.config({"value": self.dashboards})
-        c.set(name)
-
     def dashboard_cb(self, event=None):
         """The selected dashboard has been changed"""
         w = self._widgets
@@ -383,8 +220,27 @@ class TkJobHandler(object):
 
         url = self.config[dashboard]["url"]
 
+        # Authenticate
+        user, password = self.get_credentials(dashboard)
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        # Login in to the Dashboard
+        session = requests.session()
+        response = session.post(url + "/api/auth/token", json=authentication)
+
+        cookie_jar = response.cookies
+        tmp = cookie_jar.get_dict()
+        csrf_token = tmp["csrf_access_token"]
+
         try:
-            response = requests.get(url + "/api/projects", timeout=self.timeout)
+            response = requests.get(
+                url + "/api/projects",
+                timeout=self.timeout,
+                headers={"X-CSRF-TOKEN": csrf_token},
+            )
             if response.status_code != 200:
                 logger.warning(
                     (
@@ -403,6 +259,8 @@ class TkJobHandler(object):
                 return
             else:
                 data = response.json()
+                print("Projects:")
+                pprint.pprint(data)
         except requests.exceptions.Timeout:
             logger.warning("A timeout occurred contacting the dashboard " + dashboard)
             messagebox.showerror(
@@ -513,92 +371,6 @@ class TkJobHandler(object):
         dialog.destroy()
         del self._widgets["display"]
 
-    def fill_statuses(self):
-        w = self._widgets["display"]
-        dialog = w["dialog"]
-        table = w["table"]
-
-        dialog.configure(title="Dashboards -- Updating Status")
-        progress = ttk.Progressbar(
-            dialog.interior(),
-            orient=tk.HORIZONTAL,
-            maximum=table.nrows + 1,
-            mode="determinate",
-            value=1,
-        )
-        progress.grid(sticky=tk.EW)
-
-        for row in range(table.nrows):
-            current_status = table[row, 3].cget("text")
-            if current_status != "inactive":
-                table[row, 3].configure(text="...")
-                table.update()
-                status = self.status(table[row, 1].cget("text"))
-                table[row, 3].configure(text=status)
-            progress.step()
-            table.update()
-        progress.destroy()
-        dialog.configure(title="Dashboards")
-
-    def status(self, dashboard, timeout=1):
-        """The status of the given dashboard.
-
-        Contact the given dashboard, checking for errors, timeouts,
-        etc. and report back the current status.
-
-        Return
-        ------
-        status : enum (a string...)
-            'up'
-            'down'
-            'error'
-        """
-
-        url = self.config[dashboard]["url"]
-
-        try:
-            response = requests.get(url + "/api/status", timeout=timeout)
-            if response.status_code != 200:
-                logger.info(
-                    (
-                        "Encountered an error getting the status from "
-                        "dashboard '{}', error code: {}"
-                    ).format(dashboard, response.status_code)
-                )
-                result = "dashboard error"
-            else:
-                result = response.text
-        except requests.exceptions.Timeout:
-            logger.info("A timeout occurred contacting the dashboard " + dashboard)
-            result = "down"
-        except requests.exceptions.ConnectionError as e:
-            logger.info(
-                "A connection error occurred contacting the dashboard " + dashboard
-            )
-            if e.response is not None:
-                logger.info(
-                    "Status code = {}, {}".format(
-                        e.response.status_code, e.response.text
-                    )
-                )
-            result = "connection error"
-
-        return result
-
-    def handle_dashboard_dialog(self, result):
-        """Handle the dialog to add a dashboard to the list."""
-        w = self._widgets["display"]
-        dialog = w["dialog"]
-        dashboard = w["selected"].get()
-        if result is None or result == "Cancel":
-            dialog.deactivate(None)
-        elif result == "Edit":
-            self.edit_cb(dashboard)
-        elif result == "Remove":
-            self.remove_cb(dashboard)
-        else:
-            dialog.deactivate(None)
-
     def edit_cb(self, dashboard):
         """Edit the information for a dashboard."""
         table = self._widgets["display"]["table"]
@@ -685,12 +457,32 @@ class TkJobHandler(object):
 
             self.save_configuration()
 
-    def check_status_cb(self):
-        """Helper for checking the status of a dashboard."""
-        w = self._widgets["edit dashboard"]
-        dashboard = w["dashboard"]
-        status = self.status(dashboard)
-        w["status"].set(status)
+    def fill_statuses(self):
+        w = self._widgets["display"]
+        dialog = w["dialog"]
+        table = w["table"]
+
+        dialog.configure(title="Dashboards -- Updating Status")
+        progress = ttk.Progressbar(
+            dialog.interior(),
+            orient=tk.HORIZONTAL,
+            maximum=table.nrows + 1,
+            mode="determinate",
+            value=1,
+        )
+        progress.grid(sticky=tk.EW)
+
+        for row in range(table.nrows):
+            current_status = table[row, 3].cget("text")
+            if current_status != "inactive":
+                table[row, 3].configure(text="...")
+                table.update()
+                status = self.status(table[row, 1].cget("text"))
+                table[row, 3].configure(text=status)
+            progress.step()
+            table.update()
+        progress.destroy()
+        dialog.configure(title="Dashboards")
 
     def fit_dialog(self, dialog):
         """Resize and fit the dialog to the current contents and the
@@ -801,5 +593,271 @@ class TkJobHandler(object):
         if show_progress:
             master.focus_set()
             dialog.destroy()
+
+        return result
+
+    def get_configuration(self):
+        """Get the list of dashboards from the config file."""
+        # The path to the configfile
+        if self.configfile.exists():
+            self.config.read(self.configfile)
+        else:
+            self.config.clear()
+
+    def get_credentials(self, dashboard):
+        """The user for the dashboard.
+
+        Parameters
+        ----------
+        dashboard : str
+            The name of the dashboard to use.
+
+        Returns
+        -------
+        str, str
+            The user name and password
+        """
+        user = None
+        password = None
+        if dashboard not in self.credentials:
+            self.credentials[dashboard] = {}
+
+        if "user" in self.credentials[dashboard]:
+            user = self.credentials[dashboard]["user"]
+
+        if "password" in self.credentials[dashboard]:
+            password = self.credentials[dashboard]["password"]
+
+        if user is None or password is None:
+            user, password = self.ask_forcredentials(
+                dashboard, user=user, password=password
+            )
+            if user is not None and password is not None:
+                self.credentials[dashboard]["user"] = user
+                self.credentials[dashboard]["password"] = password
+
+                path = Path("~/.seammrc").expanduser()
+                with open(path, "w") as fd:
+                    self.credentials.write(fd)
+        return user, password
+
+    def handle_add_dialog(self, result):
+        """Handle the dialog to add a dashboard to the list."""
+        w = self._widgets["add"]
+        dialog = w["dialog"]
+        if result is None or result == "Cancel":
+            dialog.deactivate(result)
+        else:
+            name = w["name"].get()
+            url = w["url"].get()
+            protocol = w["protocol"].get()
+
+            if name in self.config:
+                messagebox.showwarning(
+                    "Duplicate name",
+                    (
+                        "There is already a dashboard called '{}'\n"
+                        "Use a different name."
+                    ).format(name),
+                )
+                return
+
+            dialog.deactivate(result)
+        dialog.destroy()
+        del self._widgets["add"]
+
+        # Now add to the configuration
+        self.config[name] = {"url": url, "protocol": protocol}
+
+        self.save_configuration()
+
+        # And reset the list in the dashboard combobox
+        c = self._widgets["dashboard"]
+        c.combobox.config({"value": self.dashboards})
+        c.set(name)
+
+    def handle_dialog(self, result):
+        """Handle the submit dialog being completed."""
+        if result is None or result == "Cancel":
+            self.dialog.deactivate(None)
+        else:
+            w = self._widgets
+            self.dialog.deactivate(
+                {
+                    "username": w["username"].get(),
+                    "project": w["project"].get(),
+                    "title": w["title"].get(),
+                    "dashboard": w["dashboard"].get(),
+                    "description": w["description"].get(1.0, tk.END),
+                }
+            )
+
+    def handle_dashboard_dialog(self, result):
+        """Handle the dialog to add a dashboard to the list."""
+        w = self._widgets["display"]
+        dialog = w["dialog"]
+        dashboard = w["selected"].get()
+        if result is None or result == "Cancel":
+            dialog.deactivate(None)
+        elif result == "Edit":
+            self.edit_cb(dashboard)
+        elif result == "Remove":
+            self.remove_cb(dashboard)
+        else:
+            dialog.deactivate(None)
+
+    def save_configuration(self):
+        """Save the list of dashboards to disk."""
+        # Make sure the directory exists
+        self.configfile.parent.mkdir(exist_ok=True)
+
+        # Update the current dashboard
+        if self.current_dashboard is not None:
+            if "GENERAL" not in self.config:
+                self.config["GENERAL"] = {}
+            defaults = self.config["GENERAL"]
+            defaults["current_dashboard"] = self.current_dashboard
+
+        with self.configfile.open("w") as fd:
+            self.config.write(fd)
+
+    def submit(
+        self,
+        flowchart,
+        dashboard,
+        username=None,
+        project="default",
+        title="",
+        description="",
+    ):
+        """Submit the job to the given dashboard."""
+        url = self.config[dashboard]["url"]
+
+        logger.info(f"Submitting job to {dashboard} ({url})")
+        logger.debug(f"flowchart:\n{flowchart}\n\n")
+
+        # Check the status of the dashboard
+        status = self.status(dashboard)
+        if status != "running":
+            messagebox.showwarning(
+                f"The dashboard '{dashboard}' cannot be reached: status = '{status}'"
+            )
+            return None
+
+        # Authenticate
+        user, password = self.get_credentials(dashboard)
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        # Login in to the Dashboard
+        session = requests.session()
+        response = session.post(url + "/api/auth/token", json=authentication)
+
+        cookie_jar = response.cookies
+        tmp = cookie_jar.get_dict()
+        csrf_token = tmp["csrf_access_token"]
+
+        # Prepare the data
+        data = {
+            "username": user,
+            "flowchart": flowchart,
+            "project": project,
+            "title": title,
+            "description": description,
+        }
+
+        response = session.post(
+            url + "/api/jobs", json=data, headers={"X-CSRF-TOKEN": csrf_token}
+        )
+
+        if response.status_code != 201:
+            logger.warning(
+                f"There was an error submitting the job to {dashboard}.\n"
+                f"    code = {response.status_code}\n{response.json()}"
+            )
+            tk.messagebox.showerror(
+                title="Error submitting the job",
+                message=(
+                    f"There was an error submitting the job to {dashboard}./n"
+                    "See the console for more information."
+                ),
+            )
+            return
+
+        job_id = response.json()["id"]
+        logger.info("Submitted job #{}".format(job_id))
+        return job_id
+
+    def submit_with_dialog(self, flowchart=None):
+        """
+        Allow the user to choose the dashboard and other parameters,
+        and submit the job as requested.
+
+        Parameters
+        ----------
+        flowchart : text, optional
+            The flowchart to use. If not given, prompt the user for
+            one.
+
+        Returns
+        -------
+        job_id : integer
+            The id of the submitted job.
+        """
+        if self.dialog is None:
+            self.create_submit_dialog()
+
+        result = self.dialog.activate(geometry="centerscreenfirst")
+
+        if result is not None:
+            job_id = self.submit(flowchart, **result)
+            return job_id
+        else:
+            return None
+
+    def status(self, dashboard, timeout=1):
+        """The status of the given dashboard.
+
+        Contact the given dashboard, checking for errors, timeouts,
+        etc. and report back the current status.
+
+        Return
+        ------
+        status : enum (a string...)
+            'up'
+            'down'
+            'error'
+        """
+
+        url = self.config[dashboard]["url"]
+
+        try:
+            response = requests.get(url + "/api/status", timeout=timeout)
+            if response.status_code != 200:
+                logger.info(
+                    (
+                        "Encountered an error getting the status from "
+                        "dashboard '{}', error code: {}"
+                    ).format(dashboard, response.status_code)
+                )
+                result = "dashboard error"
+            else:
+                result = response.json()["status"]
+        except requests.exceptions.Timeout:
+            logger.info("A timeout occurred contacting the dashboard " + dashboard)
+            result = "down"
+        except requests.exceptions.ConnectionError as e:
+            logger.info(
+                "A connection error occurred contacting the dashboard " + dashboard
+            )
+            if e.response is not None:
+                logger.info(
+                    "Status code = {}, {}".format(
+                        e.response.status_code, e.response.text
+                    )
+                )
+            result = "connection error"
 
         return result
