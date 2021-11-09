@@ -206,6 +206,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     # Change to the working directory and run the flowchart
     with cd(wdir):
         # Set up the initial metadata for the job.
+        time_now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if in_jobserver:
             with open("job_data.json", "r") as fd:
                 data = json.load(fd)
@@ -215,19 +216,20 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
                 "command line": sys.argv,
                 "title": options["title"],
                 "working directory": wdir,
+                "submitted time": time_now,
             }
         data.update(
             {
                 "flowchart_digest": flowchart.digest(),
                 "flowchart_digest_strict": flowchart.digest(strict=True),
-                "start time": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
+                "start time": time_now,
                 "state": "started",
                 "uuid": uuid.uuid4().hex,
                 "~cpuinfo": cpuinfo.get_cpu_info(),
             }
         )
         if not in_jobserver and not standalone:
-            current_time = datetime.datetime.now()
+            current_time = datetime.datetime.now(datetime.timezone.utc)
             if "projects" not in data:
                 data["projects"] = projects
             data["datastore"] = datastore
@@ -269,7 +271,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
                 )
 
             db.login(user, password)
-            db.submit_job(
+            db.add_job(
                 job_id,
                 flowchart_filename=flowchart_path,
                 project_names=data["projects"],
@@ -306,7 +308,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
             # Wrap things up
             t1 = time.time()
             pt1 = time.process_time()
-            data["end time"] = time.strftime("%Y-%m-%d %H:%M:%S %Z")
+            data["end time"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
             t = t1 - t0
             pt = pt1 - pt0
             data["elapsed time"] = t
@@ -324,7 +326,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
 
             if not in_jobserver and not standalone:
                 # Let the datastore know that the job finished.
-                current_time = datetime.datetime.now()
+                current_time = datetime.datetime.now(datetime.timezone.utc)
 
                 # Add to the database
                 db = seamm_datastore.connect(
