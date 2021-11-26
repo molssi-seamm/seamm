@@ -14,10 +14,10 @@ import configparser
 import logging
 from pathlib import Path
 import pkg_resources
-import pprint
 import requests
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import simpledialog
 import tkinter.ttk as ttk
 
 import Pmw
@@ -42,9 +42,6 @@ class TkJobHandler(object):
         self.dialog = None
 
         self._credentials = None
-        self._password = None
-        self._projects = None
-        self._user = None
 
         self._widgets = {}
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
@@ -93,13 +90,6 @@ class TkJobHandler(object):
                 result.append(dashboard)
         return sorted(result)
 
-    @property
-    def projects(self):
-        """The available projects."""
-        if self._projects is None:
-            pass
-        return self._projects
-
     def add_dashboard_cb(self):
         """Post a dialog for adding a dashboard to the list."""
         dialog = Pmw.Dialog(
@@ -131,6 +121,91 @@ class TkJobHandler(object):
         sw.align_labels([name, url, protocol])
 
         dialog.activate(geometry="centerscreenfirst")
+
+    def add_project(self, dashboard, project, description=""):
+        """Add a project to the datastore for this dashboard.
+
+        Parameters
+        ----------
+        dashboard : str
+            The dashboard to work with.
+        project : str
+            The name of the new project.
+
+        Returns
+        -------
+        bool
+            True if successfully added the project. False otherwise.
+        """
+        url = self.config[dashboard]["url"]
+
+        # Authenticate
+        user, password = self.get_credentials(dashboard)
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        # Login in to the Dashboard
+        session = requests.session()
+        response = session.post(url + "/api/auth/token", json=authentication)
+
+        cookie_jar = response.cookies
+        tmp = cookie_jar.get_dict()
+        csrf_token = tmp["csrf_access_token"]
+
+        try:
+            response = session.post(
+                url + "/api/projects",
+                json={
+                    "name": project,
+                    "description": description,
+                },
+                headers={"X-CSRF-TOKEN": csrf_token},
+            )
+        except requests.exceptions.Timeout:
+            logger.warning("A timeout occurred contacting the dashboard " + dashboard)
+            messagebox.showerror(
+                title="Error reaching dashboard",
+                message=f"Could not reach dashboard '{dashboard}'",
+            )
+            return False
+        except requests.exceptions.ConnectionError:
+            logger.warning(
+                "A connection error occurred contacting the dashboard " + dashboard
+            )
+            messagebox.showerror(
+                title="Error connecting to the dashboard",
+                message=f"A connection error occured reaching dashboard '{dashboard}'",
+            )
+            return False
+        except Exception as e:
+            logger.warning(
+                f"A unknown error occurred contacting the dashboard '{dashboard}'\n"
+                f"{type(e)} -- {str(e)}"
+            )
+            messagebox.showerror(
+                title="Error connecting to the dashboard",
+                message=(
+                    f"A unknown error occured reaching dashboard '{dashboard}': {e}"
+                ),
+            )
+            return False
+
+        if response.status_code != 201:
+            logger.warning(
+                f"There was an error creating a project at {dashboard}.\n"
+                f"    code = {response.status_code}\n{response.json()}"
+            )
+            messagebox.showerror(
+                title="Error creating project",
+                message=(
+                    f"There was an error creating the project at {dashboard}./n"
+                    "See the console for more information."
+                ),
+            )
+            return False
+        return True
 
     def ask_for_credentials(self, user=None, password=None):
         raise NotImplementedError()
@@ -169,7 +244,8 @@ class TkJobHandler(object):
         # User and project
         w["username"] = sw.LabeledEntry(d, labeltext="User:")
         w["username"].set(self.configfile.owner())
-        w["project"] = sw.LabeledCombobox(d, labeltext="Project:")
+        w["project"] = sw.LabeledCombobox(d, labeltext="Project:", state="readonly")
+        w["project"].bind("<<ComboboxSelected>>", self.project_cb)
 
         # Title
         w["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
@@ -218,76 +294,14 @@ class TkJobHandler(object):
         w = self._widgets
         dashboard = w["dashboard"].get()
 
-        url = self.config[dashboard]["url"]
-
-        # Authenticate
-        user, password = self.get_credentials(dashboard)
-        authentication = {
-            "username": user,
-            "password": password,
-        }
-
-        # Login in to the Dashboard
-        session = requests.session()
-        response = session.post(url + "/api/auth/token", json=authentication)
-
-        cookie_jar = response.cookies
-        tmp = cookie_jar.get_dict()
-        csrf_token = tmp["csrf_access_token"]
-
-        try:
-            response = requests.get(
-                url + "/api/projects",
-                timeout=self.timeout,
-                headers={"X-CSRF-TOKEN": csrf_token},
-            )
-            if response.status_code != 200:
-                logger.warning(
-                    (
-                        "Encountered an error getting the status from "
-                        "dashboard '{}', error code: {}"
-                    ).format(dashboard, response.status_code)
-                )
-                messagebox.showerror(
-                    title="Dashboard error",
-                    message="Dashboard '{}' returned an error: {}".format(
-                        dashboard, response.status_code
-                    ),
-                )
-                if self.current_dashboard is not None:
-                    w["dashboard"].set(self.current_dashboard)
-                return
-            else:
-                data = response.json()
-                print("Projects:")
-                pprint.pprint(data)
-        except requests.exceptions.Timeout:
-            logger.warning("A timeout occurred contacting the dashboard " + dashboard)
-            messagebox.showerror(
-                title="Dashboard error",
-                message="Could not reach dashboard '{}'".format(dashboard),
-            )
+        projects = self.get_projects(dashboard)
+        if projects is None:
             if self.current_dashboard is not None:
                 w["dashboard"].set(self.current_dashboard)
             return
-        except requests.exceptions.ConnectionError:
-            logger.warning(
-                "A connection error occurred contacting the dashboard " + dashboard
-            )
-            messagebox.showerror(
-                title="Dashboard error",
-                message=("A connection error occured reaching dashboard '{}'").format(
-                    dashboard
-                ),
-            )  # yapf: disable
-            if self.current_dashboard is not None:
-                w["dashboard"].set(self.current_dashboard)
-            return
-
-        # get the projects
-        projects = [i["name"] for i in data]
 
         # All OK, changed the widgets
+        projects.append("-- Create new project --")
         w["project"].combobox.config({"value": projects})
         if len(projects) > 0:
             w["project"].set(projects[0])
@@ -641,6 +655,69 @@ class TkJobHandler(object):
                     self.credentials.write(fd)
         return user, password
 
+    def get_projects(self, dashboard):
+        """Get the projects for the selected dashboard."""
+        url = self.config[dashboard]["url"]
+
+        # Authenticate
+        user, password = self.get_credentials(dashboard)
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        # Login in to the Dashboard
+        session = requests.session()
+        response = session.post(url + "/api/auth/token", json=authentication)
+
+        cookie_jar = response.cookies
+        tmp = cookie_jar.get_dict()
+        csrf_token = tmp["csrf_access_token"]
+
+        try:
+            response = session.get(
+                url + "/api/projects/list",
+                params={"action": "update"},
+                timeout=self.timeout,
+                headers={"X-CSRF-TOKEN": csrf_token},
+            )
+        except requests.exceptions.Timeout:
+            logger.warning("A timeout occurred contacting the dashboard " + dashboard)
+            messagebox.showerror(
+                title="Dashboard error",
+                message="Could not reach dashboard '{}'".format(dashboard),
+            )
+            return
+        except requests.exceptions.ConnectionError:
+            logger.warning(
+                "A connection error occurred contacting the dashboard " + dashboard
+            )
+            messagebox.showerror(
+                title="Dashboard error",
+                message=("A connection error occured reaching dashboard '{}'").format(
+                    dashboard
+                ),
+            )  # yapf: disable
+            return
+        else:
+            if response.status_code != 200:
+                logger.warning(
+                    (
+                        "Encountered an error getting the status from "
+                        "dashboard '{}', error code: {}"
+                    ).format(dashboard, response.status_code)
+                )
+                messagebox.showerror(
+                    title="Dashboard error",
+                    message="Dashboard '{}' returned an error: {}".format(
+                        dashboard, response.status_code
+                    ),
+                )
+                return
+            else:
+                projects = response.json()
+        return projects
+
     def handle_add_dialog(self, result):
         """Handle the dialog to add a dashboard to the list."""
         w = self._widgets["add"]
@@ -705,6 +782,23 @@ class TkJobHandler(object):
             self.remove_cb(dashboard)
         else:
             dialog.deactivate(None)
+
+    def project_cb(self, event=None):
+        """Handle a change in the project since it might be asking for adding a project
+        in which case prompt for the new project's name, create it, and sleect it in the
+        widget.
+        """
+        w = self._widgets
+        project = w["project"].get()
+        if project == "-- Create new project --":
+            result = simpledialog.askstring("Add Project", "Project name:")
+            if result is not None and result != "":
+                # Add the project
+                dashboard = w["dashboard"].get()
+                if self.add_project(dashboard, result):
+                    pass
+            self.dashboard_cb()
+            w["project"].set(result)
 
     def save_configuration(self):
         """Save the list of dashboards to disk."""
