@@ -139,20 +139,12 @@ class TkJobHandler(object):
         """
         url = self.config[dashboard]["url"]
 
-        # Authenticate
-        user, password = self.get_credentials(dashboard)
-        authentication = {
-            "username": user,
-            "password": password,
-        }
-
         # Login in to the Dashboard
         session = requests.session()
-        response = session.post(url + "/api/auth/token", json=authentication)
+        csrf_token = self.login(session, dashboard)
 
-        cookie_jar = response.cookies
-        tmp = cookie_jar.get_dict()
-        csrf_token = tmp["csrf_access_token"]
+        if csrf_token is None:
+            return False
 
         try:
             response = session.post(
@@ -905,24 +897,15 @@ class TkJobHandler(object):
             )
             return None
 
-        # Authenticate
-        user, password = self.get_credentials(dashboard)
-        authentication = {
-            "username": user,
-            "password": password,
-        }
-
         # Login in to the Dashboard
         session = requests.session()
-        response = session.post(url + "/api/auth/token", json=authentication)
+        csrf_token = self.login(session, dashboard)
 
-        cookie_jar = response.cookies
-        tmp = cookie_jar.get_dict()
-        csrf_token = tmp["csrf_access_token"]
+        if csrf_token is None:
+            return None
 
         # Prepare the data
         data = {
-            "username": user,
             "flowchart": flowchart,
             "project": project,
             "title": title,
