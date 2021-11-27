@@ -23,6 +23,7 @@ dependencies:
   - py-cpuinfo
   - reference-handler
   - requests
+  - seamm-datastore
   - seamm-util
   - seamm-widgets
   - stevedore

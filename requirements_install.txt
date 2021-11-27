@@ -2,8 +2,8 @@ bibtexparser
 fasteners
 humanize
 jinja2
+molsystem
 numpy
-molsystem>=2021.5.5
 packaging
 pandas
 pillow
@@ -11,8 +11,9 @@ pmw
 py-cpuinfo
 python-dateutil
 pyuca
-reference_handler>=0.9.1
+reference_handler
 requests
-seamm-util>=2021.5.6
-seamm-widgets>=2021.5.6
+seamm-datastore
+seamm-util
+seamm-widgets
 stevedore
