@@ -660,19 +660,13 @@ class TkJobHandler(object):
         url = self.config[dashboard]["url"]
 
         # Authenticate
-        user, password = self.get_credentials(dashboard)
-        authentication = {
-            "username": user,
-            "password": password,
-        }
 
         # Login in to the Dashboard
         session = requests.session()
-        response = session.post(url + "/api/auth/token", json=authentication)
+        csrf_token = self.login(session, dashboard)
 
-        cookie_jar = response.cookies
-        tmp = cookie_jar.get_dict()
-        csrf_token = tmp["csrf_access_token"]
+        if csrf_token is None:
+            return []
 
         try:
             response = session.get(
@@ -687,7 +681,7 @@ class TkJobHandler(object):
                 title="Dashboard error",
                 message="Could not reach dashboard '{}'".format(dashboard),
             )
-            return
+            return []
         except requests.exceptions.ConnectionError:
             logger.warning(
                 "A connection error occurred contacting the dashboard " + dashboard
@@ -698,7 +692,7 @@ class TkJobHandler(object):
                     dashboard
                 ),
             )  # yapf: disable
-            return
+            return []
         else:
             if response.status_code != 200:
                 logger.warning(
@@ -713,7 +707,7 @@ class TkJobHandler(object):
                         dashboard, response.status_code
                     ),
                 )
-                return
+                return []
             else:
                 projects = response.json()
         return projects
@@ -782,6 +776,79 @@ class TkJobHandler(object):
             self.remove_cb(dashboard)
         else:
             dialog.deactivate(None)
+
+    def login(self, session, dashboard):
+        """Log the session into the dashboard.
+
+        Parameters
+        ----------
+        session : requests.session
+            The requests session to use.
+        dashboard : str
+            The name of the dashboard.
+
+        Returns
+        -------
+        str
+            The CSRF token or None
+        """
+        url = self.config[dashboard]["url"]
+        csrf_token = None
+
+        user, password = self.get_credentials(dashboard)
+        authentication = {
+            "username": user,
+            "password": password,
+        }
+
+        try:
+            response = session.post(url + "/api/auth/token", json=authentication)
+        except requests.exceptions.ConnectionError as e:
+            logger.warning(f"The dashboard '{dashboard}' cannot be reached: {str(e)}")
+            messagebox.showwarning(
+                title="Cannot reach Dashboard",
+                message=f"The dashboard '{dashboard}' is not running or accesible",
+            )
+        except Exception as e:
+            logger.error(
+                f"Unknown error reaching the  dashboard '{dashboard}': ({type(e)}) "
+                f"{str(e)}"
+            )
+            messagebox.showerror(
+                title="Cannot reach Dashboard",
+                message="Unknown error reaching dashboard '{}'".format(dashboard),
+            )
+
+        else:
+            if response.status_code != 200:
+                logger.error(
+                    f"Could not log in to dashboard {dashboard}: code = "
+                    f"{response.status_code}"
+                )
+                messagebox.showerror(
+                    title="Cannot reach Dashboard",
+                    message=(
+                        f"The dashboard '{dashboard}' returned status "
+                        f"{response.status_code}"
+                    ),
+                )
+            else:
+                cookie_jar = response.cookies
+                cookies = cookie_jar.get_dict()
+                if "csrf_access_token" in cookies:
+                    csrf_token = cookies["csrf_access_token"]
+                else:
+                    logger.error(
+                        f"Could not log in to dashboard {dashboard} -- did not get "
+                        "CSRF token"
+                    )
+                    messagebox.showerror(
+                        title="Cannot reach Dashboard",
+                        message=(
+                            f"The dashboard '{dashboard}' dir not return th CSRF token"
+                        ),
+                    )
+        return csrf_token
 
     def project_cb(self, event=None):
         """Handle a change in the project since it might be asking for adding a project
