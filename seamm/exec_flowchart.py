@@ -182,39 +182,44 @@ class ExecFlowchart(object):
         finally:
             # Write the final structure
             db = seamm.flowchart_variables.get_variable("_system_db")
-            configuration = db.system.configuration
-            output = []
-            if configuration.n_atoms > 0:
-                # MMCIF file has bonds
-                filename = os.path.join(
-                    self.flowchart.root_directory, "final_structure.mmcif"
-                )
-                text = None
-                try:
-                    text = configuration.to_mmcif_text()
-                except Exception:
-                    message = (
-                        "Error creating the final mmcif file\n\n"
-                        + traceback.format_exc()
-                    )
-                    print(message)
-                    logger.critical(message)
+            system = db.system
+            if system is not None:
+                configuration = system.configuration
+                if configuration is not None:
+                    output = []
+                    if configuration.n_atoms > 0:
+                        # MMCIF file has bonds
+                        filename = os.path.join(
+                            self.flowchart.root_directory, "final_structure.mmcif"
+                        )
+                        text = None
+                        try:
+                            text = configuration.to_mmcif_text()
+                        except Exception:
+                            message = (
+                                "Error creating the final mmcif file\n\n"
+                                + traceback.format_exc()
+                            )
+                            print(message)
+                            logger.critical(message)
 
-                if text is not None:
-                    with open(filename, "w") as fd:
-                        print(text, file=fd)
-                    output.append("final_structure.mmcif")
-                # CIF file has cell
-                if configuration.periodicity == 3:
-                    filename = os.path.join(
-                        self.flowchart.root_directory, "final_structure.cif"
-                    )
-                    with open(filename, "w") as fd:
-                        print(configuration.to_cif_text(), file=fd)
-                        output.append("final_structure.cif")
-                if len(output) > 0:
-                    files = "' and '".join(output)
-                    job.job(f"\nWrote the final structure to '{files}' for viewing.")
+                        if text is not None:
+                            with open(filename, "w") as fd:
+                                print(text, file=fd)
+                            output.append("final_structure.mmcif")
+                        # CIF file has cell
+                        if configuration.periodicity == 3:
+                            filename = os.path.join(
+                                self.flowchart.root_directory, "final_structure.cif"
+                            )
+                            with open(filename, "w") as fd:
+                                print(configuration.to_cif_text(), file=fd)
+                                output.append("final_structure.cif")
+                        if len(output) > 0:
+                            files = "' and '".join(output)
+                            job.job(
+                                f"\nWrote the final structure to '{files}' for viewing."
+                            )
 
             # And print out the references
             filename = os.path.join(self.flowchart.root_directory, "references.db")
