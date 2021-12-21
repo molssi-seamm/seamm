@@ -483,6 +483,8 @@ class Node(collections.abc.Hashable):
         else:
             self.logger.debug("returning next_node: None")
 
+        self.close_printing(printer)
+
         return next_node
 
     def next(self):
@@ -671,8 +673,10 @@ class Node(collections.abc.Hashable):
         """Close the handlers for printing, so that buffers are
         flushed, files closed, etc.
         """
-        for handler in printer.handlers:
-            printer.removeHandler(handler)
+        if printer is not None:
+            for handler in printer.handlers:
+                handler.close()
+                printer.removeHandler(handler)
 
     def job_output(self, text):
         """Temporary!"""
