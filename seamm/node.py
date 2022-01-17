@@ -752,7 +752,8 @@ class Node(collections.abc.Hashable):
                 # and put the value in (finally!!!)
                 row_index = table_handle["current index"]
                 if key in data:
-                    table.at[row_index, column] = data[key]
+                    if data[key] is not None:
+                        table.at[row_index, column] = data[key]
 
     def create_figure(self, title="", template="line.graph_template", module_path=None):
         """Create a new figure.
