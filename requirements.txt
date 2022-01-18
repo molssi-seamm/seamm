@@ -6,7 +6,7 @@ molsystem==2021.11.26
 numpy==1.20.2
 packaging==20.9
 pandas==1.2.4
-Pillow==8.4.0
+Pillow==9.0.0
 Pmw==2.0.1
 py_cpuinfo==8.0.0
 python_dateutil==2.8.2
