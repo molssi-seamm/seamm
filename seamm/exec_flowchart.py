@@ -78,6 +78,7 @@ class ExecFlowchart(object):
                   address      = {Virginia Tech, Blacksburg, VA, USA},
                   author       = {Jessica Nash and
                                   Eliseo Marin-Rimoldi and
+                                  Mohammad Mostafanejad and
                                   Paul Saxe},
                   doi          = {10.5281/zenodo.5153984},
                   month        = {$month},
