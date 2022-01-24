@@ -56,7 +56,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     """The standalone flowchart app"""
     global print
 
-    if len(sys.argv) > 1:
+    if not in_jobserver and len(sys.argv) > 1:
         if sys.argv[1] == "--help" or sys.argv[1] == "-h":
             # Running run_flowchart by hand ...
             print("usage: run_flowchart <flowchart> [options]")
@@ -109,7 +109,10 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     flowchart.create_parsers()
 
     # And handle the command-line arguments and ini file options.
-    parser.parse_args()
+    if in_jobserver:
+        parser.parse_args(args=[])
+    else:
+        parser.parse_args()
     logger.info("Parsed the command-line arguments")
     options = parser.get_options("SEAMM")
 
