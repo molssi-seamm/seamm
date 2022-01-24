@@ -44,6 +44,7 @@ class TkJobHandler(object):
         self._credentials = None
 
         self._widgets = {}
+        self._variable_value = {}
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
         # Get the location of the dashboards configuration file
@@ -209,8 +210,14 @@ class TkJobHandler(object):
         status = self.status(dashboard)
         w["status"].set(status)
 
-    def create_submit_dialog(self):
-        """Create the dialog for submitting a job."""
+    def create_submit_dialog(self, title="", description=""):
+        """Create the dialog for submitting a job.
+
+        Parameters
+        ----------
+        flowchart : seamm.Flowchart
+            The flowchart object
+        """
         logger.debug("Creating submit dialog")
         self.dialog = Pmw.Dialog(
             self._root,
@@ -241,17 +248,31 @@ class TkJobHandler(object):
 
         # Title
         w["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
+        w["title"].set(title)
 
         # Description
+        w["description label"] = ttk.Label(d, text="Description:")
         frame = sw.ScrolledFrame(
             d, scroll_vertically=True, borderwidth=2, relief=tk.SUNKEN
         )
         f = frame.interior()
         w["description"] = tk.Text(f)
         w["description"].grid(sticky=tk.EW)
+        w["description"].insert("1.0", description)
 
         f.rowconfigure(0, weight=1)
         f.columnconfigure(0, weight=1)
+
+        # Space for any parameters
+        w["parameters label"] = ttk.Label(d, text="Parameters:")
+        w["parameters"] = sw.ScrolledColumns(
+            d,
+            columns=[
+                "Name",
+                "Value",
+                "Description",
+            ],
+        )
 
         # Set up the dashboard and projects if needed
         if len(dashboards) > 0:
@@ -274,11 +295,15 @@ class TkJobHandler(object):
         w["username"].grid(row=1, column=0, sticky=tk.EW)
         w["project"].grid(row=1, column=1, sticky=tk.EW)
         w["title"].grid(row=2, column=0, columnspan=2, sticky=tk.W)
-        frame.grid(row=3, column=0, columnspan=2, sticky=tk.NSEW)
+        w["description label"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
+        frame.grid(row=4, column=0, columnspan=2, sticky=tk.NSEW)
+        w["parameters label"].grid(row=5, column=0, columnspan=2, sticky=tk.W)
+        w["parameters"].grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
 
         sw.align_labels([w["dashboard"], w["username"], w["title"]])
 
-        d.rowconfigure(3, weight=1)
+        d.rowconfigure(4, weight=1)
+        d.rowconfigure(6, weight=1)
         d.columnconfigure(1, weight=1)
 
     def dashboard_cb(self, event=None):
@@ -751,7 +776,7 @@ class TkJobHandler(object):
                     "project": w["project"].get(),
                     "title": w["title"].get(),
                     "dashboard": w["dashboard"].get(),
-                    "description": w["description"].get(1.0, tk.END),
+                    "description": w["description"].get(1.0, tk.END).strip("\n"),
                 }
             )
 
@@ -910,6 +935,7 @@ class TkJobHandler(object):
             "project": project,
             "title": title,
             "description": description,
+            "parameters": self._variable_value,
         }
 
         response = session.post(
@@ -934,16 +960,15 @@ class TkJobHandler(object):
         logger.info("Submitted job #{}".format(job_id))
         return job_id
 
-    def submit_with_dialog(self, flowchart=None):
+    def submit_with_dialog(self, flowchart):
         """
         Allow the user to choose the dashboard and other parameters,
         and submit the job as requested.
 
         Parameters
         ----------
-        flowchart : text, optional
-            The flowchart to use. If not given, prompt the user for
-            one.
+        flowchart : seamm.Flowchart
+            The flowchart to use.
 
         Returns
         -------
@@ -951,12 +976,60 @@ class TkJobHandler(object):
             The id of the submitted job.
         """
         if self.dialog is None:
-            self.create_submit_dialog()
+            title = flowchart.metadata["title"]
+            description = flowchart.metadata["description"]
+            self.create_submit_dialog(title=title, description=description)
 
+        # Find any Parameter steps.
+        parameter_nodes = []
+        step = flowchart.get_node("1")
+        while step:
+            if step.step_type == "control-parameters-step":
+                parameter_nodes.append(step)
+            step = step.next()
+
+        if len(parameter_nodes) == 0:
+            # Remove the parameter section
+            self._widgets["parameters label"].grid_forget()
+            self._widgets["parameters"].grid_forget()
+            d = self.dialog.interior()
+            d.rowconfigure(6, weight=0)
+        else:
+            self._widgets["parameters label"].grid(
+                row=5, column=0, columnspan=2, sticky=tk.W
+            )
+            table = self._widgets["parameters"]
+            table.clear()
+            table.grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
+            frame = table.interior()
+            d = self.dialog.interior()
+            d.rowconfigure(6, weight=1)
+            row = 0
+            value = self._variable_value
+            for step in parameter_nodes:
+                variables = step.parameters["variables"]
+                for name, data in variables.value.items():
+                    table[row, 0] = name
+                    if name not in value or value[name] is None:
+                        value[name] = data["default"]
+                    entry = ttk.Entry(frame)
+                    entry.insert(0, value[name])
+                    table[row, 1] = entry
+                    table[row, 2] = data["help"]
+                    row += 1
+
+        # Post the dialog
         result = self.dialog.activate(geometry="centerscreenfirst")
 
         if result is not None:
-            job_id = self.submit(flowchart, **result)
+            # Process any variables
+            if len(parameter_nodes) > 0:
+                row = 0
+                for name in variables.value.keys():
+                    value[name] = table[row, 1].get()
+
+            flowchart_text = flowchart.to_text()
+            job_id = self.submit(flowchart_text, **result)
             return job_id
         else:
             return None
