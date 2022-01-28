@@ -52,7 +52,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
+def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=None):
     """The standalone flowchart app"""
     global print
 
@@ -74,6 +74,9 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
             filename = "flowchart.flow"
         else:
             filename = os.path.join(wdir, "flowchart.flow")
+
+    if cmdline is None:
+        cmdline = sys.argv
 
     # Set up the argument parser for this node.
     parser = seamm_util.seamm_parser()
@@ -109,10 +112,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     flowchart.create_parsers()
 
     # And handle the command-line arguments and ini file options.
-    if in_jobserver:
-        parser.parse_args(args=[])
-    else:
-        parser.parse_args()
+    parser.parse_args(cmdline)
     logger.info("Parsed the command-line arguments")
     options = parser.get_options("SEAMM")
 
@@ -212,17 +212,18 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
         time_now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if in_jobserver:
             with open("job_data.json", "r") as fd:
+                fd.readline()
                 data = json.load(fd)
         else:
             data = {
                 "data_version": "1.0",
-                "command line": sys.argv,
                 "title": options["title"],
                 "working directory": wdir,
                 "submitted time": time_now,
             }
         data.update(
             {
+                "command line": cmdline,
                 "flowchart_digest": flowchart.digest(),
                 "flowchart_digest_strict": flowchart.digest(strict=True),
                 "start time": time_now,
