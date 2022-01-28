@@ -18,6 +18,7 @@ import jinja2
 import json
 import logging
 import os.path
+from pathlib import Path
 import pprint
 import string
 import traceback
@@ -126,6 +127,11 @@ class Node(collections.abc.Hashable):
     def directory(self):
         """Return the directory we should write output to"""
         return os.path.join(self.flowchart.root_directory, *self._id)
+
+    @property
+    def job_path(self):
+        """Return the path to the job's top-level directory"""
+        return Path(self.flowchart.root_directory)
 
     @property
     def visited(self):
@@ -593,6 +599,30 @@ class Node(collections.abc.Hashable):
     def analyze(self, indent="", **kwargs):
         """Analyze the output of the calculation"""
         return
+
+    def file_path(self, filename):
+        """Remove any prefix from a filename and return the path.
+
+        Parameters
+        ----------
+        filename : str
+            The filename with optional prefix such as 'job:'
+
+        Returns
+        -------
+        pathlib.Path
+            The normalized, full path.
+        """
+        path = str(filename)
+        if path[0:4] == "job:":
+            path = path[4:]
+            path = self.job_path / path
+        else:
+            path = Path(filename)
+
+        path = path.expanduser().resolve()
+
+        return path
 
     def get_value(self, variable_or_value):
         """Return the value of the workspace variable is <variable_or_value>
