@@ -15,17 +15,31 @@ import logging
 from pathlib import Path
 import pkg_resources
 import requests
+import shlex
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
 import tkinter.ttk as ttk
 
 import Pmw
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 import seamm_util
 import seamm_widgets as sw
 
 logger = logging.getLogger(__name__)
+
+
+def safe_filename(filename):
+    if filename[0] == "~":
+        path = Path(filename).expanduser()
+    else:
+        path = Path(filename)
+    if path.anchor == "":
+        result = "_".join(path.parts)
+    else:
+        result = "_".join(path.parts[1:])
+    return "job:data/" + result
 
 
 class TkJobHandler(object):
@@ -270,6 +284,7 @@ class TkJobHandler(object):
             columns=[
                 "Name",
                 "Value",
+                "",
                 "Description",
             ],
         )
@@ -487,6 +502,41 @@ class TkJobHandler(object):
                     db_config[key] = w[key].get()
 
             self.save_configuration()
+
+    def file_cb(self, table, row, name, data):
+        """Method to handle parameters with files
+
+        Parameters
+        ----------
+        table : sw.ScrolledColumns
+            The widget displaying the table of parameters.
+        row : int
+            The row of the table.
+        name : str
+            The name of the parameter.
+        data : dict(str, str)
+            The definition of the parameter.
+        """
+        multiple = data["nargs"] != "a single value"
+
+        filetypes = [
+            ("MOL", "*.mol"),
+            ("MOL", "*.mol2"),
+            ("SDF", "*.sdf"),
+            ("XYZ", "*.xyz"),
+            ("CIF", "*.cif"),
+            ("MMCIF", "*.mmcif"),
+            ("All files", "*"),
+        ]
+        filename = tk.filedialog.askopenfilename(filetypes=filetypes, multiple=multiple)
+        if filename == "":
+            return
+        w = table[row, 1]
+        if multiple:
+            w.insert(tk.END, " " + filename)
+        else:
+            w.delete(0, tk.END)
+            w.insert(0, filename)
 
     def fill_statuses(self):
         w = self._widgets["display"]
@@ -903,6 +953,7 @@ class TkJobHandler(object):
         self,
         flowchart,
         dashboard,
+        values={},
         username=None,
         project="default",
         title="",
@@ -922,6 +973,64 @@ class TkJobHandler(object):
             )
             return None
 
+        # Find any Parameter steps.
+        parameter_steps = []
+        step = flowchart.get_node("1")
+        while step:
+            if step.step_type == "control-parameters-step":
+                parameter_steps.append(step)
+            step = step.next()
+
+        # Prepare the command line arguments, transforming and remembering files
+        files = {}
+        if len(parameter_steps) == 0:
+            cmdline = []
+        else:
+            # Build the command line
+            optional = []
+            required = []
+            for step in parameter_steps:
+                variables = step.parameters["variables"]
+                for name, data in variables.value.items():
+                    if data["optional"] == "Yes":
+                        if data["type"] == "bool":
+                            if values[name] == "Yes":
+                                optional.append(f"--{name}")
+                        elif data["type"] == "file":
+                            if data["nargs"] == "a single value":
+                                filename = values[name]
+                                if filename not in files:
+                                    files[filename] = safe_filename(filename)
+                                optional.append(f"--{name}")
+                                optional.append(files[filename])
+                            else:
+                                optional.append(f"--{name}")
+                                for filename in shlex.split(values[name]):
+                                    if filename not in files:
+                                        files[filename] = safe_filename(filename)
+                                    optional.append(files[filename])
+                        else:
+                            optional.append(f"--{name}")
+                            optional.append(values[name])
+                    else:
+                        if data["type"] == "file":
+                            if data["nargs"] == "a single value":
+                                filename = values[name]
+                                if filename not in files:
+                                    files[filename] = safe_filename(filename)
+                                required.append(files[filename])
+                            else:
+                                for filename in shlex.split(values[name]):
+                                    if filename not in files:
+                                        files[filename] = safe_filename(filename)
+                                    required.append(files[filename])
+                        else:
+                            if data["nargs"] == "a single value":
+                                required.append(values[name])
+                            else:
+                                required = shlex.split(values[name])
+            cmdline = optional + required
+
         # Login in to the Dashboard
         session = requests.session()
         csrf_token = self.login(session, dashboard)
@@ -931,11 +1040,11 @@ class TkJobHandler(object):
 
         # Prepare the data
         data = {
-            "flowchart": flowchart,
+            "flowchart": flowchart.to_text(),
             "project": project,
             "title": title,
             "description": description,
-            "parameters": self._variable_value,
+            "parameters": {"cmdline": cmdline},
         }
 
         response = session.post(
@@ -957,6 +1066,37 @@ class TkJobHandler(object):
             return
 
         job_id = response.json()["id"]
+
+        if len(files) == 0:
+            logger.info("There are no files to transfer.")
+
+        # Now transfer any files
+        file_url = f"{url}/api/jobs/{job_id}/files"
+        for filename, newname in files.items():
+            m = MultipartEncoder(
+                fields={"file": (newname, open(filename, "rb"), "text/plain")}
+            )
+
+            headers = {
+                "Content-Type": m.content_type,
+                "X-CSRF-TOKEN": csrf_token,
+            }
+            response = session.post(file_url, data=m, headers=headers)
+
+            if response.status_code != 201:
+                logger.warning(
+                    f"There was an error transferring the file {filename} to "
+                    f"{dashboard}.\n"
+                    f"    code = {response.status_code}\n{response.json()}"
+                )
+                tk.messagebox.showerror(
+                    title="Error submitting the job",
+                    message=(
+                        f"There was an error transferring the file {filename} to "
+                        f"{dashboard}.\nSee the console for more information."
+                    ),
+                )
+
         logger.info("Submitted job #{}".format(job_id))
         return job_id
 
@@ -981,14 +1121,14 @@ class TkJobHandler(object):
             self.create_submit_dialog(title=title, description=description)
 
         # Find any Parameter steps.
-        parameter_nodes = []
+        parameter_steps = []
         step = flowchart.get_node("1")
         while step:
             if step.step_type == "control-parameters-step":
-                parameter_nodes.append(step)
+                parameter_steps.append(step)
             step = step.next()
 
-        if len(parameter_nodes) == 0:
+        if len(parameter_steps) == 0:
             # Remove the parameter section
             self._widgets["parameters label"].grid_forget()
             self._widgets["parameters"].grid_forget()
@@ -1006,7 +1146,7 @@ class TkJobHandler(object):
             d.rowconfigure(6, weight=1)
             row = 0
             value = self._variable_value
-            for step in parameter_nodes:
+            for step in parameter_steps:
                 variables = step.parameters["variables"]
                 for name, data in variables.value.items():
                     table[row, 0] = name
@@ -1015,21 +1155,30 @@ class TkJobHandler(object):
                     entry = ttk.Entry(frame)
                     entry.insert(0, value[name])
                     table[row, 1] = entry
-                    table[row, 2] = data["help"]
+                    if data["type"] == "file":
+                        button = tk.Button(
+                            frame,
+                            text="...",
+                            command=(
+                                lambda t=table, r=row, n=name, d=data: self.file_cb(
+                                    t, r, n, d
+                                )
+                            ),
+                        )
+                        table[row, 2] = button
+                    table[row, 3] = data["help"]
                     row += 1
 
         # Post the dialog
         result = self.dialog.activate(geometry="centerscreenfirst")
 
         if result is not None:
-            # Process any variables
-            if len(parameter_nodes) > 0:
-                row = 0
-                for name in variables.value.keys():
-                    value[name] = table[row, 1].get()
+            # Get the variable values
+            for row in range(table.nrows):
+                name = table[row, 0].cget("text")
+                value[name] = table[row, 1].get()
 
-            flowchart_text = flowchart.to_text()
-            job_id = self.submit(flowchart_text, **result)
+            job_id = self.submit(flowchart, values=value, **result)
             return job_id
         else:
             return None
