@@ -76,7 +76,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
             filename = os.path.join(wdir, "flowchart.flow")
 
     if cmdline is None:
-        cmdline = sys.argv
+        cmdline = sys.argv[1:]
 
     # Set up the argument parser for this node.
     parser = seamm_util.seamm_parser()
