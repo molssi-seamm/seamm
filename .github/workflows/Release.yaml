@@ -36,7 +36,7 @@ jobs:
     - name: Run linters
       shell: bash -l {0}
       run: |
-        black --check --diff seamm tests
+        black --extend-exclude '_version.py' --check --diff seamm tests
         flake8 seamm tests
 
   test:
