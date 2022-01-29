@@ -533,7 +533,12 @@ class TkJobHandler(object):
             return
         w = table[row, 1]
         if multiple:
-            w.insert(tk.END, " " + filename)
+            current = shlex.split(w.get())
+            for name in filename:
+                if name not in current:
+                    current.append(name)
+            w.delete(0, tk.END)
+            w.insert(0, " " + shlex.join(current))
         else:
             w.delete(0, tk.END)
             w.insert(0, filename)
@@ -1155,6 +1160,7 @@ class TkJobHandler(object):
                     entry = ttk.Entry(frame)
                     entry.insert(0, value[name])
                     table[row, 1] = entry
+                    table[row, 1].grid(sticky=tk.EW)
                     if data["type"] == "file":
                         button = tk.Button(
                             frame,
@@ -1168,6 +1174,7 @@ class TkJobHandler(object):
                         table[row, 2] = button
                     table[row, 3] = data["help"]
                     row += 1
+            frame.columnconfigure(1, weight=1)
 
         # Post the dialog
         result = self.dialog.activate(geometry="centerscreenfirst")
