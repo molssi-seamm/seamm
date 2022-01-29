@@ -23,6 +23,7 @@ dependencies:
   - py-cpuinfo
   - reference-handler
   - requests
+  - requests-toolbelt
   - seamm-datastore
   - seamm-util
   - seamm-widgets

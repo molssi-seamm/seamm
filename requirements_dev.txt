@@ -1,11 +1,10 @@
--r requirements_install.txt
+-r requirements.txt
 
+black
 coverage
 flake8
-jinja2
 pytest
 pytest-runner
 sphinx
 tox
 twine
-yapf
