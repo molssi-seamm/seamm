@@ -1,7 +1,6 @@
 name: test
 
 channels:
-  - rdkit
   - conda-forge
 
 dependencies:
@@ -11,6 +10,7 @@ dependencies:
 
   # SEAMM requirements
   - bibtexparser
+  - boost==1.73
   - fasteners
   - humanize
   - jinja2
@@ -22,7 +22,6 @@ dependencies:
   - pmw
   - pyuca
   - py-cpuinfo
-  - rdkit
   - reference-handler
   - requests
   - requests-toolbelt
