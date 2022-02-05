@@ -21,6 +21,7 @@ dependencies:
   - pmw
   - pyuca
   - py-cpuinfo
+  - rdkit==2021.9.3
   - reference-handler
   - requests
   - requests-toolbelt
