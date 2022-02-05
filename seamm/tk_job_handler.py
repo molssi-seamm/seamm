@@ -1125,6 +1125,8 @@ class TkJobHandler(object):
             description = flowchart.metadata["description"]
             self.create_submit_dialog(title=title, description=description)
 
+        value = self._variable_value
+
         # Find any Parameter steps.
         parameter_steps = []
         step = flowchart.get_node("1")
@@ -1150,7 +1152,6 @@ class TkJobHandler(object):
             d = self.dialog.interior()
             d.rowconfigure(6, weight=1)
             row = 0
-            value = self._variable_value
             for step in parameter_steps:
                 variables = step.parameters["variables"]
                 for name, data in variables.value.items():
@@ -1180,10 +1181,14 @@ class TkJobHandler(object):
         result = self.dialog.activate(geometry="centerscreenfirst")
 
         if result is not None:
-            # Get the variable values
-            for row in range(table.nrows):
-                name = table[row, 0].cget("text")
-                value[name] = table[row, 1].get()
+            if len(parameter_steps) == 0:
+                value = {}
+            else:
+                # Get the variable values
+                table = self._widgets["parameters"]
+                for row in range(table.nrows):
+                    name = table[row, 0].cget("text")
+                    value[name] = table[row, 1].get()
 
             job_id = self.submit(flowchart, values=value, **result)
             return job_id
