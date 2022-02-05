@@ -86,7 +86,7 @@ class Node(collections.abc.Hashable):
         package = self.__module__.split(".")[0]
         files = [p for p in implib.files(package) if "references.bib" in str(p)]
         if len(files) > 0:
-            path = files[0]
+            path = files[0].locate()
             self.logger.info(f"bibliography file path = '{path}'")
 
             data = path.read_text()
@@ -810,12 +810,22 @@ class Node(collections.abc.Hashable):
                 loaders = [jinja2.PackageLoader("seamm")]
             else:
                 self.logger.info(
-                    "Reading graph templates from the following modules, " "in order"
+                    "Reading graph templates from the following modules, in order"
                 )
                 loaders = []
                 for module in module_path:
-                    self.logger.info("\t" + module)
-                    loaders.append(jinja2.PackageLoader(module))
+                    paths = []
+                    for p in implib.files(module):
+                        if p.parent.name == "templates":
+                            paths.append(p)
+                            break
+
+                    if len(paths) == 0:
+                        self.logger.info(f"\t{module} -- found no templates directory")
+                    else:
+                        path = paths[0].locate().parent
+                        self.logger.info(f"\t{ module} --> {path}")
+                        loaders.append(jinja2.FileSystemLoader(path))
 
             self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
 
