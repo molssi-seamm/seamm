@@ -118,7 +118,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
 
     # Whether to just run as-is, without getting a job_id, using the
     # datastore, etc.
-    standalone = "standalone" in options and options["standalone"]
+    standalone = options["standalone"] or options["projects"] is None
 
     # Setup the logging
     if setup_logging:
