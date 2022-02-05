@@ -9,7 +9,6 @@ dependencies:
   - pip
 
   # SEAMM requirements
-
   - bibtexparser
   - boost==1.73
   - fasteners
