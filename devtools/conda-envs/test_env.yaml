@@ -1,6 +1,7 @@
 name: test
 
 channels:
+  - rdkit
   - conda-forge
 
 dependencies:
@@ -21,7 +22,7 @@ dependencies:
   - pmw
   - pyuca
   - py-cpuinfo
-  - rdkit==2021.9.3
+  - rdkit
   - reference-handler
   - requests
   - requests-toolbelt
