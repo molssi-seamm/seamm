@@ -23,7 +23,6 @@ dependencies:
   - pyuca
   - py-cpuinfo
   - rdkit
-  - https://conda.anaconda.org/conda-forge/linux-64/boost-cpp-1.74.0-h359cf19_5.tar.bz2  # [linux]
   - reference-handler
   - requests
   - requests-toolbelt
