@@ -52,11 +52,11 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
+def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=None):
     """The standalone flowchart app"""
     global print
 
-    if len(sys.argv) > 1:
+    if not in_jobserver and len(sys.argv) > 1:
         if sys.argv[1] == "--help" or sys.argv[1] == "-h":
             # Running run_flowchart by hand ...
             print("usage: run_flowchart <flowchart> [options]")
@@ -74,6 +74,9 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
             filename = "flowchart.flow"
         else:
             filename = os.path.join(wdir, "flowchart.flow")
+
+    if cmdline is None:
+        cmdline = sys.argv[1:]
 
     # Set up the argument parser for this node.
     parser = seamm_util.seamm_parser()
@@ -109,13 +112,13 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
     flowchart.create_parsers()
 
     # And handle the command-line arguments and ini file options.
-    parser.parse_args()
+    parser.parse_args(cmdline)
     logger.info("Parsed the command-line arguments")
     options = parser.get_options("SEAMM")
 
     # Whether to just run as-is, without getting a job_id, using the
     # datastore, etc.
-    standalone = "standalone" in options and options["standalone"]
+    standalone = options["standalone"] or options["projects"] is None
 
     # Setup the logging
     if setup_logging:
@@ -209,17 +212,18 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False):
         time_now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if in_jobserver:
             with open("job_data.json", "r") as fd:
+                fd.readline()
                 data = json.load(fd)
         else:
             data = {
                 "data_version": "1.0",
-                "command line": sys.argv,
                 "title": options["title"],
                 "working directory": wdir,
                 "submitted time": time_now,
             }
         data.update(
             {
+                "command line": cmdline,
                 "flowchart_digest": flowchart.digest(),
                 "flowchart_digest_strict": flowchart.digest(strict=True),
                 "start time": time_now,

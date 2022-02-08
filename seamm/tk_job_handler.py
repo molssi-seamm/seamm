@@ -15,17 +15,31 @@ import logging
 from pathlib import Path
 import pkg_resources
 import requests
+import shlex
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
 import tkinter.ttk as ttk
 
 import Pmw
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 import seamm_util
 import seamm_widgets as sw
 
 logger = logging.getLogger(__name__)
+
+
+def safe_filename(filename):
+    if filename[0] == "~":
+        path = Path(filename).expanduser()
+    else:
+        path = Path(filename)
+    if path.anchor == "":
+        result = "_".join(path.parts)
+    else:
+        result = "_".join(path.parts[1:])
+    return "job:data/" + result
 
 
 class TkJobHandler(object):
@@ -44,6 +58,7 @@ class TkJobHandler(object):
         self._credentials = None
 
         self._widgets = {}
+        self._variable_value = {}
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
         # Get the location of the dashboards configuration file
@@ -209,8 +224,14 @@ class TkJobHandler(object):
         status = self.status(dashboard)
         w["status"].set(status)
 
-    def create_submit_dialog(self):
-        """Create the dialog for submitting a job."""
+    def create_submit_dialog(self, title="", description=""):
+        """Create the dialog for submitting a job.
+
+        Parameters
+        ----------
+        flowchart : seamm.Flowchart
+            The flowchart object
+        """
         logger.debug("Creating submit dialog")
         self.dialog = Pmw.Dialog(
             self._root,
@@ -241,17 +262,32 @@ class TkJobHandler(object):
 
         # Title
         w["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
+        w["title"].set(title)
 
         # Description
+        w["description label"] = ttk.Label(d, text="Description:")
         frame = sw.ScrolledFrame(
             d, scroll_vertically=True, borderwidth=2, relief=tk.SUNKEN
         )
         f = frame.interior()
         w["description"] = tk.Text(f)
         w["description"].grid(sticky=tk.EW)
+        w["description"].insert("1.0", description)
 
         f.rowconfigure(0, weight=1)
         f.columnconfigure(0, weight=1)
+
+        # Space for any parameters
+        w["parameters label"] = ttk.Label(d, text="Parameters:")
+        w["parameters"] = sw.ScrolledColumns(
+            d,
+            columns=[
+                "Name",
+                "Value",
+                "",
+                "Description",
+            ],
+        )
 
         # Set up the dashboard and projects if needed
         if len(dashboards) > 0:
@@ -274,11 +310,15 @@ class TkJobHandler(object):
         w["username"].grid(row=1, column=0, sticky=tk.EW)
         w["project"].grid(row=1, column=1, sticky=tk.EW)
         w["title"].grid(row=2, column=0, columnspan=2, sticky=tk.W)
-        frame.grid(row=3, column=0, columnspan=2, sticky=tk.NSEW)
+        w["description label"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
+        frame.grid(row=4, column=0, columnspan=2, sticky=tk.NSEW)
+        w["parameters label"].grid(row=5, column=0, columnspan=2, sticky=tk.W)
+        w["parameters"].grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
 
         sw.align_labels([w["dashboard"], w["username"], w["title"]])
 
-        d.rowconfigure(3, weight=1)
+        d.rowconfigure(4, weight=1)
+        d.rowconfigure(6, weight=1)
         d.columnconfigure(1, weight=1)
 
     def dashboard_cb(self, event=None):
@@ -462,6 +502,46 @@ class TkJobHandler(object):
                     db_config[key] = w[key].get()
 
             self.save_configuration()
+
+    def file_cb(self, table, row, name, data):
+        """Method to handle parameters with files
+
+        Parameters
+        ----------
+        table : sw.ScrolledColumns
+            The widget displaying the table of parameters.
+        row : int
+            The row of the table.
+        name : str
+            The name of the parameter.
+        data : dict(str, str)
+            The definition of the parameter.
+        """
+        multiple = data["nargs"] != "a single value"
+
+        filetypes = [
+            ("MOL", "*.mol"),
+            ("MOL", "*.mol2"),
+            ("SDF", "*.sdf"),
+            ("XYZ", "*.xyz"),
+            ("CIF", "*.cif"),
+            ("MMCIF", "*.mmcif"),
+            ("All files", "*"),
+        ]
+        filename = tk.filedialog.askopenfilename(filetypes=filetypes, multiple=multiple)
+        if filename == "":
+            return
+        w = table[row, 1]
+        if multiple:
+            current = shlex.split(w.get())
+            for name in filename:
+                if name not in current:
+                    current.append(name)
+            w.delete(0, tk.END)
+            w.insert(0, " " + shlex.join(current))
+        else:
+            w.delete(0, tk.END)
+            w.insert(0, filename)
 
     def fill_statuses(self):
         w = self._widgets["display"]
@@ -751,7 +831,7 @@ class TkJobHandler(object):
                     "project": w["project"].get(),
                     "title": w["title"].get(),
                     "dashboard": w["dashboard"].get(),
-                    "description": w["description"].get(1.0, tk.END),
+                    "description": w["description"].get(1.0, tk.END).strip("\n"),
                 }
             )
 
@@ -878,6 +958,7 @@ class TkJobHandler(object):
         self,
         flowchart,
         dashboard,
+        values={},
         username=None,
         project="default",
         title="",
@@ -897,6 +978,64 @@ class TkJobHandler(object):
             )
             return None
 
+        # Find any Parameter steps.
+        parameter_steps = []
+        step = flowchart.get_node("1")
+        while step:
+            if step.step_type == "control-parameters-step":
+                parameter_steps.append(step)
+            step = step.next()
+
+        # Prepare the command line arguments, transforming and remembering files
+        files = {}
+        if len(parameter_steps) == 0:
+            cmdline = []
+        else:
+            # Build the command line
+            optional = []
+            required = []
+            for step in parameter_steps:
+                variables = step.parameters["variables"]
+                for name, data in variables.value.items():
+                    if data["optional"] == "Yes":
+                        if data["type"] == "bool":
+                            if values[name] == "Yes":
+                                optional.append(f"--{name}")
+                        elif data["type"] == "file":
+                            if data["nargs"] == "a single value":
+                                filename = values[name]
+                                if filename not in files:
+                                    files[filename] = safe_filename(filename)
+                                optional.append(f"--{name}")
+                                optional.append(files[filename])
+                            else:
+                                optional.append(f"--{name}")
+                                for filename in shlex.split(values[name]):
+                                    if filename not in files:
+                                        files[filename] = safe_filename(filename)
+                                    optional.append(files[filename])
+                        else:
+                            optional.append(f"--{name}")
+                            optional.append(values[name])
+                    else:
+                        if data["type"] == "file":
+                            if data["nargs"] == "a single value":
+                                filename = values[name]
+                                if filename not in files:
+                                    files[filename] = safe_filename(filename)
+                                required.append(files[filename])
+                            else:
+                                for filename in shlex.split(values[name]):
+                                    if filename not in files:
+                                        files[filename] = safe_filename(filename)
+                                    required.append(files[filename])
+                        else:
+                            if data["nargs"] == "a single value":
+                                required.append(values[name])
+                            else:
+                                required = shlex.split(values[name])
+            cmdline = optional + required
+
         # Login in to the Dashboard
         session = requests.session()
         csrf_token = self.login(session, dashboard)
@@ -906,10 +1045,11 @@ class TkJobHandler(object):
 
         # Prepare the data
         data = {
-            "flowchart": flowchart,
+            "flowchart": flowchart.to_text(),
             "project": project,
             "title": title,
             "description": description,
+            "parameters": {"cmdline": cmdline},
         }
 
         response = session.post(
@@ -931,19 +1071,49 @@ class TkJobHandler(object):
             return
 
         job_id = response.json()["id"]
+
+        if len(files) == 0:
+            logger.info("There are no files to transfer.")
+
+        # Now transfer any files
+        file_url = f"{url}/api/jobs/{job_id}/files"
+        for filename, newname in files.items():
+            m = MultipartEncoder(
+                fields={"file": (newname, open(filename, "rb"), "text/plain")}
+            )
+
+            headers = {
+                "Content-Type": m.content_type,
+                "X-CSRF-TOKEN": csrf_token,
+            }
+            response = session.post(file_url, data=m, headers=headers)
+
+            if response.status_code != 201:
+                logger.warning(
+                    f"There was an error transferring the file {filename} to "
+                    f"{dashboard}.\n"
+                    f"    code = {response.status_code}\n{response.json()}"
+                )
+                tk.messagebox.showerror(
+                    title="Error submitting the job",
+                    message=(
+                        f"There was an error transferring the file {filename} to "
+                        f"{dashboard}.\nSee the console for more information."
+                    ),
+                )
+
         logger.info("Submitted job #{}".format(job_id))
         return job_id
 
-    def submit_with_dialog(self, flowchart=None):
+    def submit_with_dialog(self, flowchart):
         """
         Allow the user to choose the dashboard and other parameters,
         and submit the job as requested.
 
         Parameters
         ----------
-        flowchart : text, optional
-            The flowchart to use. If not given, prompt the user for
-            one.
+        flowchart : seamm.Flowchart
+            The flowchart to use.
 
         Returns
         -------
@@ -951,12 +1121,76 @@ class TkJobHandler(object):
             The id of the submitted job.
         """
         if self.dialog is None:
-            self.create_submit_dialog()
+            title = flowchart.metadata["title"]
+            description = flowchart.metadata["description"]
+            self.create_submit_dialog(title=title, description=description)
 
+        value = self._variable_value
+
+        # Find any Parameter steps.
+        parameter_steps = []
+        step = flowchart.get_node("1")
+        while step:
+            if step.step_type == "control-parameters-step":
+                parameter_steps.append(step)
+            step = step.next()
+
+        if len(parameter_steps) == 0:
+            # Remove the parameter section
+            self._widgets["parameters label"].grid_forget()
+            self._widgets["parameters"].grid_forget()
+            d = self.dialog.interior()
+            d.rowconfigure(6, weight=0)
+        else:
+            self._widgets["parameters label"].grid(
+                row=5, column=0, columnspan=2, sticky=tk.W
+            )
+            table = self._widgets["parameters"]
+            table.clear()
+            table.grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
+            frame = table.interior()
+            d = self.dialog.interior()
+            d.rowconfigure(6, weight=1)
+            row = 0
+            for step in parameter_steps:
+                variables = step.parameters["variables"]
+                for name, data in variables.value.items():
+                    table[row, 0] = name
+                    if name not in value or value[name] is None:
+                        value[name] = data["default"]
+                    entry = ttk.Entry(frame)
+                    entry.insert(0, value[name])
+                    table[row, 1] = entry
+                    table[row, 1].grid(sticky=tk.EW)
+                    if data["type"] == "file":
+                        button = tk.Button(
+                            frame,
+                            text="...",
+                            command=(
+                                lambda t=table, r=row, n=name, d=data: self.file_cb(
+                                    t, r, n, d
+                                )
+                            ),
+                        )
+                        table[row, 2] = button
+                    table[row, 3] = data["help"]
+                    row += 1
+            frame.columnconfigure(1, weight=1)
+
+        # Post the dialog
         result = self.dialog.activate(geometry="centerscreenfirst")
 
         if result is not None:
-            job_id = self.submit(flowchart, **result)
+            if len(parameter_steps) == 0:
+                value = {}
+            else:
+                # Get the variable values
+                table = self._widgets["parameters"]
+                for row in range(table.nrows):
+                    name = table[row, 0].cget("text")
+                    value[name] = table[row, 1].get()
+
+            job_id = self.submit(flowchart, values=value, **result)
             return job_id
         else:
             return None

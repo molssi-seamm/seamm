@@ -18,6 +18,7 @@ import jinja2
 import json
 import logging
 import os.path
+from pathlib import Path
 import pprint
 import string
 import traceback
@@ -85,7 +86,7 @@ class Node(collections.abc.Hashable):
         package = self.__module__.split(".")[0]
         files = [p for p in implib.files(package) if "references.bib" in str(p)]
         if len(files) > 0:
-            path = files[0]
+            path = files[0].locate()
             self.logger.info(f"bibliography file path = '{path}'")
 
             data = path.read_text()
@@ -126,6 +127,11 @@ class Node(collections.abc.Hashable):
     def directory(self):
         """Return the directory we should write output to"""
         return os.path.join(self.flowchart.root_directory, *self._id)
+
+    @property
+    def job_path(self):
+        """Return the path to the job's top-level directory"""
+        return Path(self.flowchart.root_directory)
 
     @property
     def visited(self):
@@ -594,6 +600,30 @@ class Node(collections.abc.Hashable):
         """Analyze the output of the calculation"""
         return
 
+    def file_path(self, filename):
+        """Remove any prefix from a filename and return the path.
+
+        Parameters
+        ----------
+        filename : str
+            The filename with optional prefix such as 'job:'
+
+        Returns
+        -------
+        pathlib.Path
+            The normalized, full path.
+        """
+        path = str(filename)
+        if path[0:4] == "job:":
+            path = path[4:]
+            path = self.job_path / path
+        else:
+            path = Path(filename)
+
+        path = path.expanduser().resolve()
+
+        return path
+
     def get_value(self, variable_or_value):
         """Return the value of the workspace variable is <variable_or_value>
         is the name of a variable. Otherwise, simply return the value of
@@ -780,12 +810,22 @@ class Node(collections.abc.Hashable):
                 loaders = [jinja2.PackageLoader("seamm")]
             else:
                 self.logger.info(
-                    "Reading graph templates from the following modules, " "in order"
+                    "Reading graph templates from the following modules, in order"
                 )
                 loaders = []
                 for module in module_path:
-                    self.logger.info("\t" + module)
-                    loaders.append(jinja2.PackageLoader(module))
+                    paths = []
+                    for p in implib.files(module):
+                        if p.parent.name == "templates":
+                            paths.append(p)
+                            break
+
+                    if len(paths) == 0:
+                        self.logger.info(f"\t{module} -- found no templates directory")
+                    else:
+                        path = paths[0].locate().parent
+                        self.logger.info(f"\t{ module} --> {path}")
+                        loaders.append(jinja2.FileSystemLoader(path))
 
             self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
 

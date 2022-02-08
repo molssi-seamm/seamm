@@ -1200,9 +1200,10 @@ class TkFlowchart(object):
     def run(self, event=None):
         """Run the current flowchart"""
 
-        self.update_flowchart()
-        flowchart = self.flowchart.to_text()
+        # Ensure that the flowchart is up-to-date
+        flowchart = self.update_flowchart()
 
+        # Do the graphical "stuff"
         self._job_handler.submit_with_dialog(flowchart=flowchart)
 
     def push(self):
@@ -1242,6 +1243,8 @@ class TkFlowchart(object):
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
             wf.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
+
+        return wf
 
     def from_flowchart(self):
         """Recreate the graphics from the non-graphical flowchart"""

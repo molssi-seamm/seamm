@@ -1,6 +1,7 @@
 name: test
 
 channels:
+  - rdkit
   - conda-forge
 
 dependencies:
@@ -21,8 +22,10 @@ dependencies:
   - pmw
   - pyuca
   - py-cpuinfo
+  - rdkit
   - reference-handler
   - requests
+  - requests-toolbelt
   - seamm-datastore
   - seamm-util
   - seamm-widgets

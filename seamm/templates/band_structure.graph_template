@@ -1,0 +1,79 @@
+{
+    "data": [
+	{%- for trace in traces %}    
+        {
+            "hoverlabel": {
+                "namelength": 0
+            },
+            "hovertemplate": "{{ trace.xlabel }}=%{x} {{ trace.xunits }}<br>{{ trace.ylabel }}=%{y} {{ trace.yunits }}",
+            "legendgroup": "",
+            "mode": "lines",
+	    {%- if 'showlegend' in trace %}
+	    "showlegend": {{ trace.showlegend }},
+	    {%- endif %}
+            "line": {
+                "color": "{{ trace.color|default('#4dbd74') }}",
+                "dash": "{{ trace.dash|default('solid') }}"
+            },
+	    {%- if 'fill' in trace %}
+	    "fill": "{{ trace.fill }}",
+	    {%- endif %}
+	    {%- if 'fillcolor' in trace %}
+	    "fillcolor": "{{ trace.color|default('lightgray') }}",
+	    {%- endif %}
+            "name": "{{ trace.name }}",
+            "type": "scatter",
+	    {%- if 'x' in trace %}
+	    "x": {{ trace.x|jsonify }},
+	    {%- else %}
+	    "x0": {{ trace.x0 }},
+	    "dx": {{ trace.dx }},
+	    {%- endif %}
+            "xaxis": "{{ trace.xaxis }}",
+	    "y": {{ trace.y|jsonify }},
+            "yaxis": "{{ trace.yaxis }}"
+	    {%- if loop.last %}
+        }
+	{%- else %}
+        },
+    {%- endif %}
+    {%- endfor %}
+    ],
+    "layout": {
+    	"hovermode": "closest",
+        "legend": {
+            "title": "",
+            "tracegroupgap": 0
+        },
+        "title": {
+            "x": 0.5,
+            "text": "{{ title }}",
+            "xanchor": "center"
+        },
+	{%- for axis in axes %}    
+        "{{ axis.name }}": {
+            "anchor": "{{ axis.anchor }}",
+            "domain": [
+                {{ axis.start }},
+                {{ axis.stop }}
+            ],
+	    {%- if 'tickmode' in axis %}
+	    "tickmode": "{{ axis.tickmode }}",
+	    {%- endif %}
+	    {%- if 'tickvals' in axis %}
+	    "tickvals": {{ axis.tickvals|jsonify }},
+	    {%- endif %}
+	    {%- if 'ticktext' in axis %}
+	    "ticktext": {{ axis.ticktext|jsonify }},
+	    {%- endif %}
+            "title": {
+                "text": "{{ axis.label }}"
+            }
+        {%- if loop.last %}
+        }
+	{%- else %}
+        },
+        {%- endif %}
+        {%- endfor %}
+    }
+}
