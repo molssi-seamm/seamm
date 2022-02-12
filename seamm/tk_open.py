@@ -158,6 +158,8 @@ class TkOpen(collections.abc.MutableMapping):
         w.set("local files")
 
         # For local files, a directory to start from
+        path = Path("~/SEAMM/flowcharts").expanduser()
+        path.mkdir(parents=True, exist_ok=True)
         w = self["directory"] = sw.LabeledCombobox(
             frame,
             labeltext="directory",
