@@ -1,5 +1,4 @@
 import argparse
-import seamm
 import locale
 import logging
 import os
@@ -8,9 +7,51 @@ import Pmw
 import subprocess
 import sys
 import tkinter as tk
+import tkinter.font as tkFont
+
+import seamm
+import seamm_util
 
 logger = logging.getLogger(__name__)
 dbg_level = 30
+
+standard_fonts = {"scale": 1.0}
+
+
+def decrease_font_size(event=None, factor=1.3):
+    """Uniformly decrease the font sizes."""
+    global standard_fonts
+    scale = standard_fonts["scale"] / factor
+    standard_fonts["scale"] = scale
+    for font_name, data in standard_fonts.items():
+        if font_name == "scale":
+            continue
+        size = data["initial size"]
+        new_size = int(size * scale)
+        if new_size == size:
+            new_size -= 1
+        if new_size < 8:
+            new_size = 8
+        font = tkFont.nametofont(font_name)
+        font.config(size=new_size)
+        data["current size"] = new_size
+
+
+def increase_font_size(event=None, factor=1.3):
+    """Uniformly increase the font sizes."""
+    global standard_fonts
+    scale = standard_fonts["scale"] * factor
+    standard_fonts["scale"] = scale
+    for font_name, data in standard_fonts.items():
+        if font_name == "scale":
+            continue
+        size = data["initial size"]
+        new_size = int(size * scale + 0.5)
+        if new_size == size:
+            new_size += 1
+        font = tkFont.nametofont(font_name)
+        font.config(size=new_size)
+        data["current size"] = new_size
 
 
 def raise_app(root: tk):
@@ -25,14 +66,36 @@ def raise_app(root: tk):
     root.after(100, lambda: root.attributes("-topmost", False))
 
 
+def reset_font_size():
+    """Reset the font sizes."""
+    global standard_fonts
+    scale = 1.0
+    standard_fonts["scale"] = scale
+    for font_name, data in standard_fonts.items():
+        if font_name == "scale":
+            continue
+        size = data["initial size"]
+        font = tkFont.nametofont(font_name)
+        font.config(size=size)
+        data["current size"] = size
+
+
 def flowchart():
     """The standalone flowchart app"""
     global app_name
     app_name = "MolSSI SEAMM"
     global dbg_level
+    global standard_fonts
 
-    parser = argparse.ArgumentParser(description="MolSSI SEAMM")
+    parser = seamm_util.getParser("SEAMM GUI")
+    parser.add_parser(
+        "SEAMM GUI",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        prog=sys.argv[0],
+    )
+
     parser.add_argument(
+        "SEAMM GUI",
         "-v",
         "--verbose",
         dest="verbose_count",
@@ -41,13 +104,24 @@ def flowchart():
         help="increases log verbosity for each occurence.",
     )
     parser.add_argument(
-        "flowcharts", nargs="*", default=[], help="flowcharts to open initially"
+        "SEAMM GUI",
+        "--font-scale",
+        default=1.0,
+        help="scale factor for the fonts",
+    )
+    parser.add_argument(
+        "SEAMM GUI",
+        "flowcharts",
+        nargs="*",
+        default=[],
+        help="flowcharts to open initially",
     )
 
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
+    options = args["SEAMM GUI"]
 
     # Sets log level to WARN going more verbose for each new -v.
-    dbg_level = max(3 - args.verbose_count, 0) * 10
+    dbg_level = max(3 - options["verbose_count"], 0) * 10
     logging.basicConfig(level=dbg_level)
 
     ##################################################
@@ -55,6 +129,17 @@ def flowchart():
     ##################################################
     root = tk.Tk()
     Pmw.initialise(root)
+
+    # Capture the initial font information
+    for font_name in tkFont.names():
+        font = tkFont.nametofont(font_name)
+        standard_fonts[font_name] = {
+            "initial size": font.cget("size"),
+            "current size": font.cget("size"),
+        }
+
+    if options["font_scale"] != 1.0:
+        increase_font_size(options["font_scale"])
 
     ##############################################################
     # Create the various objects that we need: the model, the view
@@ -144,6 +229,17 @@ def flowchart():
         accelerator=CmdKey + "l",
     )
 
+    # View menu
+    viewmenu = tk.Menu(menu)
+    menu.add_cascade(label="View", menu=viewmenu)
+    viewmenu.add_command(
+        label="Increase font size", command=increase_font_size, accelerator=CmdKey + "+"
+    )
+    viewmenu.add_command(
+        label="Decrease font size", command=decrease_font_size, accelerator=CmdKey + "-"
+    )
+    viewmenu.add_command(label="Reset font size", command=reset_font_size)
+
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
@@ -160,6 +256,8 @@ def flowchart():
     root.bind_all("<" + CmdKey + "s>", tk_flowchart.save)
     root.bind_all("<" + CmdKey + "L>", tk_flowchart.clean_layout)
     root.bind_all("<" + CmdKey + "l>", tk_flowchart.clean_layout)
+    root.bind_all("<" + CmdKey + "+>", increase_font_size)
+    root.bind_all("<" + CmdKey + "minus>", decrease_font_size)
 
     # Work out and set the window size to nicely fit the screen
     sw = root.winfo_screenwidth()
@@ -183,11 +281,11 @@ def flowchart():
     raise_app(root)
 
     # Check to see if the command line has flowcharts to open
-    if len(args.flowcharts) > 0:
+    if len(options["flowcharts"]) > 0:
         logger.debug("open the following flowcharts:")
-        if len(args.flowcharts) > 1:
+        if len(options["flowcharts"]) > 1:
             raise RuntimeError("Currently handle only one flowchart at a time")
-        for filename in args.flowcharts:
+        for filename in options["flowcharts"]:
             tk_flowchart.open(filename)
 
     logger.debug("and now enter the event loop")
