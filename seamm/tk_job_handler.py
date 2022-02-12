@@ -214,8 +214,49 @@ class TkJobHandler(object):
             return False
         return True
 
-    def ask_for_credentials(self, user=None, password=None):
-        raise NotImplementedError()
+    def ask_for_credentials(self, dashboard, user=None, password=None):
+        """Prompt the user for the login for the dashboard
+
+        Parameters
+        ----------
+        dashboard : str
+            The name of the dashboard.
+        user : str
+            The username for that dashboard.
+        password : str
+            The password for the user.
+
+        Returns
+        -------
+        (str, str)
+            A tuple with the username and password.
+        """
+        dialog = Pmw.Dialog(
+            self._root,
+            buttons=("OK", "Cancel"),
+            master=self._root,
+            title=f"Log-in for {dashboard}",
+        )
+        dialog.withdraw()
+
+        d = dialog.interior()
+        w_user = sw.LabeledEntry(d, labeltext="Username:", width=50)
+        w_password = sw.LabeledEntry(d, labeltext="Password:", show="*")
+
+        w_user.grid(row=0, column=0, sticky=tk.EW)
+        w_password.grid(row=1, column=0, sticky=tk.EW)
+
+        sw.align_labels([w_user, w_password], sticky=tk.E)
+
+        result = dialog.activate(geometry="centerscreenfirst")
+
+        if result == "OK":
+            user = w_user.get()
+            password = w_password.get()
+
+        dialog.destroy()
+
+        return user, password
 
     def check_status_cb(self):
         """Helper for checking the status of a dashboard."""
@@ -715,7 +756,7 @@ class TkJobHandler(object):
             password = self.credentials[dashboard]["password"]
 
         if user is None or password is None:
-            user, password = self.ask_forcredentials(
+            user, password = self.ask_for_credentials(
                 dashboard, user=user, password=password
             )
             if user is not None and password is not None:
