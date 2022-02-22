@@ -256,7 +256,8 @@ def flowchart():
     root.bind_all("<" + CmdKey + "s>", tk_flowchart.save)
     root.bind_all("<" + CmdKey + "L>", tk_flowchart.clean_layout)
     root.bind_all("<" + CmdKey + "l>", tk_flowchart.clean_layout)
-    root.bind_all("<" + CmdKey + "+>", increase_font_size)
+    root.bind_all("<" + CmdKey + "plus>", increase_font_size)
+    root.bind_all("<" + CmdKey + "equal>", increase_font_size)
     root.bind_all("<" + CmdKey + "minus>", decrease_font_size)
 
     # Work out and set the window size to nicely fit the screen
