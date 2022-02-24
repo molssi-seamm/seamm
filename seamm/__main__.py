@@ -89,40 +89,49 @@ def flowchart():
 
     parser = seamm_util.getParser("SEAMM GUI")
     parser.add_parser(
-        "SEAMM GUI",
+        "SEAMM",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=sys.argv[0],
     )
-
     parser.add_argument(
-        "SEAMM GUI",
-        "-v",
-        "--verbose",
-        dest="verbose_count",
-        action="count",
-        default=0,
-        help="increases log verbosity for each occurence.",
-    )
-    parser.add_argument(
-        "SEAMM GUI",
-        "--font-scale",
-        default=1.0,
-        help="scale factor for the fonts",
-    )
-    parser.add_argument(
-        "SEAMM GUI",
+        "SEAMM",
         "flowcharts",
         nargs="*",
         default=[],
         help="flowcharts to open initially",
     )
 
-    args = parser.parse_args()
-    options = args["SEAMM GUI"]
+    # Debugging options
+    parser.add_argument_group(
+        "SEAMM",
+        "debugging options",
+        "Options for turning on debugging output and tools",
+    )
+    parser.add_argument(
+        "SEAMM",
+        "--log-level",
+        group="debugging options",
+        default="WARNING",
+        type=str.upper,
+        choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="The level of informational output, default: '%(default)s'",
+    )
 
-    # Sets log level to WARN going more verbose for each new -v.
-    dbg_level = max(3 - options["verbose_count"], 0) * 10
-    logging.basicConfig(level=dbg_level)
+    parser.add_parser("SEAMM GUI")
+
+    parser.add_argument(
+        "SEAMM GUI",
+        "--font-scale",
+        default=1.0,
+        help="scale factor for the fonts",
+    )
+
+    parser.parse_args()
+    options = parser.get_options("SEAMM")
+    gui_options = parser.get_options("SEAMM GUI")
+
+    if "log_level" in options:
+        logging.basicConfig(level=options["log_level"])
 
     ##################################################
     # Initialize Tk
@@ -138,8 +147,12 @@ def flowchart():
             "current size": font.cget("size"),
         }
 
-    if options["font_scale"] != 1.0:
-        increase_font_size(options["font_scale"])
+    try:
+        font_scale = float(gui_options["font_scale"])
+        if font_scale != 1.0:
+            increase_font_size(factor=font_scale)
+    except Exception:
+        pass
 
     ##############################################################
     # Create the various objects that we need: the model, the view
