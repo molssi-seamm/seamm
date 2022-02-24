@@ -198,6 +198,9 @@ class TkOpen(collections.abc.MutableMapping):
         self["search"] = ttk.Button(frame, text="Search", command=self.search_cb)
         w = self["tree"] = ttk.Treeview(frame, selectmode="browse")
         w.bind("<ButtonRelease-1>", self.select_record)
+        w.bind(
+            "<Double-Button-1>", lambda e=None: self["dialog"].deactivate(result="Open")
+        )
         # Add scrollbars
         self["tree ysb"] = ttk.Scrollbar(frame, orient="vertical", command=w.yview)
         self["tree xsb"] = ttk.Scrollbar(frame, orient="horizontal", command=w.xview)
