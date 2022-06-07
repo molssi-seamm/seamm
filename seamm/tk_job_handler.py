@@ -934,7 +934,9 @@ class TkJobHandler(object):
 
         else:
             if response.status_code == 403:
-                logger.error(f"Could not log in to dashboard {dashboard} as {user}")
+                logger.error(
+                    f"Could not log in to dashboard {dashboard} as {user}"
+                )  # lgtm [py/clear-text-logging-sensitive-data]
                 messagebox.showerror(
                     title="Cannot log in to Dashboard",
                     message=(
