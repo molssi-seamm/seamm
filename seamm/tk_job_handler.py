@@ -207,7 +207,7 @@ class TkJobHandler(object):
             messagebox.showerror(
                 title="Error creating project",
                 message=(
-                    f"There was an error creating the project at {dashboard}./n"
+                    f"There was an error creating the project at {dashboard}.\n"
                     "See the console for more information."
                 ),
             )
@@ -933,15 +933,27 @@ class TkJobHandler(object):
             )
 
         else:
-            if response.status_code != 200:
+            if response.status_code == 403:
                 logger.error(
-                    f"Could not log in to dashboard {dashboard}: code = "
+                    f"Could not log in to dashboard {dashboard} as {user}"
+                )  # lgtm [py/clear-text-logging-sensitive-data]
+                messagebox.showerror(
+                    title="Cannot log in to Dashboard",
+                    message=(
+                        f"The dashboard '{dashboard}' did not accept your login: "
+                        f"{user=} {password=}"
+                    ),
+                )
+            elif response.status_code != 200:
+                logger.error(
+                    f"The dashboard {dashboard} returned an error: code = "
                     f"{response.status_code}"
                 )
+                logger.error(response.text)
                 messagebox.showerror(
                     title="Cannot reach Dashboard",
                     message=(
-                        f"The dashboard '{dashboard}' returned status "
+                        f"The dashboard '{dashboard}' returned a general error: "
                         f"{response.status_code}"
                     ),
                 )
@@ -956,9 +968,9 @@ class TkJobHandler(object):
                         "CSRF token"
                     )
                     messagebox.showerror(
-                        title="Cannot reach Dashboard",
+                        title="CSRF error with Dashboard",
                         message=(
-                            f"The dashboard '{dashboard}' dir not return th CSRF token"
+                            f"The dashboard '{dashboard}' did not return th CSRF token"
                         ),
                     )
         return csrf_token
@@ -1105,7 +1117,7 @@ class TkJobHandler(object):
             tk.messagebox.showerror(
                 title="Error submitting the job",
                 message=(
-                    f"There was an error submitting the job to {dashboard}./n"
+                    f"There was an error submitting the job to {dashboard}.\n"
                     "See the console for more information."
                 ),
             )
