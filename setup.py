@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-seamm
-The core of the SEAMM environment.
+"""seamm
+The core of the SEAMM environment and graphical interface.
 """
 
 import sys
