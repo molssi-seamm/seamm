@@ -951,7 +951,8 @@ class TkJobHandler(object):
                 messagebox.showerror(
                     title="Cannot reach Dashboard",
                     message=(
-                        f"The dashboard '{dashboard}' returned a general error: {code}"
+                        f"The dashboard '{dashboard}' returned a general error: "
+                        f"{response.status_code}"
                     ),
                 )
             else:
