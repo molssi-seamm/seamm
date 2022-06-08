@@ -95,6 +95,12 @@ def flowchart():
     )
     parser.add_argument(
         "SEAMM",
+        "--version",
+        action="version",
+        version=f"SEAMM version {seamm.__version__}",
+    )
+    parser.add_argument(
+        "SEAMM",
         "flowcharts",
         nargs="*",
         default=[],
