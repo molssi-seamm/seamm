@@ -44,7 +44,12 @@
 			    "dx": {{ trace.dx }},
 			    {%- endif %}
 			    "xaxis": "{{ trace.xaxis }}",
+			    {%- if 'y' in trace %}
 			    "y": {{ trace.y|jsonify }},
+			    {%- else %}
+			    "y0": {{ trace.y0 }},
+			    "dy": {{ trace.dy }},
+			    {%- endif %}
 			    "yaxis": "{{ trace.yaxis }}"
 			    {%- if loop.last %}
 			}
@@ -67,12 +72,18 @@
 			{%- for axis in axes %}    
 			"{{ axis.name }}": {
 			    "anchor": "{{ axis.anchor }}",
+			    {%- if 'autorange' in axis %}
+			    "autorange": "{{ axis.autorange }}",
+			    {%- endif %}
 			    "domain": [
 				{{ axis.start }},
 				{{ axis.stop }}
 			    ],
 			    {%- if 'tickmode' in axis %}
 			    "tickmode": "{{ axis.tickmode }}",
+			    {%- endif %}
+			    {%- if 'ticklabelposition' in axis %}
+			    "ticklabelposition": "{{ axis.ticklabelposition }}",
 			    {%- endif %}
 			    {%- if 'tickvals' in axis %}
 			    "tickvals": {{ axis.tickvals|jsonify }},
