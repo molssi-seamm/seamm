@@ -14,6 +14,8 @@ import tkinter.ttk as ttk
 import dateutil
 import Pmw
 
+from .dashboard_handler import DashboardHandler
+from seamm_dashboard_client import DashboardConnectionError
 import seamm_util
 import seamm_widgets as sw
 
@@ -92,6 +94,11 @@ class TkOpen(collections.abc.MutableMapping):
 
         self._data = dict()
         self.zenodo = None
+        self._dashboard_handler = None
+        self.dashboards = None
+        self.current_dashboard = None
+        self.current_project = "any"
+        self._projects = None
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -117,6 +124,13 @@ class TkOpen(collections.abc.MutableMapping):
     def __len__(self):
         """The len() command"""
         return len(self._widgets)
+
+    @property
+    def dashboard_handler(self):
+        "The connection to the dashboards."
+        if self._dashboard_handler is None:
+            self._dashboard_handler = DashboardHandler()
+        return self._dashboard_handler
 
     def clear_tree(self):
         """Remove any contents from the tree."""
@@ -152,7 +166,7 @@ class TkOpen(collections.abc.MutableMapping):
         w = self["source"] = sw.LabeledCombobox(
             frame,
             labeltext="from",
-            values=("local files", "Zenodo", "Zenodo sandbox"),
+            values=("local files", "previous jobs", "Zenodo", "Zenodo sandbox"),
             state="readonly",
         )
         w.set("local files")
@@ -169,6 +183,22 @@ class TkOpen(collections.abc.MutableMapping):
 
         self["get directory"] = ttk.Button(
             frame, text="...", command=self.directory_cb, width=3
+        )
+        w = self["flowchart"] = sw.LabeledCombobox(
+            frame,
+            labeltext="",
+            values=("~/SEAMM/flowcharts"),
+        )
+        w.set("~/SEAMM/flowcharts")
+
+        # From dashboard
+        w = self["dashboard"] = sw.LabeledCombobox(
+            frame,
+            labeltext="Dashboard",
+        )
+        w = self["project"] = sw.LabeledCombobox(
+            frame,
+            labeltext="Project",
         )
 
         self["criteria"] = sw.SearchCriteria(
@@ -230,13 +260,14 @@ class TkOpen(collections.abc.MutableMapping):
 
         for item in ("what", "source"):
             self[item].bind("<<ComboboxSelected>>", self.reset_dialog)
-            self[item].bind("<Return>", self.reset_dialog)
-            self[item].bind("<FocusOut>", self.reset_dialog)
 
         for item in ("directory",):
             self[item].bind("<<ComboboxSelected>>", self.reset_tree)
             self[item].bind("<Return>", self.reset_tree)
             self[item].bind("<FocusOut>", self.reset_tree)
+
+        for item in ("dashboard", "project"):
+            self[item].bind("<<ComboboxSelected>>", self.update_dashboard)
 
         # Fill the window with the dialog!
         swidth = frame.winfo_screenwidth()
@@ -261,6 +292,45 @@ class TkOpen(collections.abc.MutableMapping):
 
         d.set(directory)
         self.reset_tree()
+
+    def fill_tree(self, job_list):
+        """Fill the tree with a job list
+
+        The job list looks is a list of Job objects that are dicts like::
+
+            {
+                'description': 'test of api',
+                'finished': '2022-02-24 10:06',
+                'flowchart_id': '1',
+                'group': None,
+                'group_id': None,
+                'id': 18,
+                'last_update': '2022-02-24 10:05',
+                'owner': 'psaxe',
+                'owner_id': 2,
+                'parameters': {
+                     'cmdline': ['job:data/Users_psaxe_SEAMM_data_TiO2--anatase.cif']
+                },
+                'path': '/Users/psaxe/SEAMM_DEV/Jobs/projects/default/Job_000018',
+                'projects': [{'id': 1, 'name': 'default'}],
+                'started': '2022-02-24 10:06',
+                'status': 'finished',
+                'submitted': '2022-02-24 10:05',
+                'title': 'test of api'
+            }
+
+        Parameters
+        ----------
+        job_list : [seamm_dashboard_client._Job]
+            List of Job objects contain info about the jobs
+        """
+        # Remove any current data
+        self.clear_tree()
+        self._data = {}
+        tree = self["tree"]
+        for job in job_list:
+            iid = tree.insert("", "end", text=f"Job_{job['id']:0>6d}: {job['title']}")
+            self._data[iid] = job
 
     def insert_node(self, parent, text, path, open=False):
         """Insert a new node in the tree, corresponding to a file or directory.
@@ -315,6 +385,50 @@ class TkOpen(collections.abc.MutableMapping):
         if source == "local files":
             self["directory"].grid(row=row, column=2, sticky=tk.EW)
             self["get directory"].grid(row=row, column=3, columnspan=2, sticky=tk.E)
+        elif source == "previous jobs":
+            self["dashboard"].grid(row=row, column=2, sticky=tk.EW)
+            self["project"].grid(row=row, column=3, columnspan=2, sticky=tk.E)
+
+            self.dashboards = self.dashboard_handler.dashboards
+
+            # Remove any dashboards that we cannot access
+            for dashboard, status in self.dashboard_handler.get_all_status():
+                if status != "running":
+                    self.dashboards.remove(dashboard)
+            if len(self.dashboards) == 0:
+                self.current_dashboard = None
+                tk.messagebox.showwarning(
+                    title="No Dashboards available",
+                    message="The are no Dashboards that can be connected to.",
+                )
+            else:
+                if (
+                    self.current_dashboard is None
+                    or self.current_dashboard.name not in self.dashboards
+                ):
+                    self.current_dashboard = self.dashboard_handler.get_dashboard(
+                        self.dashboards[0]
+                    )
+                self._projects = None
+                projects = ["any"]
+                try:
+                    self._projects = self.current_dashboard.projects()
+                    projects += [*self._projects.keys()]
+                except DashboardConnectionError:
+                    projects = []
+
+                self["dashboard"].bind("<<ComboboxSelected>>", "")
+
+                self["dashboard"].config(values=self.dashboards, state="readonly")
+                self["dashboard"].set(self.current_dashboard.name)
+
+                self["dashboard"].bind("<<ComboboxSelected>>", self.update_dashboard)
+
+                self["project"].config(values=projects, state="readonly")
+
+                if self.current_project is None or self.current_project not in projects:
+                    self.current_project = projects[0]
+                self["project"].set(self.current_project)
         row += 1
 
         if what == "flowchart":
@@ -327,6 +441,14 @@ class TkOpen(collections.abc.MutableMapping):
                 self["search"].grid(row=row, column=0, sticky=tk.W)
                 row += 1
                 self.clear_tree()
+            elif source == "previous jobs":
+                self.clear_tree()
+                self["tree"].bind("<<TreeviewOpen>>", "")
+
+                # Get the jobs from the Dashboard.
+                if self.current_dashboard is not None:
+                    job_list = self.current_dashboard.jobs()
+                    self.fill_tree(job_list)
             elif source == "local files":
                 self.reset_tree()
 
@@ -367,16 +489,21 @@ class TkOpen(collections.abc.MutableMapping):
             source = self["source"].get()
 
             if what == "flowchart":
+                tree = self["tree"]
+                selected = tree.selection()
                 if source == "Zenodo" or source == "Zenodo sandbox":
-                    tree = self["tree"]
-                    selected = tree.selection()
                     if len(selected) > 0:
                         record = self._data[selected[0]]
                         data = record.get_file("flowchart.flow")
                         return data
+                elif "previous jobs" == source:
+                    if len(selected) > 0:
+                        job = self._data[selected[0]]
+                        job_id = job["id"]
+                        job = self.current_dashboard.job(job_id)
+                        data = job.get_file("flowchart.flow")
+                        return data
                 elif "local files" in source:
-                    tree = self["tree"]
-                    selected = tree.selection()
                     if len(selected) > 0:
                         path = self._data[selected[0]]
                         if path.suffix == ".flow":
@@ -564,11 +691,10 @@ class TkOpen(collections.abc.MutableMapping):
         """The user clicked on the tree-view ... handle the selected record."""
         tree = self["tree"]
         selected = tree.selection()
-        source = self["source"].get()
+        if len(selected) == 0:
+            return
 
-        self["title"].configure(text="")
-        self["description"].delete("1.0", "end")
-        self["version"].configure(text="")
+        source = self["source"].get()
 
         if "Zenodo" in source:
             data = self._data[selected[0]]["metadata"]
@@ -582,37 +708,82 @@ class TkOpen(collections.abc.MutableMapping):
             else:
                 version = f"Version {info['index'] + 1} of {info['count']}"
             self["version"].configure(text=version)
+        elif "previous jobs" == source:
+            job = self._data[selected[0]]
+            self["title"].configure(text=job["title"])
+            self["description"].delete("1.0", "end")
+            self["description"].insert("1.0", job["description"])
         elif source == "local files":
-            if len(selected) > 0:
-                path = self._data[selected[0]]
-                if path.suffix == ".flow":
-                    capture = False
-                    lines = []
-                    with path.open() as fd:
-                        for line in fd:
-                            line = line.strip()
-                            if line[0] == "#":
-                                if line == "#metadata":
-                                    capture = True
-                                elif capture:
-                                    break
+            self["title"].configure(text="")
+            self["description"].delete("1.0", "end")
+            self["version"].configure(text="")
+            path = self._data[selected[0]]
+            if path.suffix == ".flow":
+                capture = False
+                lines = []
+                with path.open() as fd:
+                    for line in fd:
+                        line = line.strip()
+                        if line[0] == "#":
+                            if line == "#metadata":
+                                capture = True
                             elif capture:
-                                lines.append(line)
-                    if len(lines) > 0:
-                        mtime = path.stat().st_mtime
-                        date = datetime.datetime.fromtimestamp(mtime).isoformat(" ")
-                        data = json.loads("\n".join(lines))
-                        if "title" in data:
-                            self["title"].configure(text=data["title"])
-                        if "description" in data:
-                            self["description"].insert("1.0", data["description"])
-                        if "version" in data:
-                            line = f"Version {data['version']} -- {date}"
-                        else:
-                            line = f"Version <none> -- {date}"
-                        self["version"].configure(text=line)
+                                break
+                        elif capture:
+                            lines.append(line)
+                if len(lines) > 0:
+                    mtime = path.stat().st_mtime
+                    date = datetime.datetime.fromtimestamp(mtime).isoformat(" ")
+                    data = json.loads("\n".join(lines))
+                    if "title" in data:
+                        self["title"].configure(text=data["title"])
+                    if "description" in data:
+                        self["description"].insert("1.0", data["description"])
+                    if "version" in data:
+                        line = f"Version {data['version']} -- {date}"
+                    else:
+                        line = f"Version <none> -- {date}"
+                    self["version"].configure(text=line)
         else:
             raise RuntimeError(f"Can't handle source '{source}'")
+
+    def update_dashboard(self, event=None):
+        """The dashboard has been changed!"""
+
+        dashboard = self["dashboard"].get()
+        project = self["project"].get()
+
+        if dashboard != self.current_dashboard.name:
+            projects = ["any"]
+            try:
+                dashboard = self.dashboard_handler.get_dashboard(dashboard)
+                self._projects = self.current_dashboard.projects()
+                projects += [*self._projects.keys()]
+            except DashboardConnectionError:
+                self.dashboards.remove(dashboard)
+                self["dashboard"].config(values=self.dashboards, state="readonly")
+                self["dashboard"].set(self.current_dashboard.name)
+                tk.messagebox.showwarning(
+                    title="Cannot access Dashboard",
+                    message=f"Cannot access Dashboard {dashboard}. Resetting!",
+                )
+            else:
+                self.current_dashboard = dashboard
+                self["project"].config(values=projects, state="readonly")
+
+                if self.current_project is None or project not in projects:
+                    self.current_project = projects[0]
+                self["project"].set(self.current_project)
+        elif project != self.current_project:
+            self.current_project = project
+
+        self.clear_tree()
+        # Get the jobs from the Dashboard.
+        if self.current_project == "any":
+            job_list = self.current_dashboard.jobs()
+        else:
+            job_list = self._projects[self.current_project].jobs()
+        self.fill_tree(job_list)
 
     def zenodo_callback(self, widget, criterion, event, what):
         if criterion is not None:
