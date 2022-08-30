@@ -43,6 +43,7 @@ dependencies:
 
   # Pip-only installs
   - pip:
+    - seamm-dashboard-client
     # Documentation
     - rinohtype
     - sphinx-rtd-theme
