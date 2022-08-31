@@ -468,6 +468,24 @@ class TkOpen(collections.abc.MutableMapping):
         """Reset the file tree to start with the given directory."""
         directory = self["directory"].get()
         path = Path(directory).expanduser().resolve()
+
+        # Fixes issue #131
+        if not path.exists():
+            tk.messagebox.showwarning(
+                title="Invalid directory",
+                message=f"The directory given '{path}' does not exist!",
+            )
+            return
+        elif not path.is_dir():
+            if path.is_file():
+                path = path.parent
+                self["directory"].set(str(path))
+            else:
+                tk.messagebox.showwarning(
+                    title="Not a directory",
+                    message=f"The path '{path}' exists, but is not a directory!",
+                )
+                return
         self.clear_tree()
         node = self.insert_node("", path, path, open=True)
         self["tree"].focus(node)
