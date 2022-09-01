@@ -50,7 +50,7 @@ class DashboardHandler(object):
             self.user_agent = user_agent
 
         self._credentials = None
-
+        self._current_dashboard = None
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
         # Get the location of the dashboards configuration file
@@ -86,6 +86,32 @@ class DashboardHandler(object):
         return self._credentials
 
     @property
+    def current_dashboard(self):
+        "The currently selected dashboard"
+        if self._current_dashboard is None:
+            dashboards = self.dashboards
+
+            dashboard = self.config.get(
+                "GENERAL", "current_dashboard", fallback=dashboards[0]
+            )
+            if dashboard not in dashboards:
+                dashboard = dashboards[0]
+
+            self._current_dashboard = self.get_dashboard(dashboard)
+            self.save_configuration()
+        return self._current_dashboard
+
+    @current_dashboard.setter
+    def current_dashboard(self, dashboard):
+        if isinstance(dashboard, str):
+            self._current_dashboard = self.get_dashboard(dashboard)
+        else:
+            if dashboard.name in self.dashboards:
+                self._current_dashboard = dashboard
+            else:
+                raise ValueError(f"Dashboard {dashboard.name} does not exist!")
+
+    @property
     def dashboards(self):
         """The list of dashboards."""
         result = []
@@ -93,6 +119,11 @@ class DashboardHandler(object):
             if dashboard not in ("GENERAL", self.config.default_section):
                 result.append(dashboard)
         return sorted(result)
+
+    def add_dashboard(self, name, url, protocol):
+        "Add a new dashboard to the config file"
+        self.config[name] = {"url": url, "protocol": protocol}
+        self.save_configuration()
 
     def get_all_status(self):
         """Get the status of all the dashboards.
@@ -172,6 +203,14 @@ class DashboardHandler(object):
             name, url, username=user, password=passwd, user_agent=self.user_agent
         )
 
+    def rename_dashboard(self, old, new):
+        "Rename a dashboard from 'old' to 'new'."
+        tmp = {}
+        for key, value in self.config[old].items():
+            tmp[key] = value
+        self.config.remove_section(old)
+        self.config[new] = tmp
+
     def save_configuration(self):
         """Save the list of dashboards to disk."""
         # Make sure the directory exists
@@ -182,7 +221,15 @@ class DashboardHandler(object):
             if "GENERAL" not in self.config:
                 self.config["GENERAL"] = {}
             defaults = self.config["GENERAL"]
-            defaults["current_dashboard"] = self.current_dashboard
+            defaults["current_dashboard"] = self.current_dashboard.name
 
         with self.configfile.open("w") as fd:
             self.config.write(fd)
+
+    def update(self, dashboard):
+        "Update the dashboard with that given."
+        self.config[dashboard.name] = {
+            "url": dashboard.url,
+            "protocol": "http",
+        }
+        self.save_configuration()
