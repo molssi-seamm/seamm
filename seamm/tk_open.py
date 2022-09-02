@@ -15,6 +15,7 @@ import dateutil
 import Pmw
 
 from .dashboard_handler import DashboardHandler
+from .seammrc import SEAMMrc
 from seamm_dashboard_client import DashboardConnectionError
 import seamm_util
 import seamm_widgets as sw
@@ -99,6 +100,9 @@ class TkOpen(collections.abc.MutableMapping):
         self.current_dashboard = None
         self.current_project = "any"
         self._projects = None
+        self.config = SEAMMrc()
+        if "SEAMM open" not in self.config:
+            self.config.add_section("SEAMM open")
 
     # Provide dict like access to the widgets to make
     # the code cleaner
@@ -163,39 +167,50 @@ class TkOpen(collections.abc.MutableMapping):
         )
         w.set("flowchart")
 
+        if not self.config.has_option("SEAMM open", "source"):
+            self.config.set("SEAMM open", "source", "local files")
+            path = Path("~/SEAMM/flowcharts").expanduser()
+            path.mkdir(parents=True, exist_ok=True)
+        source = self.config.get("SEAMM open", "source")
+
         w = self["source"] = sw.LabeledCombobox(
             frame,
             labeltext="from",
             values=("local files", "previous jobs", "Zenodo", "Zenodo sandbox"),
             state="readonly",
         )
-        w.set("local files")
+        w.set(source)
 
         # For local files, a directory to start from
-        path = Path("~/SEAMM/flowcharts").expanduser()
-        path.mkdir(parents=True, exist_ok=True)
+        if not self.config.has_option("SEAMM open", "directory"):
+            self.config.set(
+                "SEAMM open", "directory", json.dumps(["~/SEAMM/flowcharts"])
+            )
+            path = Path("~/SEAMM/flowcharts").expanduser()
+            path.mkdir(parents=True, exist_ok=True)
+        directories = json.loads(self.config.get("SEAMM open", "directory"))
+        directory = directories[0]
+
         w = self["directory"] = sw.LabeledCombobox(
             frame,
             labeltext="directory",
-            values=("~/SEAMM/flowcharts"),
+            values=directories,
         )
-        w.set("~/SEAMM/flowcharts")
+        w.set(directory)
 
         self["get directory"] = ttk.Button(
             frame, text="...", command=self.directory_cb, width=3
         )
-        w = self["flowchart"] = sw.LabeledCombobox(
-            frame,
-            labeltext="",
-            values=("~/SEAMM/flowcharts"),
-        )
-        w.set("~/SEAMM/flowcharts")
 
         # From dashboard
+        if not self.config.has_option("SEAMM open", "dashboard"):
+            self.config.set("SEAMM open", "dashboard", "")
         w = self["dashboard"] = sw.LabeledCombobox(
             frame,
             labeltext="Dashboard",
         )
+        if not self.config.has_option("SEAMM open", "project"):
+            self.config.set("SEAMM open", "project", "any")
         w = self["project"] = sw.LabeledCombobox(
             frame,
             labeltext="Project",
@@ -402,12 +417,15 @@ class TkOpen(collections.abc.MutableMapping):
                     message="The are no Dashboards that can be connected to.",
                 )
             else:
+                dashboard_name = self.config.get("SEAMM open", "dashboard")
+                if dashboard_name not in self.dashboards:
+                    dashboard_name = self.dashboards[0]
                 if (
                     self.current_dashboard is None
-                    or self.current_dashboard.name not in self.dashboards
+                    or self.current_dashboard.name != dashboard_name
                 ):
                     self.current_dashboard = self.dashboard_handler.get_dashboard(
-                        self.dashboards[0]
+                        dashboard_name
                     )
                 self._projects = None
                 projects = ["any"]
@@ -426,8 +444,11 @@ class TkOpen(collections.abc.MutableMapping):
 
                 self["project"].config(values=projects, state="readonly")
 
-                if self.current_project is None or self.current_project not in projects:
-                    self.current_project = projects[0]
+                project = self.config.get("SEAMM open", "project")
+                if project not in projects:
+                    project = projects[0]
+                if self.current_project is None or self.current_project != project:
+                    self.current_project = project
                 self["project"].set(self.current_project)
         row += 1
 
@@ -447,7 +468,10 @@ class TkOpen(collections.abc.MutableMapping):
 
                 # Get the jobs from the Dashboard.
                 if self.current_dashboard is not None:
-                    job_list = self.current_dashboard.jobs()
+                    if self.current_project == "any":
+                        job_list = self.current_dashboard.jobs()
+                    else:
+                        job_list = self._projects[self.current_project].jobs()
                     self.fill_tree(job_list)
             elif source == "local files":
                 self.reset_tree()
@@ -509,6 +533,8 @@ class TkOpen(collections.abc.MutableMapping):
             if what == "flowchart":
                 tree = self["tree"]
                 selected = tree.selection()
+                if source != self.config.get("SEAMM open", "source"):
+                    self.config.set("SEAMM open", "source", source)
                 if source == "Zenodo" or source == "Zenodo sandbox":
                     if len(selected) > 0:
                         record = self._data[selected[0]]
@@ -516,6 +542,10 @@ class TkOpen(collections.abc.MutableMapping):
                         return data
                 elif "previous jobs" == source:
                     if len(selected) > 0:
+                        self.config.set(
+                            "SEAMM open", "dashboard", self.current_dashboard.name
+                        )
+                        self.config.set("SEAMM open", "project", self.current_project)
                         job = self._data[selected[0]]
                         job_id = job["id"]
                         job = self.current_dashboard.job(job_id)
@@ -524,6 +554,20 @@ class TkOpen(collections.abc.MutableMapping):
                 elif "local files" in source:
                     if len(selected) > 0:
                         path = self._data[selected[0]]
+                        directory = str(path.parent)
+                        directories = json.loads(
+                            self.config.get("SEAMM open", "directory")
+                        )
+                        if directory != directories[0]:
+                            if directory in directories:
+                                directories.remove(directory)
+                            directories.insert(0, directory)
+                            self.config.set(
+                                "SEAMM open", "directory", json.dumps(directories)
+                            )
+                            w = self["directory"]
+                            w.configure(value=directories)
+                            w.set(directory)
                         if path.suffix == ".flow":
                             data = path.read_text()
                             return data
