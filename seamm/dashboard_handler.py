@@ -157,6 +157,7 @@ class DashboardHandler(object):
         ask : function
             A function or method to call to get the user name and passwd.
         """
+        self.credentials.re_read()
         user = None
         password = None
         section = f"Dashboard: {dashboard}"
