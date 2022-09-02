@@ -120,3 +120,6 @@ class SEAMMrc(Singleton):
     def _save(self):
         with open(self.path, "w") as fd:
             self._config.write(fd)
+
+    def re_read(self):
+        self._config.read(self.path)
