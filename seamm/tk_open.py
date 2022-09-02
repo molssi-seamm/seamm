@@ -518,6 +518,9 @@ class TkOpen(collections.abc.MutableMapping):
 
     def open(self):
         """Present a dialog for opening."""
+        # Reread the configuration file in case it has changed
+        self.config.re_read()
+
         # Create the dialog if it doesn't exist
         self.create_dialog()
 
@@ -566,7 +569,7 @@ class TkOpen(collections.abc.MutableMapping):
                                 "SEAMM open", "directory", json.dumps(directories)
                             )
                             w = self["directory"]
-                            w.configure(value=directories)
+                            w.configure(values=directories)
                             w.set(directory)
                         if path.suffix == ".flow":
                             data = path.read_text()
