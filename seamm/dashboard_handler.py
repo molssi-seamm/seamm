@@ -15,6 +15,7 @@ import logging
 from pathlib import Path
 import pkg_resources
 
+from .seammrc import SEAMMrc
 import seamm_dashboard_client
 import seamm_util
 
@@ -49,7 +50,7 @@ class DashboardHandler(object):
         else:
             self.user_agent = user_agent
 
-        self._credentials = None
+        self._credentials = SEAMMrc()
         self._current_dashboard = None
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
@@ -77,12 +78,7 @@ class DashboardHandler(object):
 
     @property
     def credentials(self):
-        """The data from ~/.seammrc, if it exists."""
-        if self._credentials is None:
-            self._credentials = configparser.ConfigParser()
-            path = Path("~/.seammrc").expanduser()
-            if path.exists():
-                self._credentials.read(path)
+        """The data Dashboard from ~/.seammrc."""
         return self._credentials
 
     @property
@@ -115,9 +111,9 @@ class DashboardHandler(object):
     def dashboards(self):
         """The list of dashboards."""
         result = []
-        for dashboard in self.config:
-            if dashboard not in ("GENERAL", self.config.default_section):
-                result.append(dashboard)
+        for section in self.config.sections():
+            if section not in ("GENERAL", self.config.default_section):
+                result.append(section)
         return sorted(result)
 
     def add_dashboard(self, name, url, protocol):
@@ -163,24 +159,18 @@ class DashboardHandler(object):
         """
         user = None
         password = None
-        if dashboard not in self.credentials:
-            self.credentials[dashboard] = {}
+        section = f"Dashboard: {dashboard}"
+        if section not in self.credentials:
+            self.credentials[section] = {}
 
-        if "user" in self.credentials[dashboard]:
-            user = self.credentials[dashboard]["user"]
-
-        if "password" in self.credentials[dashboard]:
-            password = self.credentials[dashboard]["password"]
+        user = self.credentials.get(section, "user", fallback=None)
+        password = self.credentials.get(section, "password", fallback=None)
 
         if ask is not None and (user is None or password is None):
             user, password = ask(dashboard, user=user, password=password)
             if user is not None and password is not None:
-                self.credentials[dashboard]["user"] = user
-                self.credentials[dashboard]["password"] = password
-
-                path = Path("~/.seammrc").expanduser()
-                with open(path, "w") as fd:
-                    self.credentials.write(fd)
+                self.credentials.set(section, "user", user)
+                self.credentials.set(section, "password", password)
         return user, password
 
     def get_dashboard(self, name):
