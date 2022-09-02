@@ -161,7 +161,7 @@ class DashboardHandler(object):
         password = None
         section = f"Dashboard: {dashboard}"
         if section not in self.credentials:
-            self.credentials[section] = {}
+            self.credentials.add_section(section)
 
         user = self.credentials.get(section, "user", fallback=None)
         password = self.credentials.get(section, "password", fallback=None)
