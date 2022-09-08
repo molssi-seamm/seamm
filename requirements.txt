@@ -12,8 +12,7 @@ py-cpuinfo
 python-dateutil
 pyuca
 reference_handler
-requests
-requests-toolbelt
+seamm-dashboard-client
 seamm-datastore
 seamm-util
 seamm-widgets

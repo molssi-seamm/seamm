@@ -24,8 +24,7 @@ dependencies:
   - py-cpuinfo
   - rdkit
   - reference-handler
-  - requests
-  - requests-toolbelt
+  - seamm-dashboard-client
   - seamm-datastore
   - seamm-util
   - seamm-widgets
