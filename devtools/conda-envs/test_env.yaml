@@ -24,6 +24,7 @@ dependencies:
   - py-cpuinfo
   - rdkit
   - reference-handler
+  - seamm-dashboard-client
   - seamm-datastore
   - seamm-util
   - seamm-widgets
@@ -41,7 +42,6 @@ dependencies:
 
   # Pip-only installs
   - pip:
-    - seamm-dashboard-client
     # Documentation
     - rinohtype
     - sphinx-rtd-theme
