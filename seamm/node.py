@@ -855,20 +855,21 @@ class Node(collections.abc.Hashable):
         self.visited = True
         result = self.next()
 
-        step_type = self.step_type
+        if name is None:
+            name = self.step_type
         parser = seamm_util.seamm_parser()
 
-        if not parser.exists(step_type):
-            parser.add_parser(step_type)
+        if not parser.exists(name):
+            parser.add_parser(name)
 
             parser.add_argument_group(
-                step_type,
+                name,
                 "debugging options",
                 "Options for turning on debugging output and tools",
             )
 
             parser.add_argument(
-                step_type,
+                name,
                 "--log-level",
                 group="debugging options",
                 default="WARNING",
