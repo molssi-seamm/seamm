@@ -167,6 +167,24 @@ class Flowchart(object):
                 return node
         return None
 
+    def get_nodes(self):
+        "Return a list of all the nodes in the traversal."
+        logger.debug("Getting nodes")
+
+        # Reset the visited flag to check for loops
+        self.reset_visited()
+
+        # Get the start node
+        next_node = self.get_node("1")
+
+        # And traverse the nodes.
+        nodes = []
+        while next_node:
+            nodes.append(next_node)
+            next_node = next_node.next()
+        logger.debug("Finished getting nodes")
+        return nodes
+
     def last_node(self, node="1"):
         """Find the last node walking down the main execution path
         from the given node, which defaults to the start node"""
