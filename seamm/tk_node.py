@@ -1,22 +1,81 @@
 # -*- coding: utf-8 -*-
 
+"""The base class for Tk nodes (steps) in the GUI for flowcharts."""
+
 import collections.abc
 import copy
 import logging
 import json
 import Pmw
 import seamm
+from seamm_util import default_units
 import seamm_widgets as sw
 import tkinter as tk
 import tkinter.ttk as ttk
-
-"""A graphical node using Tk on a canvas"""
 
 logger = logging.getLogger(__name__)
 
 
 class TkNode(collections.abc.MutableMapping):
-    """The abstract base class for all Tk-based nodes"""
+    """The base class for Tk nodes (steps) in the GUI for flowcharts.
+
+    Parameters
+    ----------
+    tk_flowchart : seamm.TkFlowchart
+        The graphical flowchart this step is in.
+    node : seamm.Node
+        The non-graphical node this corresponds to.
+    node_type : "simple", "loop"
+        The type of node on the graph. "simple" has an in and out arrow. "loop" has
+        three arrows.
+    canvas: tkinter.Canvas
+        The Canvas widget that this node is drawn on.
+    x: int
+        The x-coordinate the drawing for the node on the canvas.
+    y: int
+        The y-coordinate of the drawing for the node on the canvas.
+    w: int
+        The width of the drawing for the node on the canvas.
+    h: int
+        The height of the drawing for the node on the canvas.
+    my_logger : logging.Logger, optional
+        The logger to use. Defaults to the global one defined in the module.
+
+    Attributes
+    ----------
+    border
+    canvas
+    dialog : tkinter.Toplevel
+        The dialog for editing the parameters.
+    flowchart
+    h
+    logger : logging.Logger
+        The logger for debug & warning output.
+    node : seamm.Node
+        The non-graphical node corresponding to this graphical one.
+    node_type : enum("simple", "loop")
+        The type of the node from the point of connectivity.
+    popup_menu : tkinter.Menu
+        The popup menu used for right-clicks.
+    selected
+    tag
+    title
+    title_label : tkinter.ttk.Label
+        The label for the title of the step on the display.
+    tk_flowchart : seamm.TkFlowchart
+        The Tk Flowchart that contains this step.
+    tk_subflowchart : seamm.TkFlowchart
+        The sub flowchart is if this step contains one.
+    w
+    x
+    y
+    uuid
+
+    Notes
+    -----
+    The state is held in the corresponding non-graphical node, `self.node`. Many of
+    the properties are thin-wrappers to the same property of the non-graphical node.
+    """
 
     anchor_points = {
         "s": (+0.00, +0.50),
@@ -48,20 +107,27 @@ class TkNode(collections.abc.MutableMapping):
         w=None,
         h=None,
         my_logger=logger,
-        keyword_metadata=None,
-        keywords=None,
     ):
         """Initialize a node
 
         Keyword arguments:
         """
+        self._border = None
+        self._selected = False
+        self._tmp = None
+        self._canvas = None
+
+        self.canvas = canvas
+
+        self.dialog = None
         self.logger = my_logger
+        self.node = node
+        self.node_type = node_type
+        self.popup_menu = None
+        self._tables = None  # Temporary list of all tables up to an including this node
+        self.title_label = None
         self.tk_flowchart = tk_flowchart
         self.tk_subflowchart = None
-        self.node = node
-        self._keyword_metadata = keyword_metadata
-        self.toplevel = None
-        self.canvas = canvas
 
         if self.node is not None:
             if self.node.x is None:
@@ -73,57 +139,103 @@ class TkNode(collections.abc.MutableMapping):
             if self.node.h is None:
                 self.node.h = h
 
-        self.node_type = node_type
-
-        self._border = None
-        self.title_label = None
-        self._selected = False
-        self.popup_menu = None
-        self._tmp = None
-        self.dialog = None
-        self.previous_grab = None
-
         # Widget information
         self._widget = {}
         self.tk_var = {}
         self.results_widgets = None
 
+        # Because the default for saving properties in the database is True
+        # we need to initialize the results to include them by default
+        if self.node.parameters is not None and "results" in self.node.parameters:
+            self.initialize_results()
+
     def __hash__(self):
-        """Make iterable!"""
+        """Provide a unique key to make iterable."""
         return self.node.uuid
 
     def __eq__(self, other):
+        """Test for equality (identity) with another node."""
         return self.__class__ == other.__class__ and self.__hash__() == other.__hash__()
 
     # Provide dict like access to the widgets to make
     # the code cleaner
 
     def __getitem__(self, key):
-        """Allow [] access to the widgets!"""
+        """Allow [] access to the widgets."""
         return self._widget[key]
 
     def __setitem__(self, key, value):
-        """Allow x[key] access to the data"""
+        """Allow [key] access to set a widget."""
         self._widget[key] = value
 
     def __delitem__(self, key):
-        """Allow deletion of keys"""
+        """Allow deletion of widgets."""
         if key in self._widget:
             self._widget[key].destroy()
         del self._widget[key]
 
     def __iter__(self):
-        """Allow iteration over the object"""
+        """Allow iteration over the widgets"""
         return iter(self._widget)
 
     def __len__(self):
-        """The len() command"""
+        """Provide the nmber of widgets, for e.g. len() command."""
         return len(self._widget)
 
     @property
-    def uuid(self):
-        """The uuid of the node"""
-        return self.node.uuid
+    def border(self):
+        """The border of the picture in the flowchart"""
+        return self._border
+
+    @border.setter
+    def border(self, value):
+        self._border = value
+
+    @property
+    def canvas(self):
+        """The canvas for drawing the node"""
+        return self._canvas
+
+    @canvas.setter
+    def canvas(self, value):
+        self._canvas = value
+
+    @property
+    def flowchart(self):
+        """The flowchart object"""
+        return self.node.flowchart
+
+    @flowchart.setter
+    def flowchart(self, value):
+        """The flowchart object"""
+        self.node.flowchart = value
+
+    @property
+    def h(self):
+        """The height of the graphical node"""
+        return self.node.h
+
+    @h.setter
+    def h(self, value):
+        self.node.h = value
+
+    @property
+    def selected(self):
+        """Whether I am selected or not"""
+        return self._selected
+
+    @selected.setter
+    def selected(self, value):
+        self._selected = value
+        if value:
+            self.canvas.itemconfigure(self.border, outline="red")
+        else:
+            self.canvas.itemconfigure(self.border, outline="black")
+
+    @property
+    def tag(self):
+        """The string representation of the uuid of the node"""
+        return self.node.tag
 
     @property
     def title(self):
@@ -137,19 +249,13 @@ class TkNode(collections.abc.MutableMapping):
             self.canvas.itemconfigure(self.title_label, text=value)
 
     @property
-    def tag(self):
-        """The string representation of the uuid of the node"""
-        return self.node.tag
+    def w(self):
+        """The width of the graphical node"""
+        return self.node.w
 
-    @property
-    def flowchart(self):
-        """The flowchart object"""
-        return self.node.flowchart
-
-    @flowchart.setter
-    def flowchart(self, value):
-        """The flowchart object"""
-        self.node.flowchart = value
+    @w.setter
+    def w(self, value):
+        self.node.w = value
 
     @property
     def x(self):
@@ -170,167 +276,12 @@ class TkNode(collections.abc.MutableMapping):
         self.node.y = value
 
     @property
-    def w(self):
-        """The width of the graphical node"""
-        return self.node.w
-
-    @w.setter
-    def w(self, value):
-        self.node.w = value
-
-    @property
-    def h(self):
-        """The height of the graphical node"""
-        return self.node.h
-
-    @h.setter
-    def h(self, value):
-        self.node.h = value
-
-    def set_uuid(self):
-        self.node.set_uuid()
-
-    def connections(self):
-        """Return a list of all the incoming and outgoing edges
-        for this node, giving the anchor points and other node
-        """
-
-        return self.tk_flowchart.edges(self)
-
-    @property
-    def selected(self):
-        """Whether I am selected or not"""
-        return self._selected
-
-    @selected.setter
-    def selected(self, value):
-        self._selected = value
-        if value:
-            self.canvas.itemconfigure(self.border, outline="red")
-        else:
-            self.canvas.itemconfigure(self.border, outline="black")
-
-    @property
-    def canvas(self):
-        """The canvas for drawing the node"""
-        return self._canvas
-
-    @canvas.setter
-    def canvas(self, value):
-        if value:
-            self.toplevel = value.winfo_toplevel()
-        self._canvas = value
-
-    @property
-    def border(self):
-        """The border of the picture in the flowchart"""
-        return self._border
-
-    @border.setter
-    def border(self, value):
-        self._border = value
-
-    @staticmethod
-    def is_expr(value):
-        """Return whether the value is an expression or constant.
-
-        Parameters
-        ----------
-        value : str
-            The value to test
-
-        Returns
-        -------
-        bool
-           True for an expression, False otherwise.
-        """
-        return len(value) > 0 and value[0] == "$"
-
-    def draw(self):
-        """Draw the node on the given canvas, making it visible"""
-
-        # Remove any graphics items
-        self.undraw()
-
-        # the outline
-        x0 = self.x - self.w / 2
-        x1 = x0 + self.w
-        y0 = self.y - self.h / 2
-        y1 = y0 + self.h
-        self.border = self.canvas.create_rectangle(
-            x0,
-            y0,
-            x1,
-            y1,
-            tags=[self.tag, "type=outline"],
-            fill="white",
-        )
-
-        # the label in the middle
-        self.title_label = self.canvas.create_text(
-            self.x, self.y, text=self.title, tags=[self.tag, "type=title"]
-        )
-
-        for direction, edge in self.connections():
-            edge.move()
-
-    def undraw(self):
-        """Remove all of our visual components"""
-
-        self.canvas.delete(self.tag)
-
-    def move(self, deltax, deltay):
-        if self._tmp is None:
-            self._tmp = self.connections()
-
-        self.x += deltax
-        self.y += deltay
-
-        self.canvas.move(self.tag, deltax, deltay)
-
-        for connection in self._tmp:
-            direction, edge = connection
-            edge.move()
-
-    def end_move(self, deltax, deltay):
-        self.move(deltax, deltay)
-        self._x0 = None
-        self._y0 = None
-        self._tmp = None
-
-    def right_click(self, event):
-        """Do whatever needs to be done for a right-click on this
-        item in the flowchart.
-
-        Subclasses should override this as appropriate! The menu
-        created in this base method is accessible in subclasses
-        which should make it relatively easy to override.
-        """
-
-        if self.popup_menu is not None:
-            self.popup_menu.destroy()
-
-        self.popup_menu = tk.Menu(self.canvas, tearoff=0)
-        self.popup_menu.add_command(
-            label="Delete", command=lambda: self.tk_flowchart.remove_node(self)
-        )
-
-        if type(self) is seamm.tk_node.TkNode:
-            self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
-
-    def double_click(self, event):
-        """Do whatever needs to be done for a double-click on this
-        item in the flowchart.
-
-        Subclasses should override this as appropriate!
-        """
-
-        self.edit()
+    def uuid(self):
+        """The uuid of the node"""
+        return self.node.uuid
 
     def activate(self):
-        """Add active handles at the anchor points and change the
-        cursor
-        """
+        """Add active handles at the anchor points and change the cursor."""
 
         self.canvas.delete(self.tag + " && type=anchor")
         for pt, x, y in self.anchor_point("all"):
@@ -348,11 +299,19 @@ class TkNode(collections.abc.MutableMapping):
                 tags=[self.tag, "type=anchor", "anchor=" + pt],
             )
 
-    def deactivate(self):
-        """Remove the decorations indicate the anchor points"""
+    def activate_anchor_point(self, point, halo):
+        """Put a marker on the anchor point to indicate it is under the cursor."""
 
-        self.canvas.delete(self.tag + " && type=anchor")
-        self.canvas.delete(self.tag + " && type=active_anchor")
+        x, y = self.anchor_point(point)
+        self.canvas.create_oval(
+            x - halo,
+            y - halo,
+            x + halo,
+            y + halo,
+            fill="red",
+            outline="red",
+            tags=[self.tag, "type=active_anchor", "anchor=" + point],
+        )
 
     def anchor_point(self, anchor="all"):
         """Where the anchor points are located. If "all" is given
@@ -391,70 +350,12 @@ class TkNode(collections.abc.MutableMapping):
                     return point
         return None
 
-    def is_inside(self, x, y, halo=0):
-        """Return a boolean indicating whether the point x, y is inside
-        this node, using halo as a size around the point
-        """
-        if x < self.x - self.w / 2 - halo:
-            return False
-        if x > self.x + self.w / 2 + halo:
-            return False
-
-        if y < self.y - self.h / 2 - halo:
-            return False
-        if y > self.y + self.h / 2 + halo:
-            return False
-
-        return True
-
-    def activate_anchor_point(self, point, halo):
-        """Put a marker on the anchor point to indicate it is
-        active
+    def connections(self):
+        """Return a list of all the incoming and outgoing edges
+        for this node, giving the anchor points and other node
         """
 
-        x, y = self.anchor_point(point)
-        self.canvas.create_oval(
-            x - halo,
-            y - halo,
-            x + halo,
-            y + halo,
-            fill="red",
-            outline="red",
-            tags=[self.tag, "type=active_anchor", "anchor=" + point],
-        )
-
-    def remove_edge(self, edge):
-        """Remove a given edge, or all edges if 'all' is given"""
-
-        if isinstance(edge, str) and edge == "all":
-            for direction, obj in self.connections():
-                self.remove_edge(obj)
-        else:
-            self.tk_flowchart.graph.remove_edge(
-                edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
-            )
-
-    def edit(self):
-        """Present a dialog for editing this step's parameters.
-
-        Subclasses can override this.
-        """
-        # Create the dialog if it doesn't exist
-        if self.dialog is None:
-            self.create_dialog()
-            # After full creation, reset the dialog. This may do nothing,
-            # or may layout the widgets, but can only be done after fully
-            # creating the dialog.
-            self.reset_dialog()
-            # And resize the dialog to fit...
-            self.fit_dialog()
-
-        # And put it on-screen, the first time centered. If it contains
-        # a subflowchart, save it so it can be restored on a 'Cancel'
-        if self.tk_subflowchart is not None:
-            self.tk_subflowchart.push()
-
-        self.dialog.activate(geometry="centerscreenfirst")
+        return self.tk_flowchart.edges(self)
 
     def create_dialog(
         self,
@@ -466,11 +367,13 @@ class TkNode(collections.abc.MutableMapping):
 
         At the moment I have removed the Help button.
         """
+        toplevel = self.canvas.winfo_toplevel()
+
         self.logger.debug("Create dialog in tk_node base class")
         self.dialog = Pmw.Dialog(
-            self.toplevel,
+            toplevel,
             buttons=("OK", "Cancel"),
-            master=self.toplevel,
+            master=toplevel,
             title=title,
             command=self.handle_dialog,
         )
@@ -482,7 +385,7 @@ class TkNode(collections.abc.MutableMapping):
             frame.pack(expand=tk.YES, fill=tk.BOTH)
             self["frame"] = frame
             return frame
-        elif widget == "notebook" or results_tab or self._keyword_metadata is not None:
+        elif widget == "notebook" or results_tab or "keywords" in self.node.metadata:
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
             notebook.pack(side="top", fill=tk.BOTH, expand=tk.YES)
@@ -515,96 +418,131 @@ class TkNode(collections.abc.MutableMapping):
                 rframe,
                 columns=[
                     "Result",
-                    "Save",
-                    "Variable name",
-                    "In table",
-                    "Column name",
+                    "Save in database",
+                    "",
+                    "Save in variable named",
+                    "Save in table",
+                    "as Column name",
+                    "Units",
                 ],
             )
             self["results"].grid(row=1, column=0, sticky=tk.NSEW)
             rframe.columnconfigure(0, weight=1)
             rframe.rowconfigure(1, weight=1)
 
-        if self._keyword_metadata is not None:
+        if "keywords" in self.node.metadata:
             # Next tab to handle adding keywords manually
             self.logger.debug("Adding the keyword tab")
             kframe = self["add_to_input"] = ttk.Frame(notebook)
             notebook.add(kframe, text="Add to input", sticky=tk.NSEW)
             self["keywords"] = sw.Keywords(
                 kframe,
-                metadata=self._keyword_metadata,
+                metadata=self.node.metadata["keywords"],
                 keywords=self.node.parameters["extra keywords"].value,
             )
             self["keywords"].pack(expand="yes", fill="both")
 
         return frame
 
-    def setup_results(self, properties, calculation="energy", method=None):
-        """Layout the results tab of the dialog"""
-        results = self.node.parameters["results"].value
+    def deactivate(self):
+        """Remove the decorations that indicate active anchor points"""
 
-        self.results_widgets = []
-        table = self["results"]
+        self.canvas.delete(self.tag + " && type=anchor")
+        self.canvas.delete(self.tag + " && type=active_anchor")
 
-        table.clear()
+    def default_edge_subtype(self):
+        """Return the default subtype of the edge. Usually this is ''
+        but for nodes with two or more edges leaving them, such as a loop, this
+        method will return an appropriate default for the current edge. For
+        example, by default the first edge emanating from a loop-node is the
+        'loop' edge; the second, the 'exit' edge.
 
-        frame = table.interior()
+        A return value of 'too many' indicates that the node exceeds the number
+        of allowed exit edges.
+        """
 
-        row = 0
-        for key, entry in properties.items():
-            if "calculation" not in entry:
-                continue
-            if calculation not in entry["calculation"]:
-                continue
-            if "dimensionality" not in entry:
-                continue
-            if method is not None and "methods" in entry:
-                if method not in entry["methods"]:
-                    continue
+        # how many outgoing edges are there?
+        n_edges = len(self.tk_flowchart.edges(self, direction="out"))
 
-            widgets = []
-            widgets.append(key)
+        self.logger.debug("node.default_edge_label, n_edges = {}".format(n_edges))
 
-            table.cell(row, 0, entry["description"])
+        if n_edges == 0:
+            return "next"
+        else:
+            return "too many"
 
-            # variable
-            var = self.tk_var[key] = tk.IntVar()
-            var.set(0)
-            w = ttk.Checkbutton(frame, variable=var)
-            table.cell(row, 1, w)
-            widgets.append(w)
-            e = ttk.Entry(frame, width=15)
-            e.insert(0, key.lower())
-            table.cell(row, 2, e)
-            widgets.append(e)
+    def double_click(self, event):
+        """Handle a double-click on the node.
 
-            if key in results:
-                if "variable" in results[key]:
-                    var.set(1)
-                    e.delete(0, tk.END)
-                    e.insert(0, results[key]["variable"])
+        This method raises the dialog to edit the parameters.  Subclasses should
+        override this as appropriate!
+        """
 
-            if entry["dimensionality"] == "scalar":
-                # table
-                w = ttk.Combobox(frame, width=10)
-                table.cell(row, 3, w)
-                widgets.append(w)
-                e = ttk.Entry(frame, width=15)
-                e.insert(0, key.lower())
-                table.cell(row, 4, e)
-                widgets.append(e)
+        self.edit()
 
-                if key in results:
-                    if "table" in results[key]:
-                        w.set(results[key]["table"])
-                        e.delete(0, tk.END)
-                        e.insert(0, results[key]["column"])
-            else:
-                widgets.append(None)
-                widgets.append(None)
+    def draw(self):
+        """Draw the node on the given canvas, making it visible"""
+        # Remove any graphics items
+        self.undraw()
 
-            self.results_widgets.append(widgets)
-            row += 1
+        # the outline
+        x0 = self.x - self.w / 2
+        x1 = x0 + self.w
+        y0 = self.y - self.h / 2
+        y1 = y0 + self.h
+        self.border = self.canvas.create_rectangle(
+            x0,
+            y0,
+            x1,
+            y1,
+            tags=[self.tag, "type=outline"],
+            fill="white",
+        )
+
+        # the label in the middle
+        self.title_label = self.canvas.create_text(
+            self.x, self.y, text=self.title, tags=[self.tag, "type=title"]
+        )
+
+        for direction, edge in self.connections():
+            edge.move()
+
+    def edit(self):
+        """Present a dialog for editing this step's parameters.
+
+        Subclasses can override this.
+        """
+        # Create the dialog if it doesn't exist
+        if self.dialog is None:
+            self.create_dialog()
+            # After full creation, reset the dialog. This may do nothing,
+            # or may layout the widgets, but can only be done after fully
+            # creating the dialog.
+            self.reset_dialog()
+            # And resize the dialog to fit...
+            self.fit_dialog()
+
+        # And put it on-screen, the first time centered. If it contains
+        # a subflowchart, save it so it can be restored on a 'Cancel'
+        if self.tk_subflowchart is not None:
+            self.tk_subflowchart.push()
+
+        self.dialog.activate(geometry="centerscreenfirst")
+
+    def end_move(self, deltax, deltay):
+        """End moving the node on the canvas.
+
+        Parameters
+        ----------
+        deltax : int
+            The number of pixels to move in the x-direction.
+        deltay : int
+            The number of pixels to move in the y-direction.
+        """
+        self.move(deltax, deltay)
+        self._x0 = None
+        self._y0 = None
+        self._tmp = None
 
     def fit_dialog(self):
         """Resize and fit the dialog to the current contents and the
@@ -686,183 +624,6 @@ class TkNode(collections.abc.MutableMapping):
 
         self.dialog.geometry("{}x{}".format(width, height))
 
-    def reset_dialog(self, widget=None):
-        """Reset the layout of the dialog as needed for the parameters.
-
-        In this base class this does nothing. Override as needed in the
-        subclasses derived from this class.
-        """
-        pass
-
-    def handle_dialog(self, result):
-        """Do the right thing when the dialog is closed."""
-        if result is None or result == "Cancel":
-            self.dialog.deactivate(result)
-
-            # If there is a subflowchart, revert to the saved copy
-            if self.tk_subflowchart is not None:
-                self.tk_subflowchart.pop()
-
-            # Reset the results widgets if they exist
-            if self.results_widgets is not None:
-                results = self.node.parameters["results"]["value"]
-                self.logger.debug("Resetting results on Cancel")
-                if self.logger.isEnabledFor(logging.DEBUG):
-                    self.logger.debug("  results dict\n---------")
-                    for key, item in results.items():
-                        self.logger.debug(key)
-                        self.logger.debug(
-                            json.dumps(results[key], sort_keys=True, indent=3)
-                        )
-
-                for (
-                    key,
-                    w_check,
-                    w_variable,
-                    w_table,
-                    w_column,
-                ) in self.results_widgets:  # noqa: E501
-                    self.logger.debug("  key: {}".format(key))
-                    w_variable.delete(0, tk.END)
-                    if w_table is not None:
-                        w_table.delete(0, tk.END)
-                    if w_column is not None:
-                        w_column.delete(0, tk.END)
-                    if key in results:
-                        tmp = results[key]
-                        self.logger.debug(
-                            "  key dict\n---------\n"
-                            + json.dumps(tmp, sort_keys=True, indent=3)
-                            + "\n-----"
-                        )
-                        if "variable" in tmp:
-                            self.tk_var[key].set(1)
-                            w_variable.insert(0, tmp["variable"])
-                        else:
-                            self.tk_var[key].set(0)
-                            w_variable.insert(0, key.lower())
-
-                        if w_table is not None:
-                            if "table" in tmp:
-                                w_table.insert(0, tmp["table"])
-                                w_column.insert(0, tmp["column"])
-                            else:
-                                w_table.set("")
-                                w_column.insert(0, key.lower())
-                    else:
-                        self.logger.debug("  resetting widgets")
-                        self.tk_var[key].set(0)
-                        w_variable.insert(0, key.lower())
-                        if w_column is not None:
-                            w_column.insert(0, key.lower())
-
-            # Reset the parameters, if any
-            if self.node.parameters is not None:
-                self.node.parameters.reset_widgets()
-
-            # Reset any keywords
-            if "keywords" in self:
-                self["keywords"].reset()
-
-            # Reset the layout to make sure it is correct
-            self.reset_dialog()
-
-        elif result == "Help":
-            self.help()
-        elif result == "OK":
-            self.dialog.deactivate(result)
-
-            # Capture the parameters from the widgets
-            if self.node.parameters is not None:
-                self.node.parameters.set_from_widgets()
-
-            # If there is a subflowchart, throw the saved copy away
-            if self.tk_subflowchart is not None:
-                self.tk_subflowchart.pop_and_discard()
-
-            # Get what results to store, if the results tab exists
-            if self.results_widgets is not None:
-                # Shortcut for parameters
-                P = self.node.parameters
-
-                # and from the results tab...
-                if self.tk_var["create tables"].get():
-                    P["create tables"].value = "yes"
-                else:
-                    P["create tables"].value = "no"
-
-                results = P["results"].value = {}
-                for (
-                    key,
-                    w_check,
-                    w_variable,
-                    w_table,
-                    w_column,
-                ) in self.results_widgets:  # noqa: E501
-
-                    if self.tk_var[key].get():
-                        tmp = results[key] = dict()
-                        tmp["variable"] = w_variable.get()
-                    if w_table is not None:
-                        table = w_table.get()
-                        if table != "":
-                            if key not in results:
-                                tmp = results[key] = dict()
-                            tmp["table"] = table
-                            tmp["column"] = w_column.get()
-            # And any keywords
-            if "keywords" in self:
-                P = self.node.parameters
-                P["extra keywords"].value = self["keywords"].get_keywords()
-                self["keywords"].keywords = P["extra keywords"].value
-        else:
-            self.dialog.deactivate(result)
-            raise RuntimeError("Don't recognize dialog result '{}'".format(result))
-
-    def help(self):
-        """Base class for presenting help, does nothing.
-
-        Subclasses should override this.
-        """
-        pass
-
-    def to_dict(self):
-        """Serialize to a dict"""
-        data = {
-            "x": self._x,
-            "y": self._y,
-            "w": self._w,
-            "h": self._h,
-        }
-
-        return data
-
-    def update_flowchart(self, tk_flowchart=None, flowchart=None):
-        """Update the nongraphical flowchart. Only used in nodes that contain
-        flowcharts"""
-        if tk_flowchart is None or flowchart is None:
-            return
-
-        # Make sure there is nothing in the flowchart
-        flowchart.clear(all=True)
-
-        # Add all the non-graphical nodes, making copies so that
-        # when the flowchart is cleared our objects still exist
-        translate = {}
-        for node in tk_flowchart:
-            translate[node] = flowchart.add_node(copy.copy(node.node))
-            node.update_flowchart()
-
-        # And the edges
-        for edge in tk_flowchart.edges():
-            attr = {}
-            for key in edge:
-                if key not in ("node1", "node2", "edge_type", "edge_subtype", "canvas"):
-                    attr[key] = edge[key]
-            node1 = translate[edge.node1]
-            node2 = translate[edge.node2]
-            flowchart.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
-
     def from_flowchart(self, tk_flowchart=None, flowchart=None):
         """Recreate the graphics from the non-graphical flowchart.
         Only used in nodes that contain flowchart"""
@@ -903,26 +664,237 @@ class TkNode(collections.abc.MutableMapping):
                     attr[key] = edge[key]
             tk_flowchart.add_edge(node1, node2, **attr)
 
-    def default_edge_subtype(self):
-        """Return the default subtype of the edge. Usually this is ''
-        but for nodes with two or more edges leaving them, such as a loop, this
-        method will return an appropriate default for the current edge. For
-        example, by default the first edge emanating from a loop-node is the
-        'loop' edge; the second, the 'exit' edge.
+    def handle_dialog(self, result):
+        """Do the right thing when the dialog is closed."""
+        if result is None or result == "Cancel":
+            self.dialog.deactivate(result)
 
-        A return value of 'too many' indicates that the node exceeds the number
-        of allowed exit edges.
-        """
+            # If there is a subflowchart, revert to the saved copy
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop()
 
-        # how many outgoing edges are there?
-        n_edges = len(self.tk_flowchart.edges(self, direction="out"))
+            # Reset the results widgets if they exist
+            if self.results_widgets is not None:
+                results = self.node.parameters["results"]["value"]
+                self.logger.debug("Resetting results on Cancel")
+                if self.logger.isEnabledFor(logging.DEBUG):
+                    self.logger.debug("  results dict\n---------")
+                    for key, item in results.items():
+                        self.logger.debug(key)
+                        self.logger.debug(
+                            json.dumps(results[key], sort_keys=True, indent=3)
+                        )
 
-        self.logger.debug("node.default_edge_label, n_edges = {}".format(n_edges))
+                for (
+                    key,
+                    w_property,
+                    w_check,
+                    w_variable,
+                    w_table,
+                    w_column,
+                    w_units,
+                ) in self.results_widgets:  # noqa: E501
+                    self.logger.debug("  key: {}".format(key))
+                    w_variable.delete(0, tk.END)
+                    if w_table is not None:
+                        w_table.delete(0, tk.END)
+                    if w_column is not None:
+                        w_column.delete(0, tk.END)
+                    if key in results:
+                        tmp = results[key]
+                        self.logger.debug(
+                            "  key dict\n---------\n"
+                            + json.dumps(tmp, sort_keys=True, indent=3)
+                            + "\n-----"
+                        )
+                        if "variable" in tmp:
+                            self.tk_var[key].set(1)
+                            w_variable.insert(0, tmp["variable"])
+                        else:
+                            self.tk_var[key].set(0)
+                            w_variable.insert(0, key.lower().replace(" ", "_"))
 
-        if n_edges == 0:
-            return "next"
+                        if w_table is not None:
+                            if "table" in tmp:
+                                w_table.insert(0, tmp["table"])
+                                w_column.insert(0, tmp["column"])
+                            else:
+                                w_table.set("")
+                                w_column.insert(0, key.lower().replace("_", " "))
+
+                        if w_property is not None:
+                            if "property" in tmp:
+                                self.tk_var["property " + key]["value"].set(1)
+                            else:
+                                self.tk_var["property " + key]["value"].set(0)
+
+                        if w_units is not None:
+                            if "units" in tmp:
+                                w_units.set(tmp["units"])
+                    else:
+                        self.logger.debug("  resetting widgets")
+                        self.tk_var[key].set(0)
+                        w_variable.insert(0, key.lower().replace(" ", "_"))
+                        if w_column is not None:
+                            w_column.insert(0, key.lower().replace("_", " "))
+
+            # Reset the parameters, if any
+            if self.node.parameters is not None:
+                self.node.parameters.reset_widgets()
+
+            # Reset any keywords
+            if "keywords" in self:
+                self["keywords"].reset()
+
+            # Reset the layout to make sure it is correct
+            self.reset_dialog()
+
+        elif result == "Help":
+            self.help()
+        elif result == "OK":
+            self.dialog.deactivate(result)
+
+            # Capture the parameters from the widgets
+            if self.node.parameters is not None:
+                self.node.parameters.set_from_widgets()
+
+            # If there is a subflowchart, throw the saved copy away
+            if self.tk_subflowchart is not None:
+                self.tk_subflowchart.pop_and_discard()
+
+            # Get what results to store, if the results tab exists
+            if self.results_widgets is not None:
+                # Shortcut for parameters
+                P = self.node.parameters
+
+                # and from the results tab...
+                if self.tk_var["create tables"].get():
+                    P["create tables"].value = "yes"
+                else:
+                    P["create tables"].value = "no"
+
+                results = P["results"].value = {}
+                for (
+                    key,
+                    w_property,
+                    w_check,
+                    w_variable,
+                    w_table,
+                    w_column,
+                    w_units,
+                ) in self.results_widgets:  # noqa: E501
+                    tmp = {}
+                    if self.tk_var[key].get():
+                        tmp["variable"] = w_variable.get()
+                        if w_units is not None:
+                            tmp["units"] = w_units.get()
+                    if w_table is not None:
+                        table = w_table.get()
+                        if table != "":
+                            tmp["table"] = table
+                            tmp["column"] = w_column.get()
+                            if w_units is not None:
+                                tmp["units"] = w_units.get()
+                    if w_property is not None:
+                        if self.tk_var["property " + key]["value"].get() == 1:
+                            tmp["property"] = self.tk_var["property " + key]["key"]
+                        elif "property" in tmp:
+                            del tmp["property"]
+                    if len(tmp) > 0:
+                        results[key] = tmp
+
+            # And any keywords
+            if "keywords" in self:
+                P = self.node.parameters
+                P["extra keywords"].value = self["keywords"].get_keywords()
+                self["keywords"].keywords = P["extra keywords"].value
         else:
-            return "too many"
+            self.dialog.deactivate(result)
+            raise RuntimeError("Don't recognize dialog result '{}'".format(result))
+
+    def help(self):
+        """Base class for presenting help, does nothing.
+
+        Subclasses should override this.
+        """
+        pass
+
+    def initialize_results(self):
+        """Initialize the results if empty.
+
+        When the GUI for the step is first created the `results` parameter is empty.
+        However the default is to save properties to the database, so they need to
+        be put into the `results` parameter.
+        """
+        results = self.node.parameters["results"].value
+        if len(results) == 0:
+            for key, entry in self.node.metadata["results"].items():
+                if "calculation" not in entry:
+                    continue
+                if self.node.calculation not in entry["calculation"]:
+                    continue
+                if "dimensionality" not in entry:
+                    continue
+                if self.node.method is not None and "methods" in entry:
+                    if self.node.method not in entry["methods"]:
+                        continue
+
+                if "property" in entry:
+                    results[key] = {"property": entry["property"]}
+
+    @staticmethod
+    def is_expr(value):
+        """Return whether the value is an expression or constant.
+
+        Parameters
+        ----------
+        value : str
+            The value to test
+
+        Returns
+        -------
+        bool
+           True for an expression, False otherwise.
+        """
+        return len(value) > 0 and value[0] == "$"
+
+    def is_inside(self, x, y, halo=0):
+        """Return a boolean indicating whether the point x, y is inside
+        this node, using halo as a size around the point
+        """
+        if x < self.x - self.w / 2 - halo:
+            return False
+        if x > self.x + self.w / 2 + halo:
+            return False
+
+        if y < self.y - self.h / 2 - halo:
+            return False
+        if y > self.y + self.h / 2 + halo:
+            return False
+
+        return True
+
+    def move(self, deltax, deltay):
+        """Move the node on the canvas.
+
+        Parameters
+        ----------
+        deltax : int
+            The number of pixels to move in the x-direction.
+        deltay : int
+            The number of pixels to move in the y-direction.
+        """
+        if self._tmp is None:
+            self._tmp = self.connections()
+
+        self.x += deltax
+        self.y += deltay
+
+        self.canvas.move(self.tag, deltax, deltay)
+
+        for connection in self._tmp:
+            direction, edge = connection
+            edge.move()
 
     def next_anchor(self):
         """Return where the next node should be positioned. The default is
@@ -930,3 +902,223 @@ class TkNode(collections.abc.MutableMapping):
         """
 
         return "s"
+
+    def remove_edge(self, edge):
+        """Remove a given edge, or all edges if 'all' is given"""
+
+        if isinstance(edge, str) and edge == "all":
+            for direction, obj in self.connections():
+                self.remove_edge(obj)
+        else:
+            self.tk_flowchart.graph.remove_edge(
+                edge.node1, edge.node2, edge.edge_type, edge.edge_subtype
+            )
+
+    def reset_dialog(self, widget=None):
+        """Reset the layout of the dialog as needed for the parameters.
+
+        In this base class this does nothing. Override as needed in the
+        subclasses derived from this class.
+        """
+        pass
+
+    def right_click(self, event):
+        """Respond to a right-click by posting the popup menu.
+
+        This method provides a popup menu with a **delete** command.
+
+        Subclasses should override or extend this as appropriate! The menu created in
+        this base method is accessible in subclasses which should make it easy to
+        override.
+        """
+
+        if self.popup_menu is not None:
+            self.popup_menu.destroy()
+
+        self.popup_menu = tk.Menu(self.canvas, tearoff=0)
+        self.popup_menu.add_command(
+            label="Delete",
+            command=lambda node=self: self.tk_flowchart.remove_node(node),
+        )
+
+        if type(self) is seamm.tk_node.TkNode:
+            self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
+
+    def setup_results(self):
+        """Layout the results tab of the dialog"""
+        results = self.node.parameters["results"].value
+
+        # Find what tables are in use.
+        tables = set()
+        for tmp in results.values():
+            if "table" in tmp:
+                tables.add(tmp["table"])
+        self.node.tables = sorted(tables)
+
+        tables.update(self.node.existing_tables())
+        self._tables = sorted(tables)
+        del tables
+
+        self.results_widgets = []
+        table = self["results"]
+        table.clear()
+        frame = table.interior()
+
+        row = 0
+        for key, entry in self.node.metadata["results"].items():
+            if "calculation" not in entry:
+                continue
+            if self.node.calculation not in entry["calculation"]:
+                continue
+            if "dimensionality" not in entry:
+                continue
+            if self.node.method is not None and "methods" in entry:
+                if self.node.method not in entry["methods"]:
+                    continue
+
+            widgets = []
+            widgets.append(key)
+
+            table.cell(row, 0, entry["description"])
+
+            # Property for DB. default is save
+            if "property" in entry:
+                var = self.tk_var["property " + key] = {
+                    "value": tk.IntVar(),
+                    "key": entry["property"],
+                }
+                if key in results and "property" in results[key]:
+                    var["value"].set(1)
+                else:
+                    var["value"].set(0)
+
+                w = ttk.Checkbutton(frame, variable=var["value"])
+                table.cell(row, 1, w)
+                widgets.append(w)
+            else:
+                widgets.append(None)
+
+            # variable
+            var = self.tk_var[key] = tk.IntVar()
+            var.set(0)
+            w = ttk.Checkbutton(frame, variable=var)
+            table.cell(row, 2, w)
+            widgets.append(w)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower().replace(" ", "_"))
+            table.cell(row, 3, e)
+            widgets.append(e)
+
+            if key in results:
+                if "variable" in results[key]:
+                    var.set(1)
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]["variable"])
+
+            if entry["dimensionality"] == "scalar":
+                # table
+                w = ttk.Combobox(frame, width=10, values=["", *self._tables])
+                table.cell(row, 4, w)
+                widgets.append(w)
+                w.bind("<<ComboboxSelected>>", self._table_cb)
+                w.bind("<Return>", self._table_cb)
+                w.bind("<FocusOut>", self._table_cb)
+                e = ttk.Entry(frame, width=15)
+                e.insert(0, key.lower().replace("_", " "))
+                table.cell(row, 5, e)
+                widgets.append(e)
+
+                if key in results:
+                    if "table" in results[key]:
+                        w.set(results[key]["table"])
+                        e.delete(0, tk.END)
+                        e.insert(0, results[key]["column"])
+            else:
+                widgets.append(None)
+                widgets.append(None)
+
+            # And units....
+            if "units" in entry and entry["units"] != "":
+                units = entry["units"]
+                w = ttk.Combobox(frame, width=10)
+                widgets.append(w)
+                table.cell(row, 6, w)
+                w.config(values=[*default_units(units), ""])
+                w.set(units)
+                if key in results and "units" in results[key]:
+                    w.set(results[key]["units"])
+            else:
+                widgets.append(None)
+
+            self.results_widgets.append(widgets)
+            row += 1
+
+    def set_uuid(self):
+        """Set the unique id of the node to a new uuid."""
+        self.node.set_uuid()
+
+    def to_dict(self):
+        """Serialize to a dict"""
+        data = {
+            "x": self._x,
+            "y": self._y,
+            "w": self._w,
+            "h": self._h,
+        }
+
+        return data
+
+    def _table_cb(self, event):
+        "Update the list of tables as needed."
+        table = event.widget.get()
+
+        if table.strip() == "":
+            return
+
+        if table not in self._tables:
+            self._tables.append(table)
+            self._tables = sorted(self._tables)
+            self.node.tables.append(table)
+            self.node.tables.sort()
+
+            for (
+                key,
+                w_property,
+                w_check,
+                w_variable,
+                w_table,
+                w_column,
+                w_units,
+            ) in self.results_widgets:
+                if w_table is not None:
+                    w_table.configure(values=["", *self._tables])
+
+    def update_flowchart(self, tk_flowchart=None, flowchart=None):
+        """Update the nongraphical flowchart. Only used in nodes that contain
+        flowcharts"""
+        if tk_flowchart is None or flowchart is None:
+            return
+
+        # Make sure there is nothing in the flowchart
+        flowchart.clear(all=True)
+
+        # Add all the non-graphical nodes, making copies so that
+        # when the flowchart is cleared our objects still exist
+        translate = {}
+        for node in tk_flowchart:
+            translate[node] = flowchart.add_node(copy.copy(node.node))
+            node.update_flowchart()
+
+        # And the edges
+        for edge in tk_flowchart.edges():
+            attr = {}
+            for key in edge:
+                if key not in ("node1", "node2", "edge_type", "edge_subtype", "canvas"):
+                    attr[key] = edge[key]
+            node1 = translate[edge.node1]
+            node2 = translate[edge.node2]
+            flowchart.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
+
+    def undraw(self):
+        """Remove all the visual components from the canvas."""
+        self.canvas.delete(self.tag)
