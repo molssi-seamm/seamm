@@ -365,7 +365,14 @@ class TkNode(collections.abc.MutableMapping):
     ):
         """Create the base dialog for editing the parameters for a step.
 
-        At the moment I have removed the Help button.
+        Parameters
+        ----------
+        title : str
+            The title of the dialog.
+        widget : enum
+            Whether to use a simple dialog ("frame") or use a notebook ("notebook").
+        results_tab : bool
+            **OBSOLETE** Not longer used.
         """
         toplevel = self.canvas.winfo_toplevel()
 
@@ -379,13 +386,9 @@ class TkNode(collections.abc.MutableMapping):
         )
         self.dialog.withdraw()
 
-        if widget == "frame":
-            # Create a frame to hold everything
-            frame = ttk.Frame(self.dialog.interior())
-            frame.pack(expand=tk.YES, fill=tk.BOTH)
-            self["frame"] = frame
-            return frame
-        elif widget == "notebook" or results_tab or "keywords" in self.node.metadata:
+        results_tab = "results" in self.node.parameters
+
+        if widget == "notebook" or results_tab or "keywords" in self.node.metadata:
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
             notebook.pack(side="top", fill=tk.BOTH, expand=tk.YES)
@@ -395,6 +398,12 @@ class TkNode(collections.abc.MutableMapping):
             frame = ttk.Frame(notebook)
             self["frame"] = frame
             notebook.add(frame, text="Parameters", sticky=tk.NW)
+        elif widget == "frame":
+            # Create a frame to hold everything
+            frame = ttk.Frame(self.dialog.interior())
+            frame.pack(expand=tk.YES, fill=tk.BOTH)
+            self["frame"] = frame
+            return frame
 
         if results_tab:
             # Second tab for results if requested
@@ -404,15 +413,16 @@ class TkNode(collections.abc.MutableMapping):
             # Shortcut for parameters
             P = self.node.parameters
 
-            var = self.tk_var["create tables"] = tk.IntVar()
-            if P["create tables"].value == "yes":
-                var.set(1)
-            else:
-                var.set(0)
-            self["create tables"] = ttk.Checkbutton(
-                rframe, text="Create tables if needed", variable=var
-            )
-            self["create tables"].grid(row=0, column=0, sticky=tk.W)
+            if "create tables" in P:
+                var = self.tk_var["create tables"] = tk.IntVar()
+                if P["create tables"].value == "yes":
+                    var.set(1)
+                else:
+                    var.set(0)
+                self["create tables"] = ttk.Checkbutton(
+                    rframe, text="Create tables if needed", variable=var
+                )
+                self["create tables"].grid(row=0, column=0, sticky=tk.W)
 
             self["results"] = sw.ScrolledColumns(
                 rframe,
@@ -768,10 +778,11 @@ class TkNode(collections.abc.MutableMapping):
                 P = self.node.parameters
 
                 # and from the results tab...
-                if self.tk_var["create tables"].get():
-                    P["create tables"].value = "yes"
-                else:
-                    P["create tables"].value = "no"
+                if "create tables" in P:
+                    if self.tk_var["create tables"].get():
+                        P["create tables"].value = "yes"
+                    else:
+                        P["create tables"].value = "no"
 
                 results = P["results"].value = {}
                 for (
@@ -826,15 +837,17 @@ class TkNode(collections.abc.MutableMapping):
         However the default is to save properties to the database, so they need to
         be put into the `results` parameter.
         """
+        if "results" not in self.node.parameters:
+            return
+
         results = self.node.parameters["results"].value
         if len(results) == 0:
             for key, entry in self.node.metadata["results"].items():
-                if "calculation" not in entry:
-                    continue
-                if self.node.calculation not in entry["calculation"]:
-                    continue
                 if "dimensionality" not in entry:
                     continue
+                if self.node.calculation is not None and "calculation" in entry:
+                    if self.node.calculation not in entry["calculation"]:
+                        continue
                 if self.node.method is not None and "methods" in entry:
                     if self.node.method not in entry["methods"]:
                         continue
@@ -946,6 +959,9 @@ class TkNode(collections.abc.MutableMapping):
 
     def setup_results(self):
         """Layout the results tab of the dialog"""
+        if "results" not in self.node.parameters or "results" not in self:
+            return
+
         results = self.node.parameters["results"].value
 
         # Find what tables are in use.
@@ -966,12 +982,11 @@ class TkNode(collections.abc.MutableMapping):
 
         row = 0
         for key, entry in self.node.metadata["results"].items():
-            if "calculation" not in entry:
-                continue
-            if self.node.calculation not in entry["calculation"]:
-                continue
             if "dimensionality" not in entry:
                 continue
+            if self.node.calculation is not None and "calculation" in entry:
+                if self.node.calculation not in entry["calculation"]:
+                    continue
             if self.node.method is not None and "methods" in entry:
                 if self.node.method not in entry["methods"]:
                     continue

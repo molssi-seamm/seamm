@@ -888,6 +888,9 @@ class Node(collections.abc.Hashable):
         create_tables : bool, optional
            Whether to create tables that do not yet exist, default is True.
         """
+        if "results" not in self.parameters:
+            return
+
         results = self.parameters["results"].value
 
         for key, value in results.items():
