@@ -365,7 +365,14 @@ class TkNode(collections.abc.MutableMapping):
     ):
         """Create the base dialog for editing the parameters for a step.
 
-        At the moment I have removed the Help button.
+        Parameters
+        ----------
+        title : str
+            The title of the dialog.
+        widget : enum
+            Whether to use a simple dialog ("frame") or use a notebook ("notebook").
+        results_tab : bool
+            **OBSOLETE** Not longer used.
         """
         toplevel = self.canvas.winfo_toplevel()
 
@@ -379,13 +386,11 @@ class TkNode(collections.abc.MutableMapping):
         )
         self.dialog.withdraw()
 
-        if widget == "frame":
-            # Create a frame to hold everything
-            frame = ttk.Frame(self.dialog.interior())
-            frame.pack(expand=tk.YES, fill=tk.BOTH)
-            self["frame"] = frame
-            return frame
-        elif widget == "notebook" or results_tab or "keywords" in self.node.metadata:
+        results_tab = (
+            self.node.parameters is not None and "results" in self.node.parameters
+        )
+
+        if widget == "notebook" or results_tab or "keywords" in self.node.metadata:
             # A tabbed notebook
             notebook = ttk.Notebook(self.dialog.interior())
             notebook.pack(side="top", fill=tk.BOTH, expand=tk.YES)
@@ -395,6 +400,12 @@ class TkNode(collections.abc.MutableMapping):
             frame = ttk.Frame(notebook)
             self["frame"] = frame
             notebook.add(frame, text="Parameters", sticky=tk.NW)
+        elif widget == "frame":
+            # Create a frame to hold everything
+            frame = ttk.Frame(self.dialog.interior())
+            frame.pack(expand=tk.YES, fill=tk.BOTH)
+            self["frame"] = frame
+            return frame
 
         if results_tab:
             # Second tab for results if requested
@@ -404,15 +415,16 @@ class TkNode(collections.abc.MutableMapping):
             # Shortcut for parameters
             P = self.node.parameters
 
-            var = self.tk_var["create tables"] = tk.IntVar()
-            if P["create tables"].value == "yes":
-                var.set(1)
-            else:
-                var.set(0)
-            self["create tables"] = ttk.Checkbutton(
-                rframe, text="Create tables if needed", variable=var
-            )
-            self["create tables"].grid(row=0, column=0, sticky=tk.W)
+            if "create tables" in P:
+                var = self.tk_var["create tables"] = tk.IntVar()
+                if P["create tables"].value == "yes":
+                    var.set(1)
+                else:
+                    var.set(0)
+                self["create tables"] = ttk.Checkbutton(
+                    rframe, text="Create tables if needed", variable=var
+                )
+                self["create tables"].grid(row=0, column=0, sticky=tk.W)
 
             self["results"] = sw.ScrolledColumns(
                 rframe,
@@ -628,41 +640,43 @@ class TkNode(collections.abc.MutableMapping):
         """Recreate the graphics from the non-graphical flowchart.
         Only used in nodes that contain flowchart"""
 
-        if tk_flowchart is None or flowchart is None:
+        if self.tk_subflowchart is None or self.node.subflowchart is None:
             return
 
-        tk_flowchart.clear()
+        self.tk_subflowchart.clear()
 
         # Add all the non-graphical nodes, making copies so that
         # when the flowchart is cleared our objects still exist
         translate = {}
-        for node in flowchart:
+        for node in self.node.subflowchart:
             extension = node.extension
             if extension is None:
                 # Start node
-                translate[node] = tk_flowchart.get_node("1")
+                translate[node] = self.tk_subflowchart.get_node("1")
             else:
                 new_node = copy.copy(node)
                 self.logger.debug("creating {} node".format(extension))
-                plugin = tk_flowchart.plugin_manager.get(extension)
+                plugin = self.tk_subflowchart.plugin_manager.get(extension)
                 self.logger.debug("  plugin object: {}".format(plugin))
                 tk_node = plugin.create_tk_node(
-                    tk_flowchart=tk_flowchart, canvas=tk_flowchart.canvas, node=new_node
+                    tk_flowchart=self.tk_subflowchart,
+                    canvas=self.tk_subflowchart.canvas,
+                    node=new_node,
                 )
                 translate[node] = tk_node
                 tk_node.from_flowchart()
-                tk_flowchart.graph.add_node(tk_node)
+                self.tk_subflowchart.graph.add_node(tk_node)
                 tk_node.draw()
 
         # And the edges
-        for edge in flowchart.edges():
+        for edge in self.node.subflowchart.edges():
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
             attr = {}
             for key in edge:
                 if key not in ("node1", "node2"):
                     attr[key] = edge[key]
-            tk_flowchart.add_edge(node1, node2, **attr)
+            self.tk_subflowchart.add_edge(node1, node2, **attr)
 
     def handle_dialog(self, result):
         """Do the right thing when the dialog is closed."""
@@ -768,10 +782,11 @@ class TkNode(collections.abc.MutableMapping):
                 P = self.node.parameters
 
                 # and from the results tab...
-                if self.tk_var["create tables"].get():
-                    P["create tables"].value = "yes"
-                else:
-                    P["create tables"].value = "no"
+                if "create tables" in P:
+                    if self.tk_var["create tables"].get():
+                        P["create tables"].value = "yes"
+                    else:
+                        P["create tables"].value = "no"
 
                 results = P["results"].value = {}
                 for (
@@ -826,15 +841,17 @@ class TkNode(collections.abc.MutableMapping):
         However the default is to save properties to the database, so they need to
         be put into the `results` parameter.
         """
+        if self.node.parameters is None or "results" not in self.node.parameters:
+            return
+
         results = self.node.parameters["results"].value
         if len(results) == 0:
             for key, entry in self.node.metadata["results"].items():
-                if "calculation" not in entry:
-                    continue
-                if self.node.calculation not in entry["calculation"]:
-                    continue
                 if "dimensionality" not in entry:
                     continue
+                if self.node.calculation is not None and "calculation" in entry:
+                    if self.node.calculation not in entry["calculation"]:
+                        continue
                 if self.node.method is not None and "methods" in entry:
                     if self.node.method not in entry["methods"]:
                         continue
@@ -946,6 +963,9 @@ class TkNode(collections.abc.MutableMapping):
 
     def setup_results(self):
         """Layout the results tab of the dialog"""
+        if self.node.parameters is None or "results" not in self.node.parameters:
+            return
+
         results = self.node.parameters["results"].value
 
         # Find what tables are in use.
@@ -966,12 +986,11 @@ class TkNode(collections.abc.MutableMapping):
 
         row = 0
         for key, entry in self.node.metadata["results"].items():
-            if "calculation" not in entry:
-                continue
-            if self.node.calculation not in entry["calculation"]:
-                continue
             if "dimensionality" not in entry:
                 continue
+            if self.node.calculation is not None and "calculation" in entry:
+                if self.node.calculation not in entry["calculation"]:
+                    continue
             if self.node.method is not None and "methods" in entry:
                 if self.node.method not in entry["methods"]:
                     continue
@@ -1096,28 +1115,30 @@ class TkNode(collections.abc.MutableMapping):
     def update_flowchart(self, tk_flowchart=None, flowchart=None):
         """Update the nongraphical flowchart. Only used in nodes that contain
         flowcharts"""
-        if tk_flowchart is None or flowchart is None:
+        if self.tk_subflowchart is None or self.node.subflowchart is None:
             return
 
         # Make sure there is nothing in the flowchart
-        flowchart.clear(all=True)
+        self.node.subflowchart.clear(all=True)
 
         # Add all the non-graphical nodes, making copies so that
         # when the flowchart is cleared our objects still exist
         translate = {}
-        for node in tk_flowchart:
-            translate[node] = flowchart.add_node(copy.copy(node.node))
+        for node in self.tk_subflowchart:
+            translate[node] = self.node.subflowchart.add_node(copy.copy(node.node))
             node.update_flowchart()
 
         # And the edges
-        for edge in tk_flowchart.edges():
+        for edge in self.tk_subflowchart.edges():
             attr = {}
             for key in edge:
                 if key not in ("node1", "node2", "edge_type", "edge_subtype", "canvas"):
                     attr[key] = edge[key]
             node1 = translate[edge.node1]
             node2 = translate[edge.node2]
-            flowchart.add_edge(node1, node2, edge.edge_type, edge.edge_subtype, **attr)
+            self.node.subflowchart.add_edge(
+                node1, node2, edge.edge_type, edge.edge_subtype, **attr
+            )
 
     def undraw(self):
         """Remove all the visual components from the canvas."""
