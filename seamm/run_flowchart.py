@@ -103,7 +103,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
         raise FileNotFoundError(f"The flowchart '{filename}' does not exist.")
 
     logger.info(f"    reading in flowchart '{filename}'")
-    flowchart = seamm.Flowchart()
+    flowchart = seamm.Flowchart(parser_name="SEAMM")
     flowchart.read(filename)
     logger.info("   finished reading the flowchart")
 
