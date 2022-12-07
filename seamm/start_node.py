@@ -48,21 +48,6 @@ class StartNode(seamm.Node):
         """
         return self.header + "\n"
 
-    def describe(self):
-        """Write out information about what this node will do"""
-
-        self.visited = True
-
-        # The description
-        job.job(self.indent + self.description_text())
-
-        next_node = self.next()
-
-        if next_node is None or next_node.visited:
-            return None
-        else:
-            return next_node
-
     def run(self):
         """'Run' the start node, i.e. do nothing but print"""
 
