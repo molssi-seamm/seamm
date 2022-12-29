@@ -513,9 +513,9 @@ class Node(collections.abc.Hashable):
                 else:
                     # Presume it is a string, perhaps with variables.
                     if len(kwargs) == 0:
-                        system.name = P["system name"]
+                        system.name = str(P["system name"])
                     else:
-                        system.name = P["system name"].format(**kwargs)
+                        system.name = str(P["system name"]).format(**kwargs)
             if "configuration name" in P:
                 if P["configuration name"] == "current name":
                     pass
@@ -526,9 +526,11 @@ class Node(collections.abc.Hashable):
                 else:
                     # Presume it is a string, perhaps with variables.
                     if len(kwargs) == 0:
-                        configuration.name = P["configuration name"]
+                        configuration.name = str(P["configuration name"])
                     else:
-                        configuration.name = P["configuration name"].format(**kwargs)
+                        configuration.name = str(P["configuration name"]).format(
+                            **kwargs
+                        )
 
         return (system, configuration)
 
