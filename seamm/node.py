@@ -534,6 +534,27 @@ class Node(collections.abc.Hashable):
 
         return (system, configuration)
 
+    def get_table(self, tablename, create=True):
+        """Get the named table, creating if necessary"""
+        if not self.variable_exists(tablename):
+            # Create the table if allowed to.
+            if not create:
+                raise RuntimeError(f"Table {tablename} does not exist.")
+            table = pandas.DataFrame()
+            self.set_variable(
+                tablename,
+                {
+                    "type": "pandas",
+                    "table": table,
+                    "defaults": {},
+                    "loop index": False,
+                    "current index": 0,
+                    "index column": None,
+                },
+            )
+        table_handle = self.get_variable(tablename)
+        return table_handle["table"]
+
     def connections(self):
         """Return a list of all the incoming and outgoing edges
         for this node, giving the anchor points and other node
