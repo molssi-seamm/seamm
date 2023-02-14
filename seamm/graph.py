@@ -46,7 +46,6 @@ class Graph(object):
     def add_edge(
         self, u, v, edge_type=None, edge_subtype=None, edge_class=None, **kwargs
     ):
-
         if u not in self:
             self.add_node(u)
 

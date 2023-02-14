@@ -202,7 +202,6 @@ class Parameter(collections.abc.MutableMapping):
 
     @units.setter
     def units(self, value):
-
         logger.debug("units: value = '{}'".format(value))
 
         if value == "":

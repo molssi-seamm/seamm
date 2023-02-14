@@ -254,7 +254,6 @@ class TkFlowchart(object):
         next_tk_node = None
         for edge in self.graph.edges(tk_node, direction="out"):
             if edge.edge_type == "execution":
-
                 if edge.node2.node.visited:
                     logger.debug(
                         "\ttk_node {} {} has been visited".format(
