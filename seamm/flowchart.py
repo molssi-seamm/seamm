@@ -39,6 +39,7 @@ class Flowchart(object):
         description="",
         directory=None,
         output="files",
+        parser_name="SEAMM",
     ):
         """Initialize the flowchart.
 
@@ -50,10 +51,16 @@ class Flowchart(object):
             An initial graph.
         namespace : str
             The namespace for locating plug-ins.
+        name : str
+            A name for the flowchart
+        description : str
+            A description of the flowcharts.
         directory : str
             The root directory for files for this flowchart.
         output : str
             Where to direct output. Currently not used.
+        parser_name : str = "SEAMM"
+            The name of the parser.
         """
 
         self.graph = seamm.Graph()
@@ -61,6 +68,7 @@ class Flowchart(object):
         self.output = output  # Where to print output, files, stdout, both
         self.metadata = {}
         self.reset_metadata(title=name, description=description)
+        self._parser_name = parser_name
 
         # Setup the plugin handling
         self.plugin_manager = seamm.PluginManager(namespace)
@@ -70,6 +78,9 @@ class Flowchart(object):
 
         # And the root directory
         self.root_directory = directory
+
+        # And the parser associated with this flowchart
+        self._parser = None
 
     def __iter__(self):
         return self.graph.__iter__()
@@ -113,6 +124,17 @@ class Flowchart(object):
                 "flowchart.output must be one of 'files', 'stdout', or 'both'"
                 ", not '{}'".format(value)
             )
+
+    @property
+    def parser(self):
+        """The SEAMM parser associated with this flowchart."""
+        if self._parser is None:
+            self._parser = seamm_util.seamm_parser(self._parser_name)
+        return self._parser
+
+    @parser.setter
+    def parser(self, value):
+        self._parser = value
 
     # -------------------------------------------------------------------------
     # Node creation and deletion

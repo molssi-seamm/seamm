@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Standard sets of parameters widely used in SEAMM.
 
-Attributes
+Parameters
 ----------
 structure_handling_parameters : dict(str, dict(str, str))
     Parameters for providing options for how to handle newly created structures.

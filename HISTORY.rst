@@ -2,10 +2,17 @@
 History
 =======
 
+2023.2.15 --
+    * Improved handling of structures
+    * Added ability to run simulations engine in a given directory, tpyically the step
+      directory. This allows users to see the outputs during the simulation rather than
+      having to wait until the end.
+    * Added support allowing a flowchart to be run as a sub-flowchart.
+      
 2022.10.23 -- Simplified plug-ins
     Better support for plug-ins and the SEAMM cookiecutter:
 
-       * Automated most handling of results nad properties, based on metadata
+       * Automated most handling of results and properties, based on metadata
        * Simplified handling of sub-flowcharts.
 
 2022.10.20 -- Properties in database

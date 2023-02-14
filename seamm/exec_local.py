@@ -42,6 +42,8 @@ class ExecLocal(object):
         env={},
         return_files=[],
         shell=False,
+        in_situ=False,
+        directory=None,
     ):
         """Execute 'cmd' in a temporary directory. 'files' is a dict
         keyed by filename of files to write before execution."""
@@ -49,12 +51,26 @@ class ExecLocal(object):
         # Create temporary directory and write the files, being
         # careful about both errors and security.
 
-        tmpdir = tempfile.mkdtemp()
-        # Ensure the file is read/write by the creator only
-        saved_umask = os.umask(0o077)
-        logging.info("Runnning locally in {}".format(tmpdir))
+        if in_situ:
+            if directory is None:
+                tmpdir = os.getcwd()
+            else:
+                tmpdir = str(directory)
+        else:
+            tmpdir = tempfile.mkdtemp()
+            # Ensure the file is read/write by the creator only
+            saved_umask = os.umask(0o077)
+
+        logging.info(f"Running locally in {tmpdir}")
 
         if files is not None:
+            # Write locally if directory is given
+            if not in_situ and directory is not None:
+                for filename in files:
+                    path = os.path.join(directory, filename)
+                    mode = "wb" if type(files[filename]) is bytes else "w"
+                    with open(path, mode) as fd:
+                        fd.write(files[filename])
             for filename in files:
                 path = os.path.join(tmpdir, filename)
                 mode = "wb" if type(files[filename]) is bytes else "w"
@@ -65,19 +81,28 @@ class ExecLocal(object):
                     logging.exception(
                         "An I/O error occured writing file '{}'".format(path)
                     )
-                    os.umask(saved_umask)
-                    shutil.rmtree(tmpdir)
+                    if not in_situ:
+                        os.umask(saved_umask)
+                        shutil.rmtree(tmpdir)
                     return None
                 except Exception:
                     logging.exception(
                         "An unexpected error occured writing file '{}'".format(path)
                     )
                     os.remove(path)
-                    os.umask(saved_umask)
-                    shutil.rmtree(tmpdir)
+                    if not in_situ:
+                        os.umask(saved_umask)
+                        shutil.rmtree(tmpdir)
                     return None
-
-        os.umask(saved_umask)
+        # get a list of all existing files so we can determine what to delete
+        if in_situ:
+            existing = []
+            existing_directories = []
+            for dirpath, dirs, files in os.walk(tmpdir):
+                for name in files:
+                    existing.append(os.path.join(dirpath, name))
+                for name in dirs:
+                    existing_directories.append(os.path.join(dirpath, name))
 
         # Now execute the program in the temp directory
         logger.debug("about to run " + " ".join(cmd))
@@ -94,6 +119,9 @@ class ExecLocal(object):
         )
 
         logger.debug("\n" + pprint.pformat(p))
+
+        if not in_situ:
+            os.umask(saved_umask)
 
         # capture the return code and output
         result = {
@@ -118,9 +146,11 @@ class ExecLocal(object):
 
         # capture the requested files
         result["files"] = []
+        returned = []
         for pattern in return_files:
             filenames = glob.glob(os.path.join(tmpdir, pattern))
             for path in filenames:
+                returned.append(path)
                 filename = os.path.basename(path)
                 data = None
                 exception = None
@@ -136,7 +166,7 @@ class ExecLocal(object):
                 except IOError:
                     exception = sys.exc_info()
                     logging.warning(
-                        "An I/O error occured reading file '{}'".format(filename),
+                        "An I/O error occurred reading file '{}'".format(filename),
                         exc_info=exception,
                     )
                 except Exception:
@@ -151,7 +181,56 @@ class ExecLocal(object):
                     result[filename] = {"exception": exception, "data": data}
 
         # Clean up the temporary directory
-        shutil.rmtree(tmpdir)
+        if in_situ:
+            # Remove any files not originally here, or requested to return.
+            for dirpath, dirs, files in os.walk(tmpdir):
+                for name in files:
+                    filename = os.path.join(dirpath, name)
+                    if filename not in existing and filename not in returned:
+                        os.remove(filename)
+                for name in dirs:
+                    dirname = os.path.join(dirpath, name)
+                    if dirname not in existing_directories:
+                        os.rmdir(filename)
+            # And move any files the need to go in subdirectories
+            for filename in result["files"]:
+                if filename[0] == "@":
+                    subdir, fname = filename[1:].split("+")
+                    from_path = os.path.join(directory, filename)
+                    to_path = os.path.join(directory, subdir, fname)
+                    os.rename(from_path, to_path)
+        else:
+            shutil.rmtree(tmpdir)
+
+            # And write the results locally
+            if directory is not None:
+                for filename in result["files"]:
+                    if filename[0] == "@":
+                        subdir, fname = filename[1:].split("+")
+                        path = os.path.join(directory, subdir, fname)
+                    else:
+                        path = os.path.join(directory, filename)
+
+                    if result[filename]["data"] is not None:
+                        mode = "wb" if type(result[filename]["data"]) is bytes else "w"
+                        with open(path, mode=mode) as fd:
+                            fd.write(result[filename]["data"])
+                    else:
+                        with open(path, mode="w") as fd:
+                            fd.write(result[filename]["exception"])
+
+        # Write any stdout and stderr
+
+        if directory is not None:
+            if "stdout" in result and result["stdout"] != "":
+                path = os.path.join(directory, "stdout.txt")
+                with open(path, mode="w") as fd:
+                    fd.write(result["stdout"])
+
+            if result["stderr"] != "":
+                path = os.path.join(directory, "stderr.txt")
+                with open(path, mode="w") as fd:
+                    fd.write(result["stderr"])
 
         return result
 

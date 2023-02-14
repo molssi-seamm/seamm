@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""The base class for nodes (steps) in flowcharts."""
+"""The base class for nodes (steps) in flowcharts.
+"""
 
 import bibtexparser
 import calendar
@@ -55,41 +56,51 @@ class Node(collections.abc.Hashable):
         The unigue ID for the step, used when reading a flowchart. If not given it is
         generated using uuid.uuid4().
 
-    Attributes
-    ----------
     calculation
     description
     directory
     extension
+
     flowchart : seamm.Flowchart
         The flowchart that this step is part of.
+
     global_options
     header
     indent
     job_path
+
     logger : logging.Logger
         The logger for debug, etc. output.
+
     metadata
     method
     model
     options
+
     parent : seamm.Node
         The node that is the parent, usually because this node is in a subflowchart of
         the parent.
+
     parameters : seamm.Parameters
         The control parameters for this step.
+
     references
     step_type
     tables
     title
+
     x : int
         The x-coordinate of the step in the GUI
+
     y : int
         The y-coordinate of the step in the GUI
+
     w : int
         The width of the step in the GUI
+
     h : int
         The height of the step in the GUI
+
     uuid
     visited
 
@@ -240,6 +251,8 @@ class Node(collections.abc.Hashable):
         The metadata is a dictionary of various types of metdata, often themselves
         dictionaries. Common types of metadata are:
 
+        Parameters
+        ----------
         keywords
             The keywords for programs with keyword-based input.
         results
@@ -267,6 +280,7 @@ class Node(collections.abc.Hashable):
 
         Properties in the database use a trinomial naming scheme:
             `property`#`code`#`model`
+
         This is the last part of the name, or None if it is not relevant. It is often
         the `model chemistry`, such as **mp2/6-31g** or **PM7**.
         """
@@ -410,12 +424,10 @@ class Node(collections.abc.Hashable):
 
     def get_system_configuration(
         self,
-        P,
-        structure_handling=False,
+        P=None,
         same_as=None,
-        same_atoms=True,
-        same_bonds=True,
-        same_cell=True,
+        first=True,
+        **kwargs,
     ):
         """Get the current system and configuration.
 
@@ -430,20 +442,16 @@ class Node(collections.abc.Hashable):
 
         Parameters
         ----------
-        P : dict(str, any)
-            The diction of options and values.
-        structure_handling : bool = False
-            Use the standard structure handling to determine whether to
-            create new configuration or new system.
+        P : dict(str, any) = None
+            The diction of options and values. If none, the default system and
+            configuration are returned as-is.
         same_as : _Configuration = None
             Share atoms, bonds, or cell with this configuration, depending
-            on other flags. Defaults to None, meaning ignore.
-        same_atoms : bool = True
-            Whether to share atoms with the <same_as> configuration
-        same_bonds : bool = True
-            Whether to share bonds with the <same_as> configuration.
-        same_cells : bool = True
-            Whether to share the cell with the <same_as> configuration.
+            on other flags. Defaults to None, which results in using the current
+            configuration
+        first : bool = True
+            First configuration of several, which can have different handling than
+            the subsequent ones.
 
         Returns
         -------
@@ -453,11 +461,29 @@ class Node(collections.abc.Hashable):
         # Get the system
         system_db = self.get_variable("_system_db")
 
-        if structure_handling:
+        if P is None:
+            # Just return the current system and configuration, creating if needed.
+            system = system_db.system
+            if system is None:
+                system = system_db.create_system()
+            configuration = system.configuration
+            if configuration is None:
+                configuration = system.create_configuration()
+        else:
             # Honor the user's request for how to handle the structure.
             # If the system or configuration do not exist they are automatically
             # created.
-            handling = P["structure handling"]
+            if first:
+                if "structure handling" in P:
+                    handling = P["structure handling"]
+                else:
+                    handling = "Overwrite the current configuration"
+            else:
+                if "subsequent structure handling" in P:
+                    handling = P["subsequent structure handling"]
+                else:
+                    handling = "Create a new configuration"
+
             if handling == "Overwrite the current configuration":
                 system = system_db.system
                 if system is None:
@@ -465,21 +491,22 @@ class Node(collections.abc.Hashable):
                 configuration = system.configuration
                 if configuration is None:
                     configuration = system.create_configuration()
-                configuration.clear()
             elif handling == "Create a new configuration":
                 system = system_db.system
                 if system is None:
                     system = system_db.create_system()
                 # See if sharing atoms, bonds and/or cell
                 if same_as is None:
-                    configuration = system.create_configuration()
+                    current = system.configuration
+                    if current is None:
+                        configuration = system.create_configuration()
+                    else:
+                        configuration = system.copy_configuration(
+                            current, make_current=True
+                        )
                 else:
-                    atoms = same_as.atomset if same_atoms else None
-                    bonds = same_as.bondset if same_bonds else None
-                    cell = same_as.cell_id if same_cell else None
-
-                    configuration = system.create_configuration(
-                        cell_id=cell, atomset=atoms, bondset=bonds
+                    configuration = system.copy_configuration(
+                        configuration=same_as, make_current=True
                     )
             elif handling == "Create a new system and configuration":
                 system = system_db.create_system()
@@ -488,16 +515,59 @@ class Node(collections.abc.Hashable):
                 raise ValueError(
                     f"Do not understand how to handle the structure: '{handling}'"
                 )
-        else:
-            # Just return the current system and configuration, creating if needed.
-            system = system_db.system
-            if system is None:
-                system = system_db.create_system()
-            configuration = system.configuration
-            if configuration is None:
-                configuration = system.create_configuration()
+
+            # Attend to naming
+            if "system name" in P:
+                if P["system name"] == "current name":
+                    pass
+                elif P["system name"] == "use SMILES string":
+                    system.name = configuration.smiles
+                elif P["system name"] == "use Canonical SMILES string":
+                    system.name = configuration.canonical_smiles
+                else:
+                    # Presume it is a string, perhaps with variables.
+                    if len(kwargs) == 0:
+                        system.name = str(P["system name"])
+                    else:
+                        system.name = str(P["system name"]).format(**kwargs)
+            if "configuration name" in P:
+                if P["configuration name"] == "current name":
+                    pass
+                elif P["configuration name"] == "use SMILES string":
+                    configuration.name = configuration.smiles
+                elif P["configuration name"] == "use Canonical SMILES string":
+                    configuration.name = configuration.canonical_smiles
+                else:
+                    # Presume it is a string, perhaps with variables.
+                    if len(kwargs) == 0:
+                        configuration.name = str(P["configuration name"])
+                    else:
+                        configuration.name = str(P["configuration name"]).format(
+                            **kwargs
+                        )
 
         return (system, configuration)
+
+    def get_table(self, tablename, create=True):
+        """Get the named table, creating if necessary"""
+        if not self.variable_exists(tablename):
+            # Create the table if allowed to.
+            if not create:
+                raise RuntimeError(f"Table {tablename} does not exist.")
+            table = pandas.DataFrame()
+            self.set_variable(
+                tablename,
+                {
+                    "type": "pandas",
+                    "table": table,
+                    "defaults": {},
+                    "loop index": False,
+                    "current index": 0,
+                    "index column": None,
+                },
+            )
+        table_handle = self.get_variable(tablename)
+        return table_handle["table"]
 
     def connections(self):
         """Return a list of all the incoming and outgoing edges
@@ -524,10 +594,12 @@ class Node(collections.abc.Hashable):
         Return a nicely formatted string describing what this step will
         do.
 
-        Keyword arguments:
-            P: a dictionary of parameter values, which may be variables
-                or final values. If None, then the parameters values will
-                be used as is.
+        Parameters
+        ----------
+        P :
+            a dictionary of parameter values, which may be variables
+            or final values. If None, then the parameters values will
+            be used as is.
         """
         return (
             "This node has no specific description. "
@@ -541,7 +613,7 @@ class Node(collections.abc.Hashable):
         self.visited = True
 
         # The description
-        job.job(__(self.description_text(), indent=self.indent))
+        job.normal(__(self.description_text(), indent=self.indent))
 
         next_node = self.next()
 
@@ -1021,6 +1093,7 @@ class Node(collections.abc.Hashable):
         Parameters
         ----------
         title : str, optional
+            The title of the figure
         template : str, optional
             The Jinja template for the desired graph. Defaults to
             'line.graph_template'
@@ -1076,7 +1149,7 @@ class Node(collections.abc.Hashable):
 
         Returns
         -------
-        seamm.Node()
+        seamm.Node() :
             The next node in the flowchart.
         """
         if self.visited:
@@ -1087,7 +1160,7 @@ class Node(collections.abc.Hashable):
 
         if name is None:
             name = self.step_type
-        parser = seamm_util.seamm_parser()
+        parser = self.flowchart.parser
 
         if not parser.exists(name):
             parser.add_parser(name)
