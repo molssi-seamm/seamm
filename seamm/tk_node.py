@@ -41,8 +41,8 @@ class TkNode(collections.abc.MutableMapping):
     my_logger : logging.Logger, optional
         The logger to use. Defaults to the global one defined in the module.
 
-    Attributes
-    ----------
+    Fields
+    ------
     border
     canvas
     dialog : tkinter.Toplevel

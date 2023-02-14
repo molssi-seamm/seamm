@@ -44,7 +44,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx_design',
+    'sphinx_copybutton',
+    'sphinx.ext.todo',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,7 +64,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SEAMM'
-copyright = u"2018, Paul Saxe"
+copyright = u"2017-2023, Molecular Sciences Software Institute (MolSSI)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -102,7 +105,7 @@ exclude_patterns = ['_build']
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'default'
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -116,12 +119,31 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = "pydata_sphinx_theme"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 # html_theme_options = {}
+html_theme_options = {
+    "github_url": "https://github.com/molssi-seamm/seamm",
+    "twitter_url": "https://twitter.com/MolSSI_NSF",
+    "logo": {
+        "image_light": "SEAMM logo.png",
+        "image_dark": "SEAMM Inverted 288x181.png",
+        "text": "SEAMM Package",
+        "molssi_light": "molssi_main_logo.png",
+        "molssi_dark": "molssi_main_logo_inverted_white.png",
+    },
+    "show_toc_level": 2,
+    "header_links_before_dropdown": 4,
+    "external_links": [
+        {"name": "SEAMM Documentation", "url": "https://molssi-seamm.github.io"},
+        {"name": "MolSSI", "url": "https://molssi.org"}
+    ],
+    "secondary_sidebar_items": ["page-toc", "sourcelink"],
+    "footer_items": [ "molssi_footer" ],
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []

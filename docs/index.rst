@@ -1,45 +1,71 @@
-Welcome to the SEAMM documentation!
-===================================
+===============
+SEAMM Framework
+===============
 
-This is documentation for developers! There is nothing here for users, since this is
-part of the underlying framework of SEAMM. Anything a users sees is documented either in
-the main SEAMM documentation or in the plug-in documentation.
+This is the main package of the SEAMM framework.
 
-Contents:
+.. grid:: 1 1 2 2
+
+   .. grid-item-card:: Getting Started
+      :margin: 0 3 0 0
+
+      A simple introduction
+
+      .. button-link:: ./getting_started/index.html
+	 :color: primary
+	 :expand:
+
+         To the Getting Started Guide
+
+   .. grid-item-card::  User Guide
+      :margin: 0 3 0 0
+
+      A complete guide to using this step
+
+      .. button-link:: ./user_guide/index.html
+	 :color: primary
+	 :expand:
+
+         To the User Guide
+
+   .. grid-item-card::  Developer Guide
+      :margin: 0 3 0 0
+
+      Contributing to the code. Fixing bugs, adding functionality
+
+      .. button-link:: ./developer_guide/index.html
+	 :color: primary
+	 :expand:
+
+         To the Developer Guide
+
+   .. grid-item-card:: API Reference
+      :margin: 0 3 0 0
+
+      The API for the SEAMM package
+      
+      .. button-link:: ./api/index.html
+	 :color: primary
+	 :expand:
+
+	 To the API Reference.
+
 
 .. toctree::
-   :maxdepth: 2
+   :hidden:
+   :maxdepth: 1
+   :titlesonly:
 
-   readme
-   installation
-   usage
-   modules
-   contributing
-   authors
-   history
+   getting_started/index
+   user_guide/index
+   developer_guide/index
+   api/index
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
---------
-   
+More Information
+================
 .. toctree::
    :maxdepth: 1
    :titlesonly:
 
-   Main SEAMM documentation <https://molssi-seamm.github.io>
-
-Documentation Versions
-======================
-
-.. raw:: html
-
-   <iframe
-   src="https://molssi-seamm.github.io/seamm/dev/versions.html"
-   title="Documentation Versions"  style="border:none;">
-   </iframe>
-  
+   authors
+   history

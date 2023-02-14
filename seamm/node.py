@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""The base class for nodes (steps) in flowcharts."""
+"""The base class for nodes (steps) in flowcharts.
+"""
 
 import bibtexparser
 import calendar
@@ -55,41 +56,51 @@ class Node(collections.abc.Hashable):
         The unigue ID for the step, used when reading a flowchart. If not given it is
         generated using uuid.uuid4().
 
-    Attributes
-    ----------
     calculation
     description
     directory
     extension
+
     flowchart : seamm.Flowchart
         The flowchart that this step is part of.
+
     global_options
     header
     indent
     job_path
+
     logger : logging.Logger
         The logger for debug, etc. output.
+
     metadata
     method
     model
     options
+
     parent : seamm.Node
         The node that is the parent, usually because this node is in a subflowchart of
         the parent.
+
     parameters : seamm.Parameters
         The control parameters for this step.
+
     references
     step_type
     tables
     title
+
     x : int
         The x-coordinate of the step in the GUI
+
     y : int
         The y-coordinate of the step in the GUI
+
     w : int
         The width of the step in the GUI
+
     h : int
         The height of the step in the GUI
+
     uuid
     visited
 
@@ -240,6 +251,8 @@ class Node(collections.abc.Hashable):
         The metadata is a dictionary of various types of metdata, often themselves
         dictionaries. Common types of metadata are:
 
+        Parameters
+        ----------
         keywords
             The keywords for programs with keyword-based input.
         results
@@ -267,6 +280,7 @@ class Node(collections.abc.Hashable):
 
         Properties in the database use a trinomial naming scheme:
             `property`#`code`#`model`
+
         This is the last part of the name, or None if it is not relevant. It is often
         the `model chemistry`, such as **mp2/6-31g** or **PM7**.
         """
@@ -580,10 +594,12 @@ class Node(collections.abc.Hashable):
         Return a nicely formatted string describing what this step will
         do.
 
-        Keyword arguments:
-            P: a dictionary of parameter values, which may be variables
-                or final values. If None, then the parameters values will
-                be used as is.
+        Parameters
+        ----------
+        P :
+            a dictionary of parameter values, which may be variables
+            or final values. If None, then the parameters values will
+            be used as is.
         """
         return (
             "This node has no specific description. "
@@ -1077,6 +1093,7 @@ class Node(collections.abc.Hashable):
         Parameters
         ----------
         title : str, optional
+            The title of the figure
         template : str, optional
             The Jinja template for the desired graph. Defaults to
             'line.graph_template'
@@ -1132,7 +1149,7 @@ class Node(collections.abc.Hashable):
 
         Returns
         -------
-        seamm.Node()
+        seamm.Node() :
             The next node in the flowchart.
         """
         if self.visited:

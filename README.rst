@@ -14,17 +14,13 @@ Simulation Environment for Atomistic and Molecular Simulations (SEAMM)
    :target: https://codecov.io/gh/molssi-seamm/seamm
    :alt: Code Coverage
 
-.. image:: https://img.shields.io/lgtm/grade/python/g/molssi-seamm/seamm.svg?logo=lgtm&logoWidth=18
-   :target: https://lgtm.com/projects/g/molssi-seamm/seamm/context:python
+.. image:: https://github.com/molssi-seamm/seamm/workflows/CodeQL/badge.svg
+   :target: https://github.com/molssi-seamm/seamm/security/code-scanning
    :alt: Code Quality
 
-.. image:: https://github.com/molssi-seamm/seamm/workflows/Documentation/badge.svg
+.. image:: https://github.com/molssi-seamm/seamm/workflows/Release/badge.svg
    :target: https://molssi-seamm.github.io/seamm/index.html
    :alt: Documentation Status
-
-.. image:: https://pyup.io/repos/github/molssi-seamm/seamm/shield.svg
-   :target: https://pyup.io/repos/github/molssi-seamm/seamm/
-   :alt: Updates for Dependencies
 
 .. image:: https://img.shields.io/pypi/v/seamm.svg
    :target: https://pypi.python.org/pypi/seamm
