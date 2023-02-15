@@ -1,12 +1,39 @@
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seamm.tk_flowchart &mdash; SEAMM 2022.10.23 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.tk_flowchart &#8212; SEAMM 2023.2.15 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
+
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -15,83 +42,387 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_flowchart';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
-</head>
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-<body class="wy-body-for-nav">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQXXTJ2"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
- 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> SEAMM
-          </a>
-              <div class="version">
-                2022.10.23
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Simulation Environment for Atomistic and Molecular Simulations (SEAMM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">seamm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://molssi-seamm.github.io">Main SEAMM documentation</a></li>
-</ul>
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
 
-        </div>
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+                        Developer Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Documentation
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../authors.html">
+                        Credits
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../history.html">
+                        History
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+                    SEAMM Documentation
+                  </a>
+                </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi.org">
+                    MolSSI
+                  </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">SEAMM</a>
-      </nav>
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>seamm.tk_flowchart</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+                        Developer Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Documentation
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../authors.html">
+                        Credits
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../history.html">
+                        History
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+                    SEAMM Documentation
+                  </a>
+                </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi.org">
+                    MolSSI
+                  </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
   <h1>Source code for seamm.tk_flowchart</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
@@ -154,13 +485,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="grey"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.grey">[docs]</a><span class="k">def</span> <span class="nf">grey</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="grey"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.grey">[docs]</a><span class="k">def</span> <span class="nf">grey</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="k">return</span> <span class="mi">255</span> <span class="o">-</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span></div>
 
 
-<div class="viewcode-block" id="TkFlowchart"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart">[docs]</a><span class="k">class</span> <span class="nc">TkFlowchart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart">[docs]</a><span class="k">class</span> <span class="nc">TkFlowchart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;org.molssi.seamm.tk&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a Flowchart object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Flowchart object</span>
 
 <span class="sd">        Keyword arguments:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -282,7 +613,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The flowchart, which holds the nodes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The flowchart, which holds the nodes&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flowchart</span>
 
     <span class="nd">@flowchart</span><span class="o">.</span><span class="n">setter</span>
@@ -291,7 +622,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">master</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The window that is our master&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The window that is our master&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_master</span>
 
     <span class="nd">@master</span><span class="o">.</span><span class="n">setter</span>
@@ -300,15 +631,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">toplevel</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_master</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="TkFlowchart.tag_exists"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.tag_exists">[docs]</a>    <span class="k">def</span> <span class="nf">tag_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the node with a given tag exists&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.tag_exists"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.tag_exists">[docs]</a>    <span class="k">def</span> <span class="nf">tag_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the node with a given tag exists&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.get_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.get_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the node with a given tag&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.get_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.get_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node with a given tag&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -316,8 +647,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="k">return</span> <span class="n">node</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.last_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.last_node">[docs]</a>    <span class="k">def</span> <span class="nf">last_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_node</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Find the last node walking down the main execution path</span>
+<div class="viewcode-block" id="TkFlowchart.last_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.last_node">[docs]</a>    <span class="k">def</span> <span class="nf">last_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_node</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the last node walking down the main execution path</span>
 <span class="sd">        from the given node, which defaults to the start node&quot;&quot;&quot;</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finding last node&quot;</span><span class="p">)</span>
@@ -332,8 +663,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_node_helper</span><span class="p">(</span><span class="n">tk_node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.last_node_helper"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.last_node_helper">[docs]</a>    <span class="k">def</span> <span class="nf">last_node_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper routine to handle the recursion&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.last_node_helper"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.last_node_helper">[docs]</a>    <span class="k">def</span> <span class="nf">last_node_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper routine to handle the recursion&quot;&quot;&quot;</span>
 
         <span class="c1"># get the node to start the traversal</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tk_node</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -349,7 +680,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="n">next_tk_node</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">tk_node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">==</span> <span class="s2">&quot;execution&quot;</span><span class="p">:</span>
-
                 <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">tk_node </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> has been visited&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -402,7 +732,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">returning </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tk_node</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">tk_node</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tk_node</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.add_edge"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="s2">&quot;execution&quot;</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.add_edge"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="s2">&quot;execution&quot;</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
             <span class="n">u</span><span class="p">,</span>
             <span class="n">v</span><span class="p">,</span>
@@ -415,28 +745,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="n">edge</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">edge</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.edges"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.edges"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.new_file"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.new_file">[docs]</a>    <span class="k">def</span> <span class="nf">new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.new_file"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.new_file">[docs]</a>    <span class="k">def</span> <span class="nf">new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="c1"># Reset the metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">reset_metadata</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.help"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.help"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Help!!!!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.debug"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.debug"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.open_file"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.open_file">[docs]</a>    <span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.open_file"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.open_file">[docs]</a>    <span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">tk_filedialog</span><span class="o">.</span><span class="n">askopenfilename</span><span class="p">(</span><span class="n">defaultextension</span><span class="o">=</span><span class="s2">&quot;.flow&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.open"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.open"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -444,8 +774,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_flowchart</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.flowchart_search"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.flowchart_search">[docs]</a>    <span class="k">def</span> <span class="nf">flowchart_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Open a flowchart from Zenodo.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.flowchart_search"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.flowchart_search">[docs]</a>    <span class="k">def</span> <span class="nf">flowchart_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open a flowchart from Zenodo.&quot;&quot;&quot;</span>
         <span class="n">opener</span> <span class="o">=</span> <span class="n">TkOpen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toplevel</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -453,8 +783,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">from_flowchart</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.clear"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear our graphics&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.clear"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear our graphics&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">find_all</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -466,8 +796,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_start_node</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.create_start_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.create_start_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_start_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the start node&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.create_start_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.create_start_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_start_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the start node&quot;&quot;&quot;</span>
         <span class="c1"># Check if the start node exists</span>
         <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">start_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -489,19 +819,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">tk_start_node</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.properties"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.properties">[docs]</a>    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get and set the properties of the flowchart.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.properties"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.properties">[docs]</a>    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get and set the properties of the flowchart.&quot;&quot;&quot;</span>
         <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
         <span class="n">start_node</span><span class="o">.</span><span class="n">edit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.publish"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Publish the flowchart to a repository such as Zenodo.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.publish"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish the flowchart to a repository such as Zenodo.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">()</span>
 
         <span class="n">publisher</span> <span class="o">=</span> <span class="n">TkPublish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">publisher</span><span class="o">.</span><span class="n">edit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.save"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.save"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_file</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -509,7 +839,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.save_file"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.save_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.save_file"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.save_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">tk_filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="n">defaultextension</span><span class="o">=</span><span class="s2">&quot;.flow&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="c1"># suffixes = pathlib.Path(filename).suffixes</span>
@@ -518,18 +848,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.about"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.about">[docs]</a>    <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;In about&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.about"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.about">[docs]</a>    <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;In about&quot;</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.preferences"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.preferences">[docs]</a>    <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.preferences"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.preferences">[docs]</a>    <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;In preferences&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.draw"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkFlowchart.draw"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">tk_node</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">tk_node</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.canvas_configure"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.canvas_configure">[docs]</a>    <span class="k">def</span> <span class="nf">canvas_configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the background as the canvas changes size</span>
+<div class="viewcode-block" id="TkFlowchart.canvas_configure"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.canvas_configure">[docs]</a>    <span class="k">def</span> <span class="nf">canvas_configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Redraw the background as the canvas changes size</span>
 
 <span class="sd">        Only after the process is idle!</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -538,8 +868,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas_configure_doit</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.canvas_configure_doit"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.canvas_configure_doit">[docs]</a>    <span class="k">def</span> <span class="nf">canvas_configure_doit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Redraw the background as the canvas changes size</span>
+<div class="viewcode-block" id="TkFlowchart.canvas_configure_doit"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.canvas_configure_doit">[docs]</a>    <span class="k">def</span> <span class="nf">canvas_configure_doit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Redraw the background as the canvas changes size</span>
 
 <span class="sd">        This keeps the background image as large as possible and</span>
 <span class="sd">        centered in the flowchart canvas.</span>
@@ -569,8 +899,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1">#     self.background, image=self.photo, anchor=&#39;center&#39;)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">itemconfigure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">photo</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;nw&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.click"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.click">[docs]</a>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle a left-click on the canvas by finding out what the</span>
+<div class="viewcode-block" id="TkFlowchart.click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.click">[docs]</a>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a left-click on the canvas by finding out what the</span>
 <span class="sd">        mouse is on/in/near and doing the appropriate thing, such as</span>
 <span class="sd">        selecting to preparing to move the item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,8 +974,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">node</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.double_click"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle a double-click on the canvas by finding out what the</span>
+<div class="viewcode-block" id="TkFlowchart.double_click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a double-click on the canvas by finding out what the</span>
 <span class="sd">        mouse is on/in/near and doing the appropriate thing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -670,8 +1000,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">in</span> <span class="n">tags</span> <span class="ow">and</span> <span class="n">tags</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;arrow&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">right_click_on_arrow</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.right_click"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.right_click">[docs]</a>    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle a right-click on the canvas by finding out what the</span>
+<div class="viewcode-block" id="TkFlowchart.right_click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.right_click">[docs]</a>    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a right-click on the canvas by finding out what the</span>
 <span class="sd">        mouse is on/in/near and doing the appropriate thing, such as</span>
 <span class="sd">        posting an action menu</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -697,8 +1027,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">in</span> <span class="n">tags</span> <span class="ow">and</span> <span class="n">tags</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;arrow&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">right_click_on_arrow</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.move"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move selected items&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.move"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move selected items&quot;&quot;&quot;</span>
 
         <span class="n">cx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">canvasx</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
         <span class="n">cy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">canvasy</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
@@ -711,8 +1041,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.end_move"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.end_move">[docs]</a>    <span class="k">def</span> <span class="nf">end_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;End the move of selected items&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.end_move"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.end_move">[docs]</a>    <span class="k">def</span> <span class="nf">end_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;End the move of selected items&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;B1-Motion&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -730,8 +1060,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">mouse_op</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.create_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.create_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a node using the type in menu. This is a bit tricky because</span>
+<div class="viewcode-block" id="TkFlowchart.create_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.create_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a node using the type in menu. This is a bit tricky because</span>
 <span class="sd">        we need to create both the node and its graphical partner, each of</span>
 <span class="sd">        which needs to know the other.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -789,8 +1119,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1"># And update the picture on screen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.remove_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove the given node&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.remove_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the given node&quot;&quot;&quot;</span>
 
         <span class="c1"># remove the graphical rendering</span>
         <span class="n">node</span><span class="o">.</span><span class="n">undraw</span><span class="p">()</span>
@@ -801,8 +1131,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1"># and the node itself</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.next_position"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.next_position">[docs]</a>    <span class="k">def</span> <span class="nf">next_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Find a reasonable place to position the next step</span>
+<div class="viewcode-block" id="TkFlowchart.next_position"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.next_position">[docs]</a>    <span class="k">def</span> <span class="nf">next_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find a reasonable place to position the next step</span>
 <span class="sd">        in the flowchart.&quot;&quot;&quot;</span>
 
         <span class="n">last_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_node</span><span class="p">()</span>
@@ -829,8 +1159,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">last_node</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.mouse_motion"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.mouse_motion">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
-        <span class="sd">&quot;&quot;&quot;Track the mouse and highlight the node under the mouse</span>
+<div class="viewcode-block" id="TkFlowchart.mouse_motion"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.mouse_motion">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Track the mouse and highlight the node under the mouse</span>
 
 <span class="sd">        It appears that the canvas find_closest does not work properly in</span>
 <span class="sd">        Python. Even if you give it a tag to look below, it always returns</span>
@@ -930,8 +1260,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.find_items"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.find_items">[docs]</a>    <span class="k">def</span> <span class="nf">find_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
-        <span class="sd">&quot;&quot;&quot;Return the &#39;top&#39; node under the mouse coordinates x, y</span>
+<div class="viewcode-block" id="TkFlowchart.find_items"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.find_items">[docs]</a>    <span class="k">def</span> <span class="nf">find_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the &#39;top&#39; node under the mouse coordinates x, y</span>
 
 <span class="sd">        It appears that the canvas find_closest does not work properly in</span>
 <span class="sd">        Python. Even if you give it a tag to look below, it always returns</span>
@@ -970,8 +1300,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.get_tags"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.get_tags">[docs]</a>    <span class="k">def</span> <span class="nf">get_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the tags of &quot;item&quot; as a dict. Any added tags</span>
+<div class="viewcode-block" id="TkFlowchart.get_tags"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.get_tags">[docs]</a>    <span class="k">def</span> <span class="nf">get_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the tags of &quot;item&quot; as a dict. Any added tags</span>
 <span class="sd">        like &quot;active&quot; are added to the &quot;extra&quot; dict entry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -990,8 +1320,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="n">tags</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tags</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drag_arrow"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Drag an arrow from the anchor on the node to the mouse</span>
+<div class="viewcode-block" id="TkFlowchart.drag_arrow"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drag an arrow from the anchor on the node to the mouse</span>
 <span class="sd">        Used when creating a new edge.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1017,8 +1347,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;  activate_node </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activate_node</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drop_arrow"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The user has dropped a new arrow somewhere!</span>
+<div class="viewcode-block" id="TkFlowchart.drop_arrow"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The user has dropped a new arrow somewhere!</span>
 <span class="sd">        If it is on another node, make the connection.</span>
 <span class="sd">        If it is in empty space or on the original node,</span>
 <span class="sd">        just cancel the operation.</span>
@@ -1051,8 +1381,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mouse_op</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drag_arrow_base"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow_base">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Drag the base of an exisiting arrow&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.drag_arrow_base"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow_base">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drag the base of an exisiting arrow&quot;&quot;&quot;</span>
 
         <span class="c1"># move arrow</span>
         <span class="n">cx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">canvasx</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
@@ -1085,8 +1415,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;node&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activate_node</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;edge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">node2</span><span class="p">,))</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.activate_node"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.activate_node">[docs]</a>    <span class="k">def</span> <span class="nf">activate_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
-        <span class="sd">&quot;&quot;&quot;Activate a node, i.e. display the anchor points,</span>
+<div class="viewcode-block" id="TkFlowchart.activate_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.activate_node">[docs]</a>    <span class="k">def</span> <span class="nf">activate_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Activate a node, i.e. display the anchor points,</span>
 <span class="sd">        unless it is in the exclusion list. Also, if the</span>
 <span class="sd">        anchor point is given, make it active.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1111,8 +1441,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="n">node</span><span class="o">.</span><span class="n">deactivate</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active_nodes</span> <span class="o">=</span> <span class="n">active</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drop_arrow_base"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow_base">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The user has dropped the arrow somewhere!</span>
+<div class="viewcode-block" id="TkFlowchart.drop_arrow_base"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow_base">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The user has dropped the arrow somewhere!</span>
 <span class="sd">        If it is on another node, make the connection.</span>
 <span class="sd">        If it is in empty space or on the original node,</span>
 <span class="sd">        just cancel the operation.</span>
@@ -1162,8 +1492,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mouse_op</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drag_arrow_head"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow_head">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Drag the head of an arrow&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.drag_arrow_head"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drag_arrow_head">[docs]</a>    <span class="k">def</span> <span class="nf">drag_arrow_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drag the head of an arrow&quot;&quot;&quot;</span>
 
         <span class="c1"># move arrow</span>
         <span class="n">cx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">canvasx</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
@@ -1196,8 +1526,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;node&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activate_node</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;edge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">node1</span><span class="p">,))</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.drop_arrow_head"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow_head">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The user has dropped the arrow somewhere!</span>
+<div class="viewcode-block" id="TkFlowchart.drop_arrow_head"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.drop_arrow_head">[docs]</a>    <span class="k">def</span> <span class="nf">drop_arrow_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The user has dropped the arrow somewhere!</span>
 <span class="sd">        If it is on another node, make the connection.</span>
 <span class="sd">        If it is in empty space or on the original node,</span>
 <span class="sd">        just cancel the operation.</span>
@@ -1241,8 +1571,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mouse_op</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.right_click_on_arrow"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.right_click_on_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">right_click_on_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle a right click on an arrow&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.right_click_on_arrow"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.right_click_on_arrow">[docs]</a>    <span class="k">def</span> <span class="nf">right_click_on_arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a right click on an arrow&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
@@ -1254,8 +1584,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span><span class="o">.</span><span class="n">tk_popup</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.remove_edge"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.remove_edge">[docs]</a>    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove an edge from the graph and visually&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.remove_edge"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.remove_edge">[docs]</a>    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove an edge from the graph and visually&quot;&quot;&quot;</span>
 
         <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tags</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">tags</span><span class="p">[</span><span class="s2">&quot;edge&quot;</span><span class="p">]</span>
@@ -1269,8 +1599,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;type=arrow_base&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;type=arrow_head&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.print_edges"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.print_edges">[docs]</a>    <span class="k">def</span> <span class="nf">print_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print all the edges. Useful for debugging!&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.print_edges"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.print_edges">[docs]</a>    <span class="k">def</span> <span class="nf">print_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print all the edges. Useful for debugging!&quot;&quot;&quot;</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All edges in tk_flowchart&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
@@ -1285,15 +1615,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.print_items"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.print_items">[docs]</a>    <span class="k">def</span> <span class="nf">print_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print all the items on the canvas, for debugging&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.print_items"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.print_items">[docs]</a>    <span class="k">def</span> <span class="nf">print_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print all the items on the canvas, for debugging&quot;&quot;&quot;</span>
 
         <span class="nb">print</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">find_withtag</span><span class="p">(</span><span class="s2">&quot;type=arrow&quot;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">gettags</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.run"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run the current flowchart&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.run"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the current flowchart&quot;&quot;&quot;</span>
 
         <span class="c1"># Ensure that the flowchart is up-to-date</span>
         <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">()</span>
@@ -1301,22 +1631,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1"># Do the graphical &quot;stuff&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_job_handler</span><span class="o">.</span><span class="n">submit_with_dialog</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.push"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save a copy of the current flowchart on the stack.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.push"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a copy of the current flowchart on the stack.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.pop"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Replace the current flowchart with the version on the stack.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.pop"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the current flowchart with the version on the stack.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_flowchart</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.pop_and_discard"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.pop_and_discard">[docs]</a>    <span class="k">def</span> <span class="nf">pop_and_discard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove the saved copy from the stack&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.pop_and_discard"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.pop_and_discard">[docs]</a>    <span class="k">def</span> <span class="nf">pop_and_discard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the saved copy from the stack&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.update_flowchart"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.update_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">update_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the non-graphical flowchart&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.update_flowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.update_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">update_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the non-graphical flowchart&quot;&quot;&quot;</span>
         <span class="n">wf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span>
 
         <span class="c1"># Make sure there is nothing in the flowchart</span>
@@ -1341,8 +1671,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="k">return</span> <span class="n">wf</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.from_flowchart"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.from_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">from_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recreate the graphics from the non-graphical flowchart&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.from_flowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.from_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">from_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the graphics from the non-graphical flowchart&quot;&quot;&quot;</span>
         <span class="n">wf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1379,7 +1709,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_bound_to_mousewheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the bindings on the canvas, used when the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the bindings on the canvas, used when the</span>
 <span class="sd">        mouse enters the canvas</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">bind_all</span><span class="p">(</span><span class="s2">&quot;&lt;MouseWheel&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_mousewheel</span><span class="p">)</span>
@@ -1387,7 +1717,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1"># self.canvas.bind_all(&quot;&lt;Button-5&gt;&quot;, self._on_mousewheel)</span>
 
     <span class="k">def</span> <span class="nf">_unbound_to_mousewheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove the bindings on the canvas, used when the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the bindings on the canvas, used when the</span>
 <span class="sd">        mouse leaves the canvas</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">unbind_all</span><span class="p">(</span><span class="s2">&quot;&lt;MouseWheel&gt;&quot;</span><span class="p">)</span>
@@ -1395,7 +1725,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="c1"># self.canvas.unbind_all(&quot;&lt;Button-5&gt;&quot;)</span>
 
     <span class="k">def</span> <span class="nf">_on_mousewheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle the mousewheel or similar events.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the mousewheel or similar events.</span>
 <span class="sd">        There are two choices for how to scroll, and it</span>
 <span class="sd">        may differ from OS to OS.</span>
 
@@ -1419,8 +1749,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="n">tk</span><span class="o">.</span><span class="n">_default_root</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;moveto&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TkFlowchart.xview"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.xview">[docs]</a>    <span class="k">def</span> <span class="nf">xview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Scroll in the x direction, keeping the background picture stationary&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.xview"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.xview">[docs]</a>    <span class="k">def</span> <span class="nf">xview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scroll in the x direction, keeping the background picture stationary&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">xview</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
         <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">&quot;scrollregion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
@@ -1431,8 +1761,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="n">tk</span><span class="o">.</span><span class="n">_default_root</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;moveto&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.yview"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.yview">[docs]</a>    <span class="k">def</span> <span class="nf">yview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Scroll in the y direction, keeping the background picture stationary&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.yview"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.yview">[docs]</a>    <span class="k">def</span> <span class="nf">yview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scroll in the y direction, keeping the background picture stationary&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">yview</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
         <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">cget</span><span class="p">(</span><span class="s2">&quot;scrollregion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
@@ -1443,8 +1773,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <span class="n">tk</span><span class="o">.</span><span class="n">_default_root</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;moveto&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkFlowchart.clean_layout"><a class="viewcode-back" href="../../seamm.html#seamm.tk_flowchart.TkFlowchart.clean_layout">[docs]</a>    <span class="k">def</span> <span class="nf">clean_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clean the visual layout of the flowchart&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TkFlowchart.clean_layout"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_flowchart.TkFlowchart.clean_layout">[docs]</a>    <span class="k">def</span> <span class="nf">clean_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean the visual layout of the flowchart&quot;&quot;&quot;</span>
 
         <span class="c1"># clear the visited flag</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -1511,7 +1841,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loopxy</span></div>
 
     <span class="k">def</span> <span class="nf">_layout_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recursively position nodes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively position nodes&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_loop</span><span class="p">[</span><span class="n">loop</span><span class="p">]:</span>
             <span class="n">x0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
             <span class="n">y0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
@@ -1541,7 +1871,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
     <span class="k">def</span> <span class="nf">_loop_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loops</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A helper to traverse graph finding the grid locations of the nodes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A helper to traverse graph finding the grid locations of the nodes&quot;&quot;&quot;</span>
         <span class="n">node</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loops</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">loops</span>
 
@@ -1576,48 +1906,88 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_loop_helper</span><span class="p">(</span><span class="n">loops</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span></div>
 </pre></div>
 
-           </div>
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
           </div>
-          <footer>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+</div>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p></p>
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
   </div>
 
   
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
 
-<p>
-<div class="row">
-  <div class="column_left">
-    <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
-      <img src="/_images/MolSSI.jpg" alt="The MolSSI" style="border:0;">
-    </a>
-  </div>
-  <div class="column">
-    &copy; Copyright 2019-2021, the Molecular Sciences Software Institute,
-    which receives funding from the National Science Foundation under awards OAC-1547580
-    and CHE-2136142.
-  </div>
-  <div class="column_right">
-    <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
-      <img src="/_images/NSF_4-Color_bitmap_Logo.png" alt="The NSF" style="border:0;">
-    </a>
-  </div>
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2017-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
 </div>
-
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+  
+</div>
+  </footer>
+  </body>
 </html>

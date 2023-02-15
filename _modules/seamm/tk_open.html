@@ -1,0 +1,1377 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.tk_open &#8212; SEAMM 2023.2.15 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_open';</script>
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+                        Developer Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Documentation
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../authors.html">
+                        Credits
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../history.html">
+                        History
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+                    SEAMM Documentation
+                  </a>
+                </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi.org">
+                    MolSSI
+                  </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+                        Developer Documentation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Documentation
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../authors.html">
+                        Credits
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../history.html">
+                        History
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+                    SEAMM Documentation
+                  </a>
+                </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://molssi.org">
+                    MolSSI
+                  </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <h1>Source code for seamm.tk_open</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;The GUI for opening flowcharts.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter.scrolledtext</span> <span class="kn">import</span> <span class="n">ScrolledText</span>
+<span class="kn">import</span> <span class="nn">tkinter.ttk</span> <span class="k">as</span> <span class="nn">ttk</span>
+
+<span class="kn">import</span> <span class="nn">dateutil</span>
+<span class="kn">import</span> <span class="nn">Pmw</span>
+
+<span class="kn">from</span> <span class="nn">.dashboard_handler</span> <span class="kn">import</span> <span class="n">DashboardHandler</span>
+<span class="kn">from</span> <span class="nn">.seammrc</span> <span class="kn">import</span> <span class="n">SEAMMrc</span>
+<span class="kn">from</span> <span class="nn">seamm_dashboard_client</span> <span class="kn">import</span> <span class="n">DashboardConnectionError</span>
+<span class="kn">import</span> <span class="nn">seamm_util</span>
+<span class="kn">import</span> <span class="nn">seamm_widgets</span> <span class="k">as</span> <span class="nn">sw</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># &quot;operators&quot;: (</span>
+<span class="c1">#     &quot;must be&quot;,</span>
+<span class="c1">#     &quot;must be like&quot;,</span>
+<span class="c1">#     &quot;must contain&quot;,</span>
+<span class="c1">#     &quot;must contain like&quot;,</span>
+<span class="c1">#     &quot;must not be&quot;,</span>
+<span class="c1">#     &quot;must not be like&quot;,</span>
+<span class="c1">#     &quot;must not contain&quot;,</span>
+<span class="c1">#     &quot;must not contain like&quot;,</span>
+<span class="c1">#     &quot;may be&quot;,</span>
+<span class="c1">#     &quot;may be like&quot;,</span>
+<span class="c1">#     &quot;may contain&quot;,</span>
+<span class="c1">#     &quot;must contain like&quot;,</span>
+<span class="c1"># ),</span>
+
+<span class="n">zenodo_fields</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;any field&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;author name&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;creators.name:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;author orcid&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;creators.orcid:&quot;</span><span class="p">,</span> <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;is not&quot;</span><span class="p">)},</span>
+    <span class="s2">&quot;author affiliation&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;creators.affiliation:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;community&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;communities:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="s2">&quot;is like&quot;</span><span class="p">,</span> <span class="s2">&quot;is not&quot;</span><span class="p">,</span> <span class="s2">&quot;is not like&quot;</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;created&quot;</span><span class="p">,</span> <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;on&quot;</span><span class="p">,</span> <span class="s2">&quot;between&quot;</span><span class="p">)},</span>
+    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;description:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;keyword&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;keywords:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="s2">&quot;title:&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;operators&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="TkOpen"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen">[docs]</a><span class="k">class</span> <span class="nc">TkOpen</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toplevel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;toplevel&quot;</span><span class="p">:</span> <span class="n">toplevel</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zenodo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">SEAMMrc</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;SEAMM open&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Provide dict like access to the widgets to make</span>
+    <span class="c1"># the code cleaner</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow [] access to the widgets!&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow x[key] access to the data&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow deletion of keys&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow iteration over the object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The len() command&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dashboard_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;The connection to the dashboards.&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span> <span class="o">=</span> <span class="n">DashboardHandler</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span>
+
+<div class="viewcode-block" id="TkOpen.clear_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.clear_tree">[docs]</a>    <span class="k">def</span> <span class="nf">clear_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any contents from the tree.&quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="n">children</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="TkOpen.create_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dialog for opening.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;dialog&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Pmw</span><span class="o">.</span><span class="n">Dialog</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;toplevel&quot;</span><span class="p">],</span>
+            <span class="n">buttons</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Open&quot;</span><span class="p">,</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">),</span>
+            <span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;toplevel&quot;</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Open Flowchart&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Open a&quot;</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;flowchart&quot;</span><span class="p">,),</span>
+            <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;flowchart&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;local files&quot;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/SEAMM/flowcharts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">)</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;from&quot;</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;local files&quot;</span><span class="p">,</span> <span class="s2">&quot;previous jobs&quot;</span><span class="p">,</span> <span class="s2">&quot;Zenodo&quot;</span><span class="p">,</span> <span class="s2">&quot;Zenodo sandbox&quot;</span><span class="p">),</span>
+            <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># For local files, a directory to start from</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="s2">&quot;~/SEAMM/flowcharts&quot;</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/SEAMM/flowcharts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">directories</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">))</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">directories</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;directory&quot;</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">directories</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;get directory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory_cb</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span>
+        <span class="p">)</span>
+
+        <span class="c1"># From dashboard</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboard&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboard&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Dashboard&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">,</span> <span class="s2">&quot;any&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Project&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;criteria&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">SearchCriteria</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Show flowcharts where&quot;</span><span class="p">,</span>
+            <span class="n">labelanchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span>
+            <span class="n">inclusiontext</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">inclusionvalues</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;must have&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;must not have&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;may have&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;and&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;or&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;(&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">operatorvalues</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;contains like&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">fieldvalues</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">zenodo_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">()],</span>
+            <span class="n">two_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;between&quot;</span><span class="p">,),</span>
+            <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">zenodo_callback</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Search&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search_cb</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">selectmode</span><span class="o">=</span><span class="s2">&quot;browse&quot;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_record</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">e</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="s2">&quot;Open&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Add scrollbars</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree ysb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree xsb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">xview</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">yscroll</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree ysb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">,</span> <span class="n">xscroll</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree xsb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
+
+        <span class="n">detail</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;detail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">borderwidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">relief</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">SUNKEN</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Flowchart Details&quot;</span><span class="p">,</span>
+            <span class="n">labelanchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">N</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">detail</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ScrolledText</span><span class="p">(</span>
+            <span class="n">detail</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">WORD</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,),</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span>
+        <span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+        <span class="n">detail</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">detail</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">detail</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;what&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;directory&quot;</span><span class="p">,):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;FocusOut&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;dashboard&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_dashboard</span><span class="p">)</span>
+
+        <span class="c1"># Fill the window with the dialog!</span>
+        <span class="n">swidth</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_screenwidth</span><span class="p">()</span>
+        <span class="n">sheight</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_screenheight</span><span class="p">()</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">swidth</span><span class="p">)</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sheight</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.directory_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.directory_cb">[docs]</a>    <span class="k">def</span> <span class="nf">directory_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoked by the ... button to get new directory.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">current</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">(</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;toplevel&quot;</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Change directory&quot;</span><span class="p">,</span>
+            <span class="n">initialdir</span><span class="o">=</span><span class="n">current</span><span class="p">,</span>
+            <span class="n">mustexist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">current</span><span class="o">.</span><span class="n">samefile</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">d</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TkOpen.fill_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.fill_tree">[docs]</a>    <span class="k">def</span> <span class="nf">fill_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill the tree with a job list</span>
+
+<span class="sd">        The job list looks is a list of Job objects that are dicts like::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &#39;description&#39;: &#39;test of api&#39;,</span>
+<span class="sd">                &#39;finished&#39;: &#39;2022-02-24 10:06&#39;,</span>
+<span class="sd">                &#39;flowchart_id&#39;: &#39;1&#39;,</span>
+<span class="sd">                &#39;group&#39;: None,</span>
+<span class="sd">                &#39;group_id&#39;: None,</span>
+<span class="sd">                &#39;id&#39;: 18,</span>
+<span class="sd">                &#39;last_update&#39;: &#39;2022-02-24 10:05&#39;,</span>
+<span class="sd">                &#39;owner&#39;: &#39;psaxe&#39;,</span>
+<span class="sd">                &#39;owner_id&#39;: 2,</span>
+<span class="sd">                &#39;parameters&#39;: {</span>
+<span class="sd">                     &#39;cmdline&#39;: [&#39;job:data/Users_psaxe_SEAMM_data_TiO2--anatase.cif&#39;]</span>
+<span class="sd">                },</span>
+<span class="sd">                &#39;path&#39;: &#39;/Users/psaxe/SEAMM_DEV/Jobs/projects/default/Job_000018&#39;,</span>
+<span class="sd">                &#39;projects&#39;: [{&#39;id&#39;: 1, &#39;name&#39;: &#39;default&#39;}],</span>
+<span class="sd">                &#39;started&#39;: &#39;2022-02-24 10:06&#39;,</span>
+<span class="sd">                &#39;status&#39;: &#39;finished&#39;,</span>
+<span class="sd">                &#39;submitted&#39;: &#39;2022-02-24 10:05&#39;,</span>
+<span class="sd">                &#39;title&#39;: &#39;test of api&#39;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        job_list : [seamm_dashboard_client._Job]</span>
+<span class="sd">            List of Job objects contain info about the jobs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Remove any current data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">job_list</span><span class="p">:</span>
+            <span class="n">iid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Job_</span><span class="si">{</span><span class="n">job</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">0&gt;6d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">job</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">iid</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span></div>
+
+<div class="viewcode-block" id="TkOpen.insert_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.insert_node">[docs]</a>    <span class="k">def</span> <span class="nf">insert_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">open</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a new node in the tree, corresponding to a file or directory.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parent : str</span>
+<span class="sd">            The parent node in the tree, &quot;&quot; for toplevel.</span>
+<span class="sd">        text : str</span>
+<span class="sd">            The text to display for the node.</span>
+<span class="sd">        path : pathlib.Path</span>
+<span class="sd">            The absolute path of the file or directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="nb">open</span><span class="o">=</span><span class="nb">open</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span></div>
+
+<div class="viewcode-block" id="TkOpen.open_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open_node">[docs]</a>    <span class="k">def</span> <span class="nf">open_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.flow&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">insert_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.reset_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the widgets in the dialog according to the parameters.&quot;&quot;&quot;</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="c1"># Temporary</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="o">!=</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;flowchart&quot;</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+
+        <span class="c1"># Remove all the widgets</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">():</span>
+            <span class="n">slave</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
+
+        <span class="c1"># and put them back in as needed.</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;local files&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;get directory&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;previous jobs&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">dashboards</span>
+
+            <span class="c1"># Remove any dashboards that we cannot access</span>
+            <span class="k">for</span> <span class="n">dashboard</span><span class="p">,</span> <span class="n">status</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_all_status</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;running&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;No Dashboards available&quot;</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;The are no Dashboards that can be connected to.&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dashboard_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboard&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dashboard_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="p">:</span>
+                    <span class="n">dashboard_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">dashboard_name</span>
+                <span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span>
+                        <span class="n">dashboard_name</span>
+                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">projects</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">projects</span><span class="p">()</span>
+                    <span class="n">projects</span> <span class="o">+=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_projects</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+                <span class="k">except</span> <span class="n">DashboardConnectionError</span><span class="p">:</span>
+                    <span class="n">projects</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_dashboard</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">projects</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+
+                <span class="n">project</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">:</span>
+                    <span class="n">project</span> <span class="o">=</span> <span class="n">projects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">!=</span> <span class="n">project</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">=</span> <span class="n">project</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Zenodo&quot;</span> <span class="ow">in</span> <span class="n">source</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;criteria&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+                <span class="n">frame</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TreeviewOpen&gt;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;previous jobs&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TreeviewOpen&gt;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Get the jobs from the Dashboard.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span><span class="p">:</span>
+                        <span class="n">job_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">jobs</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">job_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">]</span><span class="o">.</span><span class="n">jobs</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fill_tree</span><span class="p">(</span><span class="n">job_list</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;local files&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree ysb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NS</span> <span class="o">+</span> <span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree xsb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;detail&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.reset_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_tree">[docs]</a>    <span class="k">def</span> <span class="nf">reset_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the file tree to start with the given directory.&quot;&quot;&quot;</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+        <span class="c1"># Fixes issue #131</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Invalid directory&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;The directory given &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; does not exist!&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Not a directory&quot;</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;The path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; exists, but is not a directory!&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_node</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">open</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_node</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TreeviewOpen&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_node</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.open"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for opening.&quot;&quot;&quot;</span>
+        <span class="c1"># Reread the configuration file in case it has changed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">re_read</span><span class="p">()</span>
+
+        <span class="c1"># Create the dialog if it doesn&#39;t exist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">()</span>
+
+        <span class="c1"># And put it on-screen, the first time centered.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;centerscreenfirst&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;Open&quot;</span><span class="p">:</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
+                <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+                <span class="n">selected</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">source</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;Zenodo&quot;</span> <span class="ow">or</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;Zenodo sandbox&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span><span class="s2">&quot;flowchart.flow&quot;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">data</span>
+                <span class="k">elif</span> <span class="s2">&quot;previous jobs&quot;</span> <span class="o">==</span> <span class="n">source</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                            <span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;dashboard&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">)</span>
+                        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                        <span class="n">job_id</span> <span class="o">=</span> <span class="n">job</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span><span class="s2">&quot;flowchart.flow&quot;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">data</span>
+                <span class="k">elif</span> <span class="s2">&quot;local files&quot;</span> <span class="ow">in</span> <span class="n">source</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                        <span class="n">directory</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+                        <span class="n">directories</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">directory</span> <span class="o">!=</span> <span class="n">directories</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">directories</span><span class="p">:</span>
+                                <span class="n">directories</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+                            <span class="n">directories</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                                <span class="s2">&quot;SEAMM open&quot;</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">directories</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span>
+                            <span class="n">w</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">directories</span><span class="p">)</span>
+                            <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.flow&quot;</span><span class="p">:</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+                            <span class="k">return</span> <span class="n">data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle source &#39;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle opening &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="TkOpen.search_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_cb">[docs]</a>    <span class="k">def</span> <span class="nf">search_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the search.&quot;&quot;&quot;</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;Zenodo&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">search_zenodo_for_flowcharts</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;Zenodo sandbox&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">search_zenodo_for_flowcharts</span><span class="p">(</span><span class="n">sandbox</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t handle source &#39;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t handle searching for &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.search_zenodo_for_flowcharts"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_zenodo_for_flowcharts">[docs]</a>    <span class="k">def</span> <span class="nf">search_zenodo_for_flowcharts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for flowcharts in Zenodo.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sandbox : bool = False</span>
+<span class="sd">            If true, search the Zenodo sandbox.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zenodo</span> <span class="o">=</span> <span class="n">seamm_util</span><span class="o">.</span><span class="n">Zenodo</span><span class="p">(</span><span class="n">use_sandbox</span><span class="o">=</span><span class="n">sandbox</span><span class="p">)</span>
+
+        <span class="n">criteria</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;criteria&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">after_parenthesis</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">search_criteria</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">criteria</span><span class="p">):</span>
+            <span class="n">inclusion</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value2</span> <span class="o">=</span> <span class="n">search_criteria</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inclusion</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">field</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">operator</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">value2</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">zf</span> <span class="o">=</span> <span class="n">zenodo_fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;field&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># query += &quot; AND (&quot;</span>
+                <span class="n">after_parenthesis</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">pre</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;and&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">after_parenthesis</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot; AND&quot;</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;or&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">after_parenthesis</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot; OR&quot;</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;(&quot;</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot; (&quot;</span>
+                <span class="n">after_parenthesis</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot; )&quot;</span>
+                <span class="n">after_parenthesis</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;must have&quot;</span><span class="p">:</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;must not have&quot;</span><span class="p">:</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;may have&quot;</span><span class="p">:</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">elif</span> <span class="n">inclusion</span> <span class="o">==</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inclusion</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">after_parenthesis</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">date</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Invalid date format&quot;</span><span class="p">,</span>
+                        <span class="n">message</span><span class="o">=</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;The date given &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; can&#39;t be handled. Try formats &quot;</span>
+                            <span class="s2">&quot;like &#39;2022-04-23&#39; or &#39;4/23/2022&#39; or &#39;23 Apr 2022&#39;&quot;</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;after&quot;</span><span class="p">:</span>
+                        <span class="n">query</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2"> TO *]&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;before&quot;</span><span class="p">:</span>
+                        <span class="n">query</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}</span><span class="s2">[* TO </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">]&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;on&quot;</span><span class="p">:</span>
+                        <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;between&quot;</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">date2</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value2</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Invalid date format&quot;</span><span class="p">,</span>
+                                <span class="n">message</span><span class="o">=</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;The date given &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; can&#39;t be handled. Try &quot;</span>
+                                    <span class="s2">&quot;formats like &#39;2022-04-23&#39; or &#39;4/23/2022&#39; or &quot;</span>
+                                    <span class="s2">&quot;&#39;23 Apr 2022&#39;&quot;</span>
+                                <span class="p">),</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">query</span> <span class="o">+=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2"> to &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date2</span><span class="si">}</span><span class="s2">])&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize operator &#39;</span><span class="si">{</span><span class="n">operator</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;is&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">/)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;is like&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">~)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;contains&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;contains like&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND </span><span class="si">{</span><span class="n">pre</span><span class="si">}{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">~)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;is not&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND -</span><span class="si">{</span><span class="n">zf</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">/)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;is not like&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND -</span><span class="si">{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">~)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;does not contain&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND -</span><span class="si">{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="k">elif</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;does not contain like&quot;</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (+keywords:seamm-flowchart AND -</span><span class="si">{</span><span class="n">zf</span><span class="si">}{</span><span class="n">value</span><span class="si">}</span><span class="s2">~)&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t recognize operator &#39;</span><span class="si">{</span><span class="n">operator</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;+keywords:seamm-flowchart&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;query = </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">n_hits</span><span class="p">,</span> <span class="n">records</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zenodo</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Invalid Zenodo query&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Find all related records using conceptrecid</span>
+        <span class="n">concepts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="n">concept_id</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;conceptrecid&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">concept_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">concepts</span><span class="p">:</span>
+                <span class="n">concepts</span><span class="p">[</span><span class="n">concept_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">concepts</span><span class="p">[</span><span class="n">concept_id</span><span class="p">]</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;relations&quot;</span><span class="p">][</span><span class="s2">&quot;version&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;index&quot;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">version</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span>
+
+        <span class="c1"># Remove any current data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">concept_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">concepts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">version</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">version</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">iid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">iid</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">version</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">jid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">iid</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">jid</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span></div>
+
+<div class="viewcode-block" id="TkOpen.select_record"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.select_record">[docs]</a>    <span class="k">def</span> <span class="nf">select_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The user clicked on the tree-view ... handle the selected record.&quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;Zenodo&quot;</span> <span class="ow">in</span> <span class="n">source</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;relations&quot;</span><span class="p">][</span><span class="s2">&quot;version&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;publication_data&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;publication_data&quot;</span><span class="p">]</span>
+                <span class="n">version</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">version</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;previous jobs&quot;</span> <span class="o">==</span> <span class="n">source</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">job</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">job</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;local files&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.flow&quot;</span><span class="p">:</span>
+                <span class="n">capture</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fd</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;#&quot;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;#metadata&quot;</span><span class="p">:</span>
+                                <span class="n">capture</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">elif</span> <span class="n">capture</span><span class="p">:</span>
+                                <span class="k">break</span>
+                        <span class="k">elif</span> <span class="n">capture</span><span class="p">:</span>
+                            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">mtime</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span>
+                    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">mtime</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="s2">&quot;description&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="s2">&quot;version&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Version &lt;none&gt; -- </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t handle source &#39;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.update_dashboard"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.update_dashboard">[docs]</a>    <span class="k">def</span> <span class="nf">update_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The dashboard has been changed!&quot;&quot;&quot;</span>
+
+        <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">project</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">dashboard</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="n">projects</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">projects</span><span class="p">()</span>
+                <span class="n">projects</span> <span class="o">+=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_projects</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+            <span class="k">except</span> <span class="n">DashboardConnectionError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dashboards</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Cannot access Dashboard&quot;</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Cannot access Dashboard </span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">. Resetting!&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">projects</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">=</span> <span class="n">projects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">project</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">=</span> <span class="n">project</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_tree</span><span class="p">()</span>
+        <span class="c1"># Get the jobs from the Dashboard.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_project</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span><span class="p">:</span>
+            <span class="n">job_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">jobs</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">job_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">]</span><span class="o">.</span><span class="n">jobs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_tree</span><span class="p">(</span><span class="n">job_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TkOpen.zenodo_callback"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.zenodo_callback">[docs]</a>    <span class="k">def</span> <span class="nf">zenodo_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">criterion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inclusion</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value2</span> <span class="o">=</span> <span class="n">criterion</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span>
+                <span class="n">operators</span> <span class="o">=</span> <span class="n">zenodo_fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;operators&quot;</span><span class="p">]</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">criterion</span><span class="o">.</span><span class="n">operator</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">operators</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">operator</span> <span class="ow">in</span> <span class="n">operators</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">operators</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+</pre></div>
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2017-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
+</div>
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>
