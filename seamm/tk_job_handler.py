@@ -43,12 +43,41 @@ class TkJobHandler(object):
 
         self._dashboard_handler = None
 
+        self._flowchart = None
         self._widgets = {}
         self._variable_value = {}
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
         s = ttk.Style()
         s.configure("Border.TLabel", relief="ridge", anchor=tk.W, padding=5)
+
+    # Provide dict like access to the widgets to make
+    # the code cleaner
+
+    def __getitem__(self, key):
+        """Allow [] access to the widgets."""
+        return self._widgets[key]
+
+    def __setitem__(self, key, value):
+        """Allow [key] access to set a widgets."""
+        self._widgets[key] = value
+
+    def __delitem__(self, key):
+        """Allow deletion of widgets."""
+        try:
+            if key in self._widgets:
+                self._widgets[key].destroy()
+        except Exception:
+            pass
+        del self._widgets[key]
+
+    def __iter__(self):
+        """Allow iteration over the widgets"""
+        return iter(self._widgets)
+
+    def __len__(self):
+        """Provide the nmber of widgets, for e.g. len() command."""
+        return len(self._widgets)
 
     @property
     def current_dashboard(self):
@@ -76,7 +105,7 @@ class TkJobHandler(object):
             command=self.handle_add_dialog,
         )
         dialog.withdraw()
-        w = self._widgets["add"] = {"dialog": dialog}
+        w = self["add"] = {"dialog": dialog}
 
         d = dialog.interior()
         name = sw.LabeledEntry(d, labeltext="Name", width=50)
@@ -144,7 +173,7 @@ class TkJobHandler(object):
 
     def check_status_cb(self):
         """Helper for checking the status of a dashboard."""
-        w = self._widgets["edit dashboard"]
+        w = self["edit dashboard"]
         dashboard = w["dashboard"]
         status = self.dashboard_handler.get_dashboard(dashboard).status()
         w["status"].set(status)
@@ -167,42 +196,62 @@ class TkJobHandler(object):
         )
         self.dialog.withdraw()
 
-        w = self._widgets
         d = self.dialog.interior()
 
         # Dashboard
         dashboards = self.dashboard_handler.dashboards
-        w["dashboard"] = sw.LabeledCombobox(
+        self["dashboard"] = sw.LabeledCombobox(
             d, labeltext="Dashboard:", values=dashboards
         )
-        w["dashboard"].combobox.bind("<<ComboboxSelected>>", self.dashboard_cb)
+        self["dashboard"].combobox.bind("<<ComboboxSelected>>", self.dashboard_cb)
 
-        w["add"] = ttk.Button(d, text="add dashboard...", command=self.add_dashboard_cb)
+        self["add"] = ttk.Button(
+            d, text="add dashboard...", command=self.add_dashboard_cb
+        )
 
         # User and project
-        w["project"] = sw.LabeledCombobox(d, labeltext="Project:", state="readonly")
-        w["project"].bind("<<ComboboxSelected>>", self.project_cb)
+        self["project"] = sw.LabeledCombobox(d, labeltext="Project:", state="readonly")
+        self["project"].bind("<<ComboboxSelected>>", self.project_cb)
 
         # Title
-        w["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
-        w["title"].set(title)
+        self["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
+        self["title"].set(title)
 
         # Description
-        w["description label"] = ttk.Label(d, text="Description:")
+        self["description label"] = ttk.Label(d, text="Description:")
         frame = sw.ScrolledFrame(
             d, scroll_vertically=True, borderwidth=2, relief=tk.SUNKEN
         )
         f = frame.interior()
-        w["description"] = tk.Text(f)
-        w["description"].grid(sticky=tk.EW)
-        w["description"].insert("1.0", description)
+        self["description"] = tk.Text(f)
+        self["description"].grid(sticky=tk.EW)
+        self["description"].insert("1.0", description)
 
         f.rowconfigure(0, weight=1)
         f.columnconfigure(0, weight=1)
 
+        # Reset and clear buttons
+        rf = self["reset frame"] = tk.Frame(d)
+        self["reset title"] = ttk.Button(
+            rf, text="reset title", command=self.reset_title
+        )
+        self["clear title"] = ttk.Button(
+            rf, text="clear title", command=self.clear_title
+        )
+        self["reset description"] = ttk.Button(
+            rf, text="reset description", command=self.reset_description
+        )
+        self["clear description"] = ttk.Button(
+            rf, text="clear description", command=self.clear_description
+        )
+        self["reset title"].grid(row=0, column=0)
+        self["clear title"].grid(row=0, column=1)
+        self["reset description"].grid(row=0, column=2)
+        self["clear description"].grid(row=0, column=3)
+
         # Space for any parameters
-        w["parameters label"] = ttk.Label(d, text="Parameters:")
-        w["parameters"] = sw.ScrolledColumns(
+        self["parameters label"] = ttk.Label(d, text="Parameters:")
+        self["parameters"] = sw.ScrolledColumns(
             d,
             columns=[
                 "Name",
@@ -214,43 +263,43 @@ class TkJobHandler(object):
 
         # Set up the dashboard and projects if needed
         if len(dashboards) > 0:
-            w["dashboard"].set(self.current_dashboard.name)
+            self["dashboard"].set(self.current_dashboard.name)
             self.dashboard_cb()
 
         # Grid the widgets into rows and columns
-        w["dashboard"].grid(row=0, column=0, sticky=tk.EW)
-        w["add"].grid(row=0, column=1, sticky=tk.W)
-        w["project"].grid(row=1, column=0, sticky=tk.EW)
-        w["title"].grid(row=2, column=0, columnspan=2, sticky=tk.W)
-        w["description label"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
+        self["dashboard"].grid(row=0, column=0, sticky=tk.EW)
+        self["add"].grid(row=0, column=1, sticky=tk.W)
+        self["project"].grid(row=1, column=0, sticky=tk.EW)
+        self["title"].grid(row=2, column=0, columnspan=2, sticky=tk.W)
+        self["description label"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
         frame.grid(row=4, column=0, columnspan=2, sticky=tk.NSEW)
-        w["parameters label"].grid(row=5, column=0, columnspan=2, sticky=tk.W)
-        w["parameters"].grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
+        self["reset frame"].grid(row=5, column=0, columnspan=2)
+        self["parameters label"].grid(row=6, column=0, columnspan=2, sticky=tk.W)
+        self["parameters"].grid(row=7, column=0, columnspan=2, sticky=tk.NSEW)
 
-        sw.align_labels([w["dashboard"], w["project"], w["title"]])
+        sw.align_labels([self["dashboard"], self["project"], self["title"]])
 
         d.rowconfigure(4, weight=1)
-        d.rowconfigure(6, weight=1)
+        d.rowconfigure(7, weight=1)
         d.columnconfigure(1, weight=1)
 
     def dashboard_cb(self, event=None):
         """The selected dashboard has been changed"""
-        w = self._widgets
-        dashboard = w["dashboard"].get()
+        dashboard = self["dashboard"].get()
 
         projects = self.dashboard_handler.get_dashboard(dashboard).list_projects()
         if len(projects) == 0:
             if self.current_dashboard is not None:
-                w["dashboard"].set(self.current_dashboard.name)
+                self["dashboard"].set(self.current_dashboard.name)
             return
 
         # All OK, changed the widgets
         projects.append("-- Create new project --")
-        w["project"].combobox.config({"value": projects})
+        self["project"].combobox.config({"value": projects})
         if len(projects) > 0:
-            w["project"].set(projects[0])
+            self["project"].set(projects[0])
         else:
-            w["project"].set("")
+            self["project"].set("")
         self.current_dashboard = dashboard
 
     def display_dashboards(self):
@@ -268,7 +317,7 @@ class TkJobHandler(object):
             command=self.handle_dashboard_dialog,
         )
         dialog.withdraw()
-        w = self._widgets["display"] = {"dialog": dialog}
+        w = self["display"] = {"dialog": dialog}
 
         d = dialog.interior()
         w["table"] = sw.ScrolledColumns(
@@ -326,11 +375,11 @@ class TkJobHandler(object):
         dialog.activate(geometry="centerscreenfirst")
 
         dialog.destroy()
-        del self._widgets["display"]
+        del self["display"]
 
     def edit_cb(self, dashboard):
         """Edit the information for a dashboard."""
-        table = self._widgets["display"]["table"]
+        table = self["display"]["table"]
         for trow in range(table.nrows):
             if table[trow, 1].cget("text") == dashboard:
                 break
@@ -341,7 +390,7 @@ class TkJobHandler(object):
             title="Edit " + dashboard.title(),
         )
         dialog.withdraw()
-        w = self._widgets["edit dashboard"] = {"dialog": dialog, "dashboard": dashboard}
+        w = self["edit dashboard"] = {"dialog": dialog, "dashboard": dashboard}
 
         d = dialog.interior()
         name = sw.LabeledEntry(d, labeltext="Name:", width=50)
@@ -388,7 +437,7 @@ class TkJobHandler(object):
                 dashboard = name.get()
                 table[trow, 1].configure(text=dashboard)
                 table[trow, 0].configure(value=dashboard)
-                self._widgets["display"]["selected"].set(dashboard)
+                self["display"]["selected"].set(dashboard)
                 self.current_dashboard = dashboard
 
             dboard = self.dashboard_handler.get_dashboard(dashboard)
@@ -451,7 +500,7 @@ class TkJobHandler(object):
             w.insert(0, filename)
 
     def fill_statuses(self):
-        w = self._widgets["display"]
+        w = self["display"]
         dialog = w["dialog"]
         table = w["table"]
 
@@ -484,7 +533,7 @@ class TkJobHandler(object):
         """
         logger.debug("Entering fit_dialog")
 
-        widget = self._widgets["display"]["table"].interior()
+        widget = self["display"]["table"].interior()
         logger.debug("  widget = {}".format(widget))
         widget.update_idletasks()
 
@@ -593,7 +642,7 @@ class TkJobHandler(object):
 
     def handle_add_dialog(self, result):
         """Handle the dialog to add a dashboard to the list."""
-        w = self._widgets["add"]
+        w = self["add"]
         dialog = w["dialog"]
         if result is None or result == "Cancel":
             dialog.deactivate(result)
@@ -613,23 +662,23 @@ class TkJobHandler(object):
                 return
 
             dialog.deactivate(result)
+
+            # Now add to the configuration
+            self.dashboard_handler.add_dashboard(name, url, protocol)
+
+            # And reset the list in the dashboard combobox
+            c = self["dashboard"]
+            c.combobox.config({"value": self.dashboard_handler.dashboards})
+            c.set(name)
         dialog.destroy()
-        del self._widgets["add"]
-
-        # Now add to the configuration
-        self.dashboard_handler.add_dashboard(name, url, protocol)
-
-        # And reset the list in the dashboard combobox
-        c = self._widgets["dashboard"]
-        c.combobox.config({"value": self.dashboard_handler.dashboards})
-        c.set(name)
+        del self["add"]
 
     def handle_dialog(self, result):
         """Handle the submit dialog being completed."""
         if result is None or result == "Cancel":
             self.dialog.deactivate(None)
         else:
-            w = self._widgets
+            w = self
             self.dialog.deactivate(
                 {
                     "project": w["project"].get(),
@@ -641,7 +690,7 @@ class TkJobHandler(object):
 
     def handle_dashboard_dialog(self, result):
         """Handle the dialog to add a dashboard to the list."""
-        w = self._widgets["display"]
+        w = self["display"]
         dialog = w["dialog"]
         dashboard = w["selected"].get()
         if result is None or result == "Cancel":
@@ -658,7 +707,7 @@ class TkJobHandler(object):
         in which case prompt for the new project's name, create it, and sleect it in the
         widget.
         """
-        w = self._widgets
+        w = self
         project = w["project"].get()
         if project == "-- Create new project --":
             result = simpledialog.askstring("Add Project", "Project name:")
@@ -669,6 +718,19 @@ class TkJobHandler(object):
                     pass
             self.dashboard_cb()
             w["project"].set(result)
+
+    def reset_title(self):
+        self["title"].set(self._flowchart.metadata["title"])
+
+    def clear_title(self):
+        self["title"].set("")
+
+    def reset_description(self):
+        self["description"].delete("1.0", "end")
+        self["description"].insert("1.0", self._flowchart.metadata["description"])
+
+    def clear_description(self):
+        self["description"].delete("1.0", "end")
 
     def submit_with_dialog(self, flowchart):
         """
@@ -685,6 +747,7 @@ class TkJobHandler(object):
         job_id : integer
             The id of the submitted job.
         """
+        self._flowchart = flowchart
         if self.dialog is None:
             title = flowchart.metadata["title"]
             description = flowchart.metadata["description"]
@@ -702,20 +765,18 @@ class TkJobHandler(object):
 
         if len(parameter_steps) == 0:
             # Remove the parameter section
-            self._widgets["parameters label"].grid_forget()
-            self._widgets["parameters"].grid_forget()
+            self["parameters label"].grid_forget()
+            self["parameters"].grid_forget()
             d = self.dialog.interior()
             d.rowconfigure(6, weight=0)
         else:
-            self._widgets["parameters label"].grid(
-                row=5, column=0, columnspan=2, sticky=tk.W
-            )
-            table = self._widgets["parameters"]
+            self["parameters label"].grid(row=6, column=0, columnspan=2, sticky=tk.W)
+            table = self["parameters"]
             table.clear()
-            table.grid(row=6, column=0, columnspan=2, sticky=tk.NSEW)
+            table.grid(row=7, column=0, columnspan=2, sticky=tk.NSEW)
             frame = table.interior()
             d = self.dialog.interior()
-            d.rowconfigure(6, weight=1)
+            d.rowconfigure(7, weight=1)
             row = 0
             for step in parameter_steps:
                 variables = step.parameters["variables"]
@@ -750,7 +811,7 @@ class TkJobHandler(object):
                 value = {}
             else:
                 # Get the variable values
-                table = self._widgets["parameters"]
+                table = self["parameters"]
                 for row in range(table.nrows):
                     name = table[row, 0].cget("text")
                     value[name] = table[row, 1].get()
