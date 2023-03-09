@@ -6,7 +6,6 @@ SEAMM flowcharts have a 'magic' line, so that they can be executed directly.
 Or, run_flowchart can be invoked with the name of flowchart.
 """
 
-import argparse
 import configparser
 import datetime
 import fasteners
@@ -28,6 +27,7 @@ import cpuinfo
 
 import seamm
 import seamm_datastore
+
 import seamm_util
 
 printer = seamm_util.printing.getPrinter()
@@ -215,9 +215,22 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
                 fd.readline()
                 data = json.load(fd)
         else:
+            if options["title"] != "":
+                title = options["title"]
+            else:
+                title = flowchart.metadata["title"]
+            if title == "":
+                "untitled job"
+            if "description" in options:
+                if options["description"] != "":
+                    description = options["description"]
+            else:
+                description = flowchart.metadata["description"]
+            if description == "":
+                description = "Run from the command-line."
             data = {
                 "data_version": "1.0",
-                "title": options["title"],
+                "title": title,
                 "working directory": wdir,
                 "submitted time": time_now,
             }
@@ -233,19 +246,10 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
             }
         )
         if not in_jobserver and not standalone:
-            current_time = datetime.datetime.now(datetime.timezone.utc)
             if "projects" not in data:
                 data["projects"] = projects
             data["datastore"] = datastore
             data["job id"] = job_id
-
-            # Add to the database
-            db_path = Path(datastore).expanduser().resolve() / "seamm.db"
-            db_uri = "sqlite:///" + str(db_path)
-            db = seamm_datastore.connect(
-                database_uri=db_uri,
-                datastore_location=datastore,
-            )
 
             # Get the user information for the datastore
             path = Path("~/.seammrc").expanduser()
@@ -261,7 +265,14 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
             user = None
             password = None
 
-            for section in [platform.node(), "localhost"]:
+            if "dev" in options["root"].lower():
+                sections = ["dev"]
+            else:
+                sections = ["localhost"]
+            sections.append(platform.node())
+            print(f"{sections=}")
+            for section in sections:
+                section = "Dashboard: " + section
                 if section in config:
                     if user is None and "user" in config[section]:
                         user = config[section]["user"]
@@ -274,21 +285,35 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
                     "commandline. See the documentation for more details."
                 )
 
-            db.login(user, password)
-            db.add_job(
-                job_id,
-                flowchart_filename=flowchart_path,
-                project_names=data["projects"],
-                path=wdir,
-                title=data["title"],
-                submitted=current_time,
-                started=current_time,
-                description="Run from the command-line.",
-                status="started",
+            # Add to the database
+            db_path = Path(datastore).expanduser().resolve() / "seamm.db"
+            db_uri = "sqlite:///" + str(db_path)
+            db = seamm_datastore.connect(
+                database_uri=db_uri,
+                datastore_location=datastore,
+                username=user,
+                password=password,
             )
+
+            current_time = datetime.datetime.now(datetime.timezone.utc)
+            with seamm_datastore.session_scope(db.Session) as session:
+                job = db.Job.create(
+                    job_id,
+                    flowchart_path,
+                    project_names=data["projects"],
+                    path=wdir,
+                    title=title,
+                    description=description,
+                    submitted=current_time,
+                    started=current_time,
+                    parameters={"cmdline": []},
+                    status="started",
+                )
+                session.add(job)
+
             del db
 
-        # Output the initial metadate for the job.
+        # Output the initial metadata for the job.
         with open("job_data.json", "w") as fd:
             fd.write(header_line)
             json.dump(data, fd, indent=3, sort_keys=True)
@@ -330,15 +355,24 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
 
             if not in_jobserver and not standalone:
                 # Let the datastore know that the job finished.
-                current_time = datetime.datetime.now(datetime.timezone.utc)
+                # current_time = datetime.datetime.now(datetime.timezone.utc)
+
+                # At the moment update takes weird numbers!
+                now = datetime.datetime.now().astimezone()
+                dt = now.utcoffset().total_seconds()
+                current_time = (time.time() - dt) * 1000
 
                 # Add to the database
                 db = seamm_datastore.connect(
                     database_uri=db_uri,
                     datastore_location=datastore,
+                    username=user,
+                    password=password,
                 )
-                db.login(user, password)
-                db.finish_job(job_id, current_time, data["state"])
+                with seamm_datastore.session_scope(db.Session) as session:
+                    job = db.Job.update(
+                        job_id, finished=current_time, status=data["state"]
+                    )
                 del db
 
 
@@ -396,151 +430,6 @@ def get_job_id(filename):
         raise RuntimeError("Could not lock the job_id file '{}'".format(filename))
 
     return job_id
-
-
-def setup_argument_parser():
-    """Setup the command-line argument parser.
-
-    Returns
-    -------
-    ArgumentParser
-        The seamm_util.ArgumentParser for handling commandline and
-        config-file parsing.
-    """
-    parser = seamm_util.getParser(name="SEAMM")
-
-    parser.add_parser(
-        "SEAMM",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        prog=sys.argv[0],
-        usage="%(prog)s [options] plug-in [options] plug-in [options] ...",
-        epilog=textwrap.dedent(
-            """
-            The plug-ins in this flowchart are listed above.
-            Options, if any, for plug-ins are placed after
-            the name of the plug-in, e.g.:
-
-               test.flow lammps-step --log-level DEBUG --np 4
-
-            To get help for a plug-in, use --help or -h after the
-            plug-in name. E.g.
-
-               test.flow lammps-step --help
-            """
-        ),
-    )
-
-    # Debugging options
-    parser.add_argument_group(
-        "SEAMM",
-        "debugging options",
-        "Options for turning on debugging output and tools",
-    )
-
-    parser.add_argument(
-        "SEAMM",
-        "--log-level",
-        group="debugging options",
-        default="WARNING",
-        type=str.upper,
-        choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        help=("The level of informational output, defaults to " "'%(default)s'"),
-    )
-
-    # Datastore options
-    parser.add_argument_group(
-        "SEAMM", "datastore options", "Options controlling the use of the datastore"
-    )
-
-    parser.add_argument(
-        "SEAMM",
-        "--standalone",
-        group="datastore options",
-        action="store_true",
-        help="Run this workflow as-is without using the datastore, etc.",
-    )
-    parser.add_argument(
-        "SEAMM",
-        "--datastore",
-        group="datastore options",
-        dest="datastore",
-        default=".",
-        action="store",
-        help="The datastore (directory) for this run.",
-    )
-    parser.add_argument(
-        "SEAMM",
-        "--title",
-        group="datastore options",
-        dest="title",
-        default="",
-        action="store",
-        help="The title for this run.",
-    )
-    parser.add_argument(
-        "SEAMM",
-        "--job-id-file",
-        group="datastore options",
-        dest="job_id_file",
-        default=None,
-        action="store",
-        help="The job_id file to use.",
-    )
-    parser.add_argument(
-        "SEAMM",
-        "--project",
-        group="datastore options",
-        dest="projects",
-        action="append",
-        help="The project(s) for this job.",
-    )
-    parser.add_argument(
-        "SEAMM", "--force", group="datastore options", dest="force", action="store_true"
-    )
-
-    # Datastore options
-    parser.add_argument_group(
-        "SEAMM",
-        "hardware options",
-        (
-            "Options about memory limits, parallelism and other details "
-            "connected with hardware."
-        ),
-    )
-
-    parser.add_argument(
-        "SEAMM",
-        "--parallelism",
-        group="hardware options",
-        default="any",
-        choices=["none", "mpi", "openmp", "any"],
-        help="Whether to limit parallel usage to certain types.",
-    )
-
-    parser.add_argument(
-        "SEAMM",
-        "--ncores",
-        group="hardware options",
-        default="available",
-        help=(
-            "The maximum number of cores/threads to use in any step. "
-            "Default: all available cores."
-        ),
-    )
-
-    parser.add_argument(
-        "SEAMM",
-        "--memory",
-        group="hardware options",
-        default="available",
-        help=(
-            "The maximum amount of memory to use in any step, which can be "
-            "'all' or 'available', or a number, which may use k, Ki, "
-            "M, Mi, etc. suffixes. Default: available."
-        ),
-    )
-
-    return parser
 
 
 if __name__ == "__main__":
