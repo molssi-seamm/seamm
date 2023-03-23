@@ -7,7 +7,7 @@ Or, run_flowchart can be invoked with the name of flowchart.
 """
 
 import configparser
-import datetime
+from datetime import datetime, timedelta, timezone
 import fasteners
 import json
 import locale
@@ -18,6 +18,7 @@ from pathlib import Path
 import platform
 import re
 import shutil
+import sqlite3
 import sys
 import textwrap
 import time
@@ -52,7 +53,75 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=None):
+def open_datastore(root, datastore):
+    """Open the database via the datastore"""
+    # Get the user information for the datastore
+    path = Path("~/.seammrc").expanduser()
+    if not path.exists:
+        raise RuntimeError(
+            "You need a '~/.seammrc' file to run jobs from the commandline. "
+            "See the documentation for more details."
+        )
+
+    config = configparser.ConfigParser()
+    config.read(path)
+
+    user = None
+    password = None
+
+    if "dev" in root.lower():
+        sections = ["dev"]
+    else:
+        sections = ["localhost"]
+    sections.append(platform.node())
+    for section in sections:
+        section = "Dashboard: " + section
+        if section in config:
+            if user is None and "user" in config[section]:
+                user = config[section]["user"]
+            if password is None and "password" in config[section]:
+                password = config[section]["password"]
+
+    if user is None or password is None:
+        raise RuntimeError(
+            "You need credentials in '~/.seammrc' file to run jobs from the "
+            "commandline. See the documentation for more details."
+        )
+
+    # Add to the database
+    db_path = Path(datastore).expanduser().resolve() / "seamm.db"
+    db_uri = "sqlite:///" + str(db_path)
+    db = seamm_datastore.connect(
+        database_uri=db_uri,
+        datastore_location=datastore,
+        username=user,
+        password=password,
+    )
+
+    return db
+
+
+def run_from_jobserver():
+    """Helper routine to run from the JobServer.
+
+    Gets the arguments from the command line.
+    """
+    job_id = sys.argv[1]
+    wdir = sys.argv[2]
+    db_path = sys.argv[3]
+    cmdline = sys.argv[4:]
+
+    run(job_id=job_id, wdir=wdir, db_path=db_path, in_jobserver=True, cmdline=cmdline)
+
+
+def run(
+    job_id=None,
+    wdir=None,
+    db_path=None,
+    setup_logging=True,
+    in_jobserver=False,
+    cmdline=None,
+):
     """The standalone flowchart app"""
     global print
 
@@ -187,12 +256,17 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
         printer.addHandler(console_handler)
 
     # A handler for the file
+    # Frist remove the job.out file if it exists so we start freash
+    job_file = Path(wdir) / "job.out"
+    job_file.unlink(missing_ok=True)
+
     file_handler = logging.FileHandler(os.path.join(wdir, "job.out"))
     file_handler.setLevel(seamm_util.printing.NORMAL)
     file_handler.setFormatter(formatter)
     printer.addHandler(file_handler)
 
     # And ... finally ... run!
+    printer.job(datetime.now().strftime("%A %d:%m:%Y %H:%M:%S %Z"))
     printer.job("Running in directory '{}'".format(wdir))
 
     flowchart_path = os.path.join(wdir, "flowchart.flow")
@@ -209,7 +283,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
     # Change to the working directory and run the flowchart
     with cd(wdir):
         # Set up the initial metadata for the job.
-        time_now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        time_now = datetime.now(timezone.utc).isoformat()
         if in_jobserver:
             with open("job_data.json", "r") as fd:
                 fd.readline()
@@ -251,51 +325,10 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
             data["datastore"] = datastore
             data["job id"] = job_id
 
-            # Get the user information for the datastore
-            path = Path("~/.seammrc").expanduser()
-            if not path.exists:
-                raise RuntimeError(
-                    "You need a '~/.seammrc' file to run jobs from the commandline. "
-                    "See the documentation for more details."
-                )
+            db = open_datastore(options["root"], datastore)
 
-            config = configparser.ConfigParser()
-            config.read(path)
-
-            user = None
-            password = None
-
-            if "dev" in options["root"].lower():
-                sections = ["dev"]
-            else:
-                sections = ["localhost"]
-            sections.append(platform.node())
-            print(f"{sections=}")
-            for section in sections:
-                section = "Dashboard: " + section
-                if section in config:
-                    if user is None and "user" in config[section]:
-                        user = config[section]["user"]
-                    if password is None and "password" in config[section]:
-                        password = config[section]["password"]
-
-            if user is None or password is None:
-                raise RuntimeError(
-                    "You need credentials in '~/.seammrc' file to run jobs from the "
-                    "commandline. See the documentation for more details."
-                )
-
-            # Add to the database
-            db_path = Path(datastore).expanduser().resolve() / "seamm.db"
-            db_uri = "sqlite:///" + str(db_path)
-            db = seamm_datastore.connect(
-                database_uri=db_uri,
-                datastore_location=datastore,
-                username=user,
-                password=password,
-            )
-
-            current_time = datetime.datetime.now(datetime.timezone.utc)
+            pid = os.getpid()
+            current_time = datetime.now(timezone.utc)
             with seamm_datastore.session_scope(db.Session) as session:
                 job = db.Job.create(
                     job_id,
@@ -306,7 +339,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
                     description=description,
                     submitted=current_time,
                     started=current_time,
-                    parameters={"cmdline": []},
+                    parameters={"cmdline": [], "pid": pid},
                     status="started",
                 )
                 session.add(job)
@@ -337,7 +370,7 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
             # Wrap things up
             t1 = time.time()
             pt1 = time.process_time()
-            data["end time"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            data["end time"] = datetime.now(timezone.utc).isoformat()
             t = t1 - t0
             pt = pt1 - pt0
             data["elapsed time"] = t
@@ -348,32 +381,47 @@ def run(job_id=None, wdir=None, setup_logging=True, in_jobserver=False, cmdline=
                 json.dump(data, fd, indent=3, sort_keys=True)
                 fd.write("\n")
 
-            printer.job(
-                f"\nProcess time: {datetime.timedelta(seconds=pt)} ({pt:.3f} s)"
-            )
-            printer.job(f"Elapsed time: {datetime.timedelta(seconds=t)} ({t:.3f} s)")
+            printer.job(f"\nProcess time: {timedelta(seconds=pt)} ({pt:.3f} s)")
+            printer.job(f"Elapsed time: {timedelta(seconds=t)} ({t:.3f} s)")
 
-            if not in_jobserver and not standalone:
+            if in_jobserver:
+                datastore = os.path.expanduser(options["datastore"])
+                try:
+                    current_time = datetime.now(timezone.utc)
+                    # Open the database directly, relying on file permissions
+                    if db_path is None:
+                        db_path = Path(datastore).expanduser().resolve() / "seamm.db"
+                    db = sqlite3.connect(db_path)
+                    cursor = db.cursor()
+                    cursor.execute(
+                        "UPDATE jobs"
+                        "   SET status = ?, finished = ?,"
+                        "       parameters=json_remove(jobs.parameters, '$.pid')"
+                        " WHERE id = ?",
+                        (data["state"], current_time, job_id),
+                    )
+                    db.commit()
+                    db.close()
+                except Exception as e:
+                    printer.job(e)
+            elif not standalone:
                 # Let the datastore know that the job finished.
-                # current_time = datetime.datetime.now(datetime.timezone.utc)
+                # current_time = datetime.now(timezone.utc)
 
                 # At the moment update takes weird numbers!
-                now = datetime.datetime.now().astimezone()
+                now = datetime.now().astimezone()
                 dt = now.utcoffset().total_seconds()
                 current_time = (time.time() - dt) * 1000
 
                 # Add to the database
-                db = seamm_datastore.connect(
-                    database_uri=db_uri,
-                    datastore_location=datastore,
-                    username=user,
-                    password=password,
-                )
+                # N.B. Don't know how to remove 'pid' from the JSON properties column
+                db = open_datastore(options["root"], datastore)
                 with seamm_datastore.session_scope(db.Session) as session:
                     job = db.Job.update(
                         job_id, finished=current_time, status=data["state"]
                     )
                 del db
+        printer.job(datetime.now().strftime("%A %d:%m:%Y %H:%M:%S %Z"))
 
 
 def get_job_id(filename):
