@@ -1,10 +1,19 @@
 =======
 History
 =======
+2023.3.23 -- Updates for new JobServer
+    * Jobs running from the JobServer now update their status in the datastore as they
+      finish. This helps support jobs continuing if the JobServer crashes or stops.
+
+2023.3.8 -- Fixed bug running from command-line (Incorrectly labeled 2023.4.8!)
+    * Fixed bug running from the command-line when giving project so the job is put in
+      the datastore.
+    * Improved handling of title and description both when running from the
+      command-line and GUI, defaulting to the title and description of the flowchart. 
 
 2023.2.15 --
     * Improved handling of structures
-    * Added ability to run simulations engine in a given directory, tpyically the step
+    * Added ability to run simulations engine in a given directory, typically the step
       directory. This allows users to see the outputs during the simulation rather than
       having to wait until the end.
     * Added support allowing a flowchart to be run as a sub-flowchart.
