@@ -266,7 +266,7 @@ def run(
     printer.addHandler(file_handler)
 
     # And ... finally ... run!
-    printer.job(datetime.now().strftime("%A %d:%m:%Y %H:%M:%S %Z"))
+    printer.job(datetime.now().strftime("%A %Y.%m.%d %H:%M:%S %Z"))
     printer.job("Running in directory '{}'".format(wdir))
 
     flowchart_path = os.path.join(wdir, "flowchart.flow")
@@ -421,7 +421,7 @@ def run(
                         job_id, finished=current_time, status=data["state"]
                     )
                 del db
-        printer.job(datetime.now().strftime("%A %d:%m:%Y %H:%M:%S %Z"))
+        printer.job(datetime.now().strftime("%A %Y.%m.%d %H:%M:%S %Z"))
 
 
 def get_job_id(filename):
