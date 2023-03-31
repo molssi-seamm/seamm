@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.run_flowchart &#8212; SEAMM 2023.4.8 documentation</title>
+    <title>seamm.run_flowchart &#8212; SEAMM 2023.3.31 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,8 +34,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -488,7 +488,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">configparser</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">import</span> <span class="nn">fasteners</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">locale</span>
@@ -499,6 +499,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -533,7 +534,75 @@ document.write(`
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savedPath</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api/seamm.html#seamm.run_flowchart.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setup_logging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_jobserver</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmdline</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="open_datastore"><a class="viewcode-back" href="../../api/seamm.html#seamm.run_flowchart.open_datastore">[docs]</a><span class="k">def</span> <span class="nf">open_datastore</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">datastore</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open the database via the datastore&quot;&quot;&quot;</span>
+    <span class="c1"># Get the user information for the datastore</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/.seammrc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;You need a &#39;~/.seammrc&#39; file to run jobs from the commandline. &quot;</span>
+            <span class="s2">&quot;See the documentation for more details.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s2">&quot;dev&quot;</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;localhost&quot;</span><span class="p">]</span>
+    <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;Dashboard: &quot;</span> <span class="o">+</span> <span class="n">section</span>
+        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;user&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;password&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
+                <span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;You need credentials in &#39;~/.seammrc&#39; file to run jobs from the &quot;</span>
+            <span class="s2">&quot;commandline. See the documentation for more details.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Add to the database</span>
+    <span class="n">db_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">datastore</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;seamm.db&quot;</span>
+    <span class="n">db_uri</span> <span class="o">=</span> <span class="s2">&quot;sqlite:///&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="n">database_uri</span><span class="o">=</span><span class="n">db_uri</span><span class="p">,</span>
+        <span class="n">datastore_location</span><span class="o">=</span><span class="n">datastore</span><span class="p">,</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db</span></div>
+
+
+<div class="viewcode-block" id="run_from_jobserver"><a class="viewcode-back" href="../../api/seamm.html#seamm.run_flowchart.run_from_jobserver">[docs]</a><span class="k">def</span> <span class="nf">run_from_jobserver</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper routine to run from the JobServer.</span>
+
+<span class="sd">    Gets the arguments from the command line.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">wdir</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">db_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">cmdline</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+
+    <span class="n">run</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span> <span class="n">wdir</span><span class="o">=</span><span class="n">wdir</span><span class="p">,</span> <span class="n">db_path</span><span class="o">=</span><span class="n">db_path</span><span class="p">,</span> <span class="n">in_jobserver</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmdline</span><span class="o">=</span><span class="n">cmdline</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api/seamm.html#seamm.run_flowchart.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+    <span class="n">job_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">db_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">setup_logging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">in_jobserver</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cmdline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The standalone flowchart app&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="nb">print</span>
 
@@ -668,12 +737,17 @@ document.write(`
         <span class="n">printer</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
 
     <span class="c1"># A handler for the file</span>
+    <span class="c1"># Frist remove the job.out file if it exists so we start freash</span>
+    <span class="n">job_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">wdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;job.out&quot;</span>
+    <span class="n">job_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s2">&quot;job.out&quot;</span><span class="p">))</span>
     <span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">seamm_util</span><span class="o">.</span><span class="n">printing</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">)</span>
     <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">printer</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
 
     <span class="c1"># And ... finally ... run!</span>
+    <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A %Y.%m.</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">))</span>
     <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="s2">&quot;Running in directory &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">wdir</span><span class="p">))</span>
 
     <span class="n">flowchart_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s2">&quot;flowchart.flow&quot;</span><span class="p">)</span>
@@ -690,7 +764,7 @@ document.write(`
     <span class="c1"># Change to the working directory and run the flowchart</span>
     <span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="n">wdir</span><span class="p">):</span>
         <span class="c1"># Set up the initial metadata for the job.</span>
-        <span class="n">time_now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="n">time_now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">in_jobserver</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;job_data.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
                 <span class="n">fd</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -732,51 +806,10 @@ document.write(`
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;datastore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datastore</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;job id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_id</span>
 
-            <span class="c1"># Get the user information for the datastore</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;~/.seammrc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;You need a &#39;~/.seammrc&#39; file to run jobs from the commandline. &quot;</span>
-                    <span class="s2">&quot;See the documentation for more details.&quot;</span>
-                <span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">open_datastore</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">],</span> <span class="n">datastore</span><span class="p">)</span>
 
-            <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-            <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-            <span class="n">user</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">password</span> <span class="o">=</span> <span class="kc">None</span>
-
-            <span class="k">if</span> <span class="s2">&quot;dev&quot;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;localhost&quot;</span><span class="p">]</span>
-            <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">())</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sections</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
-                <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;Dashboard: &quot;</span> <span class="o">+</span> <span class="n">section</span>
-                <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;user&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                        <span class="n">user</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;password&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                        <span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;You need credentials in &#39;~/.seammrc&#39; file to run jobs from the &quot;</span>
-                    <span class="s2">&quot;commandline. See the documentation for more details.&quot;</span>
-                <span class="p">)</span>
-
-            <span class="c1"># Add to the database</span>
-            <span class="n">db_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">datastore</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;seamm.db&quot;</span>
-            <span class="n">db_uri</span> <span class="o">=</span> <span class="s2">&quot;sqlite:///&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
-            <span class="n">db</span> <span class="o">=</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-                <span class="n">database_uri</span><span class="o">=</span><span class="n">db_uri</span><span class="p">,</span>
-                <span class="n">datastore_location</span><span class="o">=</span><span class="n">datastore</span><span class="p">,</span>
-                <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
-                <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+            <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">session_scope</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Session</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
                 <span class="n">job</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                     <span class="n">job_id</span><span class="p">,</span>
@@ -787,7 +820,7 @@ document.write(`
                     <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
                     <span class="n">submitted</span><span class="o">=</span><span class="n">current_time</span><span class="p">,</span>
                     <span class="n">started</span><span class="o">=</span><span class="n">current_time</span><span class="p">,</span>
-                    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cmdline&quot;</span><span class="p">:</span> <span class="p">[]},</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cmdline&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;pid&quot;</span><span class="p">:</span> <span class="n">pid</span><span class="p">},</span>
                     <span class="n">status</span><span class="o">=</span><span class="s2">&quot;started&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
@@ -818,7 +851,7 @@ document.write(`
             <span class="c1"># Wrap things up</span>
             <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="n">pt1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">process_time</span><span class="p">()</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;end time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;end time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
             <span class="n">pt</span> <span class="o">=</span> <span class="n">pt1</span> <span class="o">-</span> <span class="n">pt0</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;elapsed time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
@@ -829,32 +862,47 @@ document.write(`
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Process time: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">pt</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">pt</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s)&quot;</span>
-            <span class="p">)</span>
-            <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elapsed time: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s)&quot;</span><span class="p">)</span>
+            <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Process time: </span><span class="si">{</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">pt</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">pt</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s)&quot;</span><span class="p">)</span>
+            <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elapsed time: </span><span class="si">{</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s)&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_jobserver</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">standalone</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">in_jobserver</span><span class="p">:</span>
+                <span class="n">datastore</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;datastore&quot;</span><span class="p">])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+                    <span class="c1"># Open the database directly, relying on file permissions</span>
+                    <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">db_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">datastore</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;seamm.db&quot;</span>
+                    <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+                    <span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                        <span class="s2">&quot;UPDATE jobs&quot;</span>
+                        <span class="s2">&quot;   SET status = ?, finished = ?,&quot;</span>
+                        <span class="s2">&quot;       parameters=json_remove(jobs.parameters, &#39;$.pid&#39;)&quot;</span>
+                        <span class="s2">&quot; WHERE id = ?&quot;</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">job_id</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">standalone</span><span class="p">:</span>
                 <span class="c1"># Let the datastore know that the job finished.</span>
-                <span class="c1"># current_time = datetime.datetime.now(datetime.timezone.utc)</span>
+                <span class="c1"># current_time = datetime.now(timezone.utc)</span>
 
                 <span class="c1"># At the moment update takes weird numbers!</span>
-                <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+                <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
                 <span class="n">current_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">dt</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
 
                 <span class="c1"># Add to the database</span>
-                <span class="n">db</span> <span class="o">=</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-                    <span class="n">database_uri</span><span class="o">=</span><span class="n">db_uri</span><span class="p">,</span>
-                    <span class="n">datastore_location</span><span class="o">=</span><span class="n">datastore</span><span class="p">,</span>
-                    <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
-                    <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="c1"># N.B. Don&#39;t know how to remove &#39;pid&#39; from the JSON properties column</span>
+                <span class="n">db</span> <span class="o">=</span> <span class="n">open_datastore</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">],</span> <span class="n">datastore</span><span class="p">)</span>
                 <span class="k">with</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">session_scope</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Session</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
                     <span class="n">job</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                         <span class="n">job_id</span><span class="p">,</span> <span class="n">finished</span><span class="o">=</span><span class="n">current_time</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
-                <span class="k">del</span> <span class="n">db</span></div>
+                <span class="k">del</span> <span class="n">db</span>
+        <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A %Y.%m.</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="get_job_id"><a class="viewcode-back" href="../../api/seamm.html#seamm.run_flowchart.get_job_id">[docs]</a><span class="k">def</span> <span class="nf">get_job_id</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
@@ -923,9 +971,15 @@ document.write(`
               
               
                 <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -935,7 +989,7 @@ document.write(`
             
           </div>
           <footer class="bd-footer-content">
-            <div class="bd-footer-content__inner"></div>
+            
           </footer>
         
       </main>
@@ -943,8 +997,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -994,7 +1048,7 @@ document.write(`
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
 </p></div>
       
     </div>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>History &#8212; SEAMM 2023.4.8 documentation</title>
+    <title>History &#8212; SEAMM 2023.3.31 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -35,8 +35,8 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -484,9 +484,25 @@ document.write(`
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Permalink to this heading">#</a></h1>
 <dl>
+<dt>2023.3.31 – Bugfix: formatting of dates</dt><dd><ul class="simple">
+<li><p>Fixed a minor issue with formatting the dates in Job.out.</p></li>
+</ul>
+</dd>
+<dt>2023.3.23 – Updates for new JobServer</dt><dd><ul class="simple">
+<li><p>Jobs running from the JobServer now update their status in the datastore as they
+finish. This helps support jobs continuing if the JobServer crashes or stops.</p></li>
+</ul>
+</dd>
+<dt>2023.3.8 – Fixed bug running from command-line (Incorrectly labeled 2023.4.8!)</dt><dd><ul class="simple">
+<li><p>Fixed bug running from the command-line when giving project so the job is put in
+the datastore.</p></li>
+<li><p>Improved handling of title and description both when running from the
+command-line and GUI, defaulting to the title and description of the flowchart.</p></li>
+</ul>
+</dd>
 <dt>2023.2.15 –</dt><dd><ul class="simple">
 <li><p>Improved handling of structures</p></li>
-<li><p>Added ability to run simulations engine in a given directory, tpyically the step
+<li><p>Added ability to run simulations engine in a given directory, typically the step
 directory. This allows users to see the outputs during the simulation rather than
 having to wait until the end.</p></li>
 <li><p>Added support allowing a flowchart to be run as a sub-flowchart.</p></li>
@@ -526,7 +542,10 @@ use, to make it a bit easier.</p>
               
               
                 <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="authors.html"
@@ -537,7 +556,10 @@ use, to make it a bit easier.</p>
         <p class="prev-next-title">Credits</p>
       </div>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -559,7 +581,7 @@ use, to make it a bit easier.</p>
             
           </div>
           <footer class="bd-footer-content">
-            <div class="bd-footer-content__inner"></div>
+            
           </footer>
         
       </main>
@@ -567,8 +589,8 @@ use, to make it a bit easier.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -618,7 +640,7 @@ use, to make it a bit easier.</p>
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
 </p></div>
       
     </div>
