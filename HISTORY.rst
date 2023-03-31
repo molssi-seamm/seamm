@@ -1,6 +1,9 @@
 =======
 History
 =======
+2023.3.31 -- Bugfix: formatting of dates
+    * Fixed a minor issue with formatting the dates in Job.out.
+      
 2023.3.23 -- Updates for new JobServer
     * Jobs running from the JobServer now update their status in the datastore as they
       finish. This helps support jobs continuing if the JobServer crashes or stops.
