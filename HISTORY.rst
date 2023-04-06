@@ -1,6 +1,10 @@
 =======
 History
 =======
+2023.4.6 -- Bugfix: issue running standalone
+    * When a description was not provided in either the command-line or the flowchart,
+      running standlone crashed.
+      
 2023.3.31 -- Bugfix: formatting of dates
     * Fixed a minor issue with formatting the dates in Job.out.
       
