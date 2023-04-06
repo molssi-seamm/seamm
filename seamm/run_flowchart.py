@@ -296,8 +296,7 @@ def run(
             if title == "":
                 "untitled job"
             if "description" in options:
-                if options["description"] != "":
-                    description = options["description"]
+                description = options["description"]
             else:
                 description = flowchart.metadata["description"]
             if description == "":
