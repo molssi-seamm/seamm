@@ -338,6 +338,7 @@ class TkFlowchart(object):
         filename = tk_filedialog.askopenfilename(defaultextension=".flow")
         if filename == "":
             return
+        self.filename = filename
         self.open(filename)
 
     def open(self, filename):
@@ -353,8 +354,11 @@ class TkFlowchart(object):
         opener = TkOpen(self.toplevel)
         data = opener.open()
         if data is not None:
-            self.flowchart.from_text(data)
-            self.filename = None
+            self.flowchart.from_text(data["data"])
+            if "path" in data:
+                self.filename = data["path"]
+            else:
+                self.filename = None
             self.from_flowchart()
 
     def clear(self, all=False):

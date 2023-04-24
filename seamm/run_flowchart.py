@@ -22,6 +22,7 @@ import sqlite3
 import sys
 import textwrap
 import time
+import traceback
 import uuid
 
 import cpuinfo
@@ -363,8 +364,8 @@ def run(
         except Exception as e:
             data["state"] = "error"
             data["error type"] = type(e).__name__
-            data["error message"] = str(e)
-            raise
+            data["error message"] = traceback.format_exc()
+            printer.job(traceback.format_exc())
         finally:
             # Wrap things up
             t1 = time.time()
