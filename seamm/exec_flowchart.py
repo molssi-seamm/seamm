@@ -48,12 +48,7 @@ class ExecFlowchart(object):
 
         # Set the options in each step
         for node in self.flowchart:
-            step_type = node.step_type
-            logger.info(f"    setting options for {step_type}")
-            if step_type in options:
-                node._options = options[step_type]
-            if "SEAMM" in options:
-                node._global_options = options["SEAMM"]
+            node.all_options = options
 
         # Create the global context
         logger.info("Creating global variables space")
@@ -63,10 +58,11 @@ class ExecFlowchart(object):
         seamm.flowchart_variables.set_variable("printer", job)
 
         # Setup the citations
-        filename = os.path.join(self.flowchart.root_directory, "references.db")
+        filename = Path(self.flowchart.root_directory) / "references.db"
+        filename.unlink(missing_ok=True)
         references = None
         try:
-            references = reference_handler.Reference_Handler(filename)
+            references = reference_handler.Reference_Handler(str(filename))
         except Exception as e:
             job.job("Error with references:")
             job.job(e)
