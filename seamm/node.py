@@ -155,6 +155,7 @@ class Node(collections.abc.Hashable):
         self.flowchart = flowchart
         self.logger = logger
         self.parent = None
+        self.citation_level = 2  # The level of citation for this code
 
         # for handling the properties that are results of calculations
         self._metadata = {}
@@ -724,7 +725,7 @@ class Node(collections.abc.Hashable):
                     raw=citation,
                     alias=package,
                     module=package,
-                    level=2,
+                    level=self.citation_level,
                     note=(f"The principle citation for the {title} step in " "SEAMM."),
                 )
 
