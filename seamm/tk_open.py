@@ -542,7 +542,7 @@ class TkOpen(collections.abc.MutableMapping):
                     if len(selected) > 0:
                         record = self._data[selected[0]]
                         data = record.get_file("flowchart.flow")
-                        return data
+                        return {"data": data, "source": source}
                 elif "previous jobs" == source:
                     if len(selected) > 0:
                         self.config.set(
@@ -553,7 +553,7 @@ class TkOpen(collections.abc.MutableMapping):
                         job_id = job["id"]
                         job = self.current_dashboard.job(job_id)
                         data = job.get_file("flowchart.flow")
-                        return data
+                        return {"data": data, "source": source, "job_id": job_id}
                 elif "local files" in source:
                     if len(selected) > 0:
                         path = self._data[selected[0]]
@@ -573,7 +573,7 @@ class TkOpen(collections.abc.MutableMapping):
                             w.set(directory)
                         if path.suffix == ".flow":
                             data = path.read_text()
-                            return data
+                            return {"data": data, "source": source, "path": str(path)}
                 else:
                     raise RuntimeError(f"cannot handle source '{source}'")
             else:
