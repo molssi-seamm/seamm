@@ -4,7 +4,7 @@ History
 2023.4.24 -- Enhancements for thermal conductivity
     * Enhanced handling of command-line options to supported self contained flowcharts.
     * Various enhancements to graphs to better present results.
-    * Added tracebacks to error report to identify the code repsonsible for the issue.
+    * Added tracebacks to error report to identify the code responsible for the issue.
     * Correctly remember the filename for flowcharts opened from disk.
 
 2023.4.6 -- Bugfix: issue running standalone
