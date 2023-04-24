@@ -139,13 +139,12 @@ class Node(collections.abc.Hashable):
         if uid is None:
             uid = uuid.uuid4().int
 
+        self._all_options = {}  # All options
         self._bibliography = {}
         self._description = ""
-        self._global_options = {}  # Command-line global options
         self._graphs = None
         self._id = None
         self._jinja_env = None
-        self._options = {}  # Command-line options for this step
         self._references = None
         self._step_type = None
         self._tables = []
@@ -197,6 +196,15 @@ class Node(collections.abc.Hashable):
         return self.__class__ == other.__class__ and self.digest() == other.digest()
 
     @property
+    def all_options(self):
+        """The complete set of all options."""
+        return self._all_options
+
+    @all_options.setter
+    def all_options(self, value):
+        self._all_options = value
+
+    @property
     def calculation(self):
         """The type of calculation for filtering available results."""
         return self._calculation
@@ -218,7 +226,13 @@ class Node(collections.abc.Hashable):
     @property
     def global_options(self):
         """Dictionary of global options"""
-        return self._global_options
+        if "SEAMM" not in self.all_options:
+            self.global_options = {}
+        return self._all_options["SEAMM"]
+
+    @global_options.setter
+    def global_options(self, value):
+        self._all_options["SEAMM"] = value
 
     @property
     def header(self):
@@ -293,11 +307,15 @@ class Node(collections.abc.Hashable):
     @property
     def options(self):
         """Dictionary of options for this step"""
-        return self._options
+        step_type = self.step_type
+        if step_type not in self._all_options:
+            self.options = {}
+        return self._all_options[step_type]
 
     @options.setter
     def options(self, value):
-        self._options = value
+        step_type = self.step_type
+        self._all_options[step_type] = value
 
     @property
     def references(self):
@@ -915,9 +933,9 @@ class Node(collections.abc.Hashable):
         printer.addHandler(console_handler)
 
         # A handler for the file
-        file_handler = logging.FileHandler(
-            os.path.join(self.directory, "step.out"), delay=True
-        )
+        path = Path(self.directory) / "step.out"
+        path.unlink(missing_ok=True)
+        file_handler = logging.FileHandler(path, delay=True)
         file_handler.setLevel(printing.NORMAL)
         file_handler.setFormatter(self.formatter)
         printer.addHandler(file_handler)
