@@ -79,6 +79,9 @@
 				{{ axis.start }},
 				{{ axis.stop }}
 			    ],
+			    {%- if 'range' in axis %}
+			    "range": {{ axis.range|jsonify }},
+			    {%- endif %}
 			    "title": {
 				"text": "{{ axis.label }}"
 			    }
