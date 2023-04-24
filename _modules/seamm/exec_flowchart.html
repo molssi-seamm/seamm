@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.exec_flowchart &#8212; SEAMM 2023.4.6 documentation</title>
+    <title>seamm.exec_flowchart &#8212; SEAMM 2023.4.24 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -529,12 +529,7 @@ document.write(`
 
         <span class="c1"># Set the options in each step</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">:</span>
-            <span class="n">step_type</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">step_type</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    setting options for </span><span class="si">{</span><span class="n">step_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">step_type</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="n">step_type</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;SEAMM&quot;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">_global_options</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;SEAMM&quot;</span><span class="p">]</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">all_options</span> <span class="o">=</span> <span class="n">options</span>
 
         <span class="c1"># Create the global context</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating global variables space&quot;</span><span class="p">)</span>
@@ -544,10 +539,11 @@ document.write(`
         <span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;printer&quot;</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span>
 
         <span class="c1"># Setup the citations</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span><span class="p">,</span> <span class="s2">&quot;references.db&quot;</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;references.db&quot;</span>
+        <span class="n">filename</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">references</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">references</span> <span class="o">=</span> <span class="n">reference_handler</span><span class="o">.</span><span class="n">Reference_Handler</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">references</span> <span class="o">=</span> <span class="n">reference_handler</span><span class="o">.</span><span class="n">Reference_Handler</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">job</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="s2">&quot;Error with references:&quot;</span><span class="p">)</span>
             <span class="n">job</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>

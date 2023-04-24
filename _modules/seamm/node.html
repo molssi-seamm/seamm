@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2023.4.6 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2023.4.24 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -620,13 +620,12 @@ document.write(`
         <span class="k">if</span> <span class="n">uid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">uid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">int</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># All options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bibliography</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_global_options</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Command-line global options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graphs</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jinja_env</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Command-line options for this step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span> <span class="o">=</span> <span class="p">[]</span>
@@ -637,6 +636,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span> <span class="o">=</span> <span class="n">flowchart</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">citation_level</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># The level of citation for this code</span>
 
         <span class="c1"># for handling the properties that are results of calculations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span>
@@ -678,6 +678,15 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The complete set of all options.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span>
+
+    <span class="nd">@all_options</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">all_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The type of calculation for filtering available results.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculation</span>
@@ -699,7 +708,13 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary of global options&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_options</span>
+        <span class="k">if</span> <span class="s2">&quot;SEAMM&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_options</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span><span class="p">[</span><span class="s2">&quot;SEAMM&quot;</span><span class="p">]</span>
+
+    <span class="nd">@global_options</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span><span class="p">[</span><span class="s2">&quot;SEAMM&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -774,11 +789,15 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary of options for this step&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+        <span class="n">step_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_type</span>
+        <span class="k">if</span> <span class="n">step_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span><span class="p">[</span><span class="n">step_type</span><span class="p">]</span>
 
     <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">step_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_options</span><span class="p">[</span><span class="n">step_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">references</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1187,7 +1206,7 @@ document.write(`
                     <span class="n">raw</span><span class="o">=</span><span class="n">citation</span><span class="p">,</span>
                     <span class="n">alias</span><span class="o">=</span><span class="n">package</span><span class="p">,</span>
                     <span class="n">module</span><span class="o">=</span><span class="n">package</span><span class="p">,</span>
-                    <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">citation_level</span><span class="p">,</span>
                     <span class="n">note</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The principle citation for the </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> step in &quot;</span> <span class="s2">&quot;SEAMM.&quot;</span><span class="p">),</span>
                 <span class="p">)</span>
 
@@ -1396,9 +1415,9 @@ document.write(`
         <span class="n">printer</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
 
         <span class="c1"># A handler for the file</span>
-        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;step.out&quot;</span><span class="p">),</span> <span class="n">delay</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;step.out&quot;</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">printing</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">)</span>
         <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span>
         <span class="n">printer</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span></div>
