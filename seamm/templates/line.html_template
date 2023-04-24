@@ -19,7 +19,11 @@
 			    "hoverlabel": {
 				"namelength": 0
 			    },
+			    {%- if 'hovertemplate' in trace %}
+			    "hovertemplate": "{{ trace.hovertemplate }}",
+			    {%- else %}
 			    "hovertemplate": "{{ trace.xlabel }}=%{x} {{ trace.xunits }}<br>{{ trace.ylabel }}=%{y} {{ trace.yunits }}",
+			    {%- endif %}
 			    "legendgroup": "",
 			    {%- if 'showlegend' in trace %}
 			    "showlegend": {{ trace.showlegend }},
@@ -27,7 +31,8 @@
 			    "mode": "lines",
 			    "line": {
 				"color": "{{ trace.color|default('#4dbd74') }}",
-				"dash": "{{ trace.dash|default('solid') }}"
+				"dash": "{{ trace.dash|default('solid') }}",
+				"width": "{{ trace.width|default('1') }}"
 			    },
 			    {%- if 'fill' in trace %}
 			    "fill": "{{ trace.fill }}",
@@ -37,6 +42,9 @@
 			    {%- endif %}
 			    "name": "{{ trace.name }}",
 			    "type": "scatter",
+			    {%- if 'visible' in trace %}
+			    "visible": "{{ trace.visible }}",
+			    {%- endif %}
 			    {%- if 'x' in trace %}
 			    "x": {{ trace.x|jsonify }},
 			    {%- else %}
