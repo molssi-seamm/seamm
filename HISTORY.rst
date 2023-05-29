@@ -1,6 +1,8 @@
 =======
 History
 =======
+2023.5.29 -- Fixed bug with missing directories when executing codes
+
 2023.4.24 -- Enhancements for thermal conductivity
     * Enhanced handling of command-line options to supported self contained flowcharts.
     * Various enhancements to graphs to better present results.
