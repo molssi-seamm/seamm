@@ -3,11 +3,11 @@
 """The ExecLocal object does what it name implies: it executes, or
 runs, an executable locally."""
 
-import glob
 import humanize
 import logging
 import os
 import os.path
+from pathlib import Path
 import platform
 import pprint
 import pyuca
@@ -51,13 +51,16 @@ class ExecLocal(object):
         # Create temporary directory and write the files, being
         # careful about both errors and security.
 
+        if directory is not None:
+            directory = Path(directory)
+
         if in_situ:
             if directory is None:
-                tmpdir = os.getcwd()
+                tmpdir = Path.cwd()
             else:
-                tmpdir = str(directory)
+                tmpdir = Path(directory)
         else:
-            tmpdir = tempfile.mkdtemp()
+            tmpdir = Path(tempfile.mkdtemp())
             # Ensure the file is read/write by the creator only
             saved_umask = os.umask(0o077)
 
@@ -67,15 +70,15 @@ class ExecLocal(object):
             # Write locally if directory is given
             if not in_situ and directory is not None:
                 for filename in files:
-                    path = os.path.join(directory, filename)
+                    path = directory / filename
                     mode = "wb" if type(files[filename]) is bytes else "w"
-                    with open(path, mode) as fd:
+                    with path.open(mode=mode) as fd:
                         fd.write(files[filename])
             for filename in files:
-                path = os.path.join(tmpdir, filename)
+                path = tmpdir / filename
                 mode = "wb" if type(files[filename]) is bytes else "w"
                 try:
-                    with open(path, mode) as fd:
+                    with path.open(mode=mode) as fd:
                         fd.write(files[filename])
                 except IOError:
                     logging.exception(
@@ -89,7 +92,7 @@ class ExecLocal(object):
                     logging.exception(
                         "An unexpected error occured writing file '{}'".format(path)
                     )
-                    os.remove(path)
+                    path.unlink()
                     if not in_situ:
                         os.umask(saved_umask)
                         shutil.rmtree(tmpdir)
@@ -99,10 +102,11 @@ class ExecLocal(object):
             existing = []
             existing_directories = []
             for dirpath, dirs, files in os.walk(tmpdir):
+                dirpath = Path(dirpath)
                 for name in files:
-                    existing.append(os.path.join(dirpath, name))
+                    existing.append(dirpath / name)
                 for name in dirs:
-                    existing_directories.append(os.path.join(dirpath, name))
+                    existing_directories.append(dirpath / name)
 
         # Now execute the program in the temp directory
         logger.debug("about to run " + " ".join(cmd))
@@ -148,33 +152,31 @@ class ExecLocal(object):
         result["files"] = []
         returned = []
         for pattern in return_files:
-            filenames = glob.glob(os.path.join(tmpdir, pattern))
-            for path in filenames:
+            paths = sorted(tmpdir.glob(pattern))
+            for path in paths:
                 returned.append(path)
-                filename = os.path.basename(path)
+                filename = path.name
                 data = None
                 exception = None
                 result["files"].append(filename)
                 try:
-                    with open(path, "r") as fd:
+                    with path.open(mode="r") as fd:
                         data = fd.read()
 
                 except UnicodeDecodeError:
-                    with open(path, "rb") as fd:
+                    with path.open(mode="rb") as fd:
                         data = fd.read()
 
                 except IOError:
                     exception = sys.exc_info()
                     logging.warning(
-                        "An I/O error occurred reading file '{}'".format(filename),
+                        f"An I/O error occurred reading file '{filename}'",
                         exc_info=exception,
                     )
                 except Exception:
                     exception = sys.exc_info()
                     logging.warning(
-                        "An unexpected error occured reading file '{}'".format(
-                            filename
-                        ),
+                        f"An unexpected error occured reading file '{filename}'",
                         exc_info=exception,
                     )
                 finally:
@@ -184,21 +186,23 @@ class ExecLocal(object):
         if in_situ:
             # Remove any files not originally here, or requested to return.
             for dirpath, dirs, files in os.walk(tmpdir):
+                dirpath = Path(dirpath)
                 for name in files:
-                    filename = os.path.join(dirpath, name)
+                    filename = dirpath / name
                     if filename not in existing and filename not in returned:
-                        os.remove(filename)
+                        filename.unlink()
                 for name in dirs:
-                    dirname = os.path.join(dirpath, name)
+                    dirname = dirpath / name
                     if dirname not in existing_directories:
-                        os.rmdir(filename)
+                        dirname.rmdir()
             # And move any files the need to go in subdirectories
             for filename in result["files"]:
                 if filename[0] == "@":
                     subdir, fname = filename[1:].split("+")
-                    from_path = os.path.join(directory, filename)
-                    to_path = os.path.join(directory, subdir, fname)
-                    os.rename(from_path, to_path)
+                    from_path = directory / filename
+                    subdir = directory / subdir
+                    subdir.mkdir(parents=True, exist_ok=True)
+                    from_path.rename(subdir / fname)
         else:
             shutil.rmtree(tmpdir)
 
@@ -207,30 +211,29 @@ class ExecLocal(object):
                 for filename in result["files"]:
                     if filename[0] == "@":
                         subdir, fname = filename[1:].split("+")
-                        path = os.path.join(directory, subdir, fname)
+                        subdir = directory / subdir
+                        subdir.mkdir(parents=True, exist_ok=True)
+                        path = subdir / fname
                     else:
-                        path = os.path.join(directory, filename)
+                        path = directory / filename
 
                     if result[filename]["data"] is not None:
                         mode = "wb" if type(result[filename]["data"]) is bytes else "w"
-                        with open(path, mode=mode) as fd:
+                        with path.open(mode=mode) as fd:
                             fd.write(result[filename]["data"])
                     else:
-                        with open(path, mode="w") as fd:
+                        with path.open(mode="w") as fd:
                             fd.write(result[filename]["exception"])
 
         # Write any stdout and stderr
 
         if directory is not None:
             if "stdout" in result and result["stdout"] != "":
-                path = os.path.join(directory, "stdout.txt")
-                with open(path, mode="w") as fd:
-                    fd.write(result["stdout"])
-
+                path = directory / "stdout.txt"
+                path.write_text(result["stdout"])
             if result["stderr"] != "":
-                path = os.path.join(directory, "stderr.txt")
-                with open(path, mode="w") as fd:
-                    fd.write(result["stderr"])
+                path = directory / "stderr.txt"
+                path.write_text(result["stderr"])
 
         return result
 
