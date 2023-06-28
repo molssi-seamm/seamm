@@ -1,6 +1,10 @@
 =======
 History
 =======
+2023.6.28 -- Improved error handling contacting Dashboards.
+    * Trap and display errors when contacting Dashboards
+    * Allow SEAMM to continue despite such errors
+      
 2023.5.29 -- Fixed bug with missing directories when executing codes
 
 2023.4.24 -- Enhancements for thermal conductivity

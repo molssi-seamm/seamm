@@ -23,6 +23,7 @@ import tkinter.ttk as ttk
 import Pmw
 
 from .dashboard_handler import DashboardHandler
+from seamm_dashboard_client import DashboardConnectionError, DashboardLoginError
 import seamm_widgets as sw
 
 logger = logging.getLogger(__name__)
@@ -287,7 +288,17 @@ class TkJobHandler(object):
         """The selected dashboard has been changed"""
         dashboard = self["dashboard"].get()
 
-        projects = self.dashboard_handler.get_dashboard(dashboard).list_projects()
+        try:
+            projects = self.dashboard_handler.get_dashboard(dashboard).list_projects()
+        except DashboardLoginError as e:
+            msg = e.args[1]
+            messagebox.showwarning("Unable to login", msg)
+            return
+        except DashboardConnectionError as e:
+            msg = e.args[1]
+            messagebox.showwarning("Unable to reach the dashboard", msg)
+            return
+
         if len(projects) == 0:
             if self.current_dashboard is not None:
                 self["dashboard"].set(self.current_dashboard.name)
