@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_job_handler &#8212; SEAMM 2023.5.29 documentation</title>
+    <title>seamm.tk_job_handler &#8212; SEAMM 2023.6.28 documentation</title>
   
   
   
@@ -501,6 +501,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">Pmw</span>
 
 <span class="kn">from</span> <span class="nn">.dashboard_handler</span> <span class="kn">import</span> <span class="n">DashboardHandler</span>
+<span class="kn">from</span> <span class="nn">seamm_dashboard_client</span> <span class="kn">import</span> <span class="n">DashboardConnectionError</span><span class="p">,</span> <span class="n">DashboardLoginError</span>
 <span class="kn">import</span> <span class="nn">seamm_widgets</span> <span class="k">as</span> <span class="nn">sw</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -765,7 +766,17 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The selected dashboard has been changed&quot;&quot;&quot;</span>
         <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-        <span class="n">projects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">list_projects</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">projects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">list_projects</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">DashboardLoginError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;Unable to login&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">DashboardConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;Unable to reach the dashboard&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
