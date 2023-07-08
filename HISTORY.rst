@@ -1,6 +1,11 @@
 =======
 History
 =======
+2023.7.9 -- Bugfix: errors creating dashboards and projects
+    * Fixed error submitting jobs to Dashboard the user doesn't have a login for.
+    * Ask for credentials when adding a new dashboard to job dialog.
+    * Fixed bug creating a new project.
+
 2023.6.28 -- Improved error handling contacting Dashboards.
     * Trap and display errors when contacting Dashboards
     * Allow SEAMM to continue despite such errors

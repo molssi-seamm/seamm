@@ -288,6 +288,17 @@ class TkJobHandler(object):
         """The selected dashboard has been changed"""
         dashboard = self["dashboard"].get()
 
+        # Ensure that user has account on dashboard
+        user, passwd = self.dashboard_handler.get_credentials(
+            dashboard, ask=self.ask_for_credentials
+        )
+        if user is None or passwd is None:
+            # Unable to log in, so go back
+            if self.current_dashboard is not None:
+                dashboard = self.current_dashboard.name
+                self["dashboard"].set(dashboard)
+                return
+
         try:
             projects = self.dashboard_handler.get_dashboard(dashboard).list_projects()
         except DashboardLoginError as e:
@@ -653,6 +664,7 @@ class TkJobHandler(object):
 
     def handle_add_dialog(self, result):
         """Handle the dialog to add a dashboard to the list."""
+        save_dashboard = self.current_dashboard.name
         w = self["add"]
         dialog = w["dialog"]
         if result is None or result == "Cancel":
@@ -681,6 +693,15 @@ class TkJobHandler(object):
             c = self["dashboard"]
             c.combobox.config({"value": self.dashboard_handler.dashboards})
             c.set(name)
+
+            # check have credentials
+            user, passwd = self.dashboard_handler.get_credentials(
+                name, ask=self.ask_for_credentials
+            )
+            if user is None or passwd is None:
+                # Unable to log in, so go back
+                self["dashboard"].set(save_dashboard)
+
         dialog.destroy()
         del self["add"]
 
@@ -722,11 +743,10 @@ class TkJobHandler(object):
         project = w["project"].get()
         if project == "-- Create new project --":
             result = simpledialog.askstring("Add Project", "Project name:")
-            if result is not None and result != "":
-                # Add the project
-                dashboard = w["dashboard"].get()
-                if self.dashboard_handler.add_project(dashboard, result):
-                    pass
+            if result is None or result == "":
+                return
+            # Add the project
+            self.current_dashboard.add_project(result)
             self.dashboard_cb()
             w["project"].set(result)
 
