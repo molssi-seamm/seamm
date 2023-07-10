@@ -1,7 +1,9 @@
 =======
 History
 =======
-2023.7.9 -- Bugfix: errors creating dashboards and projects
+2023.7.10 -- Adding JSON for properties in the database and tabels; bugfixes
+    * Handle non-scalar results using JSON so they can be output to tables
+      and added to the properties in the database.
     * Fixed error submitting jobs to Dashboard the user doesn't have a login for.
     * Ask for credentials when adding a new dashboard to job dialog.
     * Fixed bug creating a new project.
