@@ -36,6 +36,17 @@ logger = logging.getLogger(__name__)
 job = printing.getPrinter()
 
 
+def scale(data, factor):
+    """Recursive helper to scale e.g. nested lists by a factor."""
+    result = []
+    for value in data:
+        if isinstance(value, list):
+            result.append(scale(value, factor))
+        else:
+            result.append(value * factor)
+    return result
+
+
 class Node(collections.abc.Hashable):
     """The base class for nodes (steps) in flowcharts.
 
@@ -1018,12 +1029,30 @@ class Node(collections.abc.Hashable):
                     if "units" in result_metadata:
                         current_units = result_metadata["units"]
                         if units != current_units:
-                            tmp = Q_(data[key], current_units)
-                            properties.put(_property, tmp.m_as(units))
+                            if result_metadata["dimensionality"] == "scalar":
+                                tmp = Q_(data[key], current_units)
+                                properties.put(_property, tmp.m_as(units))
+                            else:
+                                factor = Q_(1, current_units).m_as(units)
+                                tmp = scale(data[key], factor)
+                                properties.put(
+                                    _property, json.dumps(tmp, separators=(",", ":"))
+                                )
                         else:
-                            properties.put(_property, data[key])
+                            if result_metadata["dimensionality"] == "scalar":
+                                properties.put(_property, data[key])
+                            else:
+                                properties.put(
+                                    _property,
+                                    json.dumps(data[key], separators=(",", ":")),
+                                )
                     else:
-                        properties.put(_property, data[key])
+                        if result_metadata["dimensionality"] == "scalar":
+                            properties.put(_property, data[key])
+                        else:
+                            properties.put(
+                                _property, json.dumps(data[key], separators=(",", ":"))
+                            )
 
             # Store in a variable
             if "variable" in value:
@@ -1077,14 +1106,18 @@ class Node(collections.abc.Hashable):
 
                 # create the column as needed
                 if column not in table.columns:
-                    kind = result_metadata["type"]
-                    if kind == "boolean":
-                        default = False
-                    elif kind == "integer":
-                        default = 0
-                    elif kind == "float":
-                        default = np.nan
+                    if result_metadata["dimensionality"] == "scalar":
+                        kind = result_metadata["type"]
+                        if kind == "boolean":
+                            default = False
+                        elif kind == "integer":
+                            default = 0
+                        elif kind == "float":
+                            default = np.nan
+                        else:
+                            default = ""
                     else:
+                        kind = "json"
                         default = ""
 
                     table_handle["defaults"][column] = default
@@ -1097,14 +1130,31 @@ class Node(collections.abc.Hashable):
                     if "units" in result_metadata:
                         current_units = result_metadata["units"]
                         if units != current_units:
-                            tmp = Q_(data[key], current_units)
-                            table.at[row_index, column] = tmp.m_as(units)
+                            if result_metadata["dimensionality"] == "scalar":
+                                tmp = Q_(data[key], current_units)
+                                table.at[row_index, column] = tmp.m_as(units)
+                            else:
+                                factor = Q_(1, current_units).m_as(units)
+                                tmp = scale(data[key], factor)
+                                table.at[row_index, column] = json.dumps(
+                                    tmp, separators=(",", ":")
+                                )
                         else:
-                            table.at[row_index, column] = data[key]
+                            if result_metadata["dimensionality"] == "scalar":
+                                table.at[row_index, column] = data[key]
+                            else:
+                                table.at[row_index, column] = json.dumps(
+                                    data[key], separators=(",", ":")
+                                )
                     else:
                         raise RuntimeError("Problem with units handling results!")
                 else:
-                    table.at[row_index, column] = data[key]
+                    if result_metadata["dimensionality"] == "scalar":
+                        table.at[row_index, column] = data[key]
+                    else:
+                        table.at[row_index, column] = json.dumps(
+                            data[key], separators=(",", ":")
+                        )
 
     def create_figure(self, title="", template="line.graph_template", module_path=None):
         """Create a new figure.

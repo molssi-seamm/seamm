@@ -1034,27 +1034,23 @@ class TkNode(collections.abc.MutableMapping):
                     e.delete(0, tk.END)
                     e.insert(0, results[key]["variable"])
 
-            if entry["dimensionality"] == "scalar":
-                # table
-                w = ttk.Combobox(frame, width=10, values=["", *self._tables])
-                table.cell(row, 4, w)
-                widgets.append(w)
-                w.bind("<<ComboboxSelected>>", self._table_cb)
-                w.bind("<Return>", self._table_cb)
-                w.bind("<FocusOut>", self._table_cb)
-                e = ttk.Entry(frame, width=15)
-                e.insert(0, key.lower().replace("_", " "))
-                table.cell(row, 5, e)
-                widgets.append(e)
+            # table
+            w = ttk.Combobox(frame, width=10, values=["", *self._tables])
+            table.cell(row, 4, w)
+            widgets.append(w)
+            w.bind("<<ComboboxSelected>>", self._table_cb)
+            w.bind("<Return>", self._table_cb)
+            w.bind("<FocusOut>", self._table_cb)
+            e = ttk.Entry(frame, width=15)
+            e.insert(0, key.lower().replace("_", " "))
+            table.cell(row, 5, e)
+            widgets.append(e)
 
-                if key in results:
-                    if "table" in results[key]:
-                        w.set(results[key]["table"])
-                        e.delete(0, tk.END)
-                        e.insert(0, results[key]["column"])
-            else:
-                widgets.append(None)
-                widgets.append(None)
+            if key in results:
+                if "table" in results[key]:
+                    w.set(results[key]["table"])
+                    e.delete(0, tk.END)
+                    e.insert(0, results[key]["column"])
 
             # And units....
             if "units" in entry and entry["units"] != "":
