@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2023.6.28 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2023.7.10 documentation</title>
   
   
   
@@ -512,6 +512,17 @@ document.write(`
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">printing</span><span class="o">.</span><span class="n">getPrinter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="scale"><a class="viewcode-back" href="../../api/seamm.html#seamm.node.scale">[docs]</a><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursive helper to scale e.g. nested lists by a factor.&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scale</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">factor</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
 <div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Hashable</span><span class="p">):</span>
@@ -1496,12 +1507,30 @@ document.write(`
                     <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">result_metadata</span><span class="p">:</span>
                         <span class="n">current_units</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">units</span> <span class="o">!=</span> <span class="n">current_units</span><span class="p">:</span>
-                            <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">current_units</span><span class="p">)</span>
-                            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">))</span>
+                            <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                                <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">current_units</span><span class="p">)</span>
+                                <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">factor</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">current_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+                                <span class="n">tmp</span> <span class="o">=</span> <span class="n">scale</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
+                                <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                                    <span class="n">_property</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+                                <span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                                <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                                    <span class="n">_property</span><span class="p">,</span>
+                                    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)),</span>
+                                <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                                <span class="n">_property</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+                            <span class="p">)</span>
 
             <span class="c1"># Store in a variable</span>
             <span class="k">if</span> <span class="s2">&quot;variable&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
@@ -1555,14 +1584,18 @@ document.write(`
 
                 <span class="c1"># create the column as needed</span>
                 <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                    <span class="n">kind</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;boolean&quot;</span><span class="p">:</span>
-                        <span class="n">default</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span>
-                        <span class="n">default</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
-                        <span class="n">default</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                        <span class="n">kind</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;boolean&quot;</span><span class="p">:</span>
+                            <span class="n">default</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span>
+                            <span class="n">default</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
+                            <span class="n">default</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">default</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
+                        <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
                         <span class="n">default</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
                     <span class="n">table_handle</span><span class="p">[</span><span class="s2">&quot;defaults&quot;</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">default</span>
@@ -1575,14 +1608,31 @@ document.write(`
                     <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">result_metadata</span><span class="p">:</span>
                         <span class="n">current_units</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">units</span> <span class="o">!=</span> <span class="n">current_units</span><span class="p">:</span>
-                            <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">current_units</span><span class="p">)</span>
-                            <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                                <span class="n">tmp</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">current_units</span><span class="p">)</span>
+                                <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">factor</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">current_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+                                <span class="n">tmp</span> <span class="o">=</span> <span class="n">scale</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
+                                <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                                    <span class="n">tmp</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                                <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Problem with units handling results!&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+                    <span class="k">if</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;scalar&quot;</span><span class="p">:</span>
+                        <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">table</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">row_index</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Node.create_figure"><a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.create_figure">[docs]</a>    <span class="k">def</span> <span class="nf">create_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;line.graph_template&quot;</span><span class="p">,</span> <span class="n">module_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new figure.</span>
