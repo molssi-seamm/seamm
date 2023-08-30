@@ -193,29 +193,35 @@ class ExecFlowchart(object):
                         try:
                             text = configuration.to_mmcif_text()
                         except Exception:
-                            message = (
-                                "Error creating the final mmcif file\n\n"
-                                + traceback.format_exc()
-                            )
-                            print(message)
-                            logger.critical(message)
-
+                            pass
                         if text is not None:
                             with open(filename, "w") as fd:
                                 print(text, file=fd)
                             output.append("final_structure.mmcif")
-                        # CIF file has cell
+
+                        # CIF file has cell and may have bonds
                         if configuration.periodicity == 3:
-                            filename = os.path.join(
-                                self.flowchart.root_directory, "final_structure.cif"
-                            )
-                            with open(filename, "w") as fd:
-                                print(configuration.to_cif_text(), file=fd)
-                                output.append("final_structure.cif")
+                            text = None
+                            try:
+                                text = configuration.to_cif_text()
+                            except Exception:
+                                pass
+                            if text is not None:
+                                filename = os.path.join(
+                                    self.flowchart.root_directory, "final_structure.cif"
+                                )
+                                with open(filename, "w") as fd:
+                                    print(configuration.to_cif_text(), file=fd)
+                                    output.append("final_structure.cif")
                         if len(output) > 0:
                             files = "' and '".join(output)
                             job.job(
                                 f"\nWrote the final structure to '{files}' for viewing."
+                            )
+                        else:
+                            job.job(
+                                "\nWas unable to write the final structure as either "
+                                "an mmcif or cif file for viewing."
                             )
 
             # And print out the references
