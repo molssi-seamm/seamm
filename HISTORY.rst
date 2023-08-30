@@ -1,6 +1,12 @@
 =======
 History
 =======
+2023.8.30 -- Added support for keyed columns in table output
+    * Caught errors when writing out the final structures for viewing and improved
+      messages in such cases.
+    * Keyed columns in table output are used for e.g. the diffusion coefficients of
+      multi-component fluids, where the column is expanded for each component.
+      
 2023.7.10 -- Adding JSON for properties in the database and tabels; bugfixes
     * Handle non-scalar results using JSON so they can be output to tables
       and added to the properties in the database.
