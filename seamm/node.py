@@ -1104,57 +1104,120 @@ class Node(collections.abc.Hashable):
                 table_handle = self.get_variable(tablename)
                 table = table_handle["table"]
 
-                # create the column as needed
-                if column not in table.columns:
-                    if result_metadata["dimensionality"] == "scalar":
-                        kind = result_metadata["type"]
-                        if kind == "boolean":
-                            default = False
-                        elif kind == "integer":
-                            default = 0
-                        elif kind == "float":
-                            default = np.nan
-                        else:
-                            default = ""
-                    else:
-                        kind = "json"
-                        default = ""
-
-                    table_handle["defaults"][column] = default
-                    table[column] = default
-
-                # Convert the value to the requested units and put in table.
-                row_index = table_handle["current index"]
-                if "units" in results[key]:
-                    units = results[key]["units"]
-                    if "units" in result_metadata:
-                        current_units = result_metadata["units"]
-                        if units != current_units:
-                            if result_metadata["dimensionality"] == "scalar":
-                                tmp = Q_(data[key], current_units)
-                                table.at[row_index, column] = tmp.m_as(units)
-                            else:
-                                factor = Q_(1, current_units).m_as(units)
-                                tmp = scale(data[key], factor)
-                                table.at[row_index, column] = json.dumps(
-                                    tmp, separators=(",", ":")
-                                )
-                        else:
-                            if result_metadata["dimensionality"] == "scalar":
-                                table.at[row_index, column] = data[key]
-                            else:
-                                table.at[row_index, column] = json.dumps(
-                                    data[key], separators=(",", ":")
-                                )
-                    else:
-                        raise RuntimeError("Problem with units handling results!")
-                else:
-                    if result_metadata["dimensionality"] == "scalar":
-                        table.at[row_index, column] = data[key]
-                    else:
-                        table.at[row_index, column] = json.dumps(
-                            data[key], separators=(",", ":")
+                # create the column as needed handling "key"ed columns
+                if "{key}" in column:
+                    if not isinstance(data[key], dict):
+                        raise ValueError(
+                            f"Data for a keyed column '{column}' is not a dictionary. "
+                            f"{type(data[key])}"
                         )
+                    for ckey, value in data[key].items():
+                        keyed_column = column.replace("{key}", ckey)
+                        if keyed_column not in table.columns:
+                            if result_metadata["dimensionality"] == "scalar":
+                                kind = result_metadata["type"]
+                                if kind == "boolean":
+                                    default = False
+                                elif kind == "integer":
+                                    default = 0
+                                elif kind == "float":
+                                    default = np.nan
+                                else:
+                                    default = ""
+                            else:
+                                kind = "json"
+                                default = ""
+
+                            table_handle["defaults"][keyed_column] = default
+                            table[keyed_column] = default
+
+                        # Convert the value to the requested units and put in table.
+                        row_index = table_handle["current index"]
+                        if "units" in results[key]:
+                            units = results[key]["units"]
+                            if "units" in result_metadata:
+                                current_units = result_metadata["units"]
+                                if units != current_units:
+                                    if result_metadata["dimensionality"] == "scalar":
+                                        tmp = Q_(value, current_units)
+                                        table.at[row_index, keyed_column] = tmp.m_as(
+                                            units
+                                        )
+                                    else:
+                                        factor = Q_(1, current_units).m_as(units)
+                                        tmp = scale(value, factor)
+                                        table.at[row_index, keyed_column] = json.dumps(
+                                            tmp, separators=(",", ":")
+                                        )
+                                else:
+                                    if result_metadata["dimensionality"] == "scalar":
+                                        table.at[row_index, keyed_column] = value
+                                    else:
+                                        table.at[row_index, keyed_column] = json.dumps(
+                                            value, separators=(",", ":")
+                                        )
+                            else:
+                                raise RuntimeError(
+                                    "Problem with units handling results!"
+                                )
+                        else:
+                            if result_metadata["dimensionality"] == "scalar":
+                                table.at[row_index, keyed_column] = value
+                            else:
+                                table.at[row_index, keyed_column] = json.dumps(
+                                    value, separators=(",", ":")
+                                )
+                else:
+                    if column not in table.columns:
+                        if result_metadata["dimensionality"] == "scalar":
+                            kind = result_metadata["type"]
+                            if kind == "boolean":
+                                default = False
+                            elif kind == "integer":
+                                default = 0
+                            elif kind == "float":
+                                default = np.nan
+                            else:
+                                default = ""
+                        else:
+                            kind = "json"
+                            default = ""
+
+                        table_handle["defaults"][column] = default
+                        table[column] = default
+
+                    # Convert the value to the requested units and put in table.
+                    row_index = table_handle["current index"]
+                    if "units" in results[key]:
+                        units = results[key]["units"]
+                        if "units" in result_metadata:
+                            current_units = result_metadata["units"]
+                            if units != current_units:
+                                if result_metadata["dimensionality"] == "scalar":
+                                    tmp = Q_(data[key], current_units)
+                                    table.at[row_index, column] = tmp.m_as(units)
+                                else:
+                                    factor = Q_(1, current_units).m_as(units)
+                                    tmp = scale(data[key], factor)
+                                    table.at[row_index, column] = json.dumps(
+                                        tmp, separators=(",", ":")
+                                    )
+                            else:
+                                if result_metadata["dimensionality"] == "scalar":
+                                    table.at[row_index, column] = data[key]
+                                else:
+                                    table.at[row_index, column] = json.dumps(
+                                        data[key], separators=(",", ":")
+                                    )
+                        else:
+                            raise RuntimeError("Problem with units handling results!")
+                    else:
+                        if result_metadata["dimensionality"] == "scalar":
+                            table.at[row_index, column] = data[key]
+                        else:
+                            table.at[row_index, column] = json.dumps(
+                                data[key], separators=(",", ":")
+                            )
 
     def create_figure(self, title="", template="line.graph_template", module_path=None):
         """Create a new figure.
