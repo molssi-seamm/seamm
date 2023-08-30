@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.variables &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.variables &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/variables';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -493,7 +492,9 @@ document.write(`
 <span class="n">flowchart_variables</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="Variables"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables">[docs]</a><span class="k">class</span> <span class="nc">Variables</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Variables">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables">[docs]</a>
+<span class="k">class</span> <span class="nc">Variables</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -535,11 +536,16 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a boolean if this object is equal to another&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_data</span>
 
-<div class="viewcode-block" id="Variables.copy"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Variables.copy">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a shallow copy of the dictionary&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Variables.value"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.value">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.value">[docs]</a>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the variable or expression if it is an</span>
 <span class="sd">        expression, i.e. starts with a $ and optionally has braces around the</span>
 <span class="sd">        variable name.</span>
@@ -555,7 +561,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">string</span></div>
 
-<div class="viewcode-block" id="Variables.set_variable"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.set_variable">[docs]</a>    <span class="k">def</span> <span class="nf">set_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.set_variable">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.set_variable">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the variable. The variable may be a simple string</span>
 <span class="sd">        or start with a $ and optionally have braces around it, i.e.</span>
 
@@ -571,7 +580,10 @@ document.write(`
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="Variables.get_variable"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.get_variable">[docs]</a>    <span class="k">def</span> <span class="nf">get_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.get_variable">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.get_variable">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value of the variable. The variable may be a simple string</span>
 <span class="sd">        or start with a $ and optionally have braces around it, i.e.</span>
 
@@ -589,7 +601,10 @@ document.write(`
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Workspace variable &#39;</span><span class="si">{}</span><span class="s2">&#39; does not exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Variables.exists"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.exists">[docs]</a>    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.exists">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.exists">[docs]</a>
+    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether a variable exists. The variable may be specified</span>
 <span class="sd">        as a simple string or start with a $ and optionally have braces</span>
 <span class="sd">        around it, i.e.</span>
@@ -605,7 +620,10 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
 
-<div class="viewcode-block" id="Variables.delete"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.delete">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether a variable exists. The variable may be specified</span>
 <span class="sd">        as a simple string or start with a $ and optionally have braces</span>
 <span class="sd">        around it, i.e.</span>
@@ -623,7 +641,10 @@ document.write(`
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Variables.variable"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.variable">[docs]</a>    <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.variable">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.variable">[docs]</a>
+    <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of a variable. The variable may be specified</span>
 <span class="sd">        as a simple string or start with a $ and optionally have braces</span>
 <span class="sd">        around it, i.e.</span>
@@ -648,7 +669,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">string</span></div>
 
-<div class="viewcode-block" id="Variables.filter_expression"><a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.filter_expression">[docs]</a>    <span class="k">def</span> <span class="nf">filter_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Variables.filter_expression">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.filter_expression">[docs]</a>
+    <span class="k">def</span> <span class="nf">filter_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A variable or expression coming from the GUI uses &#39;$&#39;</span>
 <span class="sd">        to indicate a variable, optionally bracketing the variable</span>
 <span class="sd">        with braces, i.e. ${name}.</span>
@@ -693,7 +717,9 @@ document.write(`
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">+=</span> <span class="n">char</span>
 
-        <span class="k">return</span> <span class="n">result</span></div></div>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
 </pre></div>
 
                 </article>

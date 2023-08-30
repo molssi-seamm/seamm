@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_open &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.tk_open &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_open';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -567,7 +566,9 @@ document.write(`
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="TkOpen"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen">[docs]</a><span class="k">class</span> <span class="nc">TkOpen</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="TkOpen">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen">[docs]</a>
+<span class="k">class</span> <span class="nc">TkOpen</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toplevel</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;toplevel&quot;</span><span class="p">:</span> <span class="n">toplevel</span><span class="p">}</span>
 
@@ -614,7 +615,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span> <span class="o">=</span> <span class="n">DashboardHandler</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span>
 
-<div class="viewcode-block" id="TkOpen.clear_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.clear_tree">[docs]</a>    <span class="k">def</span> <span class="nf">clear_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkOpen.clear_tree">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.clear_tree">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any contents from the tree.&quot;&quot;&quot;</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
         <span class="n">children</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
@@ -622,7 +625,10 @@ document.write(`
             <span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="o">*</span><span class="n">children</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="TkOpen.create_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.create_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.create_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dialog for opening.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;dialog&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">return</span>
@@ -767,7 +773,10 @@ document.write(`
         <span class="n">sheight</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">winfo_screenheight</span><span class="p">()</span>
         <span class="n">d</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">swidth</span><span class="p">)</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sheight</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.directory_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.directory_cb">[docs]</a>    <span class="k">def</span> <span class="nf">directory_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.directory_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.directory_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">directory_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoked by the ... button to get new directory.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span>
         <span class="n">current</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
@@ -786,7 +795,10 @@ document.write(`
         <span class="n">d</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_tree</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkOpen.fill_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.fill_tree">[docs]</a>    <span class="k">def</span> <span class="nf">fill_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_list</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.fill_tree">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.fill_tree">[docs]</a>
+    <span class="k">def</span> <span class="nf">fill_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill the tree with a job list</span>
 
 <span class="sd">        The job list looks is a list of Job objects that are dicts like::</span>
@@ -825,7 +837,10 @@ document.write(`
             <span class="n">iid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Job_</span><span class="si">{</span><span class="n">job</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">0&gt;6d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">job</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">iid</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span></div>
 
-<div class="viewcode-block" id="TkOpen.insert_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.insert_node">[docs]</a>    <span class="k">def</span> <span class="nf">insert_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">open</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.insert_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.insert_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">open</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a new node in the tree, corresponding to a file or directory.</span>
 
 <span class="sd">        Parameters</span>
@@ -844,7 +859,10 @@ document.write(`
             <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">node</span></div>
 
-<div class="viewcode-block" id="TkOpen.open_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open_node">[docs]</a>    <span class="k">def</span> <span class="nf">open_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.open_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">open_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -854,7 +872,10 @@ document.write(`
                 <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.flow&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">insert_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.reset_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.reset_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the widgets in the dialog according to the parameters.&quot;&quot;&quot;</span>
 
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span>
@@ -966,7 +987,10 @@ document.write(`
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.reset_tree"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_tree">[docs]</a>    <span class="k">def</span> <span class="nf">reset_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.reset_tree">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.reset_tree">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the file tree to start with the given directory.&quot;&quot;&quot;</span>
         <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
@@ -994,7 +1018,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">open_node</span><span class="p">()</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;TreeviewOpen&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.open"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.open">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.open">[docs]</a>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for opening.&quot;&quot;&quot;</span>
         <span class="c1"># Reread the configuration file in case it has changed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">re_read</span><span class="p">()</span>
@@ -1058,7 +1085,10 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle opening &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkOpen.search_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_cb">[docs]</a>    <span class="k">def</span> <span class="nf">search_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.search_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">search_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the search.&quot;&quot;&quot;</span>
         <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -1073,7 +1103,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t handle searching for &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.search_zenodo_for_flowcharts"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_zenodo_for_flowcharts">[docs]</a>    <span class="k">def</span> <span class="nf">search_zenodo_for_flowcharts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.search_zenodo_for_flowcharts">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.search_zenodo_for_flowcharts">[docs]</a>
+    <span class="k">def</span> <span class="nf">search_zenodo_for_flowcharts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for flowcharts in Zenodo.</span>
 
 <span class="sd">        Parameters</span>
@@ -1230,7 +1263,10 @@ document.write(`
                     <span class="n">jid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">iid</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">jid</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span></div>
 
-<div class="viewcode-block" id="TkOpen.select_record"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.select_record">[docs]</a>    <span class="k">def</span> <span class="nf">select_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.select_record">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.select_record">[docs]</a>
+    <span class="k">def</span> <span class="nf">select_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The user clicked on the tree-view ... handle the selected record.&quot;&quot;&quot;</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">]</span>
         <span class="n">selected</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
@@ -1290,7 +1326,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t handle source &#39;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.update_dashboard"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.update_dashboard">[docs]</a>    <span class="k">def</span> <span class="nf">update_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.update_dashboard">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.update_dashboard">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The dashboard has been changed!&quot;&quot;&quot;</span>
 
         <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -1328,7 +1367,10 @@ document.write(`
             <span class="n">job_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_project</span><span class="p">]</span><span class="o">.</span><span class="n">jobs</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill_tree</span><span class="p">(</span><span class="n">job_list</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkOpen.zenodo_callback"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.zenodo_callback">[docs]</a>    <span class="k">def</span> <span class="nf">zenodo_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkOpen.zenodo_callback">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_open.TkOpen.zenodo_callback">[docs]</a>
+    <span class="k">def</span> <span class="nf">zenodo_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">criterion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">inclusion</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value2</span> <span class="o">=</span> <span class="n">criterion</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
@@ -1339,7 +1381,9 @@ document.write(`
                 <span class="k">if</span> <span class="n">operator</span> <span class="ow">in</span> <span class="n">operators</span><span class="p">:</span>
                     <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">operators</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+                    <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">operators</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+</div>
+
 </pre></div>
 
                 </article>

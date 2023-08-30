@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.flowchart &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.flowchart &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/flowchart';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -502,7 +501,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Flowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart">[docs]</a><span class="k">class</span> <span class="nc">Flowchart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart">[docs]</a>
+<span class="k">class</span> <span class="nc">Flowchart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">graphics</span> <span class="o">=</span> <span class="s2">&quot;Tk&quot;</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;str: The default graphics to use for display, if</span>
 <span class="sd">    needed. Default: &#39;Tk&#39;</span>
@@ -618,19 +619,27 @@ document.write(`
     <span class="c1"># Node creation and deletion</span>
     <span class="c1"># -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Flowchart.create_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.create_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension_name</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart.create_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.create_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new node given the extension name&quot;&quot;&quot;</span>
         <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">extension_name</span><span class="p">)</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">extension_name</span><span class="p">)</span>
         <span class="n">node</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">return</span> <span class="n">node</span></div>
 
-<div class="viewcode-block" id="Flowchart.add_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.add_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.add_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single node n, ensuring that it knows the flowchart&quot;&quot;&quot;</span>
         <span class="n">n</span><span class="o">.</span><span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.remove_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.remove_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.remove_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a node from the flowchart, and from the graphics if</span>
 <span class="sd">        necessary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,11 +653,14 @@ document.write(`
         <span class="c1"># and the node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
+
     <span class="c1"># -------------------------------------------------------------------------</span>
     <span class="c1"># Finding nodes</span>
     <span class="c1"># -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Flowchart.tag_exists"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.tag_exists">[docs]</a>    <span class="k">def</span> <span class="nf">tag_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart.tag_exists">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.tag_exists">[docs]</a>
+    <span class="k">def</span> <span class="nf">tag_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the node with a given tag exists. A tag is a string like</span>
 <span class="sd">        &#39;node=&lt;uuid&gt;&#39;, where &lt;uuid&gt; is the unique integer id for the node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -658,7 +670,10 @@ document.write(`
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Flowchart.get_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.get_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.get_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.get_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node with a given uuid&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
@@ -667,7 +682,10 @@ document.write(`
                 <span class="k">return</span> <span class="n">node</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Flowchart.get_nodes"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.get_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.get_nodes">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.get_nodes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;Return a list of all the nodes in the traversal.&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting nodes&quot;</span><span class="p">)</span>
 
@@ -685,7 +703,10 @@ document.write(`
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished getting nodes&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nodes</span></div>
 
-<div class="viewcode-block" id="Flowchart.last_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.last_node">[docs]</a>    <span class="k">def</span> <span class="nf">last_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.last_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.last_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">last_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the last node walking down the main execution path</span>
 <span class="sd">        from the given node, which defaults to the start node&quot;&quot;&quot;</span>
 
@@ -698,7 +719,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">node</span></div>
 
-<div class="viewcode-block" id="Flowchart.clear"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.clear">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.clear">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the underlying clear() to ensure that the start node is present&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
@@ -707,18 +731,24 @@ document.write(`
             <span class="n">start_node</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">StartNode</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">start_node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.list_nodes"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.list_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">list_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.list_nodes">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.list_nodes">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List the nodes, for debugging&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
+
     <span class="c1"># -------------------------------------------------------------------------</span>
     <span class="c1"># Traversal</span>
     <span class="c1"># -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Flowchart.reset_visited"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.reset_visited">[docs]</a>    <span class="k">def</span> <span class="nf">reset_visited</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart.reset_visited">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.reset_visited">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_visited</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the &#39;visited&#39; flag, which is used to detect</span>
 <span class="sd">        loops during traversals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -726,7 +756,10 @@ document.write(`
         <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Flowchart.set_ids"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.set_ids">[docs]</a>    <span class="k">def</span> <span class="nf">set_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="o">=</span><span class="p">()):</span>
+
+<div class="viewcode-block" id="Flowchart.set_ids">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.set_ids">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="o">=</span><span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sequentially number all nodes, and subnodes&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting ids&quot;</span><span class="p">)</span>
 
@@ -747,7 +780,10 @@ document.write(`
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished setting ids&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.create_parsers"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.create_parsers">[docs]</a>    <span class="k">def</span> <span class="nf">create_parsers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.create_parsers">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.create_parsers">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_parsers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the argument parsers for the nodes.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating argument parsers.&quot;</span><span class="p">)</span>
         <span class="c1"># Reset the visited flag to check for loops</span>
@@ -761,7 +797,10 @@ document.write(`
             <span class="n">next_node</span> <span class="o">=</span> <span class="n">next_node</span><span class="o">.</span><span class="n">create_parser</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished creating argument parsers.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.set_log_level"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.set_log_level">[docs]</a>    <span class="k">def</span> <span class="nf">set_log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.set_log_level">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.set_log_level">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the log level for each node based on the options&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting the log-level&quot;</span><span class="p">)</span>
 
@@ -777,11 +816,14 @@ document.write(`
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished setting node log levels.&quot;</span><span class="p">)</span></div>
 
+
     <span class="c1"># -------------------------------------------------------------------------</span>
     <span class="c1"># Strings, reading and writing</span>
     <span class="c1"># -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Flowchart.digest"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.digest">[docs]</a>    <span class="k">def</span> <span class="nf">digest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart.digest">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.digest">[docs]</a>
+    <span class="k">def</span> <span class="nf">digest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a unique hash key for this flowchart.</span>
 
 <span class="sd">        Parameters</span>
@@ -813,11 +855,17 @@ document.write(`
 
         <span class="k">return</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Flowchart.to_json"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.to_json">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ufff. Turn ourselves into JSON&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Flowchart.to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize the graph and everything it contains in a dict&quot;&quot;&quot;</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
@@ -850,7 +898,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="Flowchart.from_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.from_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.from_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;recreate the flowchart from the dict. Inverse of to_dict.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;class&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;There is no class information in the data!&quot;</span><span class="p">)</span>
@@ -901,7 +952,10 @@ document.write(`
 
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding edges, nodes:</span><span class="se">\n\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_nodes</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="Flowchart.write"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.write">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the serialized form to disk&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
             <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
@@ -911,7 +965,10 @@ document.write(`
         <span class="n">permissions</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IMODE</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissions</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.to_text"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_text">[docs]</a>    <span class="k">def</span> <span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.to_text">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_text">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text for the flowchart.</span>
 
 <span class="sd">        This is the representation written to disk, submitted</span>
@@ -936,7 +993,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">text</span></div>
 
-<div class="viewcode-block" id="Flowchart.from_text"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.from_text">[docs]</a>    <span class="k">def</span> <span class="nf">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.from_text">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.from_text">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the flowchart from text&quot;&quot;&quot;</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
 
@@ -984,14 +1044,20 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.read"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.read">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.read">[docs]</a>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the flowchart from the serialized form on disk&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.reset_metadata"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.reset_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">reset_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.reset_metadata">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.reset_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the metadata initially.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -1015,17 +1081,26 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
     <span class="c1"># -------------------------------------------------------------------------</span>
     <span class="c1"># Edges between nodes</span>
     <span class="c1"># -------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Flowchart.edges"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Flowchart.edges">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.edges">[docs]</a>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.add_edge"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.add_edge">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.add_edge">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">edge_type</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Flowchart.print_edges"><a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.print_edges">[docs]</a>    <span class="k">def</span> <span class="nf">print_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Flowchart.print_edges">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.print_edges">[docs]</a>
+    <span class="k">def</span> <span class="nf">print_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print all the edges. Useful for debugging!&quot;&quot;&quot;</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All edges in flowchart&quot;</span><span class="p">)</span>
@@ -1040,7 +1115,9 @@ document.write(`
                     <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span><span class="p">,</span>
                     <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="p">)</span></div></div>
+            <span class="p">)</span></div>
+</div>
+
 
     <span class="c1"># -------------------------------------------------------------------------</span>
     <span class="c1"># Printing</span>

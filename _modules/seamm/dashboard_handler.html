@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.dashboard_handler &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.dashboard_handler &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/dashboard_handler';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -500,7 +499,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="safe_filename"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.safe_filename">[docs]</a><span class="k">def</span> <span class="nf">safe_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="safe_filename">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.safe_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">safe_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;~&quot;</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -512,7 +513,10 @@ document.write(`
     <span class="k">return</span> <span class="s2">&quot;job:data/&quot;</span> <span class="o">+</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="DashboardHandler"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler">[docs]</a><span class="k">class</span> <span class="nc">DashboardHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">DashboardHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the handler for Dashboards.</span>
 
@@ -594,12 +598,17 @@ document.write(`
                 <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DashboardHandler.add_dashboard"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.add_dashboard">[docs]</a>    <span class="k">def</span> <span class="nf">add_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+<div class="viewcode-block" id="DashboardHandler.add_dashboard">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.add_dashboard">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
         <span class="s2">&quot;Add a new dashboard to the config file&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="n">protocol</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_configuration</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.get_all_status"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_all_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.get_all_status">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_all_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_all_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the status of all the dashboards.</span>
 
 <span class="sd">        Parameters</span>
@@ -612,7 +621,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.get_configuration"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">get_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.get_configuration">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_configuration">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of dashboards from the config file.&quot;&quot;&quot;</span>
         <span class="c1"># The path to the configfile</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -620,7 +632,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.get_credentials"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_credentials">[docs]</a>    <span class="k">def</span> <span class="nf">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">,</span> <span class="n">ask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.get_credentials">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_credentials">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">,</span> <span class="n">ask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The user for the dashboard.</span>
 
 <span class="sd">        Parameters</span>
@@ -652,7 +667,10 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">user</span><span class="p">,</span> <span class="n">password</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.get_dashboard"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_dashboard">[docs]</a>    <span class="k">def</span> <span class="nf">get_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.get_dashboard">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_dashboard">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the given dashboard object.</span>
 
 <span class="sd">        Parameters</span>
@@ -672,7 +690,10 @@ document.write(`
             <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">passwd</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.rename_dashboard"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.rename_dashboard">[docs]</a>    <span class="k">def</span> <span class="nf">rename_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.rename_dashboard">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.rename_dashboard">[docs]</a>
+    <span class="k">def</span> <span class="nf">rename_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="s2">&quot;Rename a dashboard from &#39;old&#39; to &#39;new&#39;.&quot;</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">old</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -680,7 +701,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">remove_section</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">new</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.save_configuration"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.save_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">save_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.save_configuration">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.save_configuration">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the list of dashboards to disk.&quot;&quot;&quot;</span>
         <span class="c1"># Make sure the directory exists</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configfile</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -695,13 +719,18 @@ document.write(`
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">configfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DashboardHandler.update"><a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DashboardHandler.update">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.dashboard_handler.DashboardHandler.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">):</span>
         <span class="s2">&quot;Update the dashboard with that given.&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">dashboard</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
             <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_configuration</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_configuration</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
 
                 </article>

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/parameters';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -497,7 +496,9 @@ document.write(`
 <span class="n">root_context</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="set_context"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.set_context">[docs]</a><span class="k">def</span> <span class="nf">set_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<div class="viewcode-block" id="set_context">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.set_context">[docs]</a>
+<span class="k">def</span> <span class="nf">set_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the default root context for evaluating variables</span>
 <span class="sd">    and expressions in parameters.&quot;&quot;&quot;</span>
 
@@ -505,7 +506,10 @@ document.write(`
     <span class="n">root_context</span> <span class="o">=</span> <span class="n">context</span></div>
 
 
-<div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter">[docs]</a>
+<span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A single parameter, with defaults, units, description, etc.</span>
 <span class="sd">    This is object is a dict-like mutable mapping with properties</span>
 <span class="sd">    to make it appear to be a simple object with attributes.</span>
@@ -612,9 +616,12 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a boolean if this object is equal to another&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_data</span>
 
-<div class="viewcode-block" id="Parameter.copy"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.copy">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a shallow copy of the dictionary&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -782,7 +789,9 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="Parameter.get"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameter.get">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.get">[docs]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value evaluated in the given context&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -836,7 +845,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Parameter.set"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.set">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.set">[docs]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the fields based on the type of value given&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;special&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;periodic table&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
@@ -856,7 +868,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="Parameter.reset"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.reset">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset to an empty state&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -871,7 +886,10 @@ document.write(`
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Parameter.widget"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.widget">[docs]</a>    <span class="k">def</span> <span class="nf">widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.widget">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a widget for handling the parameter&quot;&quot;&quot;</span>
         <span class="c1"># Will this keep the graphics isolated?</span>
         <span class="kn">import</span> <span class="nn">seamm_widgets</span> <span class="k">as</span> <span class="nn">sw</span>
@@ -938,12 +956,18 @@ document.write(`
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;   returning </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">w</span></div>
 
-<div class="viewcode-block" id="Parameter.set_from_widget"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.set_from_widget">[docs]</a>    <span class="k">def</span> <span class="nf">set_from_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.set_from_widget">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.set_from_widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_from_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value from the widget, ignoring if there is no widget.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Parameter.reset_widget"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.reset_widget">[docs]</a>    <span class="k">def</span> <span class="nf">reset_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.reset_widget">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.reset_widget">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the values in the widget, if it has been created.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -951,7 +975,10 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Parameter.to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert into a string suitable for editing&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="c1"># if self[&#39;kind&#39;] == &#39;list&#39;:</span>
@@ -964,7 +991,10 @@ document.write(`
         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Parameter.update"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameter.update">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update values from a dict</span>
 
 <span class="sd">        This assumes that the static data such as &#39;kind&#39; and</span>
@@ -995,11 +1025,18 @@ document.write(`
         <span class="k">if</span> <span class="s2">&quot;default_units&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">default_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;default_units&quot;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Parameter.debug_print"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.debug_print">[docs]</a>    <span class="k">def</span> <span class="nf">debug_print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Parameter instance:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)))</span></div></div>
+
+<div class="viewcode-block" id="Parameter.debug_print">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameter.debug_print">[docs]</a>
+    <span class="k">def</span> <span class="nf">debug_print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Parameter instance:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)))</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters">[docs]</a>
+<span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A dict-like container for parameters&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{},</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1073,11 +1110,16 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a boolean if this object is equal to another&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_data</span>
 
-<div class="viewcode-block" id="Parameters.copy"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameters.copy">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a shallow copy of the dictionary&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Parameters.to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new dictionary with the pertinent data</span>
 
 <span class="sd">        The Parameter class only saves the value and units,</span>
@@ -1097,7 +1139,10 @@ document.write(`
                 <span class="k">raise</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="Parameters.from_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.from_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.from_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the object from a dictionary&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="c1"># Put back in all the constant data</span>
@@ -1105,15 +1150,24 @@ document.write(`
         <span class="c1"># and update with the new data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Parameters.initialize"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.initialize">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.initialize">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Parameters.update"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.update">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="Parameters.values_to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.values_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">values_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.values_to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.values_to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">values_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dict of the raw values of the parameters</span>
 <span class="sd">        formatted for printing&quot;&quot;&quot;</span>
 
@@ -1127,7 +1181,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="Parameters.current_values_to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.current_values_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">current_values_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.current_values_to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.current_values_to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">current_values_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current values of the parameters, resolving</span>
 <span class="sd">        any expressions, etc. in the given context or the root</span>
 <span class="sd">        context is none is given.&quot;&quot;&quot;</span>
@@ -1138,12 +1195,18 @@ document.write(`
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="Parameters.set_from_widgets"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.set_from_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">set_from_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.set_from_widgets">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.set_from_widgets">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_from_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to set the parameters from their widgets.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_from_widget</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Parameters.reset_widgets"><a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.reset_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">reset_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Parameters.reset_widgets">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.reset_widgets">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to reset the widgets to the current value.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1152,7 +1215,9 @@ document.write(`
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error resetting widget for </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
                 <span class="k">raise</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="k">raise</span></div></div>
+                <span class="k">raise</span></div>
+</div>
+
 </pre></div>
 
                 </article>

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.exec_local &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.exec_local &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/exec_local';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -503,7 +502,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ExecLocal"><a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal">[docs]</a><span class="k">class</span> <span class="nc">ExecLocal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ExecLocal">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal">[docs]</a>
+<span class="k">class</span> <span class="nc">ExecLocal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute a flowchart, providing support for the actual</span>
 <span class="sd">        execution of codes&quot;&quot;&quot;</span>
@@ -512,7 +513,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span> <span class="o">-</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>  <span class="c1"># 6 months ago</span>
 
-<div class="viewcode-block" id="ExecLocal.run"><a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+<div class="viewcode-block" id="ExecLocal.run">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cmd</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">input_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -715,7 +718,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="ExecLocal.get_mode_info"><a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.get_mode_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_mode_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ExecLocal.get_mode_info">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.get_mode_info">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_mode_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the mode information for &#39;ls&#39; like listing&quot;&quot;&quot;</span>
 
         <span class="n">perms</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
@@ -737,7 +743,10 @@ document.write(`
         <span class="c1"># return multiple bits of info in a tuple</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">perms</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ExecLocal.ls_format"><a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.ls_format">[docs]</a>    <span class="k">def</span> <span class="nf">ls_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ExecLocal.ls_format">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.exec_local.ExecLocal.ls_format">[docs]</a>
+    <span class="k">def</span> <span class="nf">ls_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a list of files as in &#39;ls&#39;&quot;&quot;&quot;</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
@@ -789,7 +798,9 @@ document.write(`
 
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">result</span></div></div>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
 </pre></div>
 
                 </article>

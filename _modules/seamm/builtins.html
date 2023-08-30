@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.builtins &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.builtins &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/builtins';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -486,7 +485,9 @@ document.write(`
 <span class="kn">import</span> <span class="nn">seamm</span>
 
 
-<div class="viewcode-block" id="SplitStep"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep">[docs]</a><span class="k">class</span> <span class="nc">SplitStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SplitStep">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep">[docs]</a>
+<span class="k">class</span> <span class="nc">SplitStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">my_description</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;An interface for a node to split the control flow&quot;</span><span class="p">,</span>
         <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="s2">&quot;Control&quot;</span><span class="p">,</span>
@@ -500,20 +501,32 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="SplitStep.description"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.description">[docs]</a>    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SplitStep.description">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.description">[docs]</a>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a description of what this extension does&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SplitStep</span><span class="o">.</span><span class="n">my_description</span></div>
 
-<div class="viewcode-block" id="SplitStep.create_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.create_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SplitStep.create_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.create_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the new node object&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Split</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SplitStep.create_tk_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.create_tk_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_tk_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SplitStep.create_tk_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.SplitStep.create_tk_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_tk_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the graphical Tk node object&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">TkSplit</span><span class="p">(</span><span class="n">canvas</span><span class="o">=</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">TkSplit</span><span class="p">(</span><span class="n">canvas</span><span class="o">=</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="JoinStep"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep">[docs]</a><span class="k">class</span> <span class="nc">JoinStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="JoinStep">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep">[docs]</a>
+<span class="k">class</span> <span class="nc">JoinStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">my_description</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;An interface for a node to join the control flow&quot;</span><span class="p">,</span>
         <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="s2">&quot;Control&quot;</span><span class="p">,</span>
@@ -527,17 +540,27 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="JoinStep.description"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.description">[docs]</a>    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="JoinStep.description">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.description">[docs]</a>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a description of what this extension does&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">JoinStep</span><span class="o">.</span><span class="n">my_description</span></div>
 
-<div class="viewcode-block" id="JoinStep.create_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.create_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="JoinStep.create_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.create_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the new node object&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Join</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="JoinStep.create_tk_node"><a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.create_tk_node">[docs]</a>    <span class="k">def</span> <span class="nf">create_tk_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="JoinStep.create_tk_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builtins.JoinStep.create_tk_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_tk_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the graphical Tk node object&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">TkJoin</span><span class="p">(</span><span class="n">canvas</span><span class="o">=</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">TkJoin</span><span class="p">(</span><span class="n">canvas</span><span class="o">=</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
                 </article>

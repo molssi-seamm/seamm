@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_node &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.tk_node &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_node';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -494,7 +493,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TkNode"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode">[docs]</a><span class="k">class</span> <span class="nc">TkNode</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="TkNode">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode">[docs]</a>
+<span class="k">class</span> <span class="nc">TkNode</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The base class for Tk nodes (steps) in the GUI for flowcharts.</span>
 
 <span class="sd">    Parameters</span>
@@ -758,7 +759,9 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The uuid of the node&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">uuid</span>
 
-<div class="viewcode-block" id="TkNode.activate"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.activate">[docs]</a>    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkNode.activate">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.activate">[docs]</a>
+    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add active handles at the anchor points and change the cursor.&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot; &amp;&amp; type=anchor&quot;</span><span class="p">)</span>
@@ -777,7 +780,10 @@ document.write(`
                 <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="s2">&quot;type=anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;anchor=&quot;</span> <span class="o">+</span> <span class="n">pt</span><span class="p">],</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.activate_anchor_point"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.activate_anchor_point">[docs]</a>    <span class="k">def</span> <span class="nf">activate_anchor_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">halo</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.activate_anchor_point">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.activate_anchor_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">activate_anchor_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">halo</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Put a marker on the anchor point to indicate it is under the cursor.&quot;&quot;&quot;</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
@@ -791,7 +797,10 @@ document.write(`
             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="s2">&quot;type=active_anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;anchor=&quot;</span> <span class="o">+</span> <span class="n">point</span><span class="p">],</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.anchor_point"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.anchor_point">[docs]</a>    <span class="k">def</span> <span class="nf">anchor_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.anchor_point">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.anchor_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">anchor_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Where the anchor points are located. If &quot;all&quot; is given</span>
 <span class="sd">        a dictionary of all points is returned&quot;&quot;&quot;</span>
 
@@ -808,7 +817,10 @@ document.write(`
 
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;anchor position &#39;</span><span class="si">{}</span><span class="s2">&#39; not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anchor</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TkNode.check_anchor_points"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.check_anchor_points">[docs]</a>    <span class="k">def</span> <span class="nf">check_anchor_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">halo</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.check_anchor_points">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.check_anchor_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_anchor_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">halo</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If the position x, y is within halo or one of the anchor points</span>
 <span class="sd">        activate the point and return the name of the anchor point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -828,14 +840,20 @@ document.write(`
                     <span class="k">return</span> <span class="n">point</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkNode.connections"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.connections">[docs]</a>    <span class="k">def</span> <span class="nf">connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.connections">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.connections">[docs]</a>
+    <span class="k">def</span> <span class="nf">connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of all the incoming and outgoing edges</span>
 <span class="sd">        for this node, giving the anchor points and other node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.create_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span>
+
+<div class="viewcode-block" id="TkNode.create_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.create_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Edit step&quot;</span><span class="p">,</span>
         <span class="n">widget</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
@@ -934,13 +952,19 @@ document.write(`
 
         <span class="k">return</span> <span class="n">frame</span></div>
 
-<div class="viewcode-block" id="TkNode.deactivate"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.deactivate">[docs]</a>    <span class="k">def</span> <span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.deactivate">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.deactivate">[docs]</a>
+    <span class="k">def</span> <span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the decorations that indicate active anchor points&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot; &amp;&amp; type=anchor&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot; &amp;&amp; type=active_anchor&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.default_edge_subtype"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.default_edge_subtype">[docs]</a>    <span class="k">def</span> <span class="nf">default_edge_subtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.default_edge_subtype">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.default_edge_subtype">[docs]</a>
+    <span class="k">def</span> <span class="nf">default_edge_subtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the default subtype of the edge. Usually this is &#39;&#39;</span>
 <span class="sd">        but for nodes with two or more edges leaving them, such as a loop, this</span>
 <span class="sd">        method will return an appropriate default for the current edge. For</span>
@@ -961,7 +985,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;too many&quot;</span></div>
 
-<div class="viewcode-block" id="TkNode.double_click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.double_click">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.double_click">[docs]</a>
+    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a double-click on the node.</span>
 
 <span class="sd">        This method raises the dialog to edit the parameters.  Subclasses should</span>
@@ -970,7 +997,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkNode.draw"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.draw">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.draw">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the node on the given canvas, making it visible&quot;&quot;&quot;</span>
         <span class="c1"># Remove any graphics items</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">undraw</span><span class="p">()</span>
@@ -997,7 +1027,10 @@ document.write(`
         <span class="k">for</span> <span class="n">direction</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">():</span>
             <span class="n">edge</span><span class="o">.</span><span class="n">move</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkNode.edit"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.edit">[docs]</a>    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.edit">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.edit">[docs]</a>
+    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for editing this step&#39;s parameters.</span>
 
 <span class="sd">        Subclasses can override this.</span>
@@ -1019,7 +1052,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;centerscreenfirst&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.end_move"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.end_move">[docs]</a>    <span class="k">def</span> <span class="nf">end_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.end_move">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.end_move">[docs]</a>
+    <span class="k">def</span> <span class="nf">end_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;End moving the node on the canvas.</span>
 
 <span class="sd">        Parameters</span>
@@ -1034,7 +1070,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_y0</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TkNode.fit_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.fit_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">fit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.fit_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.fit_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">fit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize and fit the dialog to the current contents and the</span>
 <span class="sd">        constraint of the window.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1114,7 +1153,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TkNode.from_flowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.from_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">from_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.from_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.from_flowchart">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the graphics from the non-graphical flowchart.</span>
 <span class="sd">        Only used in nodes that contain flowchart&quot;&quot;&quot;</span>
 
@@ -1156,7 +1198,10 @@ document.write(`
                     <span class="n">attr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tk_subflowchart</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.handle_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.handle_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.handle_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.handle_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Do the right thing when the dialog is closed.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -1305,14 +1350,20 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t recognize dialog result &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TkNode.help"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.help">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.help">[docs]</a>
+    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Base class for presenting help, does nothing.</span>
 
 <span class="sd">        Subclasses should override this.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="TkNode.initialize_results"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.initialize_results">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.initialize_results">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.initialize_results">[docs]</a>
+    <span class="k">def</span> <span class="nf">initialize_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the results if empty.</span>
 
 <span class="sd">        When the GUI for the step is first created the `results` parameter is empty.</span>
@@ -1337,7 +1388,10 @@ document.write(`
                 <span class="k">if</span> <span class="s2">&quot;property&quot;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
                     <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;property&quot;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;property&quot;</span><span class="p">]}</span></div>
 
-<div class="viewcode-block" id="TkNode.is_expr"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.is_expr">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="TkNode.is_expr">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.is_expr">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_expr</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the value is an expression or constant.</span>
 
@@ -1353,7 +1407,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;$&quot;</span></div>
 
-<div class="viewcode-block" id="TkNode.is_inside"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.is_inside">[docs]</a>    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">halo</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.is_inside">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.is_inside">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">halo</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a boolean indicating whether the point x, y is inside</span>
 <span class="sd">        this node, using halo as a size around the point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1369,7 +1426,10 @@ document.write(`
 
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="TkNode.move"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.move">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.move">[docs]</a>
+    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move the node on the canvas.</span>
 
 <span class="sd">        Parameters</span>
@@ -1391,14 +1451,20 @@ document.write(`
             <span class="n">direction</span><span class="p">,</span> <span class="n">edge</span> <span class="o">=</span> <span class="n">connection</span>
             <span class="n">edge</span><span class="o">.</span><span class="n">move</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkNode.next_anchor"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.next_anchor">[docs]</a>    <span class="k">def</span> <span class="nf">next_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.next_anchor">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.next_anchor">[docs]</a>
+    <span class="k">def</span> <span class="nf">next_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return where the next node should be positioned. The default is</span>
 <span class="sd">        &lt;gap&gt; below the &#39;s&#39; anchor point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="s2">&quot;s&quot;</span></div>
 
-<div class="viewcode-block" id="TkNode.remove_edge"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.remove_edge">[docs]</a>    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.remove_edge">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.remove_edge">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a given edge, or all edges if &#39;all&#39; is given&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">edge</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
@@ -1409,7 +1475,10 @@ document.write(`
                 <span class="n">edge</span><span class="o">.</span><span class="n">node1</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.reset_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.reset_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.reset_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.reset_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the layout of the dialog as needed for the parameters.</span>
 
 <span class="sd">        In this base class this does nothing. Override as needed in the</span>
@@ -1417,7 +1486,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="TkNode.right_click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.right_click">[docs]</a>    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.right_click">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.right_click">[docs]</a>
+    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Respond to a right-click by posting the popup menu.</span>
 
 <span class="sd">        This method provides a popup menu with a **delete** command.</span>
@@ -1439,7 +1511,10 @@ document.write(`
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">seamm</span><span class="o">.</span><span class="n">tk_node</span><span class="o">.</span><span class="n">TkNode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span><span class="o">.</span><span class="n">tk_popup</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x_root</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y_root</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.setup_results"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.setup_results">[docs]</a>    <span class="k">def</span> <span class="nf">setup_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.setup_results">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.setup_results">[docs]</a>
+    <span class="k">def</span> <span class="nf">setup_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the results tab of the dialog&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s2">&quot;results&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
             <span class="k">return</span>
@@ -1546,11 +1621,17 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">results_widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">widgets</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="TkNode.set_uuid"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.set_uuid">[docs]</a>    <span class="k">def</span> <span class="nf">set_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.set_uuid">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.set_uuid">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the unique id of the node to a new uuid.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">set_uuid</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkNode.to_dict"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.to_dict">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize to a dict&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span>
@@ -1560,6 +1641,7 @@ document.write(`
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
+
 
     <span class="k">def</span> <span class="nf">_table_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="s2">&quot;Update the list of tables as needed.&quot;</span>
@@ -1586,7 +1668,9 @@ document.write(`
                 <span class="k">if</span> <span class="n">w_table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">w_table</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">])</span>
 
-<div class="viewcode-block" id="TkNode.update_flowchart"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.update_flowchart">[docs]</a>    <span class="k">def</span> <span class="nf">update_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TkNode.update_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.update_flowchart">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the nongraphical flowchart. Only used in nodes that contain</span>
 <span class="sd">        flowcharts&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_subflowchart</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">subflowchart</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1614,9 +1698,14 @@ document.write(`
                 <span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkNode.undraw"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.undraw">[docs]</a>    <span class="k">def</span> <span class="nf">undraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkNode.undraw">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.undraw">[docs]</a>
+    <span class="k">def</span> <span class="nf">undraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all the visual components from the canvas.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
                 </article>

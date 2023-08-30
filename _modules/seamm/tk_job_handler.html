@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_job_handler &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.tk_job_handler &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_job_handler';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -507,7 +506,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TkJobHandler"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler">[docs]</a><span class="k">class</span> <span class="nc">TkJobHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TkJobHandler">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">TkJobHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the Job Handler object.</span>
 
@@ -574,7 +575,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span> <span class="o">=</span> <span class="n">DashboardHandler</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dashboard_handler</span>
 
-<div class="viewcode-block" id="TkJobHandler.add_dashboard_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.add_dashboard_cb">[docs]</a>    <span class="k">def</span> <span class="nf">add_dashboard_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkJobHandler.add_dashboard_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.add_dashboard_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_dashboard_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a dialog for adding a dashboard to the list.&quot;&quot;&quot;</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">Pmw</span><span class="o">.</span><span class="n">Dialog</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span>
@@ -606,7 +609,10 @@ document.write(`
 
         <span class="n">dialog</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;centerscreenfirst&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.ask_for_credentials"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.ask_for_credentials">[docs]</a>    <span class="k">def</span> <span class="nf">ask_for_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.ask_for_credentials">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.ask_for_credentials">[docs]</a>
+    <span class="k">def</span> <span class="nf">ask_for_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prompt the user for the login for the dashboard</span>
 
 <span class="sd">        Parameters</span>
@@ -650,14 +656,20 @@ document.write(`
 
         <span class="k">return</span> <span class="n">user</span><span class="p">,</span> <span class="n">password</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.check_status_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.check_status_cb">[docs]</a>    <span class="k">def</span> <span class="nf">check_status_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.check_status_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.check_status_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_status_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper for checking the status of a dashboard.&quot;&quot;&quot;</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;edit dashboard&quot;</span><span class="p">]</span>
         <span class="n">dashboard</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
         <span class="n">w</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">status</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.create_submit_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.create_submit_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_submit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.create_submit_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.create_submit_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_submit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dialog for submitting a job.</span>
 
 <span class="sd">        Parameters</span>
@@ -762,7 +774,10 @@ document.write(`
         <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.dashboard_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.dashboard_cb">[docs]</a>    <span class="k">def</span> <span class="nf">dashboard_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.dashboard_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.dashboard_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">dashboard_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The selected dashboard has been changed&quot;&quot;&quot;</span>
         <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
@@ -802,7 +817,10 @@ document.write(`
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.display_dashboards"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.display_dashboards">[docs]</a>    <span class="k">def</span> <span class="nf">display_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.display_dashboards">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.display_dashboards">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_dashboards</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a list of all the dashboards with their status.</span>
 
 <span class="sd">        Allow users to edit, remove and add dashboards.</span>
@@ -877,7 +895,10 @@ document.write(`
         <span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;display&quot;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.edit_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.edit_cb">[docs]</a>    <span class="k">def</span> <span class="nf">edit_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.edit_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.edit_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">edit_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Edit the information for a dashboard.&quot;&quot;&quot;</span>
         <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;display&quot;</span><span class="p">][</span><span class="s2">&quot;table&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">trow</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">nrows</span><span class="p">):</span>
@@ -959,7 +980,10 @@ document.write(`
 
             <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.file_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.file_cb">[docs]</a>    <span class="k">def</span> <span class="nf">file_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.file_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.file_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">file_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to handle parameters with files</span>
 
 <span class="sd">        Parameters</span>
@@ -999,7 +1023,10 @@ document.write(`
             <span class="n">w</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
             <span class="n">w</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.fill_statuses"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.fill_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">fill_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.fill_statuses">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.fill_statuses">[docs]</a>
+    <span class="k">def</span> <span class="nf">fill_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;display&quot;</span><span class="p">]</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">]</span>
@@ -1027,7 +1054,10 @@ document.write(`
         <span class="n">progress</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="n">dialog</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Dashboards&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.fit_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.fit_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">fit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.fit_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.fit_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">fit_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize and fit the dialog to the current contents and the</span>
 <span class="sd">        constraint of the window.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1081,7 +1111,10 @@ document.write(`
 
         <span class="n">dialog</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.get_all_status"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.get_all_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.get_all_status">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.get_all_status">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_all_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the status of all the dashboards.</span>
 
 <span class="sd">        Parameters</span>
@@ -1140,7 +1173,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.handle_add_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_add_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">handle_add_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.handle_add_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_add_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_add_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the dialog to add a dashboard to the list.&quot;&quot;&quot;</span>
         <span class="n">save_dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span>
@@ -1183,7 +1219,10 @@ document.write(`
         <span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.handle_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.handle_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the submit dialog being completed.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -1198,7 +1237,10 @@ document.write(`
                 <span class="p">}</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.handle_dashboard_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_dashboard_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">handle_dashboard_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.handle_dashboard_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_dashboard_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_dashboard_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the dialog to add a dashboard to the list.&quot;&quot;&quot;</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;display&quot;</span><span class="p">]</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span>
@@ -1212,7 +1254,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.project_cb"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.project_cb">[docs]</a>    <span class="k">def</span> <span class="nf">project_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.project_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.project_cb">[docs]</a>
+    <span class="k">def</span> <span class="nf">project_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a change in the project since it might be asking for adding a project</span>
 <span class="sd">        in which case prompt for the new project&#39;s name, create it, and sleect it in the</span>
 <span class="sd">        widget.</span>
@@ -1228,20 +1273,35 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_cb</span><span class="p">()</span>
             <span class="n">w</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.reset_title"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.reset_title">[docs]</a>    <span class="k">def</span> <span class="nf">reset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.reset_title">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.reset_title">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.clear_title"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.clear_title">[docs]</a>    <span class="k">def</span> <span class="nf">clear_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.clear_title">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.clear_title">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.reset_description"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.reset_description">[docs]</a>    <span class="k">def</span> <span class="nf">reset_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.reset_description">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.reset_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.clear_description"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.clear_description">[docs]</a>    <span class="k">def</span> <span class="nf">clear_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.clear_description">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.clear_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkJobHandler.submit_with_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.submit_with_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">submit_with_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkJobHandler.submit_with_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.submit_with_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">submit_with_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Allow the user to choose the dashboard and other parameters,</span>
 <span class="sd">        and submit the job as requested.</span>
@@ -1330,7 +1390,9 @@ document.write(`
             <span class="n">job_id</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">result</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">job_id</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div></div>
+            <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
 </pre></div>
 
                 </article>

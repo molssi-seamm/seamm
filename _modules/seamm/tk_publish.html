@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_publish &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.tk_publish &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_publish';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -493,7 +492,9 @@ document.write(`
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TkPublish"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish">[docs]</a><span class="k">class</span> <span class="nc">TkPublish</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="TkPublish">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish">[docs]</a>
+<span class="k">class</span> <span class="nc">TkPublish</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span> <span class="o">=</span> <span class="n">tk_flowchart</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="n">tk_flowchart</span><span class="o">.</span><span class="n">pw</span><span class="p">}</span>
@@ -523,7 +524,9 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The len() command&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TkPublish.create_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TkPublish.create_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.create_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dialog for publishing.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;dialog&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">return</span>
@@ -571,7 +574,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkPublish.edit"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.edit">[docs]</a>    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkPublish.edit">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.edit">[docs]</a>
+    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for editing the parameters.&quot;&quot;&quot;</span>
         <span class="c1"># Create the dialog if it doesn&#39;t exist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
@@ -612,7 +618,10 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle publishing &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkPublish.reset_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.reset_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkPublish.reset_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.reset_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the widgets in the dialog according to the parameters.&quot;&quot;&quot;</span>
 
         <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -646,7 +655,10 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;not published&quot;</span></div>
 
-<div class="viewcode-block" id="TkPublish.publish_flowchart_to_zenodo"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.publish_flowchart_to_zenodo">[docs]</a>    <span class="k">def</span> <span class="nf">publish_flowchart_to_zenodo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkPublish.publish_flowchart_to_zenodo">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.publish_flowchart_to_zenodo">[docs]</a>
+    <span class="k">def</span> <span class="nf">publish_flowchart_to_zenodo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish the flowchart to Zenodo.</span>
 
 <span class="sd">        Parameters</span>
@@ -704,7 +716,9 @@ document.write(`
         <span class="c1"># And, finally, can publish!</span>
         <span class="n">record</span><span class="o">.</span><span class="n">publish</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">record</span><span class="o">.</span><span class="n">doi</span></div></div>
+        <span class="k">return</span> <span class="n">record</span><span class="o">.</span><span class="n">doi</span></div>
+</div>
+
 </pre></div>
 
                 </article>

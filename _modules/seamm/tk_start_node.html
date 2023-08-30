@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_start_node &#8212; SEAMM 2023.7.10 documentation</title>
+    <title>seamm.tk_start_node &#8212; SEAMM 2023.8.30 documentation</title>
   
   
   
@@ -28,10 +27,10 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
@@ -45,12 +44,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=e6c77f19"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/tk_start_node';</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -488,7 +487,9 @@ document.write(`
 <span class="kn">import</span> <span class="nn">seamm_widgets</span> <span class="k">as</span> <span class="nn">sw</span>
 
 
-<div class="viewcode-block" id="TkStartNode"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode">[docs]</a><span class="k">class</span> <span class="nc">TkStartNode</span><span class="p">(</span><span class="n">seamm</span><span class="o">.</span><span class="n">TkNode</span><span class="p">):</span>
+<div class="viewcode-block" id="TkStartNode">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode">[docs]</a>
+<span class="k">class</span> <span class="nc">TkStartNode</span><span class="p">(</span><span class="n">seamm</span><span class="o">.</span><span class="n">TkNode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Tk-based graphical representation of a Start node&quot;&quot;&quot;</span>
 
     <span class="n">anchor_points</span> <span class="o">=</span> <span class="p">{</span>
@@ -511,7 +512,9 @@ document.write(`
         <span class="c1"># Temporary storage for authors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="TkStartNode.right_click"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.right_click">[docs]</a>    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<div class="viewcode-block" id="TkStartNode.right_click">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.right_click">[docs]</a>
+    <span class="k">def</span> <span class="nf">right_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the properties of the flowchart.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
@@ -519,7 +522,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">popup_menu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Edit..&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkStartNode.edit"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.edit">[docs]</a>    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.edit">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.edit">[docs]</a>
+    <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for editing this step&#39;s parameters.</span>
 
 <span class="sd">        Subclasses can override this.</span>
@@ -543,7 +549,10 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">capture_metadata</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_authors</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkStartNode.update_widgets"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.update_widgets">[docs]</a>    <span class="k">def</span> <span class="nf">update_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.update_widgets">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.update_widgets">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Put the correct metadata into the widgets.&quot;&quot;&quot;</span>
         <span class="c1"># Update the widgets with the current metadata from the flowchart</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span>
@@ -557,14 +566,20 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creators&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout_authors</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkStartNode.cleanup_authors"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.cleanup_authors">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.cleanup_authors">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.cleanup_authors">[docs]</a>
+    <span class="k">def</span> <span class="nf">cleanup_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Destroy the internal widgets and reset the internal author data.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;widgets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span> <span class="o">=</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="TkStartNode.capture_metadata"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.capture_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">capture_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.capture_metadata">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.capture_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">capture_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Capture the metadata from the widgets and put to the flowchart.&quot;&quot;&quot;</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span>
 
@@ -588,7 +603,10 @@ document.write(`
                 <span class="n">authors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creators&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">authors</span></div>
 
-<div class="viewcode-block" id="TkStartNode.create_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.create_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.create_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a dialog for editing the flowchart properties.&quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">(</span><span class="s2">&quot;Flowchart Properties&quot;</span><span class="p">)</span>
 
@@ -597,7 +615,10 @@ document.write(`
         <span class="n">f</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkStartNode.create_frame"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.create_frame">[docs]</a>    <span class="k">def</span> <span class="nf">create_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_widget</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.create_frame">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.create_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_widget</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a frame for editing the flowchart properties.&quot;&quot;&quot;</span>
 
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;inner frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">parent_widget</span><span class="p">)</span>
@@ -654,7 +675,10 @@ document.write(`
 
         <span class="k">return</span> <span class="n">frame</span></div>
 
-<div class="viewcode-block" id="TkStartNode.draw"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.draw">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.draw">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw the node on the given canvas, making it visible&quot;&quot;&quot;</span>
 
         <span class="c1"># the outline</span>
@@ -676,10 +700,16 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="s2">&quot;type=title&quot;</span><span class="p">]</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkStartNode.handle_dialog"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.handle_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.handle_dialog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.handle_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">handle_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkStartNode.layout_authors"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.layout_authors">[docs]</a>    <span class="k">def</span> <span class="nf">layout_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.layout_authors">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.layout_authors">[docs]</a>
+    <span class="k">def</span> <span class="nf">layout_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the table of authors.&quot;&quot;&quot;</span>
 
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;authors frame&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
@@ -753,12 +783,18 @@ document.write(`
 
         <span class="n">frame</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TkStartNode.add_author"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.add_author">[docs]</a>    <span class="k">def</span> <span class="nf">add_author</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.add_author">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.add_author">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_author</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new row to the author table.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;orcid&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;affiliation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout_authors</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TkStartNode.remove_author"><a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.remove_author">[docs]</a>    <span class="k">def</span> <span class="nf">remove_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TkStartNode.remove_author">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_start_node.TkStartNode.remove_author">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a author entry from the table.</span>
 
 <span class="sd">        Parameters</span>
@@ -773,7 +809,9 @@ document.write(`
                 <span class="n">w</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_authors</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_authors</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
 
                 </article>
