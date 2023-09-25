@@ -19,7 +19,7 @@ class TkJoin(seamm.TkNode):
     }
 
     def __init__(
-        self, tk_flowchart=None, node=None, canvas=None, x=120, y=20, w=10, h=10
+        self, tk_flowchart=None, node=None, canvas=None, x=120, y=20, w=30, h=30
     ):
         """Initialize a node
 
@@ -32,7 +32,7 @@ class TkJoin(seamm.TkNode):
     def draw(self):
         """Draw the node on the given canvas, making it visible"""
         # Remove any graphics items
-        self.undraw()
+        # self.undraw()
 
         # the outline
         x0 = self.x - self.w / 2
@@ -45,8 +45,28 @@ class TkJoin(seamm.TkNode):
             x1,
             y1,
             tags=[self.tag, "type=outline"],
-            fill="black",
+            fill="white",
         )
 
         for direction, edge in self.connections():
             edge.move()
+
+    def right_click(self, event):
+        """
+        Handles the right click event on the node.
+
+        Parameters
+        ----------
+        event : Tk Event
+
+        Returns
+        -------
+        None
+
+        See Also
+        --------
+        TkGaussian.edit
+        """
+
+        super().right_click(event)
+        self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
