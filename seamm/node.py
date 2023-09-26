@@ -540,7 +540,9 @@ class Node(collections.abc.Hashable):
                     )
             elif handling == "Create a new system and configuration":
                 system = system_db.create_system()
-                configuration = system.create_configuration()
+                configuration = system.copy_configuration(
+                    configuration=same_as, make_current=True
+                )
             else:
                 raise ValueError(
                     f"Do not understand how to handle the structure: '{handling}'"
@@ -1114,6 +1116,12 @@ class Node(collections.abc.Hashable):
                     for ckey, value in data[key].items():
                         keyed_column = column.replace("{key}", ckey)
                         if keyed_column not in table.columns:
+                            if "units" in result_metadata:
+                                units = result_metadata["units"]
+                                if "units" in results[key]:
+                                    units = results[key]["units"]
+                                keyed_column += f" ({units})"
+                        if keyed_column not in table.columns:
                             if result_metadata["dimensionality"] == "scalar":
                                 kind = result_metadata["type"]
                                 if kind == "boolean":
@@ -1168,6 +1176,12 @@ class Node(collections.abc.Hashable):
                                     value, separators=(",", ":")
                                 )
                 else:
+                    if column not in table.columns:
+                        if "units" in result_metadata:
+                            units = result_metadata["units"]
+                            if "units" in results[key]:
+                                units = results[key]["units"]
+                            column += f" ({units})"
                     if column not in table.columns:
                         if result_metadata["dimensionality"] == "scalar":
                             kind = result_metadata["type"]

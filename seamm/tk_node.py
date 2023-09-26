@@ -399,7 +399,7 @@ class TkNode(collections.abc.MutableMapping):
             # Main frame holding the widgets
             frame = ttk.Frame(notebook)
             self["frame"] = frame
-            notebook.add(frame, text="Parameters", sticky=tk.NW)
+            notebook.add(frame, text="Parameters", sticky=tk.NSEW)
         elif widget == "frame":
             # Create a frame to hold everything
             frame = ttk.Frame(self.dialog.interior())

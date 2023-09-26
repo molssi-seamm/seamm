@@ -1,6 +1,12 @@
 =======
 History
 =======
+2023.9.26 -- Added units to header in tables, and bugfixes.
+    * The headers for table columns now include units when generated automatically when
+      writing results. Existing columns are not changed.
+    * Changed the join step image and added the code to enable deleting it.
+    * Fixed an issue with the sizie of subwindows in edit dialogs
+      
 2023.8.30 -- Added support for keyed columns in table output
     * Caught errors when writing out the final structures for viewing and improved
       messages in such cases.
