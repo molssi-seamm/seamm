@@ -550,7 +550,7 @@ class Node(collections.abc.Hashable):
 
             # Attend to naming
             if "system name" in P:
-                if P["system name"] == "current name":
+                if P["system name"] == "keep current name":
                     pass
                 elif P["system name"] == "use SMILES string":
                     system.name = configuration.smiles
@@ -563,7 +563,7 @@ class Node(collections.abc.Hashable):
                     else:
                         system.name = str(P["system name"]).format(**kwargs)
             if "configuration name" in P:
-                if P["configuration name"] == "current name":
+                if P["configuration name"] == "keep current name":
                     pass
                 elif P["configuration name"] == "use SMILES string":
                     configuration.name = configuration.smiles

@@ -1,6 +1,9 @@
 =======
 History
 =======
+2023.9.26.1 -- Bugfix: system naming
+    * Fixed a bug with keeping the current name when updating a system.
+      
 2023.9.26 -- Added units to header in tables, and bugfixes.
     * The headers for table columns now include units when generated automatically when
       writing results. Existing columns are not changed.
