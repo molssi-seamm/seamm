@@ -50,11 +50,10 @@ structure_handling_parameters = {
         ),
     },
     "system name": {
-        "default": "from file",
+        "default": "keep current name",
         "kind": "string",
         "default_units": "",
         "enumeration": (
-            "from file",
             "keep current name",
             "use SMILES string",
             "use Canonical SMILES string",
