@@ -112,7 +112,32 @@ def run_from_jobserver():
     db_path = sys.argv[3]
     cmdline = sys.argv[4:]
 
-    run(job_id=job_id, wdir=wdir, db_path=db_path, in_jobserver=True, cmdline=cmdline)
+    with cd(wdir):
+        try:
+            run(
+                job_id=job_id,
+                wdir=wdir,
+                db_path=db_path,
+                in_jobserver=True,
+                cmdline=cmdline,
+            )
+        except Exception as e:
+            path = Path("job_data.json")
+            if path.exists():
+                with path.open("r") as fd:
+                    fd.readline()
+                    data = json.load(fd)
+            else:
+                data = {}
+
+            data["state"] = "error"
+            data["error type"] = type(e).__name__
+            data["error message"] = traceback.format_exc()
+            with path.open("w") as fd:
+                fd.write("!MolSSI job_data 1.0")
+                json.dump(data, fd, indent=3, sort_keys=True)
+                fd.write("\n")
+            raise
 
 
 def run(
