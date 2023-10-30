@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2023.9.26.1 documentation</title>
+    <title>seamm package &#8212; SEAMM 2023.10.30 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -46,7 +46,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=61fce33d"></script>
+    <script src="../_static/documentation_options.js?v=ad917fda"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -128,13 +128,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
   
   
+  
     
     
       
     
     
-    <img src="../_static/SEAMM logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark" alt=""/>`);</script>
   
   
     <p class="title logo__title">SEAMM Package</p>
@@ -184,10 +185,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </li>
                 
             <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
                     More
                 </button>
-                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                <ul id="pst-nav-more-links" class="dropdown-menu">
                     
                     <li class="nav-item">
                       <a class="nav-link dropdown-item nav-internal" href="../authors.html">
@@ -356,10 +357,10 @@ document.write(`
                     </li>
                 
             <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links-2">
                     More
                 </button>
-                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                <ul id="pst-nav-more-links-2" class="dropdown-menu">
                     
                     <li class="nav-item">
                       <a class="nav-link dropdown-item nav-internal" href="../authors.html">
@@ -1338,7 +1339,7 @@ building up the input for the executable.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.get_system_configuration">
-<span class="sig-name descname"><span class="pre">get_system_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">same_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.get_system_configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.get_system_configuration" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_system_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">same_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'current'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.get_system_configuration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.get_system_configuration" title="Link to this definition">#</a></dt>
 <dd><p>Get the current system and configuration.</p>
 <p>Optionally use the standard structure handling to create new
 configuration or new system and configuration based on user
@@ -1350,11 +1351,11 @@ wants to use the curent configuration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>P</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>any</em><em>) </em><em>= None</em>) – The diction of options and values. If none, the default system and
+<li><p><strong>P</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>any</em><em>) </em><em>= None</em>) – The dictionary of options and values. If none, the default system and
 configuration are returned as-is.</p></li>
-<li><p><strong>same_as</strong> (<em>_Configuration = None</em>) – Share atoms, bonds, or cell with this configuration, depending
-on other flags. Defaults to None, which results in using the current
-configuration</p></li>
+<li><p><strong>same_as</strong> (<em>_Configuration = &quot;current&quot;&quot;</em>) – Share atoms, bonds, or cell with this configuration, depending
+on other flags. Defaults to “current”, which results in using the current
+configuration. If None, an empty configuration is created/used</p></li>
 <li><p><strong>first</strong> (<em>bool = True</em>) – First configuration of several, which can have different handling than
 the subsequent ones.</p></li>
 </ul>
@@ -2089,7 +2090,7 @@ they are reused.</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.standard_parameters.multiple_structure_handling_description">
-<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">multiple_structure_handling_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#multiple_structure_handling_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.multiple_structure_handling_description" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">multiple_structure_handling_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#multiple_structure_handling_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.multiple_structure_handling_description" title="Link to this definition">#</a></dt>
 <dd><p>Return a standard description for how the new structures will be handled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2106,8 +2107,37 @@ handling parameters.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="seamm.standard_parameters.safe_format">
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">safe_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#safe_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.safe_format" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.standard_parameters.set_names">
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">set_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#set_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.set_names" title="Link to this definition">#</a></dt>
+<dd><p>Set the names of the system and configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system</strong> (<em>_System</em>) – The system being named</p></li>
+<li><p><strong>configuration</strong> (<em>_Configuration</em>) – The configuration being named</p></li>
+<li><p><strong>P</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>any</em><em>)</em>) – The dictionary of parameter values, which must contain the standard structure
+handling parameters.</p></li>
+<li><p><strong>_first</strong> (<em>bool</em>) – Whether this is the first or a subseqnet structure.</p></li>
+<li><p><strong>kwargs</strong> (<em>{str: str}</em>) – keyword arguments providing values that may be substituted in the names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text for printing.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="seamm.standard_parameters.structure_handling_description">
-<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">structure_handling_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#structure_handling_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.structure_handling_description" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">structure_handling_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#structure_handling_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.structure_handling_description" title="Link to this definition">#</a></dt>
 <dd><p>Return a standard description for how the structure will be handled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4005,6 +4035,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.standard_parameters">seamm.standard_parameters module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.multiple_structure_handling_description"><code class="docutils literal notranslate"><span class="pre">multiple_structure_handling_description()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.safe_format"><code class="docutils literal notranslate"><span class="pre">safe_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.set_names"><code class="docutils literal notranslate"><span class="pre">set_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.structure_handling_description"><code class="docutils literal notranslate"><span class="pre">structure_handling_description()</span></code></a></li>
 </ul>
 </li>
@@ -4283,8 +4315,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -4335,7 +4367,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.2.
 </p></div>
       
     </div>
