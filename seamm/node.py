@@ -455,7 +455,7 @@ class Node(collections.abc.Hashable):
     def get_system_configuration(
         self,
         P=None,
-        same_as=None,
+        same_as="current",
         first=True,
         **kwargs,
     ):
@@ -473,12 +473,12 @@ class Node(collections.abc.Hashable):
         Parameters
         ----------
         P : dict(str, any) = None
-            The diction of options and values. If none, the default system and
+            The dictionary of options and values. If none, the default system and
             configuration are returned as-is.
-        same_as : _Configuration = None
+        same_as : _Configuration = "current""
             Share atoms, bonds, or cell with this configuration, depending
-            on other flags. Defaults to None, which results in using the current
-            configuration
+            on other flags. Defaults to "current", which results in using the current
+            configuration. If None, an empty configuration is created/used
         first : bool = True
             First configuration of several, which can have different handling than
             the subsequent ones.
@@ -491,12 +491,18 @@ class Node(collections.abc.Hashable):
         # Get the system
         system_db = self.get_variable("_system_db")
 
+        system = system_db.system
+        if system is None:
+            configuration = None
+        else:
+            configuration = system.configuration
+        if same_as == "current":
+            same_as = configuration
+
         if P is None:
             # Just return the current system and configuration, creating if needed.
-            system = system_db.system
             if system is None:
                 system = system_db.create_system()
-            configuration = system.configuration
             if configuration is None:
                 configuration = system.create_configuration()
         else:
@@ -515,34 +521,28 @@ class Node(collections.abc.Hashable):
                     handling = "Create a new configuration"
 
             if handling == "Overwrite the current configuration":
-                system = system_db.system
                 if system is None:
                     system = system_db.create_system()
-                configuration = system.configuration
                 if configuration is None:
                     configuration = system.create_configuration()
             elif handling == "Create a new configuration":
-                system = system_db.system
                 if system is None:
                     system = system_db.create_system()
                 # See if sharing atoms, bonds and/or cell
                 if same_as is None:
-                    current = system.configuration
-                    if current is None:
-                        configuration = system.create_configuration()
-                    else:
-                        configuration = system.copy_configuration(
-                            current, make_current=True
-                        )
+                    configuration = system.create_configuration()
                 else:
                     configuration = system.copy_configuration(
                         configuration=same_as, make_current=True
                     )
             elif handling == "Create a new system and configuration":
                 system = system_db.create_system()
-                configuration = system.copy_configuration(
-                    configuration=same_as, make_current=True
-                )
+                if same_as is None:
+                    configuration = system.create_configuration()
+                else:
+                    configuration = system.copy_configuration(
+                        configuration=same_as, make_current=True
+                    )
             else:
                 raise ValueError(
                     f"Do not understand how to handle the structure: '{handling}'"

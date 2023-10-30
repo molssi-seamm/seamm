@@ -1,6 +1,12 @@
 =======
 History
 =======
+2023.10.30 -- Extending and cleaning up handling of configurations
+    * Added ability to name systems and configurations with the IUPAC name, InChI, or
+      InChIKey of the configuration.
+    * Generally cleanedup and streamlined the code handling new systems and
+      configurations.
+
 2023.9.26.1 -- Bugfix: system naming
     * Fixed a bug with keeping the current name when updating a system.
       
