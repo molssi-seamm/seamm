@@ -1,6 +1,9 @@
 =======
 History
 =======
+2023.11.7 -- Bugfix: initialization of Dashboard
+    * Fixed a crash that occurred the very first time submitting to the Dashboard.
+
 2023.10.30 -- Extending and cleaning up handling of configurations
     * Added ability to name systems and configurations with the IUPAC name, InChI, or
       InChIKey of the configuration.
