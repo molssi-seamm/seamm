@@ -7,6 +7,7 @@ import datetime
 import json
 import logging
 from pathlib import Path
+import pprint  # noqa: F401
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 import tkinter.ttk as ttk
@@ -21,6 +22,7 @@ import seamm_util
 import seamm_widgets as sw
 
 logger = logging.getLogger(__name__)
+# logger.setLevel("DEBUG")
 
 # "operators": (
 #     "must be",
@@ -540,7 +542,7 @@ class TkOpen(collections.abc.MutableMapping):
                     self.config.set("SEAMM open", "source", source)
                 if source == "Zenodo" or source == "Zenodo sandbox":
                     if len(selected) > 0:
-                        record = self._data[selected[0]]
+                        record = self._data[selected[0]]["record"]
                         data = record.get_file("flowchart.flow")
                         return {"data": data, "source": source}
                 elif "previous jobs" == source:
@@ -667,14 +669,14 @@ class TkOpen(collections.abc.MutableMapping):
                 else:
                     if operator == "after":
                         query += (
-                            f" (+keywords:seamm-flowchart AND {pre}{zf}[{date} TO *]"
+                            f' (+keywords:"seamm-flowchart" AND {pre}{zf}[{date} TO *]'
                         )
                     elif operator == "before":
                         query += (
-                            f" (+keywords:seamm-flowchart AND {pre}{zf}[* TO {date}]"
+                            f' (+keywords:"seamm-flowchart" AND {pre}{zf}[* TO {date}]'
                         )
                     elif operator == "on":
-                        query += f" (+keywords:seamm-flowchart AND {pre}{zf}{date}"
+                        query += f' (+keywords:"seamm-flowchart" AND {pre}{zf}{date}'
                     elif operator == "between":
                         try:
                             date2 = dateutil.parser.parse(value2).isoformat()
@@ -689,33 +691,33 @@ class TkOpen(collections.abc.MutableMapping):
                             )
                         else:
                             query += (
-                                f" (+keywords:seamm-flowchart AND {pre}{zf}[{date} to "
-                                f"{date2}])"
+                                f' (+keywords:"seamm-flowchart" AND {pre}{zf}[{date} to'
+                                f" {date2}])"
                             )
                     else:
                         raise RuntimeError(f"Don't recognize operator '{operator}'")
             else:
                 if operator == "is":
-                    query += f" (+keywords:seamm-flowchart AND {pre}{zf}/{value}/)"
+                    query += f' (+keywords:"seamm-flowchart" AND {pre}{zf}/{value}/)'
                 elif operator == "is like":
-                    query += f" (+keywords:seamm-flowchart AND {pre}{zf}{value}~)"
+                    query += f' (+keywords:"seamm-flowchart" AND {pre}{zf}{value}~)'
                 elif operator == "contains":
-                    query += f" (+keywords:seamm-flowchart AND {pre}{zf}{value})"
+                    query += f' (+keywords:"seamm-flowchart" AND {pre}{zf}{value})'
                 elif operator == "contains like":
-                    query += f" (+keywords:seamm-flowchart AND {pre}{zf}{value}~)"
+                    query += f' (+keywords:"seamm-flowchart" AND {pre}{zf}{value}~)'
                 elif operator == "is not":
-                    query += f" (+keywords:seamm-flowchart AND -{zf}/{value}/)"
+                    query += f' (+keywords:"seamm-flowchart" AND -{zf}/{value}/)'
                 elif operator == "is not like":
-                    query += f" (+keywords:seamm-flowchart AND -{zf}{value}~)"
+                    query += f' (+keywords:"seamm-flowchart" AND -{zf}{value}~)'
                 elif operator == "does not contain":
-                    query += f" (+keywords:seamm-flowchart AND -{zf}{value})"
+                    query += f' (+keywords:"seamm-flowchart" AND -{zf}{value})'
                 elif operator == "does not contain like":
-                    query += f" (+keywords:seamm-flowchart AND -{zf}{value}~)"
+                    query += f' (+keywords:"seamm-flowchart" AND -{zf}{value}~)'
                 else:
                     raise RuntimeError(f"Don't recognize operator '{operator}'")
 
         if len(query) == 0:
-            query = "+keywords:seamm-flowchart"
+            query = '+keywords:"seamm-flowchart"'
 
         logger.debug(f"query = {query}")
 
@@ -727,6 +729,7 @@ class TkOpen(collections.abc.MutableMapping):
 
         # Find all related records using conceptrecid
         concepts = {}
+        logger.debug(f"Records {n_hits=}")
         for record in records:
             concept_id = record["conceptrecid"]
             if concept_id not in concepts:
@@ -735,22 +738,32 @@ class TkOpen(collections.abc.MutableMapping):
             version = record["metadata"]["relations"]["version"][0]["index"]
             data[version] = record
 
+        logger.debug("\n" + pprint.pformat(concepts))
+        logger.debug("--------\n\n")
+
         # Remove any current data
         self.clear_tree()
         self._data = {}
         tree = self["tree"]
         for concept_id, data in concepts.items():
             first = True
+            count = len(data)
             for version in sorted(data.keys(), reverse=True):
                 record = data[version]
                 if first:
                     first = False
                     iid = tree.insert("", "end", text=record.title)
-                    self._data[iid] = record
+                    self._data[iid] = {
+                        "count": count,
+                        "record": record,
+                    }
                 if len(data) > 1:
                     text = f"Version {version + 1}: {record.title}"
                     jid = tree.insert(iid, "end", text=text)
-                    self._data[jid] = record
+                    self._data[jid] = {
+                        "count": count,
+                        "record": record,
+                    }
 
     def select_record(self, event):
         """The user clicked on the tree-view ... handle the selected record."""
@@ -762,16 +775,21 @@ class TkOpen(collections.abc.MutableMapping):
         source = self["source"].get()
 
         if "Zenodo" in source:
-            data = self._data[selected[0]]["metadata"]
+            tmp = self._data[selected[0]]
+            count = tmp["count"]
+            data = tmp["record"]["metadata"]
+            logger.debug("\n\nZenodo source, data =")
+            logger.debug("\n" + pprint.pformat(data))
+            logger.debug("-------")
             self["title"].configure(text=data["title"])
             self["description"].delete("1.0", "end")
             self["description"].insert("1.0", data["description"])
             info = data["relations"]["version"][0]
             if "publication_data" in data:
                 date = data["publication_data"]
-                version = f"Version {info['index'] + 1} of {info['count']} -- {date}"
+                version = f"Version {info['index'] + 1} of {count} -- {date}"
             else:
-                version = f"Version {info['index'] + 1} of {info['count']}"
+                version = f"Version {info['index'] + 1} of {count}"
             self["version"].configure(text=version)
         elif "previous jobs" == source:
             job = self._data[selected[0]]
