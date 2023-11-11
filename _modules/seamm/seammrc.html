@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.seammrc &#8212; SEAMM 2023.11.7 documentation</title>
+    <title>seamm.seammrc &#8212; SEAMM 2023.11.11 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=f4303f5e"></script>
+    <script src="../../_static/documentation_options.js?v=d2b06751"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -658,6 +658,39 @@ document.write(`
 
     <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="c1"># Added commented sections if they don&#39;t exist</span>
+            <span class="k">if</span> <span class="s2">&quot;USER&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># [USER]</span>
+<span class="sd"># Default user and grant information for flowcharts</span>
+
+<span class="sd"># name = Last, First</span>
+<span class="sd"># ORCID = xxxx-xxxx-xxxx-xxxx</span>
+<span class="sd"># affiliation = Your instititution</span>
+<span class="sd"># grants = &lt;as DOIs like Zenodo uses, e.g 10.13039/100000001::2136142 10.13...&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;ZENODO&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># [ZENODO]</span>
+<span class="sd"># API token for Zenodo</span>
+
+<span class="sd"># token = xxxx....</span>
+<span class="sd">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;SANDBOX&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># [SANDBOX]</span>
+<span class="sd"># API token for Zenodo&#39;s sandbox</span>
+
+<span class="sd"># token = xxxxx....</span>
+<span class="sd">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># And write the config file data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SEAMMrc.re_read">

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_start_node &#8212; SEAMM 2023.11.7 documentation</title>
+    <title>seamm.tk_start_node &#8212; SEAMM 2023.11.11 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=f4303f5e"></script>
+    <script src="../../_static/documentation_options.js?v=d2b06751"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -495,6 +495,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;The start node in a flowchart&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
 <span class="kn">import</span> <span class="nn">tkinter.ttk</span> <span class="k">as</span> <span class="nn">ttk</span>
 
@@ -576,6 +577,8 @@ document.write(`
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s2">&quot;grants&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;grants&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;grants&quot;</span><span class="p">]))</span>
 
         <span class="c1"># layout the authors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_author_data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creators&quot;</span><span class="p">])</span>
@@ -666,6 +669,13 @@ document.write(`
         <span class="c1"># keywords</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span>
             <span class="n">frame</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Keywords (comma separated):&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span>
+        <span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># grants</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;grants&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Grants (DOIs, comma separated):&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span>
         <span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
