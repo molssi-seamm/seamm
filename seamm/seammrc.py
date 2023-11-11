@@ -119,6 +119,39 @@ class SEAMMrc(Singleton):
 
     def _save(self):
         with open(self.path, "w") as fd:
+            # Added commented sections if they don't exist
+            if "USER" not in self:
+                fd.write(
+                    """
+# [USER]
+# Default user and grant information for flowcharts
+
+# name = Last, First
+# ORCID = xxxx-xxxx-xxxx-xxxx
+# affiliation = Your instititution
+# grants = <as DOIs like Zenodo uses, e.g 10.13039/100000001::2136142 10.13...>
+"""
+                )
+            if "ZENODO" not in self:
+                fd.write(
+                    """
+# [ZENODO]
+# API token for Zenodo
+
+# token = xxxx....
+"""
+                )
+            if "SANDBOX" not in self:
+                fd.write(
+                    """
+# [SANDBOX]
+# API token for Zenodo's sandbox
+
+# token = xxxxx....
+"""
+                )
+
+            # And write the config file data
             self._config.write(fd)
 
     def re_read(self):

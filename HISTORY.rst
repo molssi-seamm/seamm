@@ -1,6 +1,12 @@
 =======
 History
 =======
+2023.11.11 -- Incorporating changes to Zenodo
+    * Zenodo updated and made small changes to their API, which required changes in
+      SEAMM.
+    * Consolidated all private information about the user and their keys for Zenodo in
+      ~/.seammrc
+      
 2023.11.7 -- Bugfix: initialization of Dashboard
     * Fixed a crash that occurred the very first time submitting to the Dashboard.
 

@@ -3,6 +3,7 @@
 """The start node in a flowchart"""
 
 import copy
+import pprint  # noqa: F401
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -74,6 +75,8 @@ class TkStartNode(seamm.TkNode):
         self["description"].delete("1.0", tk.END)
         self["description"].insert("1.0", metadata["description"])
         self["keywords"].set(", ".join(metadata["keywords"]))
+        if "grants" in metadata:
+            self["grants"].set(", ".join(metadata["grants"]))
 
         # layout the authors
         self._author_data = copy.deepcopy(metadata["creators"])
@@ -152,6 +155,13 @@ class TkStartNode(seamm.TkNode):
         # keywords
         w = self["keywords"] = sw.LabeledEntry(
             frame, labeltext="Keywords (comma separated):", width=100
+        )
+        w.grid(row=row, column=0, sticky=tk.EW)
+        row += 1
+
+        # grants
+        w = self["grants"] = sw.LabeledEntry(
+            frame, labeltext="Grants (DOIs, comma separated):", width=100
         )
         w.grid(row=row, column=0, sticky=tk.EW)
         row += 1

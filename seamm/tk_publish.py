@@ -210,6 +210,8 @@ class TkPublish(collections.abc.MutableMapping):
         record.title = metadata["title"]
         record.description = metadata["description"]
         record.keywords = ["seamm-flowchart", *metadata["keywords"]]
+        if "grants" in metadata:
+            record.grants = [{"id": g} for g in metadata["grants"]]
 
         # Update the metadata at Zenodo
         record.update_metadata()
