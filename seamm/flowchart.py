@@ -520,9 +520,10 @@ class Flowchart(object):
             "description": "",
             "keywords": [],
             "creators": [],
+            "grants": [],
         }
-        # See if the user info is in the SEAMM.ini file...
-        path = Path("~/SEAMM/seamm.ini").expanduser()
+        # See if the user info is in the .seammrc file...
+        path = Path("~/.seammrc").expanduser()
         if path.exists:
             config = configparser.ConfigParser()
             config.read(path)
@@ -534,6 +535,8 @@ class Flowchart(object):
                         if key in user:
                             author[key] = user[key]
                     self.metadata["creators"].append(author)
+                if "grants" in user:
+                    self.metadata["grants"] = user["grants"].split()
 
         self.metadata.update(kwargs)
 
