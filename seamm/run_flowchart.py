@@ -295,11 +295,17 @@ def run(
     printer.job(datetime.now().strftime("%A %Y.%m.%d %H:%M:%S %Z"))
     printer.job("Running in directory '{}'".format(wdir))
 
-    flowchart_path = os.path.join(wdir, "flowchart.flow")
+    flowchart_path = Path(wdir).resolve() / "flowchart.flow"
+    path = Path(sys.argv[0]).resolve()
 
-    # copy the flowchart to the root directory for later reference
-    if not in_jobserver:
-        shutil.copy2(sys.argv[0], flowchart_path)
+    # copy the flowchart to the root directory if it is not there already
+    if not in_jobserver and flowchart_path.exists() and path != flowchart_path:
+        shutil.copy2(path, flowchart_path)
+
+    # Make executable if it isn't
+    permissions = flowchart_path.stat().st_mode
+    if permissions & 0o100 == 0:
+        flowchart_path.chmod(permissions | 0o110)
 
     logger.info(f"    reading in flowchart '{flowchart_path}' -- 2")
     flowchart = seamm.Flowchart(directory=wdir)
@@ -357,7 +363,7 @@ def run(
             with seamm_datastore.session_scope(db.Session) as session:
                 job = db.Job.create(
                     job_id,
-                    flowchart_path,
+                    str(flowchart_path),
                     project_names=data["projects"],
                     path=wdir,
                     title=title,

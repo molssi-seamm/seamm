@@ -1,6 +1,10 @@
 =======
 History
 =======
+2023.11.12 -- Allowing running flowchart.flow in current directory
+    * There was a feature which prevented running a flowchart named "flowchart.flow" in
+      the current directory when running from the commandline.
+      
 2023.11.11 -- Incorporating changes to Zenodo
     * Zenodo updated and made small changes to their API, which required changes in
       SEAMM.
