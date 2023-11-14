@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.run_flowchart &#8212; SEAMM 2023.11.11 documentation</title>
+    <title>seamm.run_flowchart &#8212; SEAMM 2023.11.13 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=d2b06751"></script>
+    <script src="../../_static/documentation_options.js?v=41306922"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -798,11 +798,17 @@ document.write(`
     <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A %Y.%m.</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">))</span>
     <span class="n">printer</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="s2">&quot;Running in directory &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">wdir</span><span class="p">))</span>
 
-    <span class="n">flowchart_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s2">&quot;flowchart.flow&quot;</span><span class="p">)</span>
+    <span class="n">flowchart_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">wdir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;flowchart.flow&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
-    <span class="c1"># copy the flowchart to the root directory for later reference</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_jobserver</span><span class="p">:</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">flowchart_path</span><span class="p">)</span>
+    <span class="c1"># copy the flowchart to the root directory if it is not there already</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_jobserver</span> <span class="ow">and</span> <span class="n">flowchart_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">flowchart_path</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">flowchart_path</span><span class="p">)</span>
+
+    <span class="c1"># Make executable if it isn&#39;t</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="n">flowchart_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mode</span>
+    <span class="k">if</span> <span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0o100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flowchart_path</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">permissions</span> <span class="o">|</span> <span class="mo">0o110</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    reading in flowchart &#39;</span><span class="si">{</span><span class="n">flowchart_path</span><span class="si">}</span><span class="s2">&#39; -- 2&quot;</span><span class="p">)</span>
     <span class="n">flowchart</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Flowchart</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">wdir</span><span class="p">)</span>
@@ -860,7 +866,7 @@ document.write(`
             <span class="k">with</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">session_scope</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Session</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
                 <span class="n">job</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                     <span class="n">job_id</span><span class="p">,</span>
-                    <span class="n">flowchart_path</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">flowchart_path</span><span class="p">),</span>
                     <span class="n">project_names</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;projects&quot;</span><span class="p">],</span>
                     <span class="n">path</span><span class="o">=</span><span class="n">wdir</span><span class="p">,</span>
                     <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
