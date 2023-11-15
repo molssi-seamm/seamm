@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.run_flowchart &#8212; SEAMM 2023.11.13 documentation</title>
+    <title>seamm.run_flowchart &#8212; SEAMM 2023.11.15 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=41306922"></script>
+    <script src="../../_static/documentation_options.js?v=2ec17df6"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -802,8 +802,11 @@ document.write(`
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="c1"># copy the flowchart to the root directory if it is not there already</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_jobserver</span> <span class="ow">and</span> <span class="n">flowchart_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">flowchart_path</span><span class="p">:</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">flowchart_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_jobserver</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">flowchart_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span> <span class="o">==</span> <span class="n">flowchart_path</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">flowchart_path</span><span class="p">)</span>
 
     <span class="c1"># Make executable if it isn&#39;t</span>
     <span class="n">permissions</span> <span class="o">=</span> <span class="n">flowchart_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mode</span>
