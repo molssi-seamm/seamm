@@ -47,6 +47,7 @@ class TkJobHandler(object):
         self._flowchart = None
         self._widgets = {}
         self._variable_value = {}
+        self._tk_var = {}  # For checkbuttons
         self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
 
         s = ttk.Style()
@@ -810,14 +811,29 @@ class TkJobHandler(object):
             d.rowconfigure(7, weight=1)
             row = 0
             for step in parameter_steps:
-                variables = step.parameters["variables"]
-                for name, data in variables.value.items():
+                variables = {**step.parameters["variables"].value}
+                for name, data in variables.items():
                     table[row, 0] = name
-                    if name not in value or value[name] is None:
-                        value[name] = data["default"]
-                    entry = ttk.Entry(frame)
-                    entry.insert(0, value[name])
-                    table[row, 1] = entry
+                    table[row, 0].grid(sticky=tk.E)
+                    if data["type"] == "bool":
+                        if name not in value or value[name] is None:
+                            value[name] = False
+                        var = self._tk_var[name] = tk.IntVar()
+                        checkbox = ttk.Checkbutton(frame, variable=var)
+                        var.set(1 if value[name] else 0)
+                        table[row, 1] = checkbox
+                    else:
+                        if name not in value or value[name] is None:
+                            value[name] = data["default"]
+                        if len(data["choices"]) > 0:
+                            combo = ttk.Combobox(frame, values=data["choices"])
+                            combo.set(value[name])
+                            combo.configure(state="readonly")
+                            table[row, 1] = combo
+                        else:
+                            entry = ttk.Entry(frame)
+                            entry.insert(0, value[name])
+                            table[row, 1] = entry
                     table[row, 1].grid(sticky=tk.EW)
                     if data["type"] == "file":
                         button = tk.Button(
@@ -845,7 +861,12 @@ class TkJobHandler(object):
                 table = self["parameters"]
                 for row in range(table.nrows):
                     name = table[row, 0].cget("text")
-                    value[name] = table[row, 1].get()
+                    data = variables[name]
+                    if data["type"] == "bool":
+                        tmp = self._tk_var[name].get()
+                        value[name] = True if tmp == 1 else False
+                    else:
+                        value[name] = table[row, 1].get()
 
             dashboard_name = result.pop("dashboard")
             dashboard = self.dashboard_handler.get_dashboard(dashboard_name)
