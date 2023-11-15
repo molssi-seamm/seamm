@@ -1,9 +1,10 @@
 =======
 History
 =======
-2023.11.15 -- Bugfix: running flowcharts from the commandline.
-    * The previous change to allow running "flowchart.flow" in the current directory
-      caused a bug in other scenarios.
+2023.11.15 -- Add boolean options when submitting jobs
+    * Added boolean control parameters when submitting jobs.
+    * Bugfix: The previous change to allow running "flowchart.flow" in the current
+      directory caused a bug in other scenarios.
       
 2023.11.12 -- Allowing running flowchart.flow in current directory
     * There was a feature which prevented running a flowchart named "flowchart.flow" in
