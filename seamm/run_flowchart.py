@@ -299,8 +299,11 @@ def run(
     path = Path(sys.argv[0]).resolve()
 
     # copy the flowchart to the root directory if it is not there already
-    if not in_jobserver and flowchart_path.exists() and path != flowchart_path:
-        shutil.copy2(path, flowchart_path)
+    if not in_jobserver:
+        if flowchart_path.exists() and path == flowchart_path:
+            pass
+        else:
+            shutil.copy2(path, flowchart_path)
 
     # Make executable if it isn't
     permissions = flowchart_path.stat().st_mode
