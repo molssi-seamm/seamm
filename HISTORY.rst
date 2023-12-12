@@ -1,6 +1,10 @@
 =======
 History
 =======
+2023.12.12 -- Moving ~/.seammrc to ~/.seamm.d/seammrc
+    * Should have no effect on users. The seammrc file will be moved automatically to
+      its new location. This change is necessary to be able to run SEAMM in containers.
+      
 2023.11.15 -- Add boolean options when submitting jobs
     * Added boolean control parameters when submitting jobs.
     * Bugfix: The previous change to allow running "flowchart.flow" in the current

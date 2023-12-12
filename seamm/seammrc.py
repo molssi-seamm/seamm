@@ -23,7 +23,7 @@ class Singleton(object):
 
 
 class SEAMMrc(Singleton):
-    def __init__(self, path="~/.seammrc"):
+    def __init__(self, path="~/.seamm.d/seammrc"):
         self._config = configparser.ConfigParser()
         self.path = Path(path).expanduser()
 
@@ -31,8 +31,18 @@ class SEAMMrc(Singleton):
         if self.path.exists():
             self._config.read(self.path)
         else:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            self._save()
+            # Initially used ~/.seammrc but this doesn't play well with Docker
+            # containers, so moved to ~/seamm.d/seammrc Check for the old file and move
+            # to new
+            tmp = Path("~/.seammrc").expanduser()
+            if tmp.exists():
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                self.path.write_text(tmp.read_text())
+                self._config.read(self.path)
+                tmp.unlink()
+            else:
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                self._save()
 
         # Check the version and upgrade if necessary
         if "VERSION" not in self._config:
