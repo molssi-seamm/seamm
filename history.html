@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2023.12.12 documentation</title>
+    <title>History &#8212; SEAMM 2023.12.18 documentation</title>
   
   
   
@@ -46,7 +46,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=d202a915"></script>
+    <script src="_static/documentation_options.js?v=62119469"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -502,6 +502,13 @@ document.write(`
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2023.12.18 – Moving execution of flowcharts to seamm-exec</dt><dd><ul class="simple">
+<li><p>Moved execution of flowcharts to seamm-exec to consolidate execution in one
+place. This will allow easier, faster developement for running in queues, etc.</p></li>
+<li><p>Switched the dependency on PMW from CondaForge to PIP since the version on
+CondaForge is poorly maintained.</p></li>
+</ul>
+</dd>
 <dt>2023.12.12 – Moving ~/.seammrc to ~/.seamm.d/seammrc</dt><dd><ul class="simple">
 <li><p>Should have no effect on users. The seammrc file will be moved automatically to
 its new location. This change is necessary to be able to run SEAMM in containers.</p></li>

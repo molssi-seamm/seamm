@@ -28,22 +28,6 @@ seamm.data module
    :undoc-members:
    :show-inheritance:
 
-seamm.exec\_flowchart module
-----------------------------
-
-.. automodule:: seamm.exec_flowchart
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-seamm.exec\_local module
-------------------------
-
-.. automodule:: seamm.exec_local
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 seamm.flowchart module
 ----------------------
 
@@ -88,14 +72,6 @@ seamm.plugin\_manager module
 ----------------------------
 
 .. automodule:: seamm.plugin_manager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-seamm.run\_flowchart module
----------------------------
-
-.. automodule:: seamm.run_flowchart
    :members:
    :undoc-members:
    :show-inheritance:
