@@ -19,7 +19,6 @@ dependencies:
   - packaging
   - pandas
   - pillow
-  - pmw
   - pyuca
   - py-cpuinfo
   - rdkit
@@ -43,5 +42,6 @@ dependencies:
 
   # Pip-only installs
   - pip:
+    - pmw
     # Documentation
     - sphinx-copybutton
