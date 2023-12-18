@@ -68,6 +68,7 @@ class Flowchart(object):
         self.output = output  # Where to print output, files, stdout, both
         self.metadata = {}
         self.reset_metadata(title=name, description=description)
+        self._executor = None
         self._parser_name = parser_name
 
         # Setup the plugin handling
@@ -84,6 +85,15 @@ class Flowchart(object):
 
     def __iter__(self):
         return self.graph.__iter__()
+
+    @property
+    def executor(self):
+        """The executor for tasks."""
+        return self._executor
+
+    @executor.setter
+    def executor(self, value):
+        self._executor = value
 
     @property
     def is_development(self):
