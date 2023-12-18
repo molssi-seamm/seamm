@@ -20,13 +20,11 @@ from seamm.flowchart import Flowchart  # noqa: F401
 from seamm.tk_flowchart import TkFlowchart  # noqa: F401
 from seamm.graph import Graph  # noqa: F401
 from seamm.graph import Edge  # noqa: F401
-from seamm.exec_flowchart import ExecFlowchart  # noqa: F401
 from seamm.node import Node  # noqa: F401
 from seamm.start_node import StartNode  # noqa: F401
 from seamm.tk_edge import TkEdge  # noqa: F401
 from seamm.tk_node import TkNode  # noqa: F401
 from seamm.tk_start_node import TkStartNode  # noqa: F401
-from seamm.exec_local import ExecLocal  # noqa: F401
 from seamm.split_node import Split  # noqa: F401
 from seamm.tk_split_node import TkSplit  # noqa: F401
 from seamm.builtins import SplitStep  # noqa: F401
@@ -35,7 +33,6 @@ from seamm.tk_join_node import TkJoin  # noqa: F401
 from seamm.builtins import JoinStep  # noqa: F401
 from seamm.tk_job_handler import TkJobHandler  # noqa: F401
 from .dashboard_handler import DashboardHandler  # noqa: F401
-from seamm.run_flowchart import run as run_flowchart  # noqa: F401
 from .seammrc import SEAMMrc  # noqa: F401
 
 wrap_text = textwrap.TextWrapper(width=120)

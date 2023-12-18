@@ -1,6 +1,12 @@
 =======
 History
 =======
+2023.12.18 -- Moving execution of flowcharts to seamm-exec
+    * Moved execution of flowcharts to seamm-exec to consolidate execution in one
+      place. This will allow easier, faster developement for running in queues, etc.
+    * Switched the dependency on PMW from CondaForge to PIP since the version on
+      CondaForge is poorly maintained.
+      
 2023.12.12 -- Moving ~/.seammrc to ~/.seamm.d/seammrc
     * Should have no effect on users. The seammrc file will be moved automatically to
       its new location. This change is necessary to be able to run SEAMM in containers.
