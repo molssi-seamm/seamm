@@ -729,7 +729,6 @@ class Node(collections.abc.Hashable):
                 template = string.Template(self._bibliography[package])
 
                 version = self.version
-                print(f"{version=}")
                 if "untagged" in version:
                     # Development version
                     year = datetime.now().year
