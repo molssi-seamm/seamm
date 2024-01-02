@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.1.2 -- Corrected issue with citations in development versions
+    * Fixed an issue getting the date of a plug-in for development versions of the
+      plug-in. This did not affect end users, but did casue issues for development.
+      
 2023.12.18 -- Moving execution of flowcharts to seamm-exec
     * Moved execution of flowcharts to seamm-exec to consolidate execution in one
       place. This will allow easier, faster developement for running in queues, etc.
