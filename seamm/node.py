@@ -6,6 +6,7 @@
 import bibtexparser
 import calendar
 import collections.abc
+from datetime import datetime
 import hashlib
 
 try:
@@ -728,9 +729,23 @@ class Node(collections.abc.Hashable):
                 template = string.Template(self._bibliography[package])
 
                 version = self.version
-                year, month = version.split(".")[0:2]
-                month = calendar.month_abbr[int(month)].lower()
-                citation = template.substitute(month=month, version=version, year=year)
+                print(f"{version=}")
+                if "untagged" in version:
+                    # Development version
+                    year = datetime.now().year
+                    month = datetime.now().month
+                else:
+                    year, month = version.split(".")[0:2]
+                try:
+                    month = calendar.month_abbr[int(month)].lower()
+                except Exception:
+                    year = datetime.now().year
+                    month = datetime.now().month
+                    month = calendar.month_abbr[int(month)].lower()
+
+                citation = template.substitute(
+                    month=month, version=version, year=str(year)
+                )
 
                 title = package.split("_")
                 title = " ".join([s.capitalize() for s in title[0:-2]])
