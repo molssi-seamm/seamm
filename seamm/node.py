@@ -1287,7 +1287,7 @@ class Node(collections.abc.Hashable):
                         self.logger.info(f"\t{module} -- found no templates directory")
                     else:
                         path = paths[0].locate().parent
-                        self.logger.info(f"\t{ module} --> {path}")
+                        self.logger.info(f"\t{module} --> {path}")
                         loaders.append(jinja2.FileSystemLoader(path))
 
             self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
