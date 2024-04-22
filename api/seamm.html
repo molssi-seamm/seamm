@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2024.1.2 documentation</title>
+    <title>seamm package &#8212; SEAMM 2024.4.22 documentation</title>
   
   
   
@@ -18,15 +18,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -34,9 +34,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c224919a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -46,8 +46,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0b07e6f1"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=7bd14f30"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
@@ -67,10 +67,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -111,7 +110,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
@@ -151,12 +150,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       
         <div class="navbar-item">
 <nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -311,10 +304,13 @@ document.write(`
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -327,12 +323,6 @@ document.write(`
         
           <div class="navbar-item">
 <nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
   <ul class="bd-navbar-elements navbar-nav">
     
                     <li class="nav-item">
@@ -519,7 +509,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="seamm-package">
 <h1>seamm package<a class="headerlink" href="#seamm-package" title="Link to this heading">#</a></h1>
@@ -611,7 +601,7 @@ files and submit the job to a dashboard.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.credentials">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">credentials</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.credentials" title="Link to this definition">#</a></dt>
-<dd><p>The data Dashboard from ~/.seammrc.</p>
+<dd><p>The data Dashboard from ~/.seamm.d/seammrc.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1068,33 +1058,33 @@ be used as is.</p>
 module.</p></li>
 <li><p><strong>uid</strong> (<em>str</em><em>, </em><em>optional</em>) – The unigue ID for the step, used when reading a flowchart. If not given it is
 generated using uuid.uuid4().</p></li>
-<li><p><strong>calculation</strong> – </p></li>
-<li><p><strong>description</strong> – </p></li>
-<li><p><strong>directory</strong> – </p></li>
-<li><p><strong>extension</strong> – </p></li>
+<li><p><strong>calculation</strong></p></li>
+<li><p><strong>description</strong></p></li>
+<li><p><strong>directory</strong></p></li>
+<li><p><strong>extension</strong></p></li>
 <li><p><strong>flowchart</strong> – The flowchart that this step is part of.</p></li>
-<li><p><strong>global_options</strong> – </p></li>
-<li><p><strong>header</strong> – </p></li>
-<li><p><strong>indent</strong> – </p></li>
-<li><p><strong>job_path</strong> – </p></li>
+<li><p><strong>global_options</strong></p></li>
+<li><p><strong>header</strong></p></li>
+<li><p><strong>indent</strong></p></li>
+<li><p><strong>job_path</strong></p></li>
 <li><p><strong>logger</strong> – The logger for debug, etc. output.</p></li>
-<li><p><strong>metadata</strong> – </p></li>
-<li><p><strong>method</strong> – </p></li>
-<li><p><strong>model</strong> – </p></li>
-<li><p><strong>options</strong> – </p></li>
+<li><p><strong>metadata</strong></p></li>
+<li><p><strong>method</strong></p></li>
+<li><p><strong>model</strong></p></li>
+<li><p><strong>options</strong></p></li>
 <li><p><strong>parent</strong> (<em>seamm.Node</em>) – The node that is the parent, usually because this node is in a subflowchart of
 the parent.</p></li>
 <li><p><strong>parameters</strong> (<em>seamm.Parameters</em>) – The control parameters for this step.</p></li>
-<li><p><strong>references</strong> – </p></li>
-<li><p><strong>step_type</strong> – </p></li>
-<li><p><strong>tables</strong> – </p></li>
-<li><p><strong>title</strong> – </p></li>
+<li><p><strong>references</strong></p></li>
+<li><p><strong>step_type</strong></p></li>
+<li><p><strong>tables</strong></p></li>
+<li><p><strong>title</strong></p></li>
 <li><p><strong>x</strong> (<em>int</em>) – The x-coordinate of the step in the GUI</p></li>
 <li><p><strong>y</strong> (<em>int</em>) – The y-coordinate of the step in the GUI</p></li>
 <li><p><strong>w</strong> (<em>int</em>) – The width of the step in the GUI</p></li>
 <li><p><strong>h</strong> (<em>int</em>) – The height of the step in the GUI</p></li>
-<li><p><strong>uuid</strong> – </p></li>
-<li><p><strong>visited</strong> – </p></li>
+<li><p><strong>uuid</strong></p></li>
+<li><p><strong>visited</strong></p></li>
 </ul>
 </dd>
 </dl>
@@ -2845,7 +2835,7 @@ and submit the job as requested.</p>
 <dd><p>Handles the right click event on the node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>event</strong> (<em>Tk Event</em>) – </p>
+<dd class="field-odd"><p><strong>event</strong> (<em>Tk Event</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -2881,27 +2871,27 @@ three arrows.</p></li>
 <li><p><strong>w</strong> (<em>int</em>) – The width of the drawing for the node on the canvas.</p></li>
 <li><p><strong>h</strong> (<em>int</em>) – The height of the drawing for the node on the canvas.</p></li>
 <li><p><strong>my_logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – The logger to use. Defaults to the global one defined in the module.</p></li>
-<li><p><strong>Fields</strong> – </p></li>
-<li><p><strong>------</strong> – </p></li>
-<li><p><strong>border</strong> – </p></li>
-<li><p><strong>canvas</strong> – </p></li>
+<li><p><strong>Fields</strong></p></li>
+<li><p><strong>------</strong></p></li>
+<li><p><strong>border</strong></p></li>
+<li><p><strong>canvas</strong></p></li>
 <li><p><strong>dialog</strong> (<em>tkinter.Toplevel</em>) – The dialog for editing the parameters.</p></li>
-<li><p><strong>flowchart</strong> – </p></li>
-<li><p><strong>h</strong> – </p></li>
+<li><p><strong>flowchart</strong></p></li>
+<li><p><strong>h</strong></p></li>
 <li><p><strong>logger</strong> (<em>logging.Logger</em>) – The logger for debug &amp; warning output.</p></li>
 <li><p><strong>node</strong> – The non-graphical node corresponding to this graphical one.</p></li>
 <li><p><strong>node_type</strong> – The type of the node from the point of connectivity.</p></li>
 <li><p><strong>popup_menu</strong> (<em>tkinter.Menu</em>) – The popup menu used for right-clicks.</p></li>
-<li><p><strong>selected</strong> – </p></li>
-<li><p><strong>tag</strong> – </p></li>
-<li><p><strong>title</strong> – </p></li>
+<li><p><strong>selected</strong></p></li>
+<li><p><strong>tag</strong></p></li>
+<li><p><strong>title</strong></p></li>
 <li><p><strong>title_label</strong> (<em>tkinter.ttk.Label</em>) – The label for the title of the step on the display.</p></li>
 <li><p><strong>tk_flowchart</strong> – The Tk Flowchart that contains this step.</p></li>
 <li><p><strong>tk_subflowchart</strong> (<em>seamm.TkFlowchart</em>) – The sub flowchart is if this step contains one.</p></li>
-<li><p><strong>w</strong> – </p></li>
-<li><p><strong>x</strong> – </p></li>
-<li><p><strong>y</strong> – </p></li>
-<li><p><strong>uuid</strong> – </p></li>
+<li><p><strong>w</strong></p></li>
+<li><p><strong>x</strong></p></li>
+<li><p><strong>y</strong></p></li>
+<li><p><strong>uuid</strong></p></li>
 </ul>
 </dd>
 </dl>
@@ -3679,12 +3669,14 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-  <div class="sidebar-secondary-item">
 
-  <div class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc">
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.builtins">seamm.builtins module</a><ul class="visible nav section-nav flex-column">
@@ -4215,8 +4207,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -4268,7 +4260,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
 </p></div>
       
     </div>
