@@ -78,7 +78,7 @@ class DashboardHandler(object):
 
     @property
     def credentials(self):
-        """The data Dashboard from ~/.seammrc."""
+        """The data Dashboard from ~/.seamm.d/seammrc."""
         return self._credentials
 
     @property
