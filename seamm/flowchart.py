@@ -6,12 +6,10 @@ the flowchart. There may be isolated nodes or groups of connected nodes;
 however, the flow starts at the 'start' node and follows the connections,
 so isolated nodes and fragments will not be executed."""
 
-import configparser
 from datetime import datetime
 import hashlib
 import json
 import logging
-from pathlib import Path
 import os
 import os.path
 import stat
@@ -19,6 +17,7 @@ import stat
 from packaging.version import Version
 
 import seamm
+from .seammrc import SEAMMrc
 import seamm_util
 
 logger = logging.getLogger(__name__)
@@ -532,21 +531,18 @@ class Flowchart(object):
             "creators": [],
             "grants": [],
         }
-        # See if the user info is in the .seammrc file...
-        path = Path("~/.seammrc").expanduser()
-        if path.exists:
-            config = configparser.ConfigParser()
-            config.read(path)
-            if "USER" in config:
-                user = config["USER"]
-                if "name" in user:
-                    author = {"name": user["name"]}
-                    for key in ("orcid", "affiliation"):
-                        if key in user:
-                            author[key] = user[key]
-                    self.metadata["creators"].append(author)
-                if "grants" in user:
-                    self.metadata["grants"] = user["grants"].split()
+        # See if the user info is in the ~/.seamm.d/seammrc file...
+        rc = SEAMMrc()
+
+        if "USER" in rc:
+            if rc.has_option("USER", "name"):
+                author = {"name": rc.get("USER", "name")}
+                for key in ("orcid", "affiliation"):
+                    if rc.has_option("USER", key):
+                        author[key] = rc.get("USER", key)
+                self.metadata["creators"].append(author)
+            if rc.has_option("USER", "grants"):
+                self.metadata["grants"] = rc.get("USER", "grants").split()
 
         self.metadata.update(kwargs)
 

@@ -1,9 +1,12 @@
 =======
 History
 =======
+2024.4.22 -- Moving user preferences to ~/.seamm.d
+    * To better support Docker, moving ~/.seammrc to ~/.seamm.d/seamrc
+
 2024.1.2 -- Corrected issue with citations in development versions
     * Fixed an issue getting the date of a plug-in for development versions of the
-      plug-in. This did not affect end users, but did casue issues for development.
+      plug-in. This did not affect end users, but did cause issues for development.
       
 2023.12.18 -- Moving execution of flowcharts to seamm-exec
     * Moved execution of flowcharts to seamm-exec to consolidate execution in one
