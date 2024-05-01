@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2024.4.22 documentation</title>
+    <title>seamm package &#8212; SEAMM 2024.5.1 documentation</title>
   
   
   
@@ -46,7 +46,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=7bd14f30"></script>
+    <script src="../_static/documentation_options.js?v=20db43be"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -2898,6 +2898,21 @@ three arrows.</p></li>
 <p class="rubric">Notes</p>
 <p>The state is held in the corresponding non-graphical node, <cite>self.node</cite>. Many of
 the properties are thin-wrappers to the same property of the non-graphical node.</p>
+<p>Results are stored in the following columns of the results table:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>  <span class="n">Result</span> <span class="n">name</span>
+<span class="mi">1</span>  <span class="o">&lt;</span><span class="n">separator</span><span class="o">&gt;</span>
+<span class="mi">2</span>  <span class="n">Save</span> <span class="ow">in</span> <span class="n">database</span>
+<span class="mi">3</span>  <span class="o">&lt;</span><span class="n">separator</span><span class="o">&gt;</span>
+<span class="mi">4</span>  <span class="n">Save</span> <span class="k">as</span> <span class="n">JSON</span>
+<span class="mi">5</span>  <span class="o">&lt;</span><span class="n">separator</span><span class="o">&gt;</span>
+<span class="mi">6</span>  <span class="n">checkbox</span>
+<span class="mi">7</span>  <span class="n">Save</span> <span class="ow">in</span> <span class="n">variable</span> <span class="n">named</span>
+<span class="mi">8</span>  <span class="o">&lt;</span><span class="n">separator</span><span class="o">&gt;</span>
+<span class="mi">9</span>  <span class="n">Save</span> <span class="ow">in</span> <span class="n">table</span>
+<span class="mi">10</span> <span class="k">as</span> <span class="n">Column</span> <span class="n">name</span>
+<span class="mi">11</span> <span class="n">Units</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.activate">
 <span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.activate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.activate" title="Link to this definition">#</a></dt>
