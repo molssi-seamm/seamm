@@ -1,6 +1,11 @@
 =======
 History
 =======
+2024.5.1 -- Added ability to store results in Results.json file
+    * Added column in the results tab for saving results to JSON
+    * Added separators between the columns of the results table to make clearer which
+      parameters go together.
+      
 2024.4.22 -- Moving user preferences to ~/.seamm.d
     * To better support Docker, moving ~/.seammrc to ~/.seamm.d/seamrc
 

@@ -28,7 +28,7 @@ import uuid
 
 import reference_handler
 import seamm
-from seamm_util import Q_
+from seamm_util import CompactJSONEncoder, Q_
 import seamm_util
 from seamm_util.printing import FormattedText as __
 import seamm_util.printing as printing
@@ -1011,6 +1011,7 @@ class Node(collections.abc.Hashable):
 
         results = self.parameters["results"].value
 
+        json_data = {}
         for key, value in results.items():
             if key not in data or data[key] is None:
                 continue
@@ -1069,6 +1070,13 @@ class Node(collections.abc.Hashable):
                             properties.put(
                                 _property, json.dumps(data[key], separators=(",", ":"))
                             )
+
+            # Store as JSON
+            if "json" in value:
+                json_data[key] = data[key]
+                # And units if present
+                if "units" in result_metadata:
+                    json_data[key + ",units"] = result_metadata["units"]
 
             # Store in a variable
             if "variable" in value:
@@ -1246,6 +1254,14 @@ class Node(collections.abc.Hashable):
                             table.at[row_index, column] = json.dumps(
                                 data[key], separators=(",", ":")
                             )
+
+        # Save the data as JSON
+        if len(json_data) > 0:
+            path = Path(self.directory) / "Results.json"
+            with path.open("w") as fd:
+                json.dump(
+                    json_data, fd, indent=4, sort_keys=True, cls=CompactJSONEncoder
+                )
 
     def create_figure(self, title="", template="line.graph_template", module_path=None):
         """Create a new figure.
