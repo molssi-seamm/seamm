@@ -75,6 +75,22 @@ class TkNode(collections.abc.MutableMapping):
     -----
     The state is held in the corresponding non-graphical node, `self.node`. Many of
     the properties are thin-wrappers to the same property of the non-graphical node.
+
+    Results are stored in the following columns of the results table::
+
+        0  Result name
+        1  <separator>
+        2  Save in database
+        3  <separator>
+        4  Save as JSON
+        5  <separator>
+        6  checkbox
+        7  Save in variable named
+        8  <separator>
+        9  Save in table
+        10 as Column name
+        11 Units
+
     """
 
     anchor_points = {
@@ -430,9 +446,14 @@ class TkNode(collections.abc.MutableMapping):
                 rframe,
                 columns=[
                     "Result",
+                    "|",
                     "Save in database",
+                    "|",
+                    "Save as JSON",
+                    "|",
                     "",
                     "Save in variable named",
+                    "|",
                     "Save in table",
                     "as Column name",
                     "Units",
@@ -792,6 +813,7 @@ class TkNode(collections.abc.MutableMapping):
                 for (
                     key,
                     w_property,
+                    w_json,
                     w_check,
                     w_variable,
                     w_table,
@@ -803,6 +825,8 @@ class TkNode(collections.abc.MutableMapping):
                         tmp["variable"] = w_variable.get()
                         if w_units is not None:
                             tmp["units"] = w_units.get()
+                    if self.tk_var["json " + key].get():
+                        tmp["json"] = True
                     if w_table is not None:
                         table = w_table.get()
                         if table != "":
@@ -1012,20 +1036,27 @@ class TkNode(collections.abc.MutableMapping):
                     var["value"].set(0)
 
                 w = ttk.Checkbutton(frame, variable=var["value"])
-                table.cell(row, 1, w)
+                table.cell(row, 2, w)
                 widgets.append(w)
             else:
                 widgets.append(None)
+
+            # JSON
+            var = self.tk_var["json " + key] = tk.IntVar()
+            var.set(0)
+            w = ttk.Checkbutton(frame, variable=var)
+            table.cell(row, 4, w)
+            widgets.append(w)
 
             # variable
             var = self.tk_var[key] = tk.IntVar()
             var.set(0)
             w = ttk.Checkbutton(frame, variable=var)
-            table.cell(row, 2, w)
+            table.cell(row, 6, w)
             widgets.append(w)
             e = ttk.Entry(frame, width=15)
             e.insert(0, key.lower().replace(" ", "_"))
-            table.cell(row, 3, e)
+            table.cell(row, 7, e)
             widgets.append(e)
 
             if key in results:
@@ -1036,14 +1067,14 @@ class TkNode(collections.abc.MutableMapping):
 
             # table
             w = ttk.Combobox(frame, width=10, values=["", *self._tables])
-            table.cell(row, 4, w)
+            table.cell(row, 9, w)
             widgets.append(w)
             w.bind("<<ComboboxSelected>>", self._table_cb)
             w.bind("<Return>", self._table_cb)
             w.bind("<FocusOut>", self._table_cb)
             e = ttk.Entry(frame, width=15)
             e.insert(0, key.lower().replace("_", " "))
-            table.cell(row, 5, e)
+            table.cell(row, 10, e)
             widgets.append(e)
 
             if key in results:
@@ -1057,7 +1088,7 @@ class TkNode(collections.abc.MutableMapping):
                 units = entry["units"]
                 w = ttk.Combobox(frame, width=10)
                 widgets.append(w)
-                table.cell(row, 6, w)
+                table.cell(row, 11, w)
                 w.config(values=[*default_units(units), ""])
                 w.set(units)
                 if key in results and "units" in results[key]:
