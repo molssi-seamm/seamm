@@ -1,6 +1,8 @@
 =======
 History
 =======
+2024.5.3.1 -- Bugfix: JSON in Results GUI not set correctly.
+
 2024.5.3 -- Added the time to Results.json
     * Adding time into the Results.json file will allow ensuring that the most
       recent data is used, when there are duplicates.
