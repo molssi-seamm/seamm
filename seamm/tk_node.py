@@ -723,6 +723,7 @@ class TkNode(collections.abc.MutableMapping):
                 for (
                     key,
                     w_property,
+                    w_json,
                     w_check,
                     w_variable,
                     w_table,
@@ -762,6 +763,12 @@ class TkNode(collections.abc.MutableMapping):
                                 self.tk_var["property " + key]["value"].set(1)
                             else:
                                 self.tk_var["property " + key]["value"].set(0)
+
+                        if w_json is not None:
+                            if "json" in tmp:
+                                self.tk_var["json " + key]["value"].set(1)
+                            else:
+                                self.tk_var["json " + key]["value"].set(0)
 
                         if w_units is not None:
                             if "units" in tmp:
@@ -1043,7 +1050,10 @@ class TkNode(collections.abc.MutableMapping):
 
             # JSON
             var = self.tk_var["json " + key] = tk.IntVar()
-            var.set(0)
+            if key in results and "json" in results[key]:
+                var.set(1)
+            else:
+                var.set(0)
             w = ttk.Checkbutton(frame, variable=var)
             table.cell(row, 4, w)
             widgets.append(w)
