@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_node &#8212; SEAMM 2024.5.3 documentation</title>
+    <title>seamm.tk_node &#8212; SEAMM 2024.5.3.1 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=b35b4dcd"></script>
+    <script src="../../_static/documentation_options.js?v=57db8a4e"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1260,6 +1260,7 @@ document.write(`
                 <span class="k">for</span> <span class="p">(</span>
                     <span class="n">key</span><span class="p">,</span>
                     <span class="n">w_property</span><span class="p">,</span>
+                    <span class="n">w_json</span><span class="p">,</span>
                     <span class="n">w_check</span><span class="p">,</span>
                     <span class="n">w_variable</span><span class="p">,</span>
                     <span class="n">w_table</span><span class="p">,</span>
@@ -1299,6 +1300,12 @@ document.write(`
                                 <span class="bp">self</span><span class="o">.</span><span class="n">tk_var</span><span class="p">[</span><span class="s2">&quot;property &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">tk_var</span><span class="p">[</span><span class="s2">&quot;property &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">w_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="s2">&quot;json&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">tk_var</span><span class="p">[</span><span class="s2">&quot;json &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">tk_var</span><span class="p">[</span><span class="s2">&quot;json &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
                         <span class="k">if</span> <span class="n">w_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
@@ -1610,7 +1617,10 @@ document.write(`
 
             <span class="c1"># JSON</span>
             <span class="n">var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_var</span><span class="p">[</span><span class="s2">&quot;json &quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">IntVar</span><span class="p">()</span>
-            <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">results</span> <span class="ow">and</span> <span class="s2">&quot;json&quot;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
             <span class="n">table</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
             <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
