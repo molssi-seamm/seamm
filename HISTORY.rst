@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.5.3 -- Added the time to Results.json
+    * Adding time into the Results.json file will allow ensuring that the most
+      recent data is used, when there are duplicates.
+      
 2024.5.1 -- Added ability to store results in Results.json file
     * Added column in the results tab for saving results to JSON
     * Added separators between the columns of the results table to make clearer which

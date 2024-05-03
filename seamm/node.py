@@ -6,7 +6,7 @@
 import bibtexparser
 import calendar
 import collections.abc
-from datetime import datetime
+from datetime import datetime, timezone
 import hashlib
 
 try:
@@ -1257,6 +1257,8 @@ class Node(collections.abc.Hashable):
 
         # Save the data as JSON
         if len(json_data) > 0:
+            # Add a timestamp
+            json_data["iso time"] = datetime.now(timezone.utc).isoformat()
             path = Path(self.directory) / "Results.json"
             with path.open("w") as fd:
                 json.dump(
