@@ -1,0 +1,118 @@
+<html>
+  <head><meta charset="utf-8" /></head>
+  <body>
+    <div>
+      <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>    
+      <div id="b4d1ccf6-a731-4cfc-95dd-479f770eaa06" class="plotly-graph-div" style="height:100%; width:100%;"></div>
+      <script type="text/javascript">
+	
+	window.PLOTLYENV=window.PLOTLYENV || {};
+        
+	if (document.getElementById("b4d1ccf6-a731-4cfc-95dd-479f770eaa06")) {
+            Plotly.newPlot(
+		'b4d1ccf6-a731-4cfc-95dd-479f770eaa06',
+		[
+		    {%- for trace in traces %}    
+		    {
+			"contours": {
+			    "z": {
+				"show": true,
+				"usecolormap": true,
+				"highlightcolor" : "#42f462",
+				"project": {
+				    "z": true
+				}
+			    }
+			},
+			"hoverlabel": {
+			    "namelength": 0
+			},
+			{%- if 'hovertemplate' in trace %}
+			"hovertemplate": "{{ trace.hovertemplate }}",
+			{%- else %}
+			"hovertemplate": "{{ trace.xlabel }}=%{x} {{ trace.xunits }}<br>{{ trace.ylabel }}=%{y} {{ trace.yunits }}",
+			{%- endif %}
+			"legendgroup": "",
+			"mode": "lines",
+			{%- if 'showlegend' in trace %}
+			"showlegend": {{ trace.showlegend }},
+			{%- endif %}
+			"line": {
+			    "color": "{{ trace.color|default('#4dbd74') }}",
+			    "dash": "{{ trace.dash|default('solid') }}",
+			    "width": "{{ trace.width|default('1') }}"
+			},
+			{%- if 'fill' in trace %}
+			"fill": "{{ trace.fill }}",
+			{%- endif %}
+			{%- if 'fillcolor' in trace %}
+			"fillcolor": "{{ trace.color|default('lightgray') }}",
+			{%- endif %}
+			"name": "{{ trace.name }}",
+			"type": "surface",
+			{%- if 'visible' in trace %}
+			"visible": "{{ trace.visible }}",
+			{%- endif %}
+			{%- if 'x' in trace %}
+			"x": {{ trace.x|jsonify }},
+			{%- else %}
+			"x0": {{ trace.x0 }},
+			"dx": {{ trace.dx }},
+			{%- endif %}
+			"xaxis": "{{ trace.xaxis }}",
+			{%- if 'y' in trace %}
+			"y": {{ trace.y|jsonify }},
+			{%- else %}
+			"y0": {{ trace.y0 }},
+			"dy": {{ trace.dy }},
+			{%- endif %}
+			"yaxis": "{{ trace.yaxis }}",
+			"z": {{ trace.z|jsonify }},
+			"zaxis": "{{ trace.zaxis }}"
+			{%- if loop.last %}
+		    }
+		    {%- else %}
+		    },
+		{%- endif %}
+		{%- endfor %}
+		],
+		{
+		    "hovermode": "x",
+		    "legend": {
+			"title": "",
+			"tracegroupgap": 0
+		    },
+		    "title": {
+			"x": 0.5,
+			"text": "{{ title }}",
+			"xanchor": "center"
+		    },
+		    "scene": {
+			{%- for axis in axes %}    
+			"{{ axis.name[:-1] }}": {
+			    "domain": [
+				{{ axis.start }},
+				{{ axis.stop }}
+			    ],
+			    {%- if 'range' in axis %}
+			    "range": {{ axis.range|jsonify }},
+			    {%- endif %}
+			    "title": {
+				"text": "{{ axis.label }}"
+			    }
+			{%- if loop.last %}
+			}
+			{%- else %}
+			},
+			{%- endif %}
+			{%- endfor %}
+		    }
+                }
+            )
+            };
+        </script>
+    </div>
+</body>
+</html>
+
