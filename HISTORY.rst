@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.5.26 -- Bugfix: Error when clicking "Cancel" on some dialogs
+    * Dialogs that have a Results tab -- mainly the computational engines -- raised an
+      error if the "Cancel" button was clicked. "OK" worked. This fixes the problem.
+      
 2024.5.3.1 -- Bugfix: JSON in Results GUI not set correctly.
 
 2024.5.3 -- Added the time to Results.json

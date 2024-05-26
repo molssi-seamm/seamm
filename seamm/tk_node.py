@@ -766,9 +766,9 @@ class TkNode(collections.abc.MutableMapping):
 
                         if w_json is not None:
                             if "json" in tmp:
-                                self.tk_var["json " + key]["value"].set(1)
+                                self.tk_var["json " + key].set(1)
                             else:
-                                self.tk_var["json " + key]["value"].set(0)
+                                self.tk_var["json " + key].set(0)
 
                         if w_units is not None:
                             if "units" in tmp:
