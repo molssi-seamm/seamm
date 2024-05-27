@@ -1140,6 +1140,7 @@ class TkNode(collections.abc.MutableMapping):
             for (
                 key,
                 w_property,
+                w_json,
                 w_check,
                 w_variable,
                 w_table,
