@@ -223,6 +223,11 @@ class Node(collections.abc.Hashable):
         return self._calculation
 
     @property
+    def data_path(self):
+        """A path to local and user data, such as forcefields."""
+        return self.flowchart.data_path
+
+    @property
     def description(self):
         """A textual description of this node"""
         return self._description
@@ -253,6 +258,16 @@ class Node(collections.abc.Hashable):
         return "Step {}: {}  {}".format(
             ".".join(str(e) for e in self._id), self.title, self.version
         )
+
+    @property
+    def data_files(self):
+        """tuples of short name and path for any data files needed"""
+        return self.list_data_files()
+
+    @property
+    def in_jobserver(self):
+        """Whether running in a jobserver"""
+        return self.flowchart.in_jobserver
 
     @property
     def indent(self):
@@ -435,6 +450,31 @@ class Node(collections.abc.Hashable):
         """Reset the id for node"""
         self._id = None
 
+    def find_data_file(self, filename):
+        """Using the data_path, find a file.
+
+        Parameters
+        ----------
+        filename : str or pathlib.Path
+            Name of the file to find -- a relative path
+
+        Returns
+        -------
+        path : pathlib.Path
+            The path to the file
+
+        Exceptions
+        ----------
+        FileNotFoundError if the file does not exist.
+        """
+        for path in self.data_path:
+            tmp = path / filename
+            self.logger.debug(f"  trying {tmp}")
+            if tmp.exists():
+                return tmp.expanduser().resolve()
+        self.logger.debug(f"Did not find {filename}")
+        raise FileNotFoundError(f"Data file '{filename}' not found.")
+
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
         if gui is None:
@@ -602,6 +642,28 @@ class Node(collections.abc.Hashable):
         table_handle = self.get_variable(tablename)
         return table_handle["table"]
 
+    def glob_data_files(self, pattern):
+        """Using the data_path, glob for files.
+
+        Parameters
+        ----------
+        filename : str or pathlib.Path
+            Name of the file to find -- a relative path
+
+        Returns
+        -------
+        paths : [pathlib.Path]
+            A list of paths to the files
+
+        Exceptions
+        ----------
+        FileNotFoundError if the file does not exist.
+        """
+        paths = []
+        for path in self.data_path:
+            paths.extend(path.glob(pattern))
+        return paths
+
     def connections(self):
         """Return a list of all the incoming and outgoing edges
         for this node, giving the anchor points and other node
@@ -709,6 +771,16 @@ class Node(collections.abc.Hashable):
             tables.update(node.tables)
 
         return sorted(tables)
+
+    def list_data_files(self):
+        """Returns a list of auxilliary data files needed, like forcefields.
+
+        Returns
+        -------
+        (shortname, pathlib.Path)
+            Tuples with the local path or URI for the file, and its full pathlib.Path
+        """
+        return []
 
     def run(self, printer=None):
         """Do whatever we need to do! The base class does nothing except

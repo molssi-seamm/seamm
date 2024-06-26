@@ -6,12 +6,12 @@ the flowchart. There may be isolated nodes or groups of connected nodes;
 however, the flow starts at the 'start' node and follows the connections,
 so isolated nodes and fragments will not be executed."""
 
-from datetime import datetime
 import hashlib
 import json
 import logging
 import os
 import os.path
+from pathlib import Path
 import stat
 
 from packaging.version import Version
@@ -76,14 +76,20 @@ class Flowchart(object):
         # and make sure that the start node exists
         self.add_node(seamm.StartNode(flowchart=self))
 
-        # And the root directory
+        # And the root directory and other information
         self.root_directory = directory
+        self.in_jobserver = False
 
         # And the parser associated with this flowchart
         self._parser = None
 
     def __iter__(self):
         return self.graph.__iter__()
+
+    @property
+    def data_path(self):
+        """A path to local and user data, such as forcefields."""
+        return self._data_path
 
     @property
     def executor(self):
@@ -93,6 +99,24 @@ class Flowchart(object):
     @executor.setter
     def executor(self, value):
         self._executor = value
+
+    @property
+    def in_jobserver(self):
+        """Whether running in a JobServer."""
+        return self._in_jobserver
+
+    @in_jobserver.setter
+    def in_jobserver(self, value):
+        self._in_jobserver = value
+        if value:
+            self._data_path = [
+                Path(self.root_directory) / "data",
+            ]  # path for local data in JobServer
+        else:
+            self._data_path = [
+                Path.home() / ".seamm.d" / "data",
+                Path.home() / "SEAMM" / "data",
+            ]  # path for local data on local machine
 
     @property
     def is_development(self):
@@ -106,9 +130,7 @@ class Flowchart(object):
     def root_directory(self):
         """The root directory for files, etc for this flowchart"""
         if self._root_directory is None:
-            self._root_directory = os.path.join(
-                os.getcwd(), datetime.now().isoformat(sep="_", timespec="seconds")
-            )
+            self._root_directory = os.getcwd()
         return self._root_directory
 
     @root_directory.setter
@@ -214,6 +236,9 @@ class Flowchart(object):
             nodes.append(next_node)
             next_node = next_node.next()
         logger.debug("Finished getting nodes")
+
+        self.reset_visited()
+
         return nodes
 
     def last_node(self, node="1"):

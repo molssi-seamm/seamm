@@ -1,6 +1,13 @@
 =======
 History
 =======
+2024.6.27 -- Added support for using local data files.
+    * Added support in the Flowchart and Node classes for using local data files for
+      e.g. forcefields. This allows the user to specify a local file, which is copied to
+      the working directory of the job.
+    * Also added a flag to both the Flowchart and Node classes indicating that the job
+      is running in the JobServer rather than command-line.
+      
 2024.5.27 -- Bugfix: Error saving results table.
 
 2024.5.26 -- Bugfix: Error when clicking "Cancel" on some dialogs
