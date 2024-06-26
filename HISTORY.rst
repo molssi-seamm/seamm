@@ -2,7 +2,7 @@
 History
 =======
 2024.6.27 -- Added support for using local data files.
-    * Added support in the FLowchart and Node classes for using local data files for
+    * Added support in the Flowchart and Node classes for using local data files for
       e.g. forcefields. This allows the user to specify a local file, which is copied to
       the working directory of the job.
     * Also added a flag to both the Flowchart and Node classes indicating that the job
