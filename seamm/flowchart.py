@@ -78,6 +78,7 @@ class Flowchart(object):
 
         # And the root directory and other information
         self.root_directory = directory
+        self._data_path = None
         self.in_jobserver = False
 
         # And the parser associated with this flowchart

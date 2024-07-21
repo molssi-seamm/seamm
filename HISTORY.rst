@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.7.21 -- Allows capital letters in variables and columns for results
+    * Allows capital letters for the variables, column names, etc. that results are
+      stored in. For example, 'T', 'P', and 'V'.
+      
 2024.6.27 -- Added support for using local data files.
     * Added support in the Flowchart and Node classes for using local data files for
       e.g. forcefields. This allows the user to specify a local file, which is copied to
