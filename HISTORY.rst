@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.7.28 -- Updating standard parameters for systems and configurations
+    * Cleaned up and add to the standard parameters used for naming system and
+      configurations. 'title' refers to the title in the file, is it exists.
+      
 2024.7.21 -- Allows capital letters in variables and columns for results
     * Allows capital letters for the variables, column names, etc. that results are
       stored in. For example, 'T', 'P', and 'V'.
