@@ -55,6 +55,7 @@ structure_handling_parameters = {
         "default_units": "",
         "enumeration": (
             "keep current name",
+            "title",
             "use SMILES string",
             "use Canonical SMILES string",
             "use IUPAC name",
@@ -71,11 +72,13 @@ structure_handling_parameters = {
         "default_units": "",
         "enumeration": (
             "keep current name",
+            "title",
             "use SMILES string",
             "use Canonical SMILES string",
             "use IUPAC name",
             "use InChI",
             "use InChIKey",
+            "sequential",
         ),
         "format_string": "s",
         "description": "Configuration name:",
