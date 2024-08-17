@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.8.17 -- Enhancements to line graphs
+    * Added multiple axes to line graphs.
+    * Updated to correct version of plotly. 'latest' is actually not.
+      
 2024.7.28 -- Updating standard parameters for systems and configurations
     * Cleaned up and add to the standard parameters used for naming system and
       configurations. 'title' refers to the title in the file, if it exists.
