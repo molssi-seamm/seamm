@@ -65,8 +65,20 @@
                 {{ axis.start }},
                 {{ axis.stop }}
             ],
+	    {%- if 'overlaying' in axis %}
+	    "overlaying": "{{ axis.overlaying }}",
+	    {%- endif %}
+	    {%- if 'position' in axis %}
+	    "position": "{{ axis.position }}",
+	    {%- endif %}
 	    {%- if 'range' in axis %}
 	    "range": {{ axis.range|jsonify }},
+	    {%- endif %}
+	    {%- if 'side' in axis %}
+	    "side": "{{ axis.side }}",
+	    {%- endif %}
+	    {%- if 'tickmode' in axis %}
+	    "tickmode": "{{ axis.tickmode }}",
 	    {%- endif %}
             "title": {
                 "text": "{{ axis.label }}"
