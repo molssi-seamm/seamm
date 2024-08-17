@@ -4,7 +4,7 @@
     <div>
         
                 <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>    
+	<script src='https://cdn.plot.ly/plotly-2.34.0.min.js'></script>
             <div id="b4d1ccf6-a731-4cfc-95dd-479f770eaa06" class="plotly-graph-div" style="height:100%; width:100%;"></div>
             <script type="text/javascript">
                 
