@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.standard_parameters &#8212; SEAMM 2024.8.17 documentation</title>
+    <title>seamm.standard_parameters &#8212; SEAMM 2024.8.21 documentation</title>
   
   
   
@@ -45,7 +45,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=53a1b1fa"></script>
+    <script src="../../_static/documentation_options.js?v=9100d5e2"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -602,6 +602,8 @@ document.write(`
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will be put in a new configuration.&quot;</span>
     <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will be put in a new system.&quot;</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;The handling of the structure will be determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
@@ -669,6 +671,8 @@ document.write(`
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;be added as a new configuration of the current system.&quot;</span>
     <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;be added as a new system and configuration.&quot;</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;be handled as determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
@@ -678,6 +682,8 @@ document.write(`
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created as a new configuration of the current system.&quot;</span>
     <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created in a new system and configuration.&quot;</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;handled as determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
