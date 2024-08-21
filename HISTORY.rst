@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.8.21 -- Bugfix: Error using variable in stucture handling
+    * The standard structure handling widgets and methods had an error is the approach
+      was a variable rather than one of the choices.
+      
 2024.8.17 -- Enhancements to line graphs
     * Added multiple axes to line graphs.
     * Updated to correct version of plotly. 'latest' is actually not.
