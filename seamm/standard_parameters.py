@@ -111,6 +111,8 @@ def structure_handling_description(P, **kwargs):
         text += "The structure will be put in a new configuration."
     elif handling == "Create a new system and configuration":
         text += "The structure will be put in a new system."
+    elif handling.startswith("$"):
+        text += f"The handling of the structure will be determined by '{handling}'."
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
@@ -175,6 +177,8 @@ def multiple_structure_handling_description(P, **kwargs):
         text += "be added as a new configuration of the current system."
     elif handling == "Create a new system and configuration":
         text += "be added as a new system and configuration."
+    elif handling.startswith("$"):
+        text += f"be handled as determined by '{handling}'."
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
@@ -184,6 +188,8 @@ def multiple_structure_handling_description(P, **kwargs):
         text += "created as a new configuration of the current system."
     elif handling == "Create a new system and configuration":
         text += "created in a new system and configuration."
+    elif handling.startswith("$"):
+        text += f"handled as determined by '{handling}'."
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
