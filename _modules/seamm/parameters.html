@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2024.8.21 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2024.10.13 documentation</title>
   
   
   
@@ -45,8 +45,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=9100d5e2"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/documentation_options.js?v=222dff52"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -714,12 +714,15 @@ document.write(`
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;   dimensionality = &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">tmp</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="p">(</span>
-                        <span class="s2">&quot;Units &#39;</span><span class="si">{}</span><span class="s2">&#39; have a different dimensionality than &quot;</span>
-                        <span class="s2">&quot;the parameters: &#39;</span><span class="si">{}</span><span class="s2">&#39; != &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="s2">&quot;Units &#39;</span><span class="si">{}</span><span class="s2">&#39; have a different dimensionality than &quot;</span>
+                            <span class="s2">&quot;the parameters: &#39;</span><span class="si">{}</span><span class="s2">&#39; != &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span>
+                    <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
