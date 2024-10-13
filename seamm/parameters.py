@@ -217,12 +217,15 @@ class Parameter(collections.abc.MutableMapping):
             logger.debug("   dimensionality = '{}'".format(self.dimensionality))
 
             if tmp.dimensionality != self.dimensionality:
-                raise RuntimeError(
-                    (
-                        "Units '{}' have a different dimensionality than "
-                        "the parameters: '{}' != '{}'"
-                    ).format(value, tmp.dimensionality, self.dimensionality)
-                )
+                try:
+                    Q_(1.0, self._data["units"]).to(value)
+                except Exception:
+                    raise RuntimeError(
+                        (
+                            "Units '{}' have a different dimensionality than "
+                            "the parameters: '{}' != '{}'"
+                        ).format(value, tmp.dimensionality, self.dimensionality)
+                    )
         self._data["units"] = value
 
     @property
