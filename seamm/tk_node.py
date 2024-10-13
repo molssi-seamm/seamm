@@ -236,6 +236,11 @@ class TkNode(collections.abc.MutableMapping):
         self.node.h = value
 
     @property
+    def metadata(self):
+        """Return the metadata for the node."""
+        return self.node.metadata
+
+    @property
     def selected(self):
         """Whether I am selected or not"""
         return self._selected
