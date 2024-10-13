@@ -1,6 +1,12 @@
 =======
 History
 =======
+2024.10.13 -- Bugfix: Issue changing units for some parameters
+    * Fixed a problem converting e.g. E_h to kJ/mol in the GUI widgets. The problem
+      occurred whenever the conversion was not direct but involved different
+      quantities.
+    * Internal enhancement: exposed the metadata to graphical nodes as a property.
+	
 2024.8.21 -- Bugfix: Error using variable in stucture handling
     * The standard structure handling widgets and methods had an error is the approach
       was a variable rather than one of the choices.
