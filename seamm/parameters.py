@@ -357,7 +357,11 @@ class Parameter(collections.abc.MutableMapping):
 
         # and run into pint quantity if requested
         if units and self.units is not None and self.units != "":
-            result = Q_(result, self.units)
+            # Might be a string...
+            if isinstance(result, str):
+                result = (result, self.units)
+            else:
+                result = Q_(result, self.units)
 
         return result
 

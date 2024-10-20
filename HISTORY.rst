@@ -1,6 +1,15 @@
 =======
 History
 =======
+2024.10.20 -- Improvements in opening flowcharts
+    * Removed directories and files not ending in ".flow" from the list of flowcharts
+      that can be opened.
+    * When getting a flowchart from a previous job, the list of jobs is reversed so
+      the most recent is at the top.
+    * Enhanced the handling of parameters to support e.g. lists of values with the
+      normal units attached. Used in e.g. thermochemistry to allow lists of temperatures
+      and pressures with associated units.
+	
 2024.10.13 -- Bugfix: Issue changing units for some parameters
     * Fixed a problem converting e.g. E_h to kJ/mol in the GUI widgets. The problem
       occurred whenever the conversion was not direct but involved different
