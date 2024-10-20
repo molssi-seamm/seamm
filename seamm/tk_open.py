@@ -345,7 +345,7 @@ class TkOpen(collections.abc.MutableMapping):
         self.clear_tree()
         self._data = {}
         tree = self["tree"]
-        for job in job_list:
+        for job in job_list[::-1]:
             iid = tree.insert("", "end", text=f"Job_{job['id']:0>6d}: {job['title']}")
             self._data[iid] = job
 
@@ -375,7 +375,7 @@ class TkOpen(collections.abc.MutableMapping):
         if path is not None:
             tree.delete(*tree.get_children(node))
             for p in sorted(path.iterdir(), key=lambda p: p.name):
-                if p.is_dir() or p.suffix == ".flow":
+                if p.suffix == ".flow":
                     self.insert_node(node, p.name, p)
 
     def reset_dialog(self, event=None):
