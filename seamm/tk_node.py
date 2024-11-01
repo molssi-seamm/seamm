@@ -159,6 +159,7 @@ class TkNode(collections.abc.MutableMapping):
         self._widget = {}
         self.tk_var = {}
         self.results_widgets = None
+        self._gui_data = {}
 
         # Because the default for saving properties in the database is True
         # we need to initialize the results to include them by default
@@ -565,6 +566,38 @@ class TkNode(collections.abc.MutableMapping):
         if self.tk_subflowchart is not None:
             self.tk_subflowchart.push()
 
+            # And update the menu items as needed
+            root = seamm.tk_data["root"]
+            CmdKey = seamm.tk_data["CmdKey"]
+            file_menu = seamm.tk_data["file menu"]
+
+            # Disable the Run menu item
+            self._gui_data["Run state"] = file_menu.entrycget("Run", "state")
+            file_menu.entryconfigure("Run", state=tk.DISABLED)
+
+            # Menu items and bindings
+            _w = self.tk_subflowchart.pw.winfo_toplevel()
+            for name in ("File", "Edit"):
+                for item, (_menu, _cmd, _acc) in seamm.tk_data["menus"][name].items():
+                    if _cmd == "":
+                        continue
+                    self._gui_data[f"{item} command"] = _menu.entrycget(item, "command")
+                    self._gui_data[f"{item} menu"] = _menu
+                    _menu.entryconfigure(
+                        item, command=getattr(self.tk_subflowchart, _cmd)
+                    )
+                    if _acc != "":
+                        u_seq = f"<{CmdKey}{_acc.upper()}>"
+                        l_seq = f"<{CmdKey}{_acc.lower()}>"
+                        self._gui_data[f"{_acc.upper()} binding"] = root.bind_all(u_seq)
+                        self._gui_data[f"{_acc.lower()} binding"] = root.bind_all(l_seq)
+                        if _acc == "R" or _acc == "r":
+                            _w.bind(u_seq, None)
+                            _w.bind(l_seq, None)
+                        else:
+                            _w.bind(u_seq, getattr(self.tk_subflowchart, _cmd))
+                            _w.bind(l_seq, getattr(self.tk_subflowchart, _cmd))
+
         self.dialog.activate(geometry="centerscreenfirst")
 
     def end_move(self, deltax, deltay):
@@ -705,7 +738,37 @@ class TkNode(collections.abc.MutableMapping):
             self.tk_subflowchart.add_edge(node1, node2, **attr)
 
     def handle_dialog(self, result):
-        """Do the right thing when the dialog is closed."""
+        """Handle closing the dialog.
+
+        Parameters
+        ----------
+        result : str
+            The button that was pressed to close the dialog, or None if the x dialog
+            close button was pressed.
+        """
+        # First restore any menus and bindings that were changed
+        if self.tk_subflowchart is not None:
+            # Reset the menu items as needed
+            CmdKey = seamm.tk_data["CmdKey"]
+
+            # Reset the menu items
+            for name in ("File", "Edit"):
+                for item, (_menu, _cmd, _acc) in seamm.tk_data["menus"][name].items():
+                    if _cmd == "":
+                        continue
+                    _menu.entryconfigure(
+                        item, command=self._gui_data[f"{item} command"]
+                    )
+
+                    # Reset the bindings
+                    if _acc == "R" or _acc == "r":
+                        _menu.entryconfigure("Run", state=self._gui_data["Run state"])
+                        u_seq = f"<{CmdKey}{_acc.upper()}>"
+                        l_seq = f"<{CmdKey}{_acc.lower()}>"
+                        _w = self.tk_subflowchart.pw.winfo_toplevel()
+                        _w.bind(u_seq, self._gui_data[f"{_acc.upper()} binding"])
+                        _w.bind(l_seq, self._gui_data[f"{_acc.lower()} binding"])
+
         if result is None or result == "Cancel":
             self.dialog.deactivate(result)
 

@@ -93,7 +93,7 @@ class TkFlowchart(object):
         self.data = None
         self._x0 = None
         self._y0 = None
-        self.selection = None
+        self.selection = []
         self.active_nodes = []
         self.in_callback = False
         self.canvas_after_callback = None
@@ -158,11 +158,6 @@ class TkFlowchart(object):
         h = int(factor * h)
         self.working_image = self.prepared_image.resize((w, h))
         self.photo = ImageTk.PhotoImage(self.working_image)
-        # self.background = self.canvas.create_image(
-        #     self.canvas_width / 2,
-        #     self.canvas_height / 2,
-        #     image=self.photo,
-        #     anchor='center')
         self.background = self.canvas.create_image(
             0, 0, image=self.photo, anchor="center"
         )
@@ -402,6 +397,21 @@ class TkFlowchart(object):
         start_node = self.get_node("1")
         start_node.edit()
 
+    def copy_to_clipboard(self, event=None):
+        """Copy the flowchart to the clipboard."""
+        self.update_flowchart()
+        self.flowchart.to_clipboard()
+
+    def cut(self, event=None):
+        """Cut the flowchart to the clipboard."""
+        self.copy_to_clipboard()
+        self.clear()
+
+    def paste_from_clipboard(self, event=None):
+        """Paste the flowchart from the clipboard."""
+        self.flowchart.from_clipboard()
+        self.from_flowchart()
+
     def publish(self, event=None):
         """Publish the flowchart to a repository such as Zenodo."""
         self.update_flowchart()
@@ -636,7 +646,7 @@ class TkFlowchart(object):
         self._x0 = None
         self._y0 = None
         self.mouse_op = None
-        self.selection = None
+        self.selection = []
 
     def create_node(self, event):
         """Create a node using the type in menu. This is a bit tricky because
