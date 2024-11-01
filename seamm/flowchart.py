@@ -15,6 +15,7 @@ from pathlib import Path
 import stat
 
 from packaging.version import Version
+import pyperclip
 
 import seamm
 from .seammrc import SEAMMrc
@@ -467,6 +468,14 @@ class Flowchart(object):
 
         permissions = stat.S_IMODE(os.lstat(filename).st_mode)
         os.chmod(filename, permissions | stat.S_IXUSR | stat.S_IXGRP)
+
+    def from_clipboard(self):
+        """Read the flowchart from the clipboard"""
+        self.from_text(pyperclip.paste())
+
+    def to_clipboard(self):
+        """Copy the flowchart to the clipboard"""
+        pyperclip.copy(self.to_text())
 
     def to_text(self):
         """Return the text for the flowchart.

@@ -1,6 +1,13 @@
 =======
 History
 =======
+2024.11.1 -- Enhancement: subflowcharts and menus handling flowcharts
+    * Added a subflowchart step to allow calling another flowchart from within a
+      flowchart.
+    * Added copy/cut/paste for flowcharts in the menus and shortcuts
+    * Enhanced the menus and bindings for operations on flowcharts so that they act on
+      the currently active flowchart or subflowchart.
+      
 2024.10.20 -- Improvements in opening flowcharts
     * Removed directories and files not ending in ".flow" from the list of flowcharts
       that can be opened.

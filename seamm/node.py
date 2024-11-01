@@ -533,6 +533,7 @@ class Node(collections.abc.Hashable):
         system_db = self.get_variable("_system_db")
 
         system = system_db.system
+        print(f"system = {system}")
         if system is None:
             configuration = None
         else:
@@ -740,16 +741,6 @@ class Node(collections.abc.Hashable):
             elif key == "parameters":
                 if self.parameters is not None:
                     hasher.update(bytes(str(self.parameters.to_dict()), "utf-8"))
-                else:
-                    if self.__class__.__name__ not in (
-                        "StartNode",
-                        "LAMMPS",
-                        "MOPAC",
-                        "Psi4",
-                        "Join",
-                        "Table",
-                    ):
-                        print(f"{self.__class__.__name__} has no parameters")
 
         return hasher.hexdigest()
 

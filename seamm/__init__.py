@@ -38,6 +38,9 @@ from .seammrc import SEAMMrc  # noqa: F401
 wrap_text = textwrap.TextWrapper(width=120)
 wrap_stdout = textwrap.TextWrapper(width=120)
 
+# Tk Data
+tk_data = {}
+
 # Handle versioneer
 from ._version import get_versions  # noqa: E402
 

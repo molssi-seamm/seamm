@@ -19,6 +19,7 @@ dependencies:
   - packaging
   - pandas
   - pillow
+  - pyperclip
   - pyuca
   - py-cpuinfo
   - rdkit

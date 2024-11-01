@@ -143,6 +143,7 @@ def flowchart():
     # Initialize Tk
     ##################################################
     root = tk.Tk()
+    seamm.tk_data["root"] = root
     Pmw.initialise(root)
 
     # Capture the initial font information
@@ -176,6 +177,9 @@ def flowchart():
 
     root.title(app_name)
 
+    # Metadata about the GUI
+    seamm.tk_data["menus"] = {}
+
     # The menus
     menu = tk.Menu(root)
 
@@ -191,30 +195,42 @@ def flowchart():
         CmdKey = "Command-"
     else:
         CmdKey = "Control-"
+    seamm.tk_data["CmdKey"] = CmdKey
 
     root.config(menu=menu)
+    seamm.tk_data["root menu"] = menu
     filemenu = tk.Menu(menu)
     menu.add_cascade(label="File", menu=filemenu)
-    filemenu.add_command(
-        label="New", command=tk_flowchart.new_file, accelerator=CmdKey + "N"
-    )
-    filemenu.add_command(
-        label="Open...", command=tk_flowchart.flowchart_search, accelerator=CmdKey + "O"
-    )
-    filemenu.add_command(
-        label="Save...", command=tk_flowchart.save, accelerator=CmdKey + "S"
-    )
-    filemenu.add_command(label="Save as...", command=tk_flowchart.save_file)
-    filemenu.add_command(label="Publish...", command=tk_flowchart.publish)
-    filemenu.add_separator()
-    filemenu.add_command(
-        label="Run", command=tk_flowchart.run, accelerator=CmdKey + "R"
-    )
+    seamm.tk_data["file menu"] = filemenu
+    seamm.tk_data["menus"]["File"] = menu_items = {}
+    menu_items["New"] = (filemenu, "new_file", "N")
+    menu_items["Open..."] = (filemenu, "flowchart_search", "O")
+    menu_items["Save"] = (filemenu, "save", "S")
+    menu_items["Save as..."] = (filemenu, "save_file", "")
+    menu_items["Publish..."] = (filemenu, "publish", "")
+    menu_items["sep1"] = (filemenu, "", "")
+    menu_items["Run"] = (filemenu, "run", "R")
+
+    for item, (_menu, _cmd, _acc) in menu_items.items():
+        if _cmd == "":
+            _menu.add_separator()
+        elif _acc == "":
+            _menu.add_command(label=item, command=getattr(tk_flowchart, _cmd))
+        else:
+            _cmd = getattr(tk_flowchart, _cmd)
+            _menu.add_command(
+                label=item,
+                command=_cmd,
+                accelerator=CmdKey + _acc if _acc != "" else "",
+            )
+            root.bind(f"<{CmdKey}{_acc.upper()}>", _cmd)
+            root.bind(f"<{CmdKey}{_acc.lower()}>", _cmd)
 
     # Control debugging info
     filemenu.add_separator()
     debug_menu = tk.Menu(menu)
     filemenu.add_cascade(label="Debug", menu=debug_menu)
+    seamm.tk_data["debug menu"] = debug_menu
     debug_menu.add_radiobutton(
         label="normal",
         value=30,
@@ -241,16 +257,35 @@ def flowchart():
     # Edit menu
     editmenu = tk.Menu(menu)
     menu.add_cascade(label="Edit", menu=editmenu)
-    editmenu.add_command(label="Description...", command=tk_flowchart.properties)
-    editmenu.add_command(
-        label="Clean layout",
-        command=tk_flowchart.clean_layout,
-        accelerator=CmdKey + "l",
-    )
+    seamm.tk_data["edit menu"] = editmenu
+    seamm.tk_data["menus"]["Edit"] = menu_items = {}
+    menu_items["Description..."] = (editmenu, "properties", "")
+    menu_items["sep1"] = (editmenu, "", "")
+    menu_items["Cut"] = (editmenu, "cut", "X")
+    menu_items["Copy"] = (editmenu, "copy_to_clipboard", "C")
+    menu_items["Paste"] = (editmenu, "paste_from_clipboard", "V")
+    menu_items["sep2"] = (editmenu, "", "")
+    menu_items["Clean layout"] = (editmenu, "clean_layout", "L")
+
+    for item, (_menu, _cmd, _acc) in menu_items.items():
+        if _cmd == "":
+            _menu.add_separator()
+        elif _acc == "":
+            _menu.add_command(label=item, command=getattr(tk_flowchart, _cmd))
+        else:
+            _cmd = getattr(tk_flowchart, _cmd)
+            _menu.add_command(
+                label=item,
+                command=_cmd,
+                accelerator=CmdKey + _acc if _acc != "" else "",
+            )
+            root.bind(f"<{CmdKey}{_acc.upper()}>", _cmd)
+            root.bind(f"<{CmdKey}{_acc.lower()}>", _cmd)
 
     # View menu
     viewmenu = tk.Menu(menu)
     menu.add_cascade(label="View", menu=viewmenu)
+    seamm.tk_data["view menu"] = viewmenu
     viewmenu.add_command(
         label="Increase font size", command=increase_font_size, accelerator=CmdKey + "+"
     )
@@ -262,19 +297,11 @@ def flowchart():
     # Help menu
     helpmenu = tk.Menu(menu)
     menu.add_cascade(label="Help", menu=helpmenu)
+    seamm.tk_data["help menu"] = helpmenu
     if sys.platform.startswith("darwin"):
         root.createcommand("tk::mac::ShowHelp", tk_flowchart.help)
 
-    root.bind_all("<" + CmdKey + "N>", tk_flowchart.new_file)
-    root.bind_all("<" + CmdKey + "n>", tk_flowchart.new_file)
-    root.bind_all("<" + CmdKey + "O>", tk_flowchart.flowchart_search)
-    root.bind_all("<" + CmdKey + "o>", tk_flowchart.flowchart_search)
-    root.bind_all("<" + CmdKey + "R>", tk_flowchart.run)
-    root.bind_all("<" + CmdKey + "r>", tk_flowchart.run)
-    root.bind_all("<" + CmdKey + "S>", tk_flowchart.save)
-    root.bind_all("<" + CmdKey + "s>", tk_flowchart.save)
-    root.bind_all("<" + CmdKey + "L>", tk_flowchart.clean_layout)
-    root.bind_all("<" + CmdKey + "l>", tk_flowchart.clean_layout)
+    # special bindings
     root.bind_all("<" + CmdKey + "plus>", increase_font_size)
     root.bind_all("<" + CmdKey + "equal>", increase_font_size)
     root.bind_all("<" + CmdKey + "minus>", decrease_font_size)
@@ -319,6 +346,13 @@ def handle_dbg_level(level):
 
     dbg_level = level
     logging.getLogger().setLevel(dbg_level)
+
+
+def pevent(event):
+    print(f"pevent: {event}")
+    print(f"      : {event.widget}")
+    print(f"      : {event.char}")
+    print(f"      : {event.keysym}")
 
 
 if __name__ == "__main__":
