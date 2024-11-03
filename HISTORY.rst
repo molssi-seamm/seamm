@@ -1,6 +1,9 @@
 =======
 History
 =======
+2024.11.3 -- Bugfix: removed debug printing in the flowchart
+    * Removed debug printing that was accidentally left in the flowchart code.
+      
 2024.11.1 -- Enhancement: subflowcharts and menus handling flowcharts
     * Added a subflowchart step to allow calling another flowchart from within a
       flowchart.

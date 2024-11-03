@@ -533,7 +533,6 @@ class Node(collections.abc.Hashable):
         system_db = self.get_variable("_system_db")
 
         system = system_db.system
-        print(f"system = {system}")
         if system is None:
             configuration = None
         else:
