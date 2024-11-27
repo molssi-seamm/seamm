@@ -48,6 +48,20 @@ def scale(data, factor):
     return result
 
 
+def_fmt = {
+    "kJ/mol": 2,
+    "kcal/mol": 2,
+    "kJ/mol/Å": 2,
+    "kcal/mol/Å": 2,
+    "eV": 3,
+    "E_h": 6,
+    "E_h/a0": 6,
+    "E_h/Å": 6,
+    "debye": 3,
+    "Å": 3,
+}
+
+
 class Node(collections.abc.Hashable):
     """The base class for nodes (steps) in flowcharts.
 
@@ -1293,7 +1307,12 @@ class Node(collections.abc.Hashable):
                             if units != current_units:
                                 if result_metadata["dimensionality"] == "scalar":
                                     tmp = Q_(data[key], current_units)
-                                    table.at[row_index, column] = tmp.m_as(units)
+                                    if units in def_fmt:
+                                        table.at[row_index, column] = round(
+                                            tmp.m_as(units), def_fmt[units]
+                                        )
+                                    else:
+                                        table.at[row_index, column] = tmp.m_as(units)
                                 else:
                                     factor = Q_(1, current_units).m_as(units)
                                     tmp = scale(data[key], factor)
