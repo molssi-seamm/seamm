@@ -49,10 +49,10 @@ def scale(data, factor):
 
 
 def_fmt = {
-    "kJ/mol": 2,
-    "kcal/mol": 2,
-    "kJ/mol/Å": 2,
-    "kcal/mol/Å": 2,
+    "kJ/mol": 3,
+    "kcal/mol": 3,
+    "kJ/mol/Å": 3,
+    "kcal/mol/Å": 3,
     "eV": 3,
     "E_h": 6,
     "E_h/a0": 6,
@@ -604,34 +604,7 @@ class Node(collections.abc.Hashable):
                 )
 
             # Attend to naming
-            if "system name" in P:
-                if P["system name"] == "keep current name":
-                    pass
-                elif P["system name"] == "use SMILES string":
-                    system.name = configuration.smiles
-                elif P["system name"] == "use Canonical SMILES string":
-                    system.name = configuration.canonical_smiles
-                else:
-                    # Presume it is a string, perhaps with variables.
-                    if len(kwargs) == 0:
-                        system.name = str(P["system name"])
-                    else:
-                        system.name = str(P["system name"]).format(**kwargs)
-            if "configuration name" in P:
-                if P["configuration name"] == "keep current name":
-                    pass
-                elif P["configuration name"] == "use SMILES string":
-                    configuration.name = configuration.smiles
-                elif P["configuration name"] == "use Canonical SMILES string":
-                    configuration.name = configuration.canonical_smiles
-                else:
-                    # Presume it is a string, perhaps with variables.
-                    if len(kwargs) == 0:
-                        configuration.name = str(P["configuration name"])
-                    else:
-                        configuration.name = str(P["configuration name"]).format(
-                            **kwargs
-                        )
+            seamm.standard_parameters.set_names(system, configuration, P, **kwargs)
 
         return (system, configuration)
 
@@ -1088,12 +1061,17 @@ class Node(collections.abc.Hashable):
         results = self.parameters["results"].value
 
         json_data = {}
+        metadata = self.metadata["results"]
         for key, value in results.items():
-            if key not in data or data[key] is None:
+            if key not in metadata:
                 continue
 
-            # The metadata describing this result
-            result_metadata = self.metadata["results"][key]
+            result_metadata = metadata[key]
+            if "standard name" in result_metadata:
+                key = result_metadata["standard name"]
+
+            if key not in data or data[key] is None:
+                continue
 
             # Store the value in the database as a property.
             if "property" in value and value["property"]:
@@ -1178,7 +1156,7 @@ class Node(collections.abc.Hashable):
 
             # Store in a table
             if "table" in value:
-                tablename = value["table"]
+                tablename = self.get_value(value["table"])
                 column = self.get_value(value["column"])
                 # Does the table exist?
                 if not self.variable_exists(tablename):
@@ -1321,7 +1299,9 @@ class Node(collections.abc.Hashable):
                                     )
                             else:
                                 if result_metadata["dimensionality"] == "scalar":
-                                    table.at[row_index, column] = data[key]
+                                    table.at[row_index, column] = round(
+                                        data[key], def_fmt[units]
+                                    )
                                 else:
                                     table.at[row_index, column] = json.dumps(
                                         data[key], separators=(",", ":")
