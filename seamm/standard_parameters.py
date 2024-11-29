@@ -55,12 +55,12 @@ structure_handling_parameters = {
         "default_units": "",
         "enumeration": (
             "keep current name",
-            "title",
             "use SMILES string",
             "use Canonical SMILES string",
             "use IUPAC name",
             "use InChI",
             "use InChIKey",
+            "use chemical formula",
         ),
         "format_string": "s",
         "description": "System name:",
@@ -72,13 +72,13 @@ structure_handling_parameters = {
         "default_units": "",
         "enumeration": (
             "keep current name",
-            "title",
             "use SMILES string",
             "use Canonical SMILES string",
             "use IUPAC name",
             "use InChI",
             "use InChIKey",
             "sequential",
+            "use chemical formula",
         ),
         "format_string": "s",
         "description": "Configuration name:",
@@ -129,6 +129,8 @@ def structure_handling_description(P, **kwargs):
         text += " The name of the system will be its InChI."
     elif sysname == "use InChIKey":
         text += " The name of the system will be its InChIKey."
+    elif sysname == "use chemical formula":
+        text += " The name of the system will be its chemical formula."
     else:
         tmp = safe_format(sysname, **kwargs)
         text += f" The name of the system will be '{tmp}'."
@@ -146,6 +148,8 @@ def structure_handling_description(P, **kwargs):
         text += " The name of the configuration will be its InChI."
     elif confname == "use InChIKey":
         text += " The name of the configuration will be its InChIKey."
+    elif confname == "use chemical formula":
+        text += " The name of the configuration will be its chemical formula."
     else:
         tmp = safe_format(confname, **kwargs)
         text += f" The name of the configuration will be '{tmp}'."
@@ -269,6 +273,8 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         system.name = configuration.inchi
     elif sysname == "use InChIKey":
         system.name = configuration.inchikey
+    elif sysname == "use chemical formula":
+        system.name = configuration.formula[0]
     else:
         system.name = safe_format(sysname, **kwargs)
 
@@ -287,6 +293,8 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         configuration.name = configuration.inchi
     elif confname == "use InChIKey":
         configuration.name = configuration.inchikey
+    elif confname == "use chemical formula":
+        configuration.name = configuration.formula[0]
     else:
         configuration.name = safe_format(confname, **kwargs)
 

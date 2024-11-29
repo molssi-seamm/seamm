@@ -1133,7 +1133,10 @@ class TkNode(collections.abc.MutableMapping):
             table.cell(row, 6, w)
             widgets.append(w)
             e = ttk.Entry(frame, width=15)
-            e.insert(0, key.replace(" ", "_"))
+            if "standard name" in entry:
+                e.insert(0, entry["standard name"].replace(" ", "_"))
+            else:
+                e.insert(0, key.replace(" ", "_"))
             table.cell(row, 7, e)
             widgets.append(e)
 
@@ -1151,7 +1154,10 @@ class TkNode(collections.abc.MutableMapping):
             w.bind("<Return>", self._table_cb)
             w.bind("<FocusOut>", self._table_cb)
             e = ttk.Entry(frame, width=15)
-            e.insert(0, key.replace("_", " "))
+            if "standard name" in entry:
+                e.insert(0, entry["standard name"].replace("_", " "))
+            else:
+                e.insert(0, key.replace("_", " "))
             table.cell(row, 10, e)
             widgets.append(e)
 
