@@ -1,6 +1,10 @@
 =======
 History
 =======
+2024.11.29 -- Chemical formulas option for system names, cleaner tables.
+    * Added chemical formula to possible names for systems and configurations.
+    * Truncated results put in tables, based on units, to make more readable.
+      
 2024.11.3 -- Bugfix: removed debug printing in the flowchart
     * Removed debug printing that was accidentally left in the flowchart code.
       
