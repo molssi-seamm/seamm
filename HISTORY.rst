@@ -1,6 +1,12 @@
 =======
 History
 =======
+2024.12.7 -- Bugfix: Incorrect handling of JSON properties
+    * Any properties that were not a scalar had an issue when being transformed to and
+      from JSON. This is now fixed.
+    * Truncated values with known units reasonablt so that they are more readable in
+      tables. For example, 1.23400000001 kJ/mol is now 1.234 kJ/mol.
+      
 2024.11.29 -- Chemical formulas option for system names, cleaner tables.
     * Added chemical formula to possible names for systems and configurations.
     * Truncated results put in tables, based on units, to make more readable.
