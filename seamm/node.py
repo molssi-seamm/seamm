@@ -1106,24 +1106,11 @@ class Node(collections.abc.Hashable):
                             else:
                                 factor = Q_(1, current_units).m_as(units)
                                 tmp = scale(data[key], factor)
-                                properties.put(
-                                    _property, json.dumps(tmp, separators=(",", ":"))
-                                )
+                                properties.put(_property, tmp)
                         else:
-                            if result_metadata["dimensionality"] == "scalar":
-                                properties.put(_property, data[key])
-                            else:
-                                properties.put(
-                                    _property,
-                                    json.dumps(data[key], separators=(",", ":")),
-                                )
-                    else:
-                        if result_metadata["dimensionality"] == "scalar":
                             properties.put(_property, data[key])
-                        else:
-                            properties.put(
-                                _property, json.dumps(data[key], separators=(",", ":"))
-                            )
+                    else:
+                        properties.put(_property, data[key])
 
             # Store as JSON
             if "json" in value:
@@ -1299,9 +1286,12 @@ class Node(collections.abc.Hashable):
                                     )
                             else:
                                 if result_metadata["dimensionality"] == "scalar":
-                                    table.at[row_index, column] = round(
-                                        data[key], def_fmt[units]
-                                    )
+                                    if units in def_fmt:
+                                        table.at[row_index, column] = round(
+                                            data[key], def_fmt[units]
+                                        )
+                                    else:
+                                        table.at[row_index, column] = data[key]
                                 else:
                                     table.at[row_index, column] = json.dumps(
                                         data[key], separators=(",", ":")
