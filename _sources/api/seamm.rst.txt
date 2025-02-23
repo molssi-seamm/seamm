@@ -9,189 +9,189 @@ seamm.builtins module
 
 .. automodule:: seamm.builtins
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.dashboard\_handler module
 -------------------------------
 
 .. automodule:: seamm.dashboard_handler
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.data module
 -----------------
 
 .. automodule:: seamm.data
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.flowchart module
 ----------------------
 
 .. automodule:: seamm.flowchart
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.graph module
 ------------------
 
 .. automodule:: seamm.graph
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.join\_node module
 -----------------------
 
 .. automodule:: seamm.join_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.node module
 -----------------
 
 .. automodule:: seamm.node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.parameters module
 -----------------------
 
 .. automodule:: seamm.parameters
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.plugin\_manager module
 ----------------------------
 
 .. automodule:: seamm.plugin_manager
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.seammrc module
 --------------------
 
 .. automodule:: seamm.seammrc
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.split\_node module
 ------------------------
 
 .. automodule:: seamm.split_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.standard\_parameters module
 ---------------------------------
 
 .. automodule:: seamm.standard_parameters
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.start\_node module
 ------------------------
 
 .. automodule:: seamm.start_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_edge module
 ---------------------
 
 .. automodule:: seamm.tk_edge
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_flowchart module
 --------------------------
 
 .. automodule:: seamm.tk_flowchart
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_job\_handler module
 -----------------------------
 
 .. automodule:: seamm.tk_job_handler
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_join\_node module
 ---------------------------
 
 .. automodule:: seamm.tk_join_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_node module
 ---------------------
 
 .. automodule:: seamm.tk_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_open module
 ---------------------
 
 .. automodule:: seamm.tk_open
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_publish module
 ------------------------
 
 .. automodule:: seamm.tk_publish
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_split\_node module
 ----------------------------
 
 .. automodule:: seamm.tk_split_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.tk\_start\_node module
 ----------------------------
 
 .. automodule:: seamm.tk_start_node
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 seamm.variables module
 ----------------------
 
 .. automodule:: seamm.variables
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: seamm
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

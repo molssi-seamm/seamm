@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2024.12.7 documentation</title>
+    <title>seamm package &#8212; SEAMM 2025.2.23 documentation</title>
   
   
   
@@ -16,8 +16,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -27,19 +27,19 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0c6002f1"></script>
+    <script src="../_static/documentation_options.js?v=2e7fd7ef"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2024.12.7" />
+  <meta name="docsearch:version" content="2025.2.23" />
   </head>
   
   
@@ -175,7 +175,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
 
             <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
                     More
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
@@ -433,9 +435,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -497,7 +504,7 @@ this node, and a factory() method for creating the graphical and non-graphical
 nodes.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.builtins.JoinStep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.builtins.</span></span><span class="sig-name descname"><span class="pre">JoinStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builtins.html#JoinStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builtins.JoinStep" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.builtins.</span></span><span class="sig-name descname"><span class="pre">JoinStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builtins.html#JoinStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builtins.JoinStep" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.builtins.JoinStep.create_node">
@@ -526,7 +533,7 @@ nodes.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.builtins.SplitStep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.builtins.</span></span><span class="sig-name descname"><span class="pre">SplitStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builtins.html#SplitStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builtins.SplitStep" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.builtins.</span></span><span class="sig-name descname"><span class="pre">SplitStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builtins.html#SplitStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builtins.SplitStep" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.builtins.SplitStep.create_node">
@@ -563,7 +570,7 @@ provides a use interface and the machinery to gather the necessary
 files and submit the job to a dashboard.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.dashboard_handler.</span></span><span class="sig-name descname"><span class="pre">DashboardHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/dashboard_handler.html#DashboardHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.dashboard_handler.</span></span><span class="sig-name descname"><span class="pre">DashboardHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/dashboard_handler.html#DashboardHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.add_dashboard">
@@ -573,19 +580,19 @@ files and submit the job to a dashboard.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.credentials">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">credentials</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.credentials" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">credentials</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.credentials" title="Link to this definition">#</a></dt>
 <dd><p>The data Dashboard from ~/.seamm.d/seammrc.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.current_dashboard">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dashboard</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.current_dashboard" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dashboard</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.current_dashboard" title="Link to this definition">#</a></dt>
 <dd><p>The currently selected dashboard</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.dashboards">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboards</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.dashboards" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboards</span></span><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.dashboards" title="Link to this definition">#</a></dt>
 <dd><p>The list of dashboards.</p>
 </dd></dl>
 
@@ -675,7 +682,7 @@ however, the flow starts at the ‘start’ node and follows the connections,
 so isolated nodes and fragments will not be executed.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.flowchart.</span></span><span class="sig-name descname"><span class="pre">Flowchart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'org.molssi.seamm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'files'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SEAMM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/flowchart.html#Flowchart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.flowchart.Flowchart" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.flowchart.</span></span><span class="sig-name descname"><span class="pre">Flowchart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'org.molssi.seamm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'files'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SEAMM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/flowchart.html#Flowchart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.flowchart.Flowchart" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.add_edge">
@@ -708,7 +715,7 @@ so isolated nodes and fragments will not be executed.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.data_path">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.data_path" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.data_path" title="Link to this definition">#</a></dt>
 <dd><p>A path to local and user data, such as forcefields.</p>
 </dd></dl>
 
@@ -733,7 +740,7 @@ so isolated nodes and fragments will not be executed.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.executor">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">executor</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.executor" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">executor</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.executor" title="Link to this definition">#</a></dt>
 <dd><p>The executor for tasks.</p>
 </dd></dl>
 
@@ -781,13 +788,13 @@ needed. Default: ‘Tk’</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.in_jobserver">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_jobserver</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.in_jobserver" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_jobserver</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.in_jobserver" title="Link to this definition">#</a></dt>
 <dd><p>Whether running in a JobServer.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.is_development">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_development</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.is_development" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_development</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.is_development" title="Link to this definition">#</a></dt>
 <dd><p>Check if any of nodes are development versions.</p>
 </dd></dl>
 
@@ -806,7 +813,7 @@ from the given node, which defaults to the start node</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.output">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.output" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.output" title="Link to this definition">#</a></dt>
 <dd><p>Where to print output:
 files:  to files in subdirectories
 stdout: to standard output (for intereactive use)
@@ -815,7 +822,7 @@ both:   to both files and standard output</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.parser">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parser</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.parser" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parser</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.parser" title="Link to this definition">#</a></dt>
 <dd><p>The SEAMM parser associated with this flowchart.</p>
 </dd></dl>
 
@@ -853,7 +860,7 @@ loops during traversals</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.flowchart.Flowchart.root_directory">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">root_directory</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.root_directory" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">root_directory</span></span><a class="headerlink" href="#seamm.flowchart.Flowchart.root_directory" title="Link to this definition">#</a></dt>
 <dd><p>The root directory for files, etc for this flowchart</p>
 </dd></dl>
 
@@ -924,7 +931,7 @@ representing the flowchart.</p>
 <span id="seamm-graph-module"></span><h2>seamm.graph module<a class="headerlink" href="#module-seamm.graph" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.graph.Edge">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.graph.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'execution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_subtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'next'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/graph.html#Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.graph.Edge" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.graph.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'execution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_subtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'next'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/graph.html#Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.graph.Edge" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.graph.Edge.copy">
@@ -934,29 +941,29 @@ representing the flowchart.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.graph.Edge.edge_subtype">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_subtype</span></span><a class="headerlink" href="#seamm.graph.Edge.edge_subtype" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_subtype</span></span><a class="headerlink" href="#seamm.graph.Edge.edge_subtype" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.graph.Edge.edge_type">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_type</span></span><a class="headerlink" href="#seamm.graph.Edge.edge_type" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_type</span></span><a class="headerlink" href="#seamm.graph.Edge.edge_type" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.graph.Edge.node1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node1</span></span><a class="headerlink" href="#seamm.graph.Edge.node1" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node1</span></span><a class="headerlink" href="#seamm.graph.Edge.node1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.graph.Edge.node2">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node2</span></span><a class="headerlink" href="#seamm.graph.Edge.node2" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node2</span></span><a class="headerlink" href="#seamm.graph.Edge.node2" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.graph.Graph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.graph.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><a class="reference internal" href="../_modules/seamm/graph.html#Graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.graph.Graph" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.graph.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><a class="reference internal" href="../_modules/seamm/graph.html#Graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.graph.Graph" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A datastructure for holding a directed graph with multiple (parallel) edges.</p>
 <dl class="py method">
@@ -1002,7 +1009,7 @@ representing the flowchart.</p>
 <p>A node to join together parallel flows in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.join_node.Join">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.join_node.</span></span><span class="sig-name descname"><span class="pre">Join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Join'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/join_node.html#Join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.join_node.Join" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.join_node.</span></span><span class="sig-name descname"><span class="pre">Join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Join'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/join_node.html#Join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.join_node.Join" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.node.Node" title="seamm.node.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.join_node.Join.description_text">
@@ -1023,13 +1030,13 @@ be used as is.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.join_node.Join.git_revision">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.join_node.Join.git_revision" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.join_node.Join.git_revision" title="Link to this definition">#</a></dt>
 <dd><p>The git version of this module.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.join_node.Join.version">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.join_node.Join.version" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.join_node.Join.version" title="Link to this definition">#</a></dt>
 <dd><p>The semantic version of this module.</p>
 </dd></dl>
 
@@ -1041,7 +1048,7 @@ be used as is.</p>
 <p>The base class for nodes (steps) in flowcharts.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.node.Node">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.node.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;Logger</span> <span class="pre">seamm.node</span> <span class="pre">(WARNING)&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.node.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;Logger</span> <span class="pre">seamm.node</span> <span class="pre">(WARNING)&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Hashable</span></code></p>
 <p>The base class for nodes (steps) in flowcharts.</p>
 <dl class="field-list simple">
@@ -1105,7 +1112,7 @@ results; and the model used, which is usually the model chemistry for calculated
 results.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.all_options">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_options</span></span><a class="headerlink" href="#seamm.node.Node.all_options" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_options</span></span><a class="headerlink" href="#seamm.node.Node.all_options" title="Link to this definition">#</a></dt>
 <dd><p>The complete set of all options.</p>
 </dd></dl>
 
@@ -1117,7 +1124,7 @@ results.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.calculation">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculation</span></span><a class="headerlink" href="#seamm.node.Node.calculation" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculation</span></span><a class="headerlink" href="#seamm.node.Node.calculation" title="Link to this definition">#</a></dt>
 <dd><p>The type of calculation for filtering available results.</p>
 </dd></dl>
 
@@ -1173,13 +1180,13 @@ for this node, giving the anchor points and other node</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.data_files">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_files</span></span><a class="headerlink" href="#seamm.node.Node.data_files" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_files</span></span><a class="headerlink" href="#seamm.node.Node.data_files" title="Link to this definition">#</a></dt>
 <dd><p>tuples of short name and path for any data files needed</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.data_path">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><a class="headerlink" href="#seamm.node.Node.data_path" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><a class="headerlink" href="#seamm.node.Node.data_path" title="Link to this definition">#</a></dt>
 <dd><p>A path to local and user data, such as forcefields.</p>
 </dd></dl>
 
@@ -1209,7 +1216,7 @@ of allowed exit edges.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.description">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#seamm.node.Node.description" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#seamm.node.Node.description" title="Link to this definition">#</a></dt>
 <dd><p>A textual description of this node</p>
 </dd></dl>
 
@@ -1244,7 +1251,7 @@ be used as is.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.directory">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#seamm.node.Node.directory" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#seamm.node.Node.directory" title="Link to this definition">#</a></dt>
 <dd><p>The directory for output and files for this step.</p>
 </dd></dl>
 
@@ -1397,31 +1404,31 @@ unchanged.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.global_options">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_options</span></span><a class="headerlink" href="#seamm.node.Node.global_options" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_options</span></span><a class="headerlink" href="#seamm.node.Node.global_options" title="Link to this definition">#</a></dt>
 <dd><p>Dictionary of global options</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.header">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#seamm.node.Node.header" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#seamm.node.Node.header" title="Link to this definition">#</a></dt>
 <dd><p>A printable header for this section of output</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.in_jobserver">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_jobserver</span></span><a class="headerlink" href="#seamm.node.Node.in_jobserver" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_jobserver</span></span><a class="headerlink" href="#seamm.node.Node.in_jobserver" title="Link to this definition">#</a></dt>
 <dd><p>Whether running in a jobserver</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.indent">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indent</span></span><a class="headerlink" href="#seamm.node.Node.indent" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indent</span></span><a class="headerlink" href="#seamm.node.Node.indent" title="Link to this definition">#</a></dt>
 <dd><p>The amount to indent the output of this step in <strong>job.out</strong>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.is_expr">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.is_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.is_expr" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.is_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.is_expr" title="Link to this definition">#</a></dt>
 <dd><p>Return whether the value is an expression or constant.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1444,7 +1451,7 @@ unchanged.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.job_path">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">job_path</span></span><a class="headerlink" href="#seamm.node.Node.job_path" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">job_path</span></span><a class="headerlink" href="#seamm.node.Node.job_path" title="Link to this definition">#</a></dt>
 <dd><p>Return the path to the job’s top-level directory</p>
 </dd></dl>
 
@@ -1464,7 +1471,7 @@ unchanged.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.metadata">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#seamm.node.Node.metadata" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#seamm.node.Node.metadata" title="Link to this definition">#</a></dt>
 <dd><p>Metadata describing aspects of the calculation.</p>
 <p>The metadata is a dictionary of various types of metdata, often themselves
 dictionaries. Common types of metadata are:</p>
@@ -1480,7 +1487,7 @@ dictionaries. Common types of metadata are:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.method">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#seamm.node.Node.method" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#seamm.node.Node.method" title="Link to this definition">#</a></dt>
 <dd><p>The method of a calculation, used for filtering metadata.</p>
 <p>A <cite>calculation</cite>, such as <strong>energy</strong> or <strong>optimization</strong>, might return different
 results depending on the type of calculation or how it is carried out. The
@@ -1489,7 +1496,7 @@ results depending on the type of calculation or how it is carried out. The
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.model">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#seamm.node.Node.model" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#seamm.node.Node.model" title="Link to this definition">#</a></dt>
 <dd><p>The model (chemistry) used to obtain results.</p>
 <dl class="simple">
 <dt>Properties in the database use a trinomial naming scheme:</dt><dd><p><cite>property`#`code`#`model</cite></p>
@@ -1507,7 +1514,7 @@ the <cite>model chemistry</cite>, such as <strong>mp2/6-31g</strong> or <strong>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.options">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#seamm.node.Node.options" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#seamm.node.Node.options" title="Link to this definition">#</a></dt>
 <dd><p>Dictionary of options for this step</p>
 </dd></dl>
 
@@ -1519,7 +1526,7 @@ the <cite>model chemistry</cite>, such as <strong>mp2/6-31g</strong> or <strong>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.references">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#seamm.node.Node.references" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#seamm.node.Node.references" title="Link to this definition">#</a></dt>
 <dd><p>The reference handler for citations.</p>
 </dd></dl>
 
@@ -1575,7 +1582,7 @@ options</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.step_type">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">step_type</span></span><a class="headerlink" href="#seamm.node.Node.step_type" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">step_type</span></span><a class="headerlink" href="#seamm.node.Node.step_type" title="Link to this definition">#</a></dt>
 <dd><p>The step type, e.g. ‘lammps-step’, used for e.g. options</p>
 </dd></dl>
 
@@ -1596,7 +1603,7 @@ options</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.tables">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tables</span></span><a class="headerlink" href="#seamm.node.Node.tables" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tables</span></span><a class="headerlink" href="#seamm.node.Node.tables" title="Link to this definition">#</a></dt>
 <dd><p>Any tables this step creates.</p>
 <p>A list of tables this step creates. If it is not easy to decide whether the
 tables are created or just used here, add them to the list. This data is used
@@ -1605,13 +1612,13 @@ by subsequent steps to present possible tables in the GUI.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.tag">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#seamm.node.Node.tag" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#seamm.node.Node.tag" title="Link to this definition">#</a></dt>
 <dd><p>The string representation of the uuid of the node</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.title">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#seamm.node.Node.title" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#seamm.node.Node.title" title="Link to this definition">#</a></dt>
 <dd><p>The title to display</p>
 </dd></dl>
 
@@ -1628,7 +1635,7 @@ by subsequent steps to present possible tables in the GUI.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.uuid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><a class="headerlink" href="#seamm.node.Node.uuid" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><a class="headerlink" href="#seamm.node.Node.uuid" title="Link to this definition">#</a></dt>
 <dd><p>The uuid of the node to give it a unique id.</p>
 </dd></dl>
 
@@ -1640,7 +1647,7 @@ by subsequent steps to present possible tables in the GUI.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.node.Node.visited">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">visited</span></span><a class="headerlink" href="#seamm.node.Node.visited" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">visited</span></span><a class="headerlink" href="#seamm.node.Node.visited" title="Link to this definition">#</a></dt>
 <dd><p>Whether this node has been visited in a traversal</p>
 </dd></dl>
 
@@ -1659,7 +1666,7 @@ by subsequent steps to present possible tables in the GUI.</p>
 <p>Control parameters for a step in a MolSSI flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">Parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#Parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.Parameter" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">Parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#Parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.Parameter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <p>A single parameter, with defaults, units, description, etc.
 This is object is a dict-like mutable mapping with properties
@@ -1677,7 +1684,7 @@ to make it appear to be a simple object with attributes.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.default">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><a class="headerlink" href="#seamm.parameters.Parameter.default" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><a class="headerlink" href="#seamm.parameters.Parameter.default" title="Link to this definition">#</a></dt>
 <dd><p>The current default of the parameter. May be a value, a
 Python expression containing variables prefix with $,
 standard operators or parenthesise, or a pint units
@@ -1686,27 +1693,27 @@ quantity.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.default_units">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.default_units" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.default_units" title="Link to this definition">#</a></dt>
 <dd><p>The default units, as a string. These need to be compatible with
 pint</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.description">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#seamm.parameters.Parameter.description" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#seamm.parameters.Parameter.description" title="Link to this definition">#</a></dt>
 <dd><p>Short description of this parameter, preferable just a
 few words</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.enumeration">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enumeration</span></span><a class="headerlink" href="#seamm.parameters.Parameter.enumeration" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enumeration</span></span><a class="headerlink" href="#seamm.parameters.Parameter.enumeration" title="Link to this definition">#</a></dt>
 <dd><p>The possible values for an enumerated type.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.format_string">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_string</span></span><a class="headerlink" href="#seamm.parameters.Parameter.format_string" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_string</span></span><a class="headerlink" href="#seamm.parameters.Parameter.format_string" title="Link to this definition">#</a></dt>
 <dd><p>The format string for the value</p>
 </dd></dl>
 
@@ -1718,27 +1725,27 @@ few words</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.has_units">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.has_units" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.has_units" title="Link to this definition">#</a></dt>
 <dd><p>Does this parameter have units associated?</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.help_text">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">help_text</span></span><a class="headerlink" href="#seamm.parameters.Parameter.help_text" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">help_text</span></span><a class="headerlink" href="#seamm.parameters.Parameter.help_text" title="Link to this definition">#</a></dt>
 <dd><p>A longer description of this parameter that is suitable
 for e.g. help text.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.is_expr">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><a class="headerlink" href="#seamm.parameters.Parameter.is_expr" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><a class="headerlink" href="#seamm.parameters.Parameter.is_expr" title="Link to this definition">#</a></dt>
 <dd><p>Is the current value a variable reference or
 expression?</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.kind">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#seamm.parameters.Parameter.kind" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#seamm.parameters.Parameter.kind" title="Link to this definition">#</a></dt>
 <dd><p>integer, float, string,
 enum or special.
 This can be used to convert the value to the correct
@@ -1782,7 +1789,7 @@ type in e.g. get_value.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.units">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.units" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">units</span></span><a class="headerlink" href="#seamm.parameters.Parameter.units" title="Link to this definition">#</a></dt>
 <dd><p>The units, as a string. These need to be compatible with
 pint</p>
 </dd></dl>
@@ -1797,7 +1804,7 @@ pint</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.value">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#seamm.parameters.Parameter.value" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#seamm.parameters.Parameter.value" title="Link to this definition">#</a></dt>
 <dd><p>The current value of the parameter. May be a value, a
 Python expression containing variables prefix with $,
 standard operators or parentheses.</p>
@@ -1813,7 +1820,7 @@ standard operators or parentheses.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.parameters.Parameters">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.Parameters" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.Parameters" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <p>A dict-like container for parameters</p>
 <dl class="py method">
@@ -1890,7 +1897,7 @@ and expressions in parameters.</p>
 <span id="seamm-plugin-manager-module"></span><h2>seamm.plugin_manager module<a class="headerlink" href="#module-seamm.plugin_manager" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.plugin_manager.PluginManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.plugin_manager.</span></span><span class="sig-name descname"><span class="pre">PluginManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/plugin_manager.html#PluginManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.plugin_manager.PluginManager" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.plugin_manager.</span></span><span class="sig-name descname"><span class="pre">PluginManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/plugin_manager.html#PluginManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.plugin_manager.PluginManager" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.plugin_manager.PluginManager.get">
@@ -1921,7 +1928,7 @@ and expressions in parameters.</p>
 <p>A singleton to ensure the ~.seammrc file is always up-to-date.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.seammrc.SEAMMrc">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.seammrc.</span></span><span class="sig-name descname"><span class="pre">SEAMMrc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/seammrc.html#SEAMMrc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.seammrc.SEAMMrc" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.seammrc.</span></span><span class="sig-name descname"><span class="pre">SEAMMrc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/seammrc.html#SEAMMrc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.seammrc.SEAMMrc" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.seammrc.Singleton" title="seamm.seammrc.Singleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">Singleton</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.seammrc.SEAMMrc.add_section">
@@ -2002,7 +2009,7 @@ and expressions in parameters.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.seammrc.Singleton">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.seammrc.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/seammrc.html#Singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.seammrc.Singleton" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.seammrc.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/seammrc.html#Singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.seammrc.Singleton" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -2012,7 +2019,7 @@ and expressions in parameters.</p>
 <p>A node to split the flow into parallel segements in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.split_node.Split">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.split_node.</span></span><span class="sig-name descname"><span class="pre">Split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/split_node.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.split_node.Split" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.split_node.</span></span><span class="sig-name descname"><span class="pre">Split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/split_node.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.split_node.Split" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.node.Node" title="seamm.node.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.split_node.Split.description_text">
@@ -2033,13 +2040,13 @@ be used as is.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.split_node.Split.git_revision">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.split_node.Split.git_revision" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.split_node.Split.git_revision" title="Link to this definition">#</a></dt>
 <dd><p>The git version of this module.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.split_node.Split.version">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.split_node.Split.version" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.split_node.Split.version" title="Link to this definition">#</a></dt>
 <dd><p>The semantic version of this module.</p>
 </dd></dl>
 
@@ -2139,7 +2146,7 @@ handling parameters.</p>
 <p>The start node in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.start_node.StartNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.start_node.</span></span><span class="sig-name descname"><span class="pre">StartNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/start_node.html#StartNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.start_node.StartNode" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.start_node.</span></span><span class="sig-name descname"><span class="pre">StartNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/start_node.html#StartNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.start_node.StartNode" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.node.Node" title="seamm.node.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.start_node.StartNode.description_text">
@@ -2158,7 +2165,7 @@ be used as is.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.start_node.StartNode.git_revision">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.start_node.StartNode.git_revision" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">git_revision</span></span><a class="headerlink" href="#seamm.start_node.StartNode.git_revision" title="Link to this definition">#</a></dt>
 <dd><p>The git version of this module.</p>
 </dd></dl>
 
@@ -2183,7 +2190,7 @@ create that handler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.start_node.StartNode.version">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.start_node.StartNode.version" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#seamm.start_node.StartNode.version" title="Link to this definition">#</a></dt>
 <dd><p>The semantic version of this module.</p>
 </dd></dl>
 
@@ -2198,26 +2205,26 @@ arrow connecting nodes.</p>
 edge so that the graphical representation can be restored as needed.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_edge.</span></span><span class="sig-name descname"><span class="pre">TkEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'execution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_subtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'next'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_edge.html#TkEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_edge.TkEdge" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_edge.</span></span><span class="sig-name descname"><span class="pre">TkEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'execution'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_subtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'next'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_edge.html#TkEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_edge.TkEdge" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.graph.Edge" title="seamm.graph.Edge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edge</span></code></a></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.anchor1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anchor1</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.anchor1" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anchor1</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.anchor1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.anchor2">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anchor2</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.anchor2" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anchor2</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.anchor2" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.canvas">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.canvas" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.canvas" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.coords">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coords</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.coords" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coords</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.coords" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2228,17 +2235,17 @@ edge so that the graphical representation can be restored as needed.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.has_label">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_label</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.has_label" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_label</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.has_label" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.label_bg_id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label_bg_id</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.label_bg_id" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label_bg_id</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.label_bg_id" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_edge.TkEdge.label_id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label_id</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.label_id" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">label_id</span></span><a class="headerlink" href="#seamm.tk_edge.TkEdge.label_id" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2314,7 +2321,7 @@ same node as the tail/head for head/tail!). If the arrow is dropped
 anywhere else it just snaps back to its original place.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_flowchart.TkFlowchart">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_flowchart.</span></span><span class="sig-name descname"><span class="pre">TkFlowchart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'org.molssi.seamm.tk'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_flowchart.html#TkFlowchart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_flowchart.</span></span><span class="sig-name descname"><span class="pre">TkFlowchart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'org.molssi.seamm.tk'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_flowchart.html#TkFlowchart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_flowchart.TkFlowchart.about">
@@ -2484,7 +2491,7 @@ tag to find the object.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_flowchart.TkFlowchart.flowchart">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flowchart</span></span><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart.flowchart" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flowchart</span></span><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart.flowchart" title="Link to this definition">#</a></dt>
 <dd><p>The flowchart, which holds the nodes</p>
 </dd></dl>
 
@@ -2533,7 +2540,7 @@ from the given node, which defaults to the start node</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_flowchart.TkFlowchart.master">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">master</span></span><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart.master" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">master</span></span><a class="headerlink" href="#seamm.tk_flowchart.TkFlowchart.master" title="Link to this definition">#</a></dt>
 <dd><p>The window that is our master</p>
 </dd></dl>
 
@@ -2714,7 +2721,7 @@ provides a use interface and the machinery to gather the necessary
 files and submit the job to a dashboard.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_job_handler.</span></span><span class="sig-name descname"><span class="pre">TkJobHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_job_handler.</span></span><span class="sig-name descname"><span class="pre">TkJobHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.add_dashboard_cb">
@@ -2772,7 +2779,7 @@ files and submit the job to a dashboard.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.current_dashboard">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dashboard</span></span><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.current_dashboard" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_dashboard</span></span><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.current_dashboard" title="Link to this definition">#</a></dt>
 <dd><p>The current dashboard, from dashboard_handler</p>
 </dd></dl>
 
@@ -2784,7 +2791,7 @@ files and submit the job to a dashboard.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.dashboard_handler">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboard_handler</span></span><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.dashboard_handler" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboard_handler</span></span><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.dashboard_handler" title="Link to this definition">#</a></dt>
 <dd><p>The connection to the dashboards.</p>
 </dd></dl>
 
@@ -2902,7 +2909,7 @@ and submit the job as requested.</p>
 <p>A node to join the flow in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_join_node.TkJoin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_join_node.</span></span><span class="sig-name descname"><span class="pre">TkJoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_join_node.html#TkJoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_join_node.TkJoin" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_join_node.</span></span><span class="sig-name descname"><span class="pre">TkJoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_join_node.html#TkJoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_join_node.TkJoin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.tk_node.TkNode" title="seamm.tk_node.TkNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TkNode</span></code></a></p>
 <p>The Tk-based graphical representation of a joining node</p>
 <dl class="py attribute">
@@ -2942,7 +2949,7 @@ and submit the job as requested.</p>
 <p>The base class for Tk nodes (steps) in the GUI for flowcharts.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_node.</span></span><span class="sig-name descname"><span class="pre">TkNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type='simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_logger=&lt;Logger</span> <span class="pre">seamm.tk_node</span> <span class="pre">(WARNING)&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_node.</span></span><span class="sig-name descname"><span class="pre">TkNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type='simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_logger=&lt;Logger</span> <span class="pre">seamm.tk_node</span> <span class="pre">(WARNING)&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <p>The base class for Tk nodes (steps) in the GUI for flowcharts.</p>
 <dl class="field-list simple">
@@ -3026,13 +3033,13 @@ a dictionary of all points is returned</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.border">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">border</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.border" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">border</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.border" title="Link to this definition">#</a></dt>
 <dd><p>The border of the picture in the flowchart</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.canvas">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.canvas" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.canvas" title="Link to this definition">#</a></dt>
 <dd><p>The canvas for drawing the node</p>
 </dd></dl>
 
@@ -3127,7 +3134,7 @@ constraint of the window.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.flowchart">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flowchart</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.flowchart" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flowchart</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.flowchart" title="Link to this definition">#</a></dt>
 <dd><p>The flowchart object</p>
 </dd></dl>
 
@@ -3140,7 +3147,7 @@ Only used in nodes that contain flowchart</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.h">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.h" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.h" title="Link to this definition">#</a></dt>
 <dd><p>The height of the graphical node</p>
 </dd></dl>
 
@@ -3174,7 +3181,7 @@ be put into the <cite>results</cite> parameter.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.is_expr">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.is_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.is_expr" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.is_expr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.is_expr" title="Link to this definition">#</a></dt>
 <dd><p>Return whether the value is an expression or constant.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3198,7 +3205,7 @@ this node, using halo as a size around the point</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.metadata">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.metadata" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.metadata" title="Link to this definition">#</a></dt>
 <dd><p>Return the metadata for the node.</p>
 </dd></dl>
 
@@ -3249,7 +3256,7 @@ override.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.selected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.selected" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.selected" title="Link to this definition">#</a></dt>
 <dd><p>Whether I am selected or not</p>
 </dd></dl>
 
@@ -3267,13 +3274,13 @@ override.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.tag">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.tag" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.tag" title="Link to this definition">#</a></dt>
 <dd><p>The string representation of the uuid of the node</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.title">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.title" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.title" title="Link to this definition">#</a></dt>
 <dd><p>The title to display</p>
 </dd></dl>
 
@@ -3298,25 +3305,25 @@ flowcharts</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.uuid">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.uuid" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.uuid" title="Link to this definition">#</a></dt>
 <dd><p>The uuid of the node</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.w">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.w" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.w" title="Link to this definition">#</a></dt>
 <dd><p>The width of the graphical node</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.x">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.x" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.x" title="Link to this definition">#</a></dt>
 <dd><p>The x-position of the center of the graphical node</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.y">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.y" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#seamm.tk_node.TkNode.y" title="Link to this definition">#</a></dt>
 <dd><p>The y-position of the center of the graphical node</p>
 </dd></dl>
 
@@ -3328,7 +3335,7 @@ flowcharts</p>
 <p>The GUI for opening flowcharts.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_open.TkOpen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_open.</span></span><span class="sig-name descname"><span class="pre">TkOpen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toplevel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_open.html#TkOpen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_open.TkOpen" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_open.</span></span><span class="sig-name descname"><span class="pre">TkOpen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toplevel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_open.html#TkOpen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_open.TkOpen" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_open.TkOpen.clear_tree">
@@ -3344,7 +3351,7 @@ flowcharts</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.tk_open.TkOpen.dashboard_handler">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboard_handler</span></span><a class="headerlink" href="#seamm.tk_open.TkOpen.dashboard_handler" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dashboard_handler</span></span><a class="headerlink" href="#seamm.tk_open.TkOpen.dashboard_handler" title="Link to this definition">#</a></dt>
 <dd><p>The connection to the dashboards.</p>
 </dd></dl>
 
@@ -3468,7 +3475,7 @@ flowcharts</p>
 <p>The GUI for publishing – flowcharts for the moment.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_publish.TkPublish">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_publish.</span></span><span class="sig-name descname"><span class="pre">TkPublish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_publish.html#TkPublish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_publish.TkPublish" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_publish.</span></span><span class="sig-name descname"><span class="pre">TkPublish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_publish.html#TkPublish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_publish.TkPublish" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_publish.TkPublish.create_dialog">
@@ -3513,7 +3520,7 @@ flowcharts</p>
 <p>A node to split the flow in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_split_node.TkSplit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_split_node.</span></span><span class="sig-name descname"><span class="pre">TkSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_split_node.html#TkSplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_split_node.TkSplit" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_split_node.</span></span><span class="sig-name descname"><span class="pre">TkSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_split_node.html#TkSplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_split_node.TkSplit" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.tk_node.TkNode" title="seamm.tk_node.TkNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TkNode</span></code></a></p>
 <p>The Tk-based graphical representation of a splitting node</p>
 <dl class="py attribute">
@@ -3535,7 +3542,7 @@ flowcharts</p>
 <p>The start node in a flowchart</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.tk_start_node.TkStartNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_start_node.</span></span><span class="sig-name descname"><span class="pre">TkStartNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_start_node.html#TkStartNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_start_node.TkStartNode" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.tk_start_node.</span></span><span class="sig-name descname"><span class="pre">TkStartNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tk_flowchart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_start_node.html#TkStartNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_start_node.TkStartNode" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#seamm.tk_node.TkNode" title="seamm.tk_node.TkNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TkNode</span></code></a></p>
 <p>The Tk-based graphical representation of a Start node</p>
 <dl class="py method">
@@ -3636,7 +3643,7 @@ close button was pressed.</p>
 executing flowchart.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="seamm.variables.Variables">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.variables.</span></span><span class="sig-name descname"><span class="pre">Variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/variables.html#Variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.variables.Variables" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">seamm.variables.</span></span><span class="sig-name descname"><span class="pre">Variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/variables.html#Variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.variables.Variables" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.variables.Variables.copy">
@@ -4321,13 +4328,13 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </nav></div>
 
   <div class="sidebar-secondary-item">
-
-  <div class="tocsection sourcelink">
-    <a href="../_sources/api/seamm.rst.txt">
-      <i class="fa-solid fa-file-lines"></i> Show Source
-    </a>
-  </div>
-</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/seamm.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
 
 </div></div>
               
@@ -4342,8 +4349,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -4354,7 +4361,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
