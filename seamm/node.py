@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""The base class for nodes (steps) in flowcharts.
-"""
+"""The base class for nodes (steps) in flowcharts."""
 
 import bibtexparser
 import calendar
@@ -575,7 +574,10 @@ class Node(collections.abc.Hashable):
                 else:
                     handling = "Create a new configuration"
 
-            if handling == "Overwrite the current configuration":
+            if handling == "Ignore":
+                system = None
+                configuration = None
+            elif handling == "Overwrite the current configuration":
                 if system is None:
                     system = system_db.create_system()
                 if configuration is None:
