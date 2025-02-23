@@ -26,6 +26,7 @@ structure_handling_parameters = {
             "Overwrite the current configuration",
             "Create a new configuration",
             "Create a new system and configuration",
+            "Ignore",
         ),
         "format_string": "s",
         "description": "First structure:",
@@ -41,6 +42,7 @@ structure_handling_parameters = {
         "enumeration": (
             "Create a new configuration",
             "Create a new system and configuration",
+            "Ignore",
         ),
         "format_string": "s",
         "description": "Subsequent structures:",
@@ -57,6 +59,7 @@ structure_handling_parameters = {
             "keep current name",
             "use SMILES string",
             "use Canonical SMILES string",
+            "use isomeric SMILES string",
             "use IUPAC name",
             "use InChI",
             "use InChIKey",
@@ -74,6 +77,7 @@ structure_handling_parameters = {
             "keep current name",
             "use SMILES string",
             "use Canonical SMILES string",
+            "use isomeric SMILES string",
             "use IUPAC name",
             "use InChI",
             "use InChIKey",
@@ -111,48 +115,55 @@ def structure_handling_description(P, **kwargs):
         text += "The structure will be put in a new configuration."
     elif handling == "Create a new system and configuration":
         text += "The structure will be put in a new system."
+    elif handling == "Ignore":
+        text += "The structure will be discarded."
     elif handling.startswith("$"):
         text += f"The handling of the structure will be determined by '{handling}'."
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
-    sysname = P["system name"]
-    if sysname == "keep current name":
-        text += " The name of the system will not be changed."
-    elif sysname == "use SMILES string":
-        text += " The name of the system will be its SMILES."
-    elif sysname == "use Canonical SMILES string":
-        text += " The name of the system will be its canonical SMILES."
-    elif sysname == "use IUPAC name":
-        text += " The name of the system will be its IUPAC name."
-    elif sysname == "use InChI":
-        text += " The name of the system will be its InChI."
-    elif sysname == "use InChIKey":
-        text += " The name of the system will be its InChIKey."
-    elif sysname == "use chemical formula":
-        text += " The name of the system will be its chemical formula."
-    else:
-        tmp = safe_format(sysname, **kwargs)
-        text += f" The name of the system will be '{tmp}'."
+    if handling != "Ignore":
+        sysname = P["system name"]
+        if sysname == "keep current name":
+            text += " The name of the system will not be changed."
+        elif sysname == "use SMILES string":
+            text += " The name of the system will be its SMILES."
+        elif sysname == "use Canonical SMILES string":
+            text += " The name of the system will be its canonical SMILES."
+        elif sysname == "use isomeric SMILES string":
+            text += " The name of the system will be its isomeric SMILES."
+        elif sysname == "use IUPAC name":
+            text += " The name of the system will be its IUPAC name."
+        elif sysname == "use InChI":
+            text += " The name of the system will be its InChI."
+        elif sysname == "use InChIKey":
+            text += " The name of the system will be its InChIKey."
+        elif sysname == "use chemical formula":
+            text += " The name of the system will be its chemical formula."
+        else:
+            tmp = safe_format(sysname, **kwargs)
+            text += f" The name of the system will be '{tmp}'."
 
-    confname = P["configuration name"]
-    if confname == "keep current name":
-        text += " The name of the configuration will not be changed."
-    elif confname == "use SMILES string":
-        text += " The name of the configuration will be its SMILES."
-    elif confname == "use Canonical SMILES string":
-        text += " The name of the configuration will be its canonical SMILES."
-    elif confname == "use IUPAC name":
-        text += " The name of the configuration will be its IUPAC name."
-    elif confname == "use InChI":
-        text += " The name of the configuration will be its InChI."
-    elif confname == "use InChIKey":
-        text += " The name of the configuration will be its InChIKey."
-    elif confname == "use chemical formula":
-        text += " The name of the configuration will be its chemical formula."
-    else:
-        tmp = safe_format(confname, **kwargs)
-        text += f" The name of the configuration will be '{tmp}'."
+        confname = P["configuration name"]
+        if confname == "keep current name":
+            text += " The name of the configuration will not be changed."
+        elif confname == "use SMILES string":
+            text += " The name of the configuration will be its SMILES."
+        elif confname == "use Canonical SMILES string":
+            text += " The name of the configuration will be its canonical SMILES."
+        elif confname == "use isomeric SMILES string":
+            text += " The name of the configuration will be its isomeric SMILES."
+        elif confname == "use IUPAC name":
+            text += " The name of the configuration will be its IUPAC name."
+        elif confname == "use InChI":
+            text += " The name of the configuration will be its InChI."
+        elif confname == "use InChIKey":
+            text += " The name of the configuration will be its InChIKey."
+        elif confname == "use chemical formula":
+            text += " The name of the configuration will be its chemical formula."
+        else:
+            tmp = safe_format(confname, **kwargs)
+            text += f" The name of the configuration will be '{tmp}'."
 
     return text
 
@@ -260,6 +271,9 @@ def set_names(system, configuration, P, _first=True, **kwargs):
     str
         The text for printing.
     """
+    if P["structure handling"] == "Ignore":
+        return ""
+
     sysname = P["system name"]
     if sysname == "keep current name":
         pass
@@ -267,6 +281,8 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         system.name = configuration.smiles
     elif sysname == "use Canonical SMILES string":
         system.name = configuration.canonical_smiles
+    elif sysname == "use isomeric SMILES string":
+        system.name = configuration.isomeric_smiles
     elif sysname == "use IUPAC name":
         system.name = configuration.PC_iupac_name(fallback=configuration.formula[0])
     elif sysname == "use InChI":
@@ -285,6 +301,8 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         configuration.name = configuration.smiles
     elif confname == "use Canonical SMILES string":
         configuration.name = configuration.canonical_smiles
+    elif confname == "use isomeric SMILES string":
+        configuration.name = configuration.isomeric_smiles
     elif confname == "use IUPAC name":
         configuration.name = configuration.PC_iupac_name(
             fallback=configuration.formula[0]

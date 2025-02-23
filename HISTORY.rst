@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.2.23 -- Added isomeric SMILES to structure names and ability to discard
+    * Added ability to ignore or discard a structure from e.g. optimization
+    * Added isomeric SMILES to the possible names for systems and configurations
+      
 2024.12.7 -- Bugfix: Incorrect handling of JSON properties
     * Any properties that were not a scalar had an issue when being transformed to and
       from JSON. This is now fixed.
