@@ -26,7 +26,7 @@ structure_handling_parameters = {
             "Overwrite the current configuration",
             "Create a new configuration",
             "Create a new system and configuration",
-            "Ignore",
+            "Discard the structure",
         ),
         "format_string": "s",
         "description": "First structure:",
@@ -42,7 +42,7 @@ structure_handling_parameters = {
         "enumeration": (
             "Create a new configuration",
             "Create a new system and configuration",
-            "Ignore",
+            "Discard the structure",
         ),
         "format_string": "s",
         "description": "Subsequent structures:",
@@ -115,14 +115,14 @@ def structure_handling_description(P, **kwargs):
         text += "The structure will be put in a new configuration."
     elif handling == "Create a new system and configuration":
         text += "The structure will be put in a new system."
-    elif handling == "Ignore":
+    elif handling == "Discard the structure":
         text += "The structure will be discarded."
     elif handling.startswith("$"):
         text += f"The handling of the structure will be determined by '{handling}'."
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
-    if handling != "Ignore":
+    if handling != "Discard the structure":
         sysname = P["system name"]
         if sysname == "keep current name":
             text += " The name of the system will not be changed."
@@ -271,7 +271,7 @@ def set_names(system, configuration, P, _first=True, **kwargs):
     str
         The text for printing.
     """
-    if P["structure handling"] == "Ignore":
+    if P["structure handling"] == "Discard the structure":
         return ""
 
     sysname = P["system name"]
