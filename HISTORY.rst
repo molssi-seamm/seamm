@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.2.24 -- Changed option to "Discard the structure"
+    * Changed the standard option to "Discard the structure" to indicate that the
+      structure should not be saved in the database.
+      
 2025.2.23 -- Added isomeric SMILES to structure names and ability to discard
     * Added ability to ignore or discard a structure from e.g. optimization
     * Added isomeric SMILES to the possible names for systems and configurations
