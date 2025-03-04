@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.standard_parameters &#8212; SEAMM 2025.2.24 documentation</title>
+    <title>seamm.standard_parameters &#8212; SEAMM 2025.3.4 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=e5f64722"></script>
+    <script src="../../_static/documentation_options.js?v=7a2c59d1"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.2.24" />
+  <meta name="docsearch:version" content="2025.3.4" />
   </head>
   
   
@@ -740,7 +740,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">        handling parameters.</span>
 
 <span class="sd">    _first : bool</span>
-<span class="sd">        Whether this is the first or a subseqnet structure.</span>
+<span class="sd">        Whether this is the first or a subsequent structure.</span>
 
 <span class="sd">    kwargs : {str: str}</span>
 <span class="sd">        keyword arguments providing values that may be substituted in the names.</span>
@@ -751,7 +751,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">        The text for printing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Discard the structure&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;The structure was discarded.&quot;</span>
 
     <span class="n">sysname</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;system name&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
@@ -796,7 +796,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_first</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The first structure &quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The structure &quot;</span>
 
         <span class="n">handling</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">:</span>
