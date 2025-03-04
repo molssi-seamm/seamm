@@ -1,6 +1,11 @@
 =======
 History
 =======
+2025.3.4 -- Bugfix: Creating a new configurarion ignored discard structure
+    * Fixed the code to create new structures, which did not correctly handle the
+      standard "Discard the structure" option.
+    * Improved the output when discarding the structure.
+      
 2025.2.24 -- Changed option to "Discard the structure"
     * Changed the standard option to "Discard the structure" to indicate that the
       structure should not be saved in the database.

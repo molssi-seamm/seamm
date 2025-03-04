@@ -261,7 +261,7 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         handling parameters.
 
     _first : bool
-        Whether this is the first or a subseqnet structure.
+        Whether this is the first or a subsequent structure.
 
     kwargs : {str: str}
         keyword arguments providing values that may be substituted in the names.
@@ -272,7 +272,7 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         The text for printing.
     """
     if P["structure handling"] == "Discard the structure":
-        return ""
+        return "The structure was discarded."
 
     sysname = P["system name"]
     if sysname == "keep current name":
@@ -317,7 +317,7 @@ def set_names(system, configuration, P, _first=True, **kwargs):
         configuration.name = safe_format(confname, **kwargs)
 
     if _first:
-        text = "The first structure "
+        text = "The structure "
 
         handling = P["structure handling"]
         if handling == "Overwrite the current configuration":

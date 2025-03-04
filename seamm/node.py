@@ -574,7 +574,7 @@ class Node(collections.abc.Hashable):
                 else:
                     handling = "Create a new configuration"
 
-            if handling == "Ignore":
+            if handling == "Discard the structure":
                 system = None
                 configuration = None
             elif handling == "Overwrite the current configuration":
