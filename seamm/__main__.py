@@ -20,7 +20,6 @@ standard_fonts = {"scale": 1.0}
 
 def decrease_font_size(event=None, factor=1.3):
     """Uniformly decrease the font sizes."""
-    global standard_fonts
     scale = standard_fonts["scale"] / factor
     standard_fonts["scale"] = scale
     for font_name, data in standard_fonts.items():
@@ -39,7 +38,6 @@ def decrease_font_size(event=None, factor=1.3):
 
 def increase_font_size(event=None, factor=1.3):
     """Uniformly increase the font sizes."""
-    global standard_fonts
     scale = standard_fonts["scale"] * factor
     standard_fonts["scale"] = scale
     for font_name, data in standard_fonts.items():
@@ -68,7 +66,6 @@ def raise_app(root: tk):
 
 def reset_font_size():
     """Reset the font sizes."""
-    global standard_fonts
     scale = 1.0
     standard_fonts["scale"] = scale
     for font_name, data in standard_fonts.items():
@@ -84,8 +81,6 @@ def flowchart():
     """The standalone flowchart app"""
     global app_name
     app_name = "MolSSI SEAMM"
-    global dbg_level
-    global standard_fonts
 
     parser = seamm_util.getParser("SEAMM GUI")
     parser.add_parser(

@@ -311,7 +311,6 @@ class Parameter(collections.abc.MutableMapping):
         """Return the value evaluated in the given context"""
         if self.is_expr:
             if context is None:
-                global root_context
                 if root_context is None:
                     raise RuntimeError("No context available")
                 result = eval(self.value[1:], root_context)
