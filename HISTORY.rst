@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.4.30 -- Bugfix: Error naming systems and configurations
+    * Fixed a bug that occurred trying to set the name of a system or configuration to
+      early, when it had atoms, causing errors.
+
 2025.3.4 -- Bugfix: Creating a new configurarion ignored discard structure
     * Fixed the code to create new structures, which did not correctly handle the
       standard "Discard the structure" option.
