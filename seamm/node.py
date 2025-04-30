@@ -605,9 +605,6 @@ class Node(collections.abc.Hashable):
                     f"Do not understand how to handle the structure: '{handling}'"
                 )
 
-            # Attend to naming
-            seamm.standard_parameters.set_names(system, configuration, P, **kwargs)
-
         return (system, configuration)
 
     def get_table(self, tablename, create=True):
@@ -1340,10 +1337,10 @@ class Node(collections.abc.Hashable):
             # current package first, then looks in the main SEAMM
             # templates.
             if module_path is None:
-                self.logger.info("Reading graph templates from 'seamm'")
+                self.logger.debug("Reading graph templates from 'seamm'")
                 loaders = [jinja2.PackageLoader("seamm")]
             else:
-                self.logger.info(
+                self.logger.debug(
                     "Reading graph templates from the following modules, in order"
                 )
                 loaders = []
@@ -1355,10 +1352,10 @@ class Node(collections.abc.Hashable):
                             break
 
                     if len(paths) == 0:
-                        self.logger.info(f"\t{module} -- found no templates directory")
+                        self.logger.debug(f"\t{module} -- found no templates directory")
                     else:
                         path = paths[0].locate().parent
-                        self.logger.info(f"\t{module} --> {path}")
+                        self.logger.debug(f"\t{module} --> {path}")
                         loaders.append(jinja2.FileSystemLoader(path))
 
             self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
