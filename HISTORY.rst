@@ -1,6 +1,13 @@
 =======
 History
 =======
+2025.5.27 -- Enhancement when storing results in tables.
+    * When storing e.g. diffusivity results in a table, the diffusion constants are
+      keyed by the SMILES of the component. If it is a pure fluid with only one
+      component, this enhancement allows using a column name with the SMILES key, which
+      is useful if running a number of different fluids. Otherwise each has unique
+      columns including the SMILES in the column name.
+
 2025.4.30 -- Bugfix: Error naming systems and configurations
     * Fixed a bug that occurred trying to set the name of a system or configuration to
       early, when it had atoms, causing errors.
