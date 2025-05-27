@@ -1169,11 +1169,18 @@ class Node(collections.abc.Hashable):
                 table = table_handle["table"]
 
                 # create the column as needed handling "key"ed columns
-                if "{key}" in column:
+                # Special case: if there is only one key, the value can be put
+                # in the column without a keyed name.
+                if "{key}" in column or isinstance(data[key], dict):
                     if not isinstance(data[key], dict):
                         raise ValueError(
                             f"Data for a keyed column '{column}' is not a dictionary. "
-                            f"{type(data[key])}"
+                            f"{type(data[key]).__name__}"
+                        )
+                    if "{key}" not in column and len(data[key]) > 1:
+                        raise ValueError(
+                            f"Data for column '{column}' has more than one key. "
+                            "The column name should contain a key."
                         )
                     for ckey, value in data[key].items():
                         keyed_column = column.replace("{key}", ckey)
