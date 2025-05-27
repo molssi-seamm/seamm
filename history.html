@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2025.4.30 documentation</title>
+    <title>History &#8212; SEAMM 2025.5.27 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=13dc059d"></script>
+    <script src="_static/documentation_options.js?v=ae5c790e"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.4.30" />
+  <meta name="docsearch:version" content="2025.5.27" />
   </head>
   
   
@@ -481,6 +481,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2025.5.27 – Enhancement when storing results in tables.</dt><dd><ul class="simple">
+<li><p>When storing e.g. diffusivity results in a table, the diffusion constants are
+keyed by the SMILES of the component. If it is a pure fluid with only one
+component, this enhancement allows using a column name with the SMILES key, which
+is useful if running a number of different fluids. Otherwise each has unique
+columns including the SMILES in the column name.</p></li>
+</ul>
+</dd>
 <dt>2025.4.30 – Bugfix: Error naming systems and configurations</dt><dd><ul class="simple">
 <li><p>Fixed a bug that occurred trying to set the name of a system or configuration to
 early, when it had atoms, causing errors.</p></li>
