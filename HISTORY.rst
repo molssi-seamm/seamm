@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.8.5 -- Bugfix: path for custom forcefields in jobs
+    * When running from the JobServer the path for custom forcefields did not include
+      ~/.seamm.d/data or ~/SEAMM/data. This is now corrected.
+      
 2025.5.27 -- Enhancement when storing results in tables.
     * When storing e.g. diffusivity results in a table, the diffusion constants are
       keyed by the SMILES of the component. If it is a pure fluid with only one

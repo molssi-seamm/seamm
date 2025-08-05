@@ -113,6 +113,8 @@ class Flowchart(object):
         if value:
             self._data_path = [
                 Path(self.root_directory) / "data",
+                Path.home() / ".seamm.d" / "data",
+                Path.home() / "SEAMM" / "data",
             ]  # path for local data in JobServer
         else:
             self._data_path = [
