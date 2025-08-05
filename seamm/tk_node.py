@@ -420,6 +420,7 @@ class TkNode(collections.abc.MutableMapping):
 
             # Main frame holding the widgets
             frame = ttk.Frame(notebook)
+            frame.pack(fill=tk.BOTH, expand=True)
             self["frame"] = frame
             notebook.add(frame, text="Parameters", sticky=tk.NSEW)
         elif widget == "frame":
