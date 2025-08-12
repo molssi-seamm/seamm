@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2025.8.5 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2025.8.12 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=74635d69"></script>
+    <script src="../../_static/documentation_options.js?v=94eabbde"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.8.5" />
+  <meta name="docsearch:version" content="2025.8.12" />
   </head>
   
   
@@ -496,6 +496,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">molsystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">spin_states</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">reference_handler</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seamm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompactJSONEncoder</span><span class="p">,</span> <span class="n">Q_</span>
@@ -904,6 +905,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">def</span><span class="w"> </span><span class="nf">visited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visited</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The step&#39;s directory as a path.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        path : pathlib.Path</span>
+<span class="sd">            The path to the step&#39;s directory, or optionally its parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Node.is_expr">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.is_expr">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -977,6 +989,53 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Did not find </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data file &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.file_path">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.file_path">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">relative_to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the path to a file within the job</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name_or_path : str or pathlib.Path</span>
+<span class="sd">            The name of the file or its path.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        path : pathlib.Path</span>
+<span class="sd">            The pathlib.Path path to the file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">relative_to</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">relative_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wd</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wd</span> <span class="o">/</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;job:&quot;</span><span class="p">):</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">path</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">relative_to</span> <span class="o">/</span> <span class="n">path</span>
+
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_jobserver</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Requested path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">) is not accessible from the job, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;which is running in &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">relative_to</span> <span class="o">/</span> <span class="n">path</span>
+
+        <span class="k">return</span> <span class="n">path</span></div>
 
 
 <div class="viewcode-block" id="Node.get_gui_data">
@@ -1383,6 +1442,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
 
+<div class="viewcode-block" id="Node.spin_state">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.spin_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spin_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplicity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text spin state given the multiplicity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        multiplicity : int</span>
+<span class="sd">            The spin multiplicity</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        state : str</span>
+<span class="sd">            The spin state as text, e.g. singlet, doublet, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">multiplicity</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">spin_states</span><span class="p">):</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">spin_states</span><span class="p">[</span><span class="n">multiplicity</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">multiplicity</span><span class="si">}</span><span class="s2">-let&quot;</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+
 <div class="viewcode-block" id="Node.to_json">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.to_json">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1477,33 +1558,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze the output of the calculation&quot;&quot;&quot;</span>
         <span class="k">return</span></div>
-
-
-<div class="viewcode-block" id="Node.file_path">
-<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.file_path">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any prefix from a filename and return the path.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        filename : str</span>
-<span class="sd">            The filename with optional prefix such as &#39;job:&#39;</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        pathlib.Path</span>
-<span class="sd">            The normalized, full path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;job:&quot;</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">path</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-
-        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">path</span></div>
 
 
 <div class="viewcode-block" id="Node.get_value">
