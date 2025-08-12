@@ -1,6 +1,11 @@
 =======
 History
 =======
+2025.8.12 -- Streamlining internal code
+    * Standardized handling of paths of local files in jobs
+    * Added translation from the spin multiplicity to the spin state, e.g. singlet,
+      triplet, etc.
+
 2025.8.5 -- Bugfix: path for custom forcefields in jobs
     * When running from the JobServer the path for custom forcefields did not include
       ~/.seamm.d/data or ~/SEAMM/data. This is now corrected.

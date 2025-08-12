@@ -25,6 +25,7 @@ import numpy as np
 import pandas
 import uuid
 
+from molsystem import spin_states
 import reference_handler
 import seamm
 from seamm_util import CompactJSONEncoder, Q_
@@ -428,6 +429,17 @@ class Node(collections.abc.Hashable):
     def visited(self, value):
         self._visited = bool(value)
 
+    @property
+    def wd(self):
+        """The step's directory as a path.
+
+        Returns
+        -------
+        path : pathlib.Path
+            The path to the step's directory, or optionally its parent.
+        """
+        return Path(self.directory)
+
     @staticmethod
     def is_expr(value):
         """Return whether the value is an expression or constant.
@@ -487,6 +499,50 @@ class Node(collections.abc.Hashable):
                 return tmp.expanduser().resolve()
         self.logger.debug(f"Did not find {filename}")
         raise FileNotFoundError(f"Data file '{filename}' not found.")
+
+    def file_path(self, path, relative_to=None):
+        """Find the path to a file within the job
+
+        Parameters
+        ----------
+        name_or_path : str or pathlib.Path
+            The name of the file or its path.
+
+        Returns
+        -------
+        path : pathlib.Path
+            The pathlib.Path path to the file.
+        """
+        if relative_to is None:
+            relative_to = self.wd
+
+        if isinstance(path, str):
+            if path.startswith("/"):
+                try:
+                    tmp = Path(path).relative_to(self.job_path)
+                except ValueError:
+                    path = self.wd / path[1:]
+                else:
+                    path = tmp
+            elif path.startswith("job:"):
+                path = self.job_path / path[4:]
+            else:
+                path = relative_to / path
+
+        if path.is_absolute() and self.in_jobserver:
+            tmp = path.expanduser().resolve()
+            try:
+                path.relative_to(self.job_path)
+            except ValueError:
+                raise ValueError(
+                    f"Requested path '{path}' ({tmp}) is not accessible from the job, "
+                    f"which is running in '{self.job_path}'"
+                )
+            path = tmp
+        else:
+            path = relative_to / path
+
+        return path
 
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
@@ -844,6 +900,25 @@ class Node(collections.abc.Hashable):
 
         return ""
 
+    def spin_state(self, multiplicity):
+        """Return the text spin state given the multiplicity.
+
+        Parameters
+        ----------
+        multiplicity : int
+            The spin multiplicity
+
+        Returns
+        -------
+        state : str
+            The spin state as text, e.g. singlet, doublet, etc.
+        """
+        if multiplicity < len(spin_states):
+            state = spin_states[multiplicity - 1]
+        else:
+            state = f"{multiplicity}-let"
+        return state
+
     def to_json(self):
         return json.dumps(self.to_dict(), cls=seamm_util.JSONEncoder)
 
@@ -924,30 +999,6 @@ class Node(collections.abc.Hashable):
     def analyze(self, indent="", **kwargs):
         """Analyze the output of the calculation"""
         return
-
-    def file_path(self, filename):
-        """Remove any prefix from a filename and return the path.
-
-        Parameters
-        ----------
-        filename : str
-            The filename with optional prefix such as 'job:'
-
-        Returns
-        -------
-        pathlib.Path
-            The normalized, full path.
-        """
-        path = str(filename)
-        if path[0:4] == "job:":
-            path = path[4:]
-            path = self.job_path / path
-        else:
-            path = Path(filename)
-
-        path = path.expanduser().resolve()
-
-        return path
 
     def get_value(self, variable_or_value):
         """Return the value of the workspace variable is <variable_or_value>
