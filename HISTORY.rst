@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.8.18 -- Improved line graphs
+    * Added more control over graphs: fontsize, grid color, etc. to better support
+      plug-ins and to allow output to PDF, JPG, and other formats.
+      
 2025.8.12 -- Streamlining internal code
     * Standardized handling of paths of local files in jobs
     * Added translation from the spin multiplicity to the spin state, e.g. singlet,

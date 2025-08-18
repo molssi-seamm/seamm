@@ -19,6 +19,7 @@ dependencies:
   - packaging
   - pandas
   - pillow
+  - plotly
   - pyperclip
   - pyuca
   - py-cpuinfo
@@ -43,6 +44,7 @@ dependencies:
 
   # Pip-only installs
   - pip:
+    - kaleido
     - pmw
     # Documentation
     - sphinx-copybutton
