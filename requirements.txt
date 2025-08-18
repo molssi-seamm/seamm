@@ -2,7 +2,6 @@ bibtexparser
 fasteners
 humanize
 jinja2
-kaleido
 molsystem
 numpy
 packaging
@@ -10,7 +9,6 @@ pandas
 pillow
 pmw
 py-cpuinfo
-plotly
 python-dateutil
 pyuca
 reference_handler
