@@ -1373,13 +1373,21 @@ class Node(collections.abc.Hashable):
                     json_data, fd, indent=4, sort_keys=True, cls=CompactJSONEncoder
                 )
 
-    def create_figure(self, title="", template="line.graph_template", module_path=None):
+    def create_figure(
+        self,
+        title="",
+        fontsize=15,
+        template="line.graph_template",
+        module_path=None,
+    ):
         """Create a new figure.
 
         Parameters
         ----------
         title : str, optional
             The title of the figure
+        fontsize : int, optional
+            The default font size for everything  in the figure
         template : str, optional
             The Jinja template for the desired graph. Defaults to
             'line.graph_template'
@@ -1419,7 +1427,7 @@ class Node(collections.abc.Hashable):
             self._jinja_env = jinja2.Environment(loader=jinja2.ChoiceLoader(loaders))
 
         figure = seamm_util.Figure(
-            jinja_env=self._jinja_env, template=template, title=title
+            jinja_env=self._jinja_env, template=template, title=title, fontsize=fontsize
         )
         return figure
 

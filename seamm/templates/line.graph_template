@@ -1,54 +1,58 @@
 {
     "data": [
-	{%- for trace in traces %}    
+        {%- for trace in traces %}    
         {
             "hoverlabel": {
                 "namelength": 0
             },
-	    {%- if 'hovertemplate' in trace %}
-	    "hovertemplate": "{{ trace.hovertemplate }}",
-	    {%- else %}
+            {%- if 'hovertemplate' in trace %}
+            "hovertemplate": "{{ trace.hovertemplate }}",
+            {%- else %}
             "hovertemplate": "{{ trace.xlabel }}=%{x} {{ trace.xunits }}<br>{{ trace.ylabel }}=%{y} {{ trace.yunits }}",
-	    {%- endif %}
+            {%- endif %}
             "legendgroup": "",
             "mode": "lines",
-	    {%- if 'showlegend' in trace %}
-	    "showlegend": {{ trace.showlegend }},
-	    {%- endif %}
+            {%- if 'showlegend' in trace %}
+            "showlegend": {{ trace.showlegend }},
+            {%- endif %}
             "line": {
                 "color": "{{ trace.color|default('#4dbd74') }}",
                 "dash": "{{ trace.dash|default('solid') }}",
-                "width": "{{ trace.width|default('1') }}"
+                "width": {{ trace.width|default('1') }}
             },
-	    {%- if 'fill' in trace %}
-	    "fill": "{{ trace.fill }}",
-	    {%- endif %}
-	    {%- if 'fillcolor' in trace %}
-	    "fillcolor": "{{ trace.color|default('lightgray') }}",
-	    {%- endif %}
+            {%- if 'fill' in trace %}
+            "fill": "{{ trace.fill }}",
+            {%- endif %}
+            {%- if 'fillcolor' in trace %}
+            "fillcolor": "{{ trace.color|default('lightgray') }}",
+            {%- endif %}
             "name": "{{ trace.name }}",
             "type": "scatter",
-	    {%- if 'visible' in trace %}
-	    "visible": "{{ trace.visible }}",
-	    {%- endif %}
-	    {%- if 'x' in trace %}
-	    "x": {{ trace.x|jsonify }},
-	    {%- else %}
-	    "x0": {{ trace.x0 }},
-	    "dx": {{ trace.dx }},
-	    {%- endif %}
+            {%- if 'visible' in trace %}
+            "visible": "{{ trace.visible }}",
+            {%- endif %}
+            {%- if 'x' in trace %}
+            "x": {{ trace.x|jsonify }},
+            {%- else %}
+            "x0": {{ trace.x0 }},
+            "dx": {{ trace.dx }},
+            {%- endif %}
             "xaxis": "{{ trace.xaxis }}",
-	    "y": {{ trace.y|jsonify }},
+            "y": {{ trace.y|jsonify }},
             "yaxis": "{{ trace.yaxis }}"
-	    {%- if loop.last %}
+            {%- if loop.last %}
         }
-	{%- else %}
+        {%- else %}
         },
     {%- endif %}
     {%- endfor %}
     ],
     "layout": {
-    	"hovermode": "x",
+        "plot_bgcolor": "white",
+        "font": {
+            "size": {{ fontsize }}
+        },
+        "hovermode": "x",
         "legend": {
             "title": "",
             "tracegroupgap": 0
@@ -58,34 +62,43 @@
             "text": "{{ title }}",
             "xanchor": "center"
         },
-	{%- for axis in axes %}    
+        {%- for axis in axes %}    
         "{{ axis.name }}": {
             "anchor": "{{ axis.anchor }}",
             "domain": [
                 {{ axis.start }},
                 {{ axis.stop }}
             ],
-	    {%- if 'overlaying' in axis %}
-	    "overlaying": "{{ axis.overlaying }}",
-	    {%- endif %}
-	    {%- if 'position' in axis %}
-	    "position": "{{ axis.position }}",
-	    {%- endif %}
-	    {%- if 'range' in axis %}
-	    "range": {{ axis.range|jsonify }},
-	    {%- endif %}
-	    {%- if 'side' in axis %}
-	    "side": "{{ axis.side }}",
-	    {%- endif %}
-	    {%- if 'tickmode' in axis %}
-	    "tickmode": "{{ axis.tickmode }}",
-	    {%- endif %}
+            {%- if 'gridcolor' in axis %}
+            "gridcolor": "{{ axis.gridcolor }}",
+            {%- else %}
+            "gridcolor": "lightgrey",   
+            {%- endif %}
+            "linecolor": "black",
+            {%- if 'overlaying' in axis %}
+            "overlaying": "{{ axis.overlaying }}",
+            {%- endif %}
+            {%- if 'position' in axis %}
+            "position": "{{ axis.position }}",
+            {%- endif %}
+            {%- if 'range' in axis %}
+            "range": {{ axis.range|jsonify }},
+            {%- endif %}
+            {%- if 'rangemode' in axis %}
+            "rangemode": "{{ axis.rangemode }}",
+            {%- endif %}
+            {%- if 'side' in axis %}
+            "side": "{{ axis.side }}",
+            {%- endif %}
+            {%- if 'tickmode' in axis %}
+            "tickmode": "{{ axis.tickmode }}",
+            {%- endif %}
             "title": {
                 "text": "{{ axis.label }}"
             }
         {%- if loop.last %}
         }
-	{%- else %}
+        {%- else %}
         },
         {%- endif %}
         {%- endfor %}
