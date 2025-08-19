@@ -2,7 +2,7 @@
 History
 =======
 2025.8.19 -- Bugfix: error in setting name of system & configuration
-    * Fixed an error that occrred sometimes when setting the name of the system and/or
+    * Fixed an error that occurred sometimes when setting the name of the system and/or
       configuration.
 
 2025.8.18 -- Improved line graphs
