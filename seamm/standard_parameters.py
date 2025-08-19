@@ -91,12 +91,12 @@ structure_handling_parameters = {
 }
 
 
-def structure_handling_description(P, **kwargs):
+def structure_handling_description(__P, **kwargs):
     """Return a standard description for how the structure will be handled.
 
     Parameters
     ----------
-    P : dict(str, any)
+    __P : dict(str, any)
         The dictionary of parameter values, which must contain the standard structure
         handling parameters.
 
@@ -108,7 +108,7 @@ def structure_handling_description(P, **kwargs):
 
     text = ""
 
-    handling = P["structure handling"]
+    handling = __P["structure handling"]
     if handling == "Overwrite the current configuration":
         text += "The structure will overwrite the current configuration."
     elif handling == "Create a new configuration":
@@ -123,7 +123,7 @@ def structure_handling_description(P, **kwargs):
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
     if handling != "Discard the structure":
-        sysname = P["system name"]
+        sysname = __P["system name"]
         if sysname == "keep current name":
             text += " The name of the system will not be changed."
         elif sysname == "use SMILES string":
@@ -144,7 +144,7 @@ def structure_handling_description(P, **kwargs):
             tmp = safe_format(sysname, **kwargs)
             text += f" The name of the system will be '{tmp}'."
 
-        confname = P["configuration name"]
+        confname = __P["configuration name"]
         if confname == "keep current name":
             text += " The name of the configuration will not be changed."
         elif confname == "use SMILES string":
@@ -168,12 +168,12 @@ def structure_handling_description(P, **kwargs):
     return text
 
 
-def multiple_structure_handling_description(P, **kwargs):
+def multiple_structure_handling_description(__P, **kwargs):
     """Return a standard description for how the new structures will be handled.
 
     Parameters
     ----------
-    P : dict(str, any)
+    __P : dict(str, any)
         The dictionary of parameter values, which must contain the standard structure
         handling parameters.
 
@@ -185,7 +185,7 @@ def multiple_structure_handling_description(P, **kwargs):
 
     text = "The first structure will "
 
-    handling = P["structure handling"]
+    handling = __P["structure handling"]
     if handling == "Overwrite the current configuration":
         text += "overwrite the current configuration."
     elif handling == "Create a new configuration":
@@ -197,7 +197,7 @@ def multiple_structure_handling_description(P, **kwargs):
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
-    handling = P["subsequent structure handling"]
+    handling = __P["subsequent structure handling"]
     text += " Any subsequent structures will be "
     if handling == "Create a new configuration":
         text += "created as a new configuration of the current system."
@@ -208,7 +208,7 @@ def multiple_structure_handling_description(P, **kwargs):
     else:
         raise ValueError(f"Do not understand how to handle the structure: '{handling}'")
 
-    sysname = P["system name"]
+    sysname = __P["system name"]
     if sysname == "keep current name":
         text += " The name of the system will not be changed."
     elif sysname == "use SMILES string":
@@ -225,7 +225,7 @@ def multiple_structure_handling_description(P, **kwargs):
         tmp = safe_format(sysname, **kwargs)
         text += f" The name of the system will be '{tmp}'."
 
-    confname = P["configuration name"]
+    confname = __P["configuration name"]
     if confname == "keep current name":
         text += " The name of the configuration will not be changed."
     elif confname == "use SMILES string":
@@ -245,18 +245,18 @@ def multiple_structure_handling_description(P, **kwargs):
     return text
 
 
-def set_names(system, configuration, P, _first=True, **kwargs):
+def set_names(__system, __configuration, __P, _first=True, **kwargs):
     """Set the names of the system and configuration.
 
     Parameters
     ----------
-    system : _System
+    __system : _System
         The system being named
 
-    configuration : _Configuration
+    __configuration : _Configuration
         The configuration being named
 
-    P : dict(str, any)
+    __P : dict(str, any)
         The dictionary of parameter values, which must contain the standard structure
         handling parameters.
 
@@ -271,55 +271,57 @@ def set_names(system, configuration, P, _first=True, **kwargs):
     str
         The text for printing.
     """
-    if P["structure handling"] == "Discard the structure":
+    if __P["structure handling"] == "Discard the structure":
         return "The structure was discarded."
 
-    sysname = P["system name"]
+    sysname = __P["system name"]
     if sysname == "keep current name":
         pass
     elif sysname == "use SMILES string":
-        system.name = configuration.smiles
+        __system.name = __configuration.smiles
     elif sysname == "use Canonical SMILES string":
-        system.name = configuration.canonical_smiles
+        __system.name = __configuration.canonical_smiles
     elif sysname == "use isomeric SMILES string":
-        system.name = configuration.isomeric_smiles
+        __system.name = __configuration.isomeric_smiles
     elif sysname == "use IUPAC name":
-        system.name = configuration.PC_iupac_name(fallback=configuration.formula[0])
+        __system.name = __configuration.PC_iupac_name(
+            fallback=__configuration.formula[0]
+        )
     elif sysname == "use InChI":
-        system.name = configuration.inchi
+        __system.name = __configuration.inchi
     elif sysname == "use InChIKey":
-        system.name = configuration.inchikey
+        __system.name = __configuration.inchikey
     elif sysname == "use chemical formula":
-        system.name = configuration.formula[0]
+        __system.name = __configuration.formula[0]
     else:
-        system.name = safe_format(sysname, **kwargs)
+        __system.name = safe_format(sysname, **kwargs)
 
-    confname = P["configuration name"]
+    confname = __P["configuration name"]
     if confname == "keep current name":
         pass
     elif confname == "use SMILES string":
-        configuration.name = configuration.smiles
+        __configuration.name = __configuration.smiles
     elif confname == "use Canonical SMILES string":
-        configuration.name = configuration.canonical_smiles
+        __configuration.name = __configuration.canonical_smiles
     elif confname == "use isomeric SMILES string":
-        configuration.name = configuration.isomeric_smiles
+        __configuration.name = __configuration.isomeric_smiles
     elif confname == "use IUPAC name":
-        configuration.name = configuration.PC_iupac_name(
-            fallback=configuration.formula[0]
+        __configuration.name = __configuration.PC_iupac_name(
+            fallback=__configuration.formula[0]
         )
     elif confname == "use InChI":
-        configuration.name = configuration.inchi
+        __configuration.name = __configuration.inchi
     elif confname == "use InChIKey":
-        configuration.name = configuration.inchikey
+        __configuration.name = __configuration.inchikey
     elif confname == "use chemical formula":
-        configuration.name = configuration.formula[0]
+        __configuration.name = __configuration.formula[0]
     else:
-        configuration.name = safe_format(confname, **kwargs)
+        __configuration.name = safe_format(confname, **kwargs)
 
     if _first:
         text = "The structure "
 
-        handling = P["structure handling"]
+        handling = __P["structure handling"]
         if handling == "Overwrite the current configuration":
             text += "overwrote the current configuration, and was"
         elif handling == "Create a new configuration":
@@ -331,7 +333,7 @@ def set_names(system, configuration, P, _first=True, **kwargs):
                 f"Do not understand how to handle the structure: '{handling}'"
             )
     else:
-        handling = P["subsequent structure handling"]
+        handling = __P["subsequent structure handling"]
         text = "This subsequent structure was "
         if handling == "Create a new configuration":
             text += "created as a new configuration of the current system"
@@ -342,14 +344,14 @@ def set_names(system, configuration, P, _first=True, **kwargs):
                 f"Do not understand how to handle the structure: '{handling}'"
             )
 
-    text += f" named '{system.name}' / '{configuration.name}'."
+    text += f" named '{__system.name}' / '{__configuration.name}'."
     return text
 
 
-def safe_format(s, *args, **kwargs):
+def safe_format(__s, *args, **kwargs):
     while True:
         try:
-            return s.format(*args, **kwargs)
+            return __s.format(*args, **kwargs)
         except KeyError as e:
             e = e.args[0]
             kwargs[e] = "{%s}" % e
