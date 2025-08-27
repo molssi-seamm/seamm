@@ -1,6 +1,17 @@
 =======
 History
 =======
+2025.8.27 -- Bugfix: error with missing units for some parameters
+    * If the value of a parameter was in the enumeration of possible values, and was a
+      numerical value, any units were dropped. Now they are kept, though if the value is
+      a text string, like 'default', the units are left off.
+    * Adding the equals sign, "=", as as prefix for variables and expressions, in
+      addition dollar signs, "$".
+
+2025.8.19 -- Bugfix: error in setting name of system & configuration
+    * Fixed an error that occurred sometimes when setting the name of the system and/or
+      configuration.
+
 2025.8.18 -- Improved line graphs
     * Added more control over graphs: fontsize, grid color, etc. to better support
       plug-ins and to allow output to PDF, JPG, and other formats.

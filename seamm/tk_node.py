@@ -973,7 +973,7 @@ class TkNode(collections.abc.MutableMapping):
         bool
            True for an expression, False otherwise.
         """
-        return len(value) > 0 and value[0] == "$"
+        return len(value) > 0 and value[0] in ("$", "=")
 
     def is_inside(self, x, y, halo=0):
         """Return a boolean indicating whether the point x, y is inside

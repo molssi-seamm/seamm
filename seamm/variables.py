@@ -69,7 +69,7 @@ class Variables(collections.abc.MutableMapping):
         If it is not a variable, return the original string unchanged
         """
 
-        if isinstance(string, str) and string[0] == "$":
+        if isinstance(string, str) and string[0] in ("$", "="):
             expression = self.filter_expression(string)
 
             result = eval(expression, seamm.flowchart_variables._data)
@@ -159,7 +159,7 @@ class Variables(collections.abc.MutableMapping):
 
         """
 
-        if string[0] == "$":
+        if string[0] in ("$", "="):
             if string[1] == "{":
                 if string[-1] != "}":
                     raise RuntimeError("'" + string + "'is not a valid string name")
