@@ -303,7 +303,7 @@ class Parameter(collections.abc.MutableMapping):
         """Is the current value a variable reference or
         expression?"""
         if isinstance(self.value, str) and len(self.value) > 0:
-            return self.value and self.value[0] == "$"
+            return self.value[0] in ("$", "=")
         else:
             return False
 
@@ -323,11 +323,8 @@ class Parameter(collections.abc.MutableMapping):
         if self.enumeration is not None and result in self.enumeration:
             if self.kind == "boolean":
                 return bool(strtobool(result))
-            else:
-                return result
-
         # convert to proper type
-        if self.kind == "integer":
+        elif self.kind == "integer":
             result = int(result)
         elif self.kind == "float":
             result = float(result)
@@ -338,7 +335,11 @@ class Parameter(collections.abc.MutableMapping):
                 result = bool(result)
         elif self.kind == "list" or self.kind == "periodic table":
             if not isinstance(result, list):
-                if isinstance(result, str) and len(result) > 0 and result[0] != "$":
+                if (
+                    isinstance(result, str)
+                    and len(result) > 0
+                    and result[0] not in ("$", "=")
+                ):
                     result = json.loads(result)
             return result
         elif self.kind == "dictionary":
@@ -350,15 +351,19 @@ class Parameter(collections.abc.MutableMapping):
         if formatted:
             fstring = self.format_string
             if fstring is not None and fstring != "":
-                result = f"{result:{fstring}}"
+                try:
+                    result = f"{result:{fstring}}"
+                except Exception:
+                    pass
             if self.units is not None and self.units != "":
                 result += " " + self.units
+            return result
 
         # and run into pint quantity if requested
         if units and self.units is not None and self.units != "":
             # Might be a string...
             if isinstance(result, str):
-                result = (result, self.units)
+                pass
             else:
                 result = Q_(result, self.units)
 
