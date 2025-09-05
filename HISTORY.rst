@@ -1,6 +1,11 @@
 =======
 History
 =======
+2025.9.5 -- Bugfix: Error handling '==' in parameters
+    * Corrected an issue with "==" as the value of a parameter. The GUI's for handling
+      queries and searching use "==" for equality, but this was misintepreted as
+      indicating a variable or expression to evaluate.
+
 2025.8.27 -- Bugfix: error with missing units for some parameters
     * If the value of a parameter was in the enumeration of possible values, and was a
       numerical value, any units were dropped. Now they are kept, though if the value is
