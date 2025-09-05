@@ -303,7 +303,7 @@ class Parameter(collections.abc.MutableMapping):
         """Is the current value a variable reference or
         expression?"""
         if isinstance(self.value, str) and len(self.value) > 0:
-            return self.value[0] in ("$", "=")
+            return self.value[0] in ("$", "=") and self.value != "=="
         else:
             return False
 
