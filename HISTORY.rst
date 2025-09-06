@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.9.6 -- Bugfix: Error handling f-strings in variables
+    * Fixed an issue that caused a crash handling f-strings in some parameters in the
+      GUI.
+
 2025.9.5 -- Bugfix: Error handling '==' in parameters
     * Corrected an issue with "==" as the value of a parameter. The GUI's for handling
       queries and searching use "==" for equality, but this was misintepreted as
