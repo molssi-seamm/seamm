@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.variables &#8212; SEAMM 2025.9.5.1 documentation</title>
+    <title>seamm.variables &#8212; SEAMM 2025.9.6 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=7d771bb9"></script>
+    <script src="../../_static/documentation_options.js?v=324e9d5a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2025.9.5.1" />
+  <meta name="docsearch:version" content="2025.9.6" />
   </head>
   
   
@@ -541,16 +541,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../api/seamm.html#seamm.variables.Variables.value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the variable or expression if it is an</span>
-<span class="sd">        expression, i.e. starts with a $ and optionally has braces around the</span>
-<span class="sd">        variable name.</span>
+<span class="sd">        expression, i.e. starts with a $ or =</span>
 
 <span class="sd">        If it is not a variable, return the original string unchanged</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">string</span> <span class="o">!=</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
-            <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_expression</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-
-            <span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">string</span></div>
@@ -678,7 +674,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s2">&quot;in single quotes&quot;</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">+=</span> <span class="n">char</span>
                 <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">:</span>
@@ -698,7 +694,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">+=</span> <span class="n">char</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;$&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;$&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;=&quot;</span><span class="p">):</span>
                     <span class="n">state</span> <span class="o">=</span> <span class="s2">&quot;in variable name&quot;</span>
                 <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">+=</span> <span class="n">char</span>
