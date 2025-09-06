@@ -63,16 +63,12 @@ class Variables(collections.abc.MutableMapping):
 
     def value(self, string):
         """Return the value of the variable or expression if it is an
-        expression, i.e. starts with a $ and optionally has braces around the
-        variable name.
+        expression, i.e. starts with a $ or =
 
         If it is not a variable, return the original string unchanged
         """
-
         if isinstance(string, str) and string[0] in ("$", "=") and string != "==":
-            expression = self.filter_expression(string)
-
-            result = eval(expression, seamm.flowchart_variables._data)
+            result = eval(string[1:], seamm.flowchart_variables._data)
             return result
         else:
             return string
@@ -182,7 +178,7 @@ class Variables(collections.abc.MutableMapping):
 
         result = ""
         state = ""
-        for char in string:
+        for i, char in enumerate(string):
             if state == "in single quotes":
                 result += char
                 if char == "'":
@@ -202,7 +198,7 @@ class Variables(collections.abc.MutableMapping):
                 else:
                     result += char
             else:
-                if char == "$":
+                if char == "$" or (i == 0 and char == "="):
                     state = "in variable name"
                 elif char == "'":
                     result += char
