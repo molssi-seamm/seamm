@@ -430,19 +430,21 @@ class Parameter(collections.abc.MutableMapping):
             w = sw.PeriodicTable(frame, **kwargs)
             w.set(self.value)
         elif self.enumeration is not None:
-            if len(self.enumeration) > 0:
-                width = max(len(x) for x in self.enumeration)
-                if width < 10:
+            if "width" not in kwargs:
+                if len(self.enumeration) > 0:
+                    width = max(len(x) for x in self.enumeration)
+                    if width < 10:
+                        width = 10
+                else:
                     width = 10
-            else:
-                width = 10
+                kwargs["width"] = width
+
             if self.dimensionality is None:
                 logger.debug("    making LabeledCombobox")
                 w = sw.LabeledCombobox(
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
-                    width=width,
                     **kwargs,
                 )
                 w.set(self.value)
@@ -452,7 +454,6 @@ class Parameter(collections.abc.MutableMapping):
                     frame,
                     labeltext=labeltext,
                     values=self.enumeration,
-                    width=width,
                     **kwargs,
                 )
                 w.set(self.value, self.units)
