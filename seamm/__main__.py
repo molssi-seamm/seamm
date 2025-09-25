@@ -319,8 +319,11 @@ def flowchart():
     logger.debug("SEAMM has been drawn. Now raise it to the top")
 
     # bring it to the top of all windows
-    root.lift()
-    raise_app(root)
+    try:
+        root.lift()
+        raise_app(root)
+    except Exception as e:
+        print(f"Caught exception {str(e)} raising the app")
 
     # Check to see if the command line has flowcharts to open
     if len(options["flowcharts"]) > 0:

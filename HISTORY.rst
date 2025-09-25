@@ -1,6 +1,11 @@
 =======
 History
 =======
+2025.9.24 -- Small enhancements and catching errors.
+    * Added better control over the width of widgets displaying parameters.
+    * Catch and report errors storing properties to the database, but continue on in
+      any case.
+
 2025.9.6 -- Bugfix: Error handling f-strings in variables
     * Fixed an issue that caused a crash handling f-strings in some parameters in the
       GUI.

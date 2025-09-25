@@ -1093,6 +1093,7 @@ class Node(collections.abc.Hashable):
         configuration=None,
         data={},
         create_tables=True,
+        printer=None,
     ):
         """Store results in the database, as variables,and in tables.
 
@@ -1152,15 +1153,71 @@ class Node(collections.abc.Hashable):
                         if units != current_units:
                             if result_metadata["dimensionality"] == "scalar":
                                 tmp = Q_(data[key], current_units)
-                                properties.put(_property, tmp.m_as(units))
+                                try:
+                                    properties.put(_property, tmp.m_as(units))
+                                except Exception as e:
+                                    if printer is not None:
+                                        printer.normal(
+                                            "        Warning: unable to save"
+                                            f"  {_property} to the database:\n"
+                                            f"            {e}"
+                                        )
+                                    else:
+                                        print(
+                                            "        Warning: unable to save"
+                                            f"  {_property} to the database:\n"
+                                            f"            {e}"
+                                        )
                             else:
                                 factor = Q_(1, current_units).m_as(units)
                                 tmp = scale(data[key], factor)
-                                properties.put(_property, tmp)
+                                try:
+                                    properties.put(_property, tmp)
+                                except Exception as e:
+                                    if printer is not None:
+                                        printer.normal(
+                                            "        Warning: unable to save"
+                                            f"  {_property} to the database:\n"
+                                            f"            {e}"
+                                        )
+                                    else:
+                                        print(
+                                            "        Warning: unable to save"
+                                            f"  {_property} to the database:\n"
+                                            f"            {e}"
+                                        )
                         else:
-                            properties.put(_property, data[key])
+                            try:
+                                properties.put(_property, data[key])
+                            except Exception as e:
+                                if printer is not None:
+                                    printer.normal(
+                                        f"        Warning: unable to save {_property}"
+                                        " to the database:\n"
+                                        f"            {e}"
+                                    )
+                                else:
+                                    print(
+                                        f"        Warning: unable to save {_property}"
+                                        " to the database:\n"
+                                        f"            {e}"
+                                    )
                     else:
-                        properties.put(_property, data[key])
+                        try:
+                            properties.put(_property, data[key])
+                        except Exception as e:
+                            if printer is not None:
+                                printer.normal(
+                                    f"        Warning: unable to save {_property}"
+                                    " to the database:\n"
+                                    f"            {e}"
+                                )
+                            else:
+                                print(
+                                    f"        Warning: unable to save {_property}"
+                                    " to the database:\n"
+                                    f"            {e}"
+                                )
 
             # Store as JSON
             if "json" in value:
