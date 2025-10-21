@@ -454,7 +454,12 @@ class Node(collections.abc.Hashable):
         bool
            True for an expression, False otherwise.
         """
-        return len(value) > 0 and value[0] in ("$", "=") and value != "=="
+        return (
+            isinstance(value, str)
+            and len(value) > 0
+            and value[0] in ("$", "=")
+            and value != "=="
+        )
 
     def set_uuid(self):
         self._uuid = uuid.uuid4().int

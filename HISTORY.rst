@@ -1,6 +1,9 @@
 =======
 History
 =======
+2025.10.21 -- Bugfix: error caused by variables in parameters
+    * Fixed an issue with variables in boolean parameters that caused the code to crash.
+
 2025.9.24 -- Small enhancements and catching errors.
     * Added better control over the width of widgets displaying parameters.
     * Catch and report errors storing properties to the database, but continue on in
