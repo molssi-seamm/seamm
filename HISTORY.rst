@@ -1,6 +1,10 @@
 =======
 History
 =======
+2025.10.22 -- Enhancement for extra keywords
+    * Small enhancement to the GUI code to allow a code, such as VASP, that always has
+      keyword = value to let the extra keywords tab know there will always be a value.
+
 2025.10.21 -- Bugfix: error caused by variables in parameters
     * Fixed an issue with variables in boolean parameters that caused the code to crash.
 
