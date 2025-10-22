@@ -384,6 +384,7 @@ class TkNode(collections.abc.MutableMapping):
         title="Edit step",
         widget="frame",
         results_tab=False,
+        default_number_values=None,
     ):
         """Create the base dialog for editing the parameters for a step.
 
@@ -479,6 +480,7 @@ class TkNode(collections.abc.MutableMapping):
                 kframe,
                 metadata=self.node.metadata["keywords"],
                 keywords=self.node.parameters["extra keywords"].value,
+                default_number_values=default_number_values,
             )
             self["keywords"].pack(expand="yes", fill="both")
 
