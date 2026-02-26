@@ -41,9 +41,9 @@ anywhere else it just snaps back to its original place.
 """
 
 import copy
+import importlib
 import logging
 import math
-import pkg_resources
 import pprint  # nopep8
 import sys
 import tkinter as tk
@@ -145,7 +145,7 @@ class TkFlowchart(object):
         self.canvas.bind("<Leave>", self._unbound_to_mousewheel)
 
         # background image
-        filepath = pkg_resources.resource_filename(__name__, "data/SEAMM.png")
+        filepath = importlib.resources.files("seamm") / "data" / "SEAMM.png"
         logger.info(filepath)
 
         self.image = Image.open(filepath)
@@ -658,7 +658,7 @@ class TkFlowchart(object):
         item = self.tree.identify_row(event.y)
         plugin_name = self.tree.item(item, option="text")
 
-        (last_node, x, y, anchor1, anchor2) = self.next_position()
+        last_node, x, y, anchor1, anchor2 = self.next_position()
         edge_subtype = last_node.default_edge_subtype()
 
         logger.debug("creating {} node".format(plugin_name))

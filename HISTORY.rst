@@ -1,6 +1,8 @@
 =======
 History
 =======
+2026.2.26 -- Internal: moving from pkg_resources to importlib.resources
+
 2025.10.22 -- Enhancement for extra keywords
     * Small enhancement to the GUI code to allow a code, such as VASP, that always has
       keyword = value to let the extra keywords tab know there will always be a value.

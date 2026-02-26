@@ -11,9 +11,9 @@ files and submit the job to a dashboard.
 """
 
 import configparser
+import importlib
 import logging
 from pathlib import Path
-import pkg_resources
 
 from .seammrc import SEAMMrc
 import seamm_dashboard_client
@@ -52,7 +52,7 @@ class DashboardHandler(object):
 
         self._credentials = SEAMMrc()
         self._current_dashboard = None
-        self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
+        self.resource_path = importlib.resources.files("seamm") / "data"
 
         # Get the location of the dashboards configuration file
         parser = seamm_util.seamm_parser()
