@@ -16,7 +16,6 @@ structure_handling_parameters : dict(str, dict(str, str))
     they are reused.
 """
 
-
 structure_handling_parameters = {
     "structure handling": {
         "default": "Overwrite the current configuration",

@@ -11,9 +11,8 @@ files and submit the job to a dashboard.
 """
 
 import configparser
+import importlib
 import logging
-from pathlib import Path
-import pkg_resources
 import shlex
 import tkinter as tk
 from tkinter import messagebox
@@ -48,7 +47,7 @@ class TkJobHandler(object):
         self._widgets = {}
         self._variable_value = {}
         self._tk_var = {}  # For checkbuttons
-        self.resource_path = Path(pkg_resources.resource_filename(__name__, "data/"))
+        self.resource_path = importlib.resources.files("seamm") / "data"
 
         s = ttk.Style()
         s.configure("Border.TLabel", relief="ridge", anchor=tk.W, padding=5)
