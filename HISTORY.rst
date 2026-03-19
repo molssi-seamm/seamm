@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.3.19 -- When finding files, return the link not the file pointed at
+    * With e.g. the MLFFs it is convenient to create links in e.g. the personal
+      forcefield directory pointing at the (large) model files. If the links have
+      different extensions than the underlying files, it is necessary to return the
+      link, not the underlying file, so that the forcefield type can be correctly
+      identified. This fix makes that happen.
+
 2026.2.26 -- Internal: moving from pkg_resources to importlib.resources
 
 2025.10.22 -- Enhancement for extra keywords

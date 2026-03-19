@@ -480,7 +480,7 @@ class Node(collections.abc.Hashable):
         """Reset the id for node"""
         self._id = None
 
-    def find_data_file(self, filename):
+    def find_data_file(self, filename, follow_links=False):
         """Using the data_path, find a file.
 
         Parameters
@@ -501,7 +501,11 @@ class Node(collections.abc.Hashable):
             tmp = path / filename
             self.logger.debug(f"  trying {tmp}")
             if tmp.exists():
-                return tmp.expanduser().resolve()
+                if follow_links:
+                    return tmp.expanduser().resolve()
+                else:
+                    # resolve() follows link, absolute() leaves .., so use this:
+                    return Path(os.path.abspath(tmp.expanduser()))
         self.logger.debug(f"Did not find {filename}")
         raise FileNotFoundError(f"Data file '{filename}' not found.")
 
