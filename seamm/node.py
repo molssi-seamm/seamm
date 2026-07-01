@@ -903,6 +903,35 @@ class Node(collections.abc.Hashable):
 
         return None
 
+    def previous_nodes(self, node_type=None):
+        """The nodes preceding this one in the flowchart, nearest first.
+
+        Follows the execution ("next") edges backward from this node. Optionally
+        keep only nodes that are instances of ``node_type`` -- handy for checking
+        whether a particular kind of step (e.g. a Model Chemistry step) comes
+        earlier in the flow, either as ``node.previous_nodes(SomeStep)`` or by
+        testing membership in ``[type(n) for n in node.previous_nodes()]``.
+
+        Parameters
+        ----------
+        node_type : type or tuple of types, optional
+            If given, return only preceding nodes that are instances of it.
+
+        Returns
+        -------
+        [Node]
+            The preceding nodes, nearest first. May include the flowchart's
+            start node.
+        """
+        nodes = []
+        node = self.previous()
+        while node is not None:
+            nodes.append(node)
+            node = node.previous()
+        if node_type is not None:
+            nodes = [node for node in nodes if isinstance(node, node_type)]
+        return nodes
+
     def get_input(self):
         """Return the input from this subnode, usually used for
         building up the input for the executable."""

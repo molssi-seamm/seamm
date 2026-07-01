@@ -549,6 +549,15 @@ class TkNode(collections.abc.MutableMapping):
         for direction, edge in self.connections():
             edge.move()
 
+    def previous_nodes(self, node_type=None):
+        """The nodes preceding this one in the flowchart, nearest first.
+
+        Identical to :meth:`seamm.Node.previous_nodes`, delegating to the
+        non-graphical node so the interface is the same whether called on a
+        graphical (Tk) or non-graphical node. Returns non-graphical nodes.
+        """
+        return self.node.previous_nodes(node_type=node_type)
+
     def edit(self):
         """Present a dialog for editing this step's parameters.
 
