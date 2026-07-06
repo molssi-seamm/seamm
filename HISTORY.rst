@@ -1,6 +1,12 @@
 =======
 History
 =======
+2026.7.6 -- Added a helper to find preceding steps in a flowchart
+    * ``Node.previous_nodes()`` (and the matching ``TkNode.previous_nodes()``)
+      returns the steps preceding a given step, optionally filtered by type --
+      useful for checking whether a particular kind of step, such as a Model
+      Chemistry step, comes earlier in the flow.
+
 2026.3.19 -- When finding files, return the link not the file pointed at
     * With e.g. the MLFFs it is convenient to create links in e.g. the personal
       forcefield directory pointing at the (large) model files. If the links have
