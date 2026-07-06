@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.3.19 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.7.6 documentation</title>
   
   
   
@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -49,13 +49,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=5b4c1daa"></script>
+    <script src="../_static/documentation_options.js?v=29693f0c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/seamm';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
 
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -63,21 +64,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.3.19" />
+  <meta name="docsearch:version" content="2026.7.6" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -103,7 +110,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -233,11 +240,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -250,8 +264,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           
           
           
-          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -262,8 +275,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           
           
           
-          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">Twitter</span></a>
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
         </li>
 </ul></div>
       
@@ -380,11 +392,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -397,8 +416,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           
           
           
-          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -409,8 +427,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           
           
           
-          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">Twitter</span></a>
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
         </li>
 </ul></div>
         
@@ -419,7 +436,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -1523,6 +1547,29 @@ the <cite>model chemistry</cite>, such as <strong>mp2/6-31g</strong> or <strong>
 <dt class="sig sig-object py" id="seamm.node.Node.previous">
 <span class="sig-name descname"><span class="pre">previous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.previous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.previous" title="Link to this definition">#</a></dt>
 <dd><p>Return the previous node in the flow</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.previous_nodes">
+<span class="sig-name descname"><span class="pre">previous_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.previous_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.previous_nodes" title="Link to this definition">#</a></dt>
+<dd><p>The nodes preceding this one in the flowchart, nearest first.</p>
+<p>Follows the execution (“next”) edges backward from this node. Optionally
+keep only nodes that are instances of <code class="docutils literal notranslate"><span class="pre">node_type</span></code> – handy for checking
+whether a particular kind of step (e.g. a Model Chemistry step) comes
+earlier in the flow, either as <code class="docutils literal notranslate"><span class="pre">node.previous_nodes(SomeStep)</span></code> or by
+testing membership in <code class="docutils literal notranslate"><span class="pre">[type(n)</span> <span class="pre">for</span> <span class="pre">n</span> <span class="pre">in</span> <span class="pre">node.previous_nodes()]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_type</strong> (<em>type</em><em> or </em><em>tuple</em><em> of </em><em>types</em><em>, </em><em>optional</em>) – If given, return only preceding nodes that are instances of it.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The preceding nodes, nearest first. May include the flowchart’s
+start node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[<a class="reference internal" href="#seamm.node.Node" title="seamm.node.Node">Node</a>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -3263,6 +3310,15 @@ this node, using halo as a size around the point</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_node.TkNode.previous_nodes">
+<span class="sig-name descname"><span class="pre">previous_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.previous_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.previous_nodes" title="Link to this definition">#</a></dt>
+<dd><p>The nodes preceding this one in the flowchart, nearest first.</p>
+<p>Identical to <code class="xref py py-meth docutils literal notranslate"><span class="pre">seamm.Node.previous_nodes()</span></code>, delegating to the
+non-graphical node so the interface is the same whether called on a
+graphical (Tk) or non-graphical node. Returns non-graphical nodes.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.remove_edge">
 <span class="sig-name descname"><span class="pre">remove_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.remove_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.remove_edge" title="Link to this definition">#</a></dt>
 <dd><p>Remove a given edge, or all edges if ‘all’ is given</p>
@@ -3835,10 +3891,10 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.builtins">seamm.builtins module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.builtins">seamm.builtins module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.builtins.JoinStep"><code class="docutils literal notranslate"><span class="pre">JoinStep</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.builtins.JoinStep.create_node"><code class="docutils literal notranslate"><span class="pre">JoinStep.create_node()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.builtins.JoinStep.create_tk_node"><code class="docutils literal notranslate"><span class="pre">JoinStep.create_tk_node()</span></code></a></li>
@@ -3855,7 +3911,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.dashboard_handler">seamm.dashboard_handler module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.dashboard_handler">seamm.dashboard_handler module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.dashboard_handler.DashboardHandler"><code class="docutils literal notranslate"><span class="pre">DashboardHandler</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.dashboard_handler.DashboardHandler.add_dashboard"><code class="docutils literal notranslate"><span class="pre">DashboardHandler.add_dashboard()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.dashboard_handler.DashboardHandler.credentials"><code class="docutils literal notranslate"><span class="pre">DashboardHandler.credentials</span></code></a></li>
@@ -3874,7 +3930,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.data">seamm.data module</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.flowchart">seamm.flowchart module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.flowchart">seamm.flowchart module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.flowchart.Flowchart"><code class="docutils literal notranslate"><span class="pre">Flowchart</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.flowchart.Flowchart.add_edge"><code class="docutils literal notranslate"><span class="pre">Flowchart.add_edge()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.flowchart.Flowchart.add_node"><code class="docutils literal notranslate"><span class="pre">Flowchart.add_node()</span></code></a></li>
@@ -3915,7 +3971,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.graph">seamm.graph module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.graph">seamm.graph module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.graph.Edge"><code class="docutils literal notranslate"><span class="pre">Edge</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.graph.Edge.copy"><code class="docutils literal notranslate"><span class="pre">Edge.copy()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.graph.Edge.edge_subtype"><code class="docutils literal notranslate"><span class="pre">Edge.edge_subtype</span></code></a></li>
@@ -3936,7 +3992,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.join_node">seamm.join_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.join_node">seamm.join_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.join_node.Join"><code class="docutils literal notranslate"><span class="pre">Join</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.join_node.Join.description_text"><code class="docutils literal notranslate"><span class="pre">Join.description_text()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.join_node.Join.git_revision"><code class="docutils literal notranslate"><span class="pre">Join.git_revision</span></code></a></li>
@@ -3945,7 +4001,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.node">seamm.node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.node">seamm.node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.all_options"><code class="docutils literal notranslate"><span class="pre">Node.all_options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.analyze"><code class="docutils literal notranslate"><span class="pre">Node.analyze()</span></code></a></li>
@@ -3988,6 +4044,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.next"><code class="docutils literal notranslate"><span class="pre">Node.next()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.options"><code class="docutils literal notranslate"><span class="pre">Node.options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.previous"><code class="docutils literal notranslate"><span class="pre">Node.previous()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.previous_nodes"><code class="docutils literal notranslate"><span class="pre">Node.previous_nodes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.references"><code class="docutils literal notranslate"><span class="pre">Node.references</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.remove_edge"><code class="docutils literal notranslate"><span class="pre">Node.remove_edge()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.reset_id"><code class="docutils literal notranslate"><span class="pre">Node.reset_id()</span></code></a></li>
@@ -4014,7 +4071,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.scale"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.parameters">seamm.parameters module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.parameters">seamm.parameters module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameter"><code class="docutils literal notranslate"><span class="pre">Parameter</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameter.copy"><code class="docutils literal notranslate"><span class="pre">Parameter.copy()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameter.debug_print"><code class="docutils literal notranslate"><span class="pre">Parameter.debug_print()</span></code></a></li>
@@ -4054,7 +4111,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.set_context"><code class="docutils literal notranslate"><span class="pre">set_context()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.plugin_manager">seamm.plugin_manager module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.plugin_manager">seamm.plugin_manager module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.plugin_manager.PluginManager"><code class="docutils literal notranslate"><span class="pre">PluginManager</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.plugin_manager.PluginManager.get"><code class="docutils literal notranslate"><span class="pre">PluginManager.get()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.plugin_manager.PluginManager.groups"><code class="docutils literal notranslate"><span class="pre">PluginManager.groups()</span></code></a></li>
@@ -4064,7 +4121,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.seammrc">seamm.seammrc module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.seammrc">seamm.seammrc module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.seammrc.SEAMMrc"><code class="docutils literal notranslate"><span class="pre">SEAMMrc</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.seammrc.SEAMMrc.add_section"><code class="docutils literal notranslate"><span class="pre">SEAMMrc.add_section()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.seammrc.SEAMMrc.defaults"><code class="docutils literal notranslate"><span class="pre">SEAMMrc.defaults()</span></code></a></li>
@@ -4086,7 +4143,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.seammrc.Singleton"><code class="docutils literal notranslate"><span class="pre">Singleton</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.split_node">seamm.split_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.split_node">seamm.split_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.split_node.Split"><code class="docutils literal notranslate"><span class="pre">Split</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.split_node.Split.description_text"><code class="docutils literal notranslate"><span class="pre">Split.description_text()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.split_node.Split.git_revision"><code class="docutils literal notranslate"><span class="pre">Split.git_revision</span></code></a></li>
@@ -4095,14 +4152,14 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.standard_parameters">seamm.standard_parameters module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.standard_parameters">seamm.standard_parameters module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.multiple_structure_handling_description"><code class="docutils literal notranslate"><span class="pre">multiple_structure_handling_description()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.safe_format"><code class="docutils literal notranslate"><span class="pre">safe_format()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.set_names"><code class="docutils literal notranslate"><span class="pre">set_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.structure_handling_description"><code class="docutils literal notranslate"><span class="pre">structure_handling_description()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.start_node">seamm.start_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.start_node">seamm.start_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.start_node.StartNode"><code class="docutils literal notranslate"><span class="pre">StartNode</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.start_node.StartNode.description_text"><code class="docutils literal notranslate"><span class="pre">StartNode.description_text()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.start_node.StartNode.git_revision"><code class="docutils literal notranslate"><span class="pre">StartNode.git_revision</span></code></a></li>
@@ -4114,7 +4171,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_edge">seamm.tk_edge module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_edge">seamm.tk_edge module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_edge.TkEdge"><code class="docutils literal notranslate"><span class="pre">TkEdge</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_edge.TkEdge.anchor1"><code class="docutils literal notranslate"><span class="pre">TkEdge.anchor1</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_edge.TkEdge.anchor2"><code class="docutils literal notranslate"><span class="pre">TkEdge.anchor2</span></code></a></li>
@@ -4133,7 +4190,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_flowchart">seamm.tk_flowchart module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_flowchart">seamm.tk_flowchart module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.TkFlowchart"><code class="docutils literal notranslate"><span class="pre">TkFlowchart</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.TkFlowchart.about"><code class="docutils literal notranslate"><span class="pre">TkFlowchart.about()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.TkFlowchart.activate_node"><code class="docutils literal notranslate"><span class="pre">TkFlowchart.activate_node()</span></code></a></li>
@@ -4199,7 +4256,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.grey"><code class="docutils literal notranslate"><span class="pre">grey()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_job_handler">seamm.tk_job_handler module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_job_handler">seamm.tk_job_handler module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler"><code class="docutils literal notranslate"><span class="pre">TkJobHandler</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.add_dashboard_cb"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.add_dashboard_cb()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.ask_for_credentials"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.ask_for_credentials()</span></code></a></li>
@@ -4227,7 +4284,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_join_node">seamm.tk_join_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_join_node">seamm.tk_join_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_join_node.TkJoin"><code class="docutils literal notranslate"><span class="pre">TkJoin</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_join_node.TkJoin.anchor_points"><code class="docutils literal notranslate"><span class="pre">TkJoin.anchor_points</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_join_node.TkJoin.draw"><code class="docutils literal notranslate"><span class="pre">TkJoin.draw()</span></code></a></li>
@@ -4236,7 +4293,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_node">seamm.tk_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_node">seamm.tk_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode"><code class="docutils literal notranslate"><span class="pre">TkNode</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.activate"><code class="docutils literal notranslate"><span class="pre">TkNode.activate()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.activate_anchor_point"><code class="docutils literal notranslate"><span class="pre">TkNode.activate_anchor_point()</span></code></a></li>
@@ -4265,6 +4322,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.metadata"><code class="docutils literal notranslate"><span class="pre">TkNode.metadata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.move"><code class="docutils literal notranslate"><span class="pre">TkNode.move()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.next_anchor"><code class="docutils literal notranslate"><span class="pre">TkNode.next_anchor()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.previous_nodes"><code class="docutils literal notranslate"><span class="pre">TkNode.previous_nodes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.remove_edge"><code class="docutils literal notranslate"><span class="pre">TkNode.remove_edge()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.reset_dialog"><code class="docutils literal notranslate"><span class="pre">TkNode.reset_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.right_click"><code class="docutils literal notranslate"><span class="pre">TkNode.right_click()</span></code></a></li>
@@ -4284,7 +4342,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_open">seamm.tk_open module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_open">seamm.tk_open module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_open.TkOpen"><code class="docutils literal notranslate"><span class="pre">TkOpen</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_open.TkOpen.clear_tree"><code class="docutils literal notranslate"><span class="pre">TkOpen.clear_tree()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_open.TkOpen.create_dialog"><code class="docutils literal notranslate"><span class="pre">TkOpen.create_dialog()</span></code></a></li>
@@ -4305,7 +4363,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_publish">seamm.tk_publish module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_publish">seamm.tk_publish module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_publish.TkPublish"><code class="docutils literal notranslate"><span class="pre">TkPublish</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_publish.TkPublish.create_dialog"><code class="docutils literal notranslate"><span class="pre">TkPublish.create_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_publish.TkPublish.edit"><code class="docutils literal notranslate"><span class="pre">TkPublish.edit()</span></code></a></li>
@@ -4315,7 +4373,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_split_node">seamm.tk_split_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_split_node">seamm.tk_split_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_split_node.TkSplit"><code class="docutils literal notranslate"><span class="pre">TkSplit</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_split_node.TkSplit.anchor_points"><code class="docutils literal notranslate"><span class="pre">TkSplit.anchor_points</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_split_node.TkSplit.draw"><code class="docutils literal notranslate"><span class="pre">TkSplit.draw()</span></code></a></li>
@@ -4323,7 +4381,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_start_node">seamm.tk_start_node module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_start_node">seamm.tk_start_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_start_node.TkStartNode"><code class="docutils literal notranslate"><span class="pre">TkStartNode</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_start_node.TkStartNode.add_author"><code class="docutils literal notranslate"><span class="pre">TkStartNode.add_author()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_start_node.TkStartNode.anchor_points"><code class="docutils literal notranslate"><span class="pre">TkStartNode.anchor_points</span></code></a></li>
@@ -4342,7 +4400,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.variables">seamm.variables module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.variables">seamm.variables module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.variables.Variables"><code class="docutils literal notranslate"><span class="pre">Variables</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.variables.Variables.copy"><code class="docutils literal notranslate"><span class="pre">Variables.copy()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.variables.Variables.delete"><code class="docutils literal notranslate"><span class="pre">Variables.delete()</span></code></a></li>
@@ -4361,13 +4419,13 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </nav></div>
 
   <div class="sidebar-secondary-item">
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/api/seamm.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div></div>
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/seamm.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
 
 </div></div>
               
@@ -4382,8 +4440,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -4395,7 +4453,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
 </p></div>
       
     </div>
