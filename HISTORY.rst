@@ -1,6 +1,30 @@
 =======
 History
 =======
+2026.7.28 -- file_path(): read-only cross-job references, no more sandboxing
+    * ``Node.file_path()`` no longer restricts absolute paths to within the
+      current job when running under a jobserver. That check was inconsistent
+      (it did not apply to local/interactive runs at all) and not a real
+      security boundary in any case (a flowchart can already run arbitrary
+      Python via the Custom step); it mainly got in the way of legitimate
+      uses such as gathering results into a folder in the user's home
+      directory. Absolute (and ``~``) paths are now always used as-is,
+      trusting the filesystem's own permissions.
+    * ``file_path()`` gains a ``read_only`` argument and now understands
+      ``job://<job number>/<name>`` -- read a file from *another* job,
+      located via SEAMM's managed ``Jobs/<project>/Job_NNNNNN`` layout. This
+      only resolves when ``read_only=True``: a job may read another job's
+      files but must never write into one, so it raises otherwise. The
+      existing ``job:NAME`` / ``job:///NAME`` shorthand (this job, no
+      number) is unchanged, and a couple of related bugs (a stray ``/`` in a
+      ``job:`` reference silently resolving to the filesystem root) are
+      fixed as part of the same rewrite.
+    * ``gaussian_step``, ``vasp_step``, ``golden_step``, and
+      ``control_parameters_step`` now pass ``read_only=True`` for the
+      calls that read a file (an initial checkpoint/wavefunction, an
+      expected-results file, a file-typed control parameter), so those can
+      now reference another job's files the same way.
+
 2026.7.6 -- Added a helper to find preceding steps in a flowchart
     * ``Node.previous_nodes()`` (and the matching ``TkNode.previous_nodes()``)
       returns the steps preceding a given step, optionally filtered by type --

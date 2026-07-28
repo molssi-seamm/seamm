@@ -509,49 +509,122 @@ class Node(collections.abc.Hashable):
         self.logger.debug(f"Did not find {filename}")
         raise FileNotFoundError(f"Data file '{filename}' not found.")
 
-    def file_path(self, path, relative_to=None):
-        """Find the path to a file within the job
+    def file_path(self, path, relative_to=None, read_only=False):
+        """Find the path to a file within the job, or elsewhere.
 
         Parameters
         ----------
-        name_or_path : str or pathlib.Path
-            The name of the file or its path.
+        path : str or pathlib.Path
+            The name of the file or its path. A plain relative name/path is
+            resolved against `relative_to`. An absolute path (or one
+            starting with ``~``) is used as-is, trusting the filesystem's
+            own permissions -- e.g. to gather results into a folder in the
+            user's home directory. There is no other sandboxing: SEAMM is
+            not a secure execution environment (a flowchart can run
+            arbitrary Python via the Custom step regardless), so this is
+            not a security boundary, just path resolution.
+
+            A ``job:`` reference is the one exception with an extra rule:
+
+            * ``job:NAME`` or ``job:///NAME`` -- relative to the root of
+              *this* job, regardless of `relative_to`.
+            * ``job://<n>/NAME`` -- relative to the root of job number
+              ``n``, located via SEAMM's managed ``Jobs/*/*/Job_NNNNNN``
+              layout. Only resolved when `read_only` is True: a job may
+              read another job's files, but must never write into one, so
+              this raises otherwise.
+        relative_to : pathlib.Path, optional
+            The directory a plain relative path is resolved against.
+            Defaults to this step's own working directory (`self.wd`).
+        read_only : bool, optional
+            Whether a ``job://<n>/...`` reference to another job is
+            permitted. Defaults to False (refuse) -- callers that only ever
+            write the resolved path (e.g. a checkpoint file this step
+            produces) should leave this off, so such a reference is caught
+            with a clear error rather than silently writing into another
+            job.
 
         Returns
         -------
         path : pathlib.Path
-            The pathlib.Path path to the file.
+            The resolved path.
         """
         if relative_to is None:
             relative_to = self.wd
 
         if isinstance(path, str):
-            if path.startswith("/"):
-                try:
-                    tmp = Path(path).relative_to(self.job_path)
-                except ValueError:
-                    path = self.wd / path[1:]
-                else:
-                    path = tmp
-            elif path.startswith("job:"):
-                path = self.job_path / path[4:]
-            else:
-                path = relative_to / path
+            parsed = self._parse_job_reference(path)
+            if parsed is not None:
+                job_no, tail = parsed
+                if job_no is None:
+                    return self.job_path / tail
+                if not read_only:
+                    raise ValueError(
+                        f"'{path}' refers to another job (job {job_no}); "
+                        "reading another job's files requires "
+                        "read_only=True -- a job cannot write into another "
+                        "job."
+                    )
+                return self._other_job_path(job_no) / tail
+            path = Path(path).expanduser()
 
-        if path.is_absolute() and self.in_jobserver:
-            tmp = path.expanduser().resolve()
+        if path.is_absolute():
+            return path
+        return relative_to / path
+
+    @staticmethod
+    def _parse_job_reference(path):
+        """Parse a ``job:`` string into ``(job_no, tail)``, or None if `path`
+        is not a ``job:`` reference at all.
+
+        ``job:NAME`` and ``job:///NAME`` (this job, no number) return
+        ``(None, "NAME")``; ``job://<n>/NAME`` returns ``(n, "NAME")``.
+        Raises ValueError for a malformed ``job:`` reference (e.g. a single
+        slash, or a non-numeric job number).
+        """
+        if not path.startswith("job:"):
+            return None
+        rest = path[4:]
+        if rest.startswith("//"):
+            after = rest[2:]
+            if after.startswith("/"):
+                return None, after[1:]
+            job_no_str, sep, tail = after.partition("/")
+            if not sep:
+                raise ValueError(f"Malformed job reference '{path}'.")
             try:
-                path.relative_to(self.job_path)
+                job_no = int(job_no_str)
             except ValueError:
                 raise ValueError(
-                    f"Requested path '{path}' ({tmp}) is not accessible from the job, "
-                    f"which is running in '{self.job_path}'"
+                    f"Malformed job reference '{path}': '{job_no_str}' is "
+                    "not a job number."
                 )
-            path = tmp
-        else:
-            path = relative_to / path
+            return job_no, tail
+        if rest.startswith("/"):
+            raise ValueError(f"Malformed job reference '{path}'.")
+        return None, rest
 
-        return path
+    def _other_job_path(self, job_no):
+        """The root directory of job number `job_no`, found via SEAMM's
+        managed ``Jobs/<project>/Job_NNNNNN`` layout (three parents above
+        this job's own root directory). Raises ValueError if that layout
+        cannot be found, or if the job cannot be found or is ambiguous.
+        """
+        jobs_root = self.job_path.parent.parent.parent
+        if jobs_root.name != "Jobs":
+            raise ValueError(
+                f"Could not find the 'Jobs' root above this job ('{jobs_root}' "
+                "is not named 'Jobs') -- referencing another job by number "
+                "needs SEAMM's managed Jobs/<project>/Job_NNNNNN directory "
+                "layout."
+            )
+        paths = [*jobs_root.glob(f"*/*/Job_{job_no:06d}")]
+        if len(paths) == 0:
+            raise ValueError(f"Could not find job '{job_no}'.")
+        if len(paths) > 1:
+            listing = "\n\t".join(str(p) for p in paths)
+            raise ValueError(f"Found multiple matches for job {job_no}:\n\t{listing}")
+        return paths[0]
 
     def get_gui_data(self, key, gui=None):
         """Return an element from the GUI dictionary"""
