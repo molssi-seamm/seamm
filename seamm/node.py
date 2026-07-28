@@ -344,6 +344,13 @@ class Node(collections.abc.Hashable):
 
     @model.setter
     def model(self, value):
+        # Model chemistries are conventionally "method/basis", but the method
+        # itself -- e.g. an ORCA functional like "revDSD-PBEP86-D4/2021" -- can
+        # contain its own '/'. Treat the last '/' as the method/basis separator
+        # and collapse any earlier ones to '-' so the name stays unambiguous.
+        if value is not None and "/" in value:
+            *rest, last = value.split("/")
+            value = "-".join(rest) + "/" + last
         self._model = value
 
     @property
@@ -1340,7 +1347,9 @@ class Node(collections.abc.Hashable):
             # Store in a variable
             if "variable" in value:
                 # Name of the variable
-                variable = self.get_value(value["variable"])
+                variable = self.get_value(
+                    value["variable"].replace("{model}", str(self.model))
+                )
 
                 self.logger.debug(f"setting '{variable}' = {data[key]} (key={key})")
 
@@ -1361,8 +1370,12 @@ class Node(collections.abc.Hashable):
 
             # Store in a table
             if "table" in value:
-                tablename = self.get_value(value["table"])
-                column = self.get_value(value["column"])
+                tablename = self.get_value(
+                    value["table"].replace("{model}", str(self.model))
+                )
+                column = self.get_value(
+                    value["column"].replace("{model}", str(self.model))
+                )
                 # Does the table exist?
                 if not self.variable_exists(tablename):
                     # Create the table if allowed to.

@@ -1,6 +1,17 @@
 =======
 History
 =======
+2026.7.28.1 -- Bugfix: sanitize '/' in model chemistry names; {model} in result names
+    * ``Node.model`` now collapses any extra ``/`` in a model-chemistry string
+      onto ``-``, keeping only the last ``/`` as the method/basis separator.
+      This fixes model names such as ORCA's ``REVDSD-PBEP86-D4/2021`` functional
+      combined with a basis set, which previously produced an ambiguous name
+      like ``REVDSD-PBEP86-D4/2021/def2-QZVPP``.
+    * ``{model}`` can now be used in the ``variable``, ``table``, and ``column``
+      names of a step's results, substituted with the current model chemistry.
+      This was already supported for the database ``property`` name; it is now
+      consistent across all the places a result can be saved.
+
 2026.7.28 -- file_path(): read-only cross-job references, no more sandboxing
     * ``Node.file_path()`` no longer restricts absolute paths to within the
       current job when running under a jobserver. That check was inconsistent
