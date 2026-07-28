@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.7.6 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.7.28 documentation</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=29693f0c"></script>
+    <script src="../../_static/documentation_options.js?v=197c1917"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.6" />
+  <meta name="docsearch:version" content="2026.7.28" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1019,50 +1019,123 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="Node.file_path">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.file_path">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">relative_to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the path to a file within the job</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">relative_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the path to a file within the job, or elsewhere.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name_or_path : str or pathlib.Path</span>
-<span class="sd">            The name of the file or its path.</span>
+<span class="sd">        path : str or pathlib.Path</span>
+<span class="sd">            The name of the file or its path. A plain relative name/path is</span>
+<span class="sd">            resolved against `relative_to`. An absolute path (or one</span>
+<span class="sd">            starting with ``~``) is used as-is, trusting the filesystem&#39;s</span>
+<span class="sd">            own permissions -- e.g. to gather results into a folder in the</span>
+<span class="sd">            user&#39;s home directory. There is no other sandboxing: SEAMM is</span>
+<span class="sd">            not a secure execution environment (a flowchart can run</span>
+<span class="sd">            arbitrary Python via the Custom step regardless), so this is</span>
+<span class="sd">            not a security boundary, just path resolution.</span>
+
+<span class="sd">            A ``job:`` reference is the one exception with an extra rule:</span>
+
+<span class="sd">            * ``job:NAME`` or ``job:///NAME`` -- relative to the root of</span>
+<span class="sd">              *this* job, regardless of `relative_to`.</span>
+<span class="sd">            * ``job://&lt;n&gt;/NAME`` -- relative to the root of job number</span>
+<span class="sd">              ``n``, located via SEAMM&#39;s managed ``Jobs/*/*/Job_NNNNNN``</span>
+<span class="sd">              layout. Only resolved when `read_only` is True: a job may</span>
+<span class="sd">              read another job&#39;s files, but must never write into one, so</span>
+<span class="sd">              this raises otherwise.</span>
+<span class="sd">        relative_to : pathlib.Path, optional</span>
+<span class="sd">            The directory a plain relative path is resolved against.</span>
+<span class="sd">            Defaults to this step&#39;s own working directory (`self.wd`).</span>
+<span class="sd">        read_only : bool, optional</span>
+<span class="sd">            Whether a ``job://&lt;n&gt;/...`` reference to another job is</span>
+<span class="sd">            permitted. Defaults to False (refuse) -- callers that only ever</span>
+<span class="sd">            write the resolved path (e.g. a checkpoint file this step</span>
+<span class="sd">            produces) should leave this off, so such a reference is caught</span>
+<span class="sd">            with a clear error rather than silently writing into another</span>
+<span class="sd">            job.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        path : pathlib.Path</span>
-<span class="sd">            The pathlib.Path path to the file.</span>
+<span class="sd">            The resolved path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">relative_to</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">relative_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wd</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wd</span> <span class="o">/</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">path</span> <span class="o">=</span> <span class="n">tmp</span>
-            <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;job:&quot;</span><span class="p">):</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">path</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">relative_to</span> <span class="o">/</span> <span class="n">path</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_job_reference</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parsed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">job_no</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">parsed</span>
+                <span class="k">if</span> <span class="n">job_no</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">tail</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">read_only</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; refers to another job (job </span><span class="si">{</span><span class="n">job_no</span><span class="si">}</span><span class="s2">); &quot;</span>
+                        <span class="s2">&quot;reading another job&#39;s files requires &quot;</span>
+                        <span class="s2">&quot;read_only=True -- a job cannot write into another &quot;</span>
+                        <span class="s2">&quot;job.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_other_job_path</span><span class="p">(</span><span class="n">job_no</span><span class="p">)</span> <span class="o">/</span> <span class="n">tail</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_jobserver</span><span class="p">:</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="n">relative_to</span> <span class="o">/</span> <span class="n">path</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_job_reference</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a ``job:`` string into ``(job_no, tail)``, or None if `path`</span>
+<span class="sd">        is not a ``job:`` reference at all.</span>
+
+<span class="sd">        ``job:NAME`` and ``job:///NAME`` (this job, no number) return</span>
+<span class="sd">        ``(None, &quot;NAME&quot;)``; ``job://&lt;n&gt;/NAME`` returns ``(n, &quot;NAME&quot;)``.</span>
+<span class="sd">        Raises ValueError for a malformed ``job:`` reference (e.g. a single</span>
+<span class="sd">        slash, or a non-numeric job number).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;job:&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">rest</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">):</span>
+            <span class="n">after</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">after</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">job_no_str</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sep</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Malformed job reference &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="p">)</span>
+                <span class="n">job_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">job_no_str</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Requested path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">) is not accessible from the job, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;which is running in &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Malformed job reference &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;: &#39;</span><span class="si">{</span><span class="n">job_no_str</span><span class="si">}</span><span class="s2">&#39; is &quot;</span>
+                    <span class="s2">&quot;not a job number.&quot;</span>
                 <span class="p">)</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">tmp</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">relative_to</span> <span class="o">/</span> <span class="n">path</span>
+            <span class="k">return</span> <span class="n">job_no</span><span class="p">,</span> <span class="n">tail</span>
+        <span class="k">if</span> <span class="n">rest</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Malformed job reference &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rest</span>
 
-        <span class="k">return</span> <span class="n">path</span></div>
-
+    <span class="k">def</span><span class="w"> </span><span class="nf">_other_job_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_no</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The root directory of job number `job_no`, found via SEAMM&#39;s</span>
+<span class="sd">        managed ``Jobs/&lt;project&gt;/Job_NNNNNN`` layout (three parents above</span>
+<span class="sd">        this job&#39;s own root directory). Raises ValueError if that layout</span>
+<span class="sd">        cannot be found, or if the job cannot be found or is ambiguous.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jobs_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">if</span> <span class="n">jobs_root</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;Jobs&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not find the &#39;Jobs&#39; root above this job (&#39;</span><span class="si">{</span><span class="n">jobs_root</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="s2">&quot;is not named &#39;Jobs&#39;) -- referencing another job by number &quot;</span>
+                <span class="s2">&quot;needs SEAMM&#39;s managed Jobs/&lt;project&gt;/Job_NNNNNN directory &quot;</span>
+                <span class="s2">&quot;layout.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">jobs_root</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*/*/Job_</span><span class="si">{</span><span class="n">job_no</span><span class="si">:</span><span class="s2">06d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find job &#39;</span><span class="si">{</span><span class="n">job_no</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">listing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found multiple matches for job </span><span class="si">{</span><span class="n">job_no</span><span class="si">}</span><span class="s2">:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">listing</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Node.get_gui_data">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.get_gui_data">[docs]</a>
@@ -2216,8 +2289,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2229,7 +2302,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
 </p></div>
       
     </div>
