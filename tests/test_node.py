@@ -160,3 +160,40 @@ def test_other_job_path_requires_jobs_root(tmp_path):
     node = _FakeNode(wd=this_job / "3", job_path=this_job)
     with pytest.raises(ValueError, match="Jobs"):
         seamm.Node._other_job_path(node, 5)
+
+
+# ---------------------------------------------------------------------
+# model setter -- collapsing '/' in the method onto '-', keeping the
+# method/basis separator as the last '/'.
+# ---------------------------------------------------------------------
+class _FakeModelNode:
+    """Exposes the real model property on a bare object."""
+
+    model = seamm.Node.model
+
+    def __init__(self):
+        self._model = None
+
+
+def test_model_setter_no_slash_unchanged():
+    node = _FakeModelNode()
+    node.model = "PM7"
+    assert node.model == "PM7"
+
+
+def test_model_setter_single_slash_unchanged():
+    node = _FakeModelNode()
+    node.model = "mp2/6-31g"
+    assert node.model == "mp2/6-31g"
+
+
+def test_model_setter_collapses_slash_in_method():
+    node = _FakeModelNode()
+    node.model = "REVDSD-PBEP86-D4/2021/def2-QZVPP"
+    assert node.model == "REVDSD-PBEP86-D4-2021/def2-QZVPP"
+
+
+def test_model_setter_none_unchanged():
+    node = _FakeModelNode()
+    node.model = None
+    assert node.model is None
