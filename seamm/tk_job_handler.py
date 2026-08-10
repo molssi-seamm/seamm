@@ -47,6 +47,14 @@ class TkJobHandler(object):
         self._widgets = {}
         self._variable_value = {}
         self._tk_var = {}  # For checkbuttons
+        # Queues the current dashboard's paired JobServer can route jobs
+        # to (name -> dict from Dashboard.list_queues(), including
+        # "limits") -- empty for a dashboard that doesn't support/have
+        # queues configured, in which case the Queue picker stays hidden.
+        # See seamm_jobserver's docs/developer_guide/campaigns/2026-08-10/
+        # (multi-queue routing).
+        self._queues = {}
+        self._queue_override_widgets = {}
         self.resource_path = importlib.resources.files("seamm") / "data"
 
         s = ttk.Style()
@@ -87,7 +95,7 @@ class TkJobHandler(object):
 
     @current_dashboard.setter
     def current_dashboard(self, dashboard):
-        self.current_dashboard.current_dashboard = dashboard
+        self.dashboard_handler.current_dashboard = dashboard
 
     @property
     def dashboard_handler(self):
@@ -214,6 +222,15 @@ class TkJobHandler(object):
         self["project"] = sw.LabeledCombobox(d, labeltext="Project:", state="readonly")
         self["project"].bind("<<ComboboxSelected>>", self.project_cb)
 
+        # Queue (which cluster/section the JobServer routes this job to) --
+        # hidden entirely (via update_queues) when the current dashboard
+        # doesn't support/have queues configured, rather than shown
+        # disabled with nothing to pick: see CLAUDE.md's GUI principle on
+        # preferring hidden over disabled-but-visible for choices that
+        # can't apply.
+        self["queue"] = sw.LabeledCombobox(d, labeltext="Queue:", state="readonly")
+        self["queue"].combobox.bind("<<ComboboxSelected>>", self.queue_cb)
+
         # Title
         self["title"] = sw.LabeledEntry(d, labeltext="Title:", width=100)
         self["title"].set(title)
@@ -250,6 +267,18 @@ class TkJobHandler(object):
         self["reset description"].grid(row=0, column=2)
         self["clear description"].grid(row=0, column=3)
 
+        # Space for any queue overrides (built per-queue by
+        # build_queue_overrides, driven by that queue's "limits")
+        self["queue overrides label"] = ttk.Label(d, text="Queue options:")
+        self["queue overrides"] = sw.ScrolledColumns(
+            d,
+            columns=[
+                "Name",
+                "Value",
+                "Description",
+            ],
+        )
+
         # Space for any parameters
         self["parameters label"] = ttk.Label(d, text="Parameters:")
         self["parameters"] = sw.ScrolledColumns(
@@ -271,17 +300,23 @@ class TkJobHandler(object):
         self["dashboard"].grid(row=0, column=0, sticky=tk.EW)
         self["add"].grid(row=0, column=1, sticky=tk.W)
         self["project"].grid(row=1, column=0, sticky=tk.EW)
-        self["title"].grid(row=2, column=0, columnspan=2, sticky=tk.W)
-        self["description label"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
-        frame.grid(row=4, column=0, columnspan=2, sticky=tk.NSEW)
-        self["reset frame"].grid(row=5, column=0, columnspan=2)
-        self["parameters label"].grid(row=6, column=0, columnspan=2, sticky=tk.W)
-        self["parameters"].grid(row=7, column=0, columnspan=2, sticky=tk.NSEW)
+        # Row 2 (queue) is gridded by update_queues() itself, called above
+        # via dashboard_cb() if there's already a dashboard selected --
+        # hidden by default (grid_forget) until it's known whether the
+        # current dashboard has any queues to offer.
+        self["title"].grid(row=3, column=0, columnspan=2, sticky=tk.W)
+        self["description label"].grid(row=4, column=0, columnspan=2, sticky=tk.W)
+        frame.grid(row=5, column=0, columnspan=2, sticky=tk.NSEW)
+        self["reset frame"].grid(row=6, column=0, columnspan=2)
+        # Rows 7-8 (queue overrides) and 9-10 (parameters) are gridded by
+        # build_queue_overrides()/submit_with_dialog() themselves, since
+        # both are shown or hidden depending on the current queue/flowchart.
 
-        sw.align_labels([self["dashboard"], self["project"], self["title"]])
+        sw.align_labels(
+            [self["dashboard"], self["project"], self["queue"], self["title"]]
+        )
 
-        d.rowconfigure(4, weight=1)
-        d.rowconfigure(7, weight=1)
+        d.rowconfigure(5, weight=1)
         d.columnconfigure(1, weight=1)
 
     def dashboard_cb(self, event=None):
@@ -323,6 +358,122 @@ class TkJobHandler(object):
         else:
             self["project"].set("")
         self.current_dashboard = dashboard
+
+        self.update_queues()
+
+    def update_queues(self):
+        """Fetch the queues (cluster/section targets) the current
+        dashboard's paired JobServer can route jobs to, and update the
+        Queue picker + its overrides table.
+
+        Hides the Queue row entirely when there are none -- an old
+        seamm_dashboard (which never gets this feature), or a seamm_webui
+        with no ``<root>/<jobserver-name>.ini`` configured -- rather than
+        showing a picker with nothing to choose, per CLAUDE.md's GUI
+        principle of hiding what can't apply instead of disabling it.
+        Never blocks the dialog from opening: a failure here just means no
+        queues are offered, the same as the feature not existing.
+        """
+        try:
+            queues = self.current_dashboard.list_queues()
+        except Exception as e:
+            logger.debug(f"Could not fetch queues from the dashboard: {e}")
+            queues = []
+
+        self._queues = {q["name"]: q for q in queues}
+
+        d = self.dialog.interior()
+        if len(self._queues) == 0:
+            self["queue"].grid_forget()
+            d.rowconfigure(2, weight=0)
+            self["queue"].set("")
+        else:
+            names = sorted(self._queues)
+            self["queue"].combobox.config({"value": names})
+            default_name = next(
+                (n for n in names if self._queues[n].get("default")), names[0]
+            )
+            self["queue"].set(default_name)
+            self["queue"].grid(row=2, column=0, sticky=tk.EW)
+
+        self.build_queue_overrides()
+
+    def queue_cb(self, event=None):
+        """The selected queue has changed -- rebuild its overrides table."""
+        self.build_queue_overrides()
+
+    def build_queue_overrides(self):
+        """Build the queue-overrides table for whichever queue is
+        currently selected, driven by that queue's ``limits`` (from
+        ``Dashboard.list_queues()``) -- a dropdown for a field listing
+        ``choices``, a plain entry otherwise (its current site default and
+        min/max, if any, shown as a hint in the Description column, since
+        there's no bounded-numeric entry widget available here). Hidden
+        entirely if the queue has no overridable fields at all.
+
+        Purely a UX convenience -- the JobServer always re-validates every
+        override server-side regardless of what this renders (see
+        ``seamm_slurm.SlurmSection.merge_overrides``), so getting this
+        exactly right isn't safety-critical.
+        """
+        d = self.dialog.interior()
+        table = self["queue overrides"]
+        table.clear()
+        self._queue_override_widgets = {}
+
+        name = self["queue"].get()
+        limits = self._queues.get(name, {}).get("limits", {})
+
+        if len(limits) == 0:
+            self["queue overrides label"].grid_forget()
+            table.grid_forget()
+            d.rowconfigure(8, weight=0)
+            return
+
+        self["queue overrides label"].grid(row=7, column=0, columnspan=2, sticky=tk.W)
+        table.grid(row=8, column=0, columnspan=2, sticky=tk.NSEW)
+        d.rowconfigure(8, weight=1)
+
+        frame = table.interior()
+        row = 0
+        for field_name, limit in sorted(limits.items()):
+            table[row, 0] = field_name
+            table[row, 0].grid(sticky=tk.E)
+
+            choices = limit.get("choices")
+            if choices:
+                widget = ttk.Combobox(frame, values=choices, state="readonly")
+            else:
+                widget = ttk.Entry(frame)
+            table[row, 1] = widget
+            table[row, 1].grid(sticky=tk.EW)
+            self._queue_override_widgets[field_name] = widget
+
+            hints = []
+            current = limit.get("current")
+            if current is not None:
+                hints.append(f"current: {current}")
+            minimum = limit.get("minimum")
+            maximum = limit.get("maximum")
+            if minimum is not None or maximum is not None:
+                hints.append(f"range: {minimum or '-'} to {maximum or '-'}")
+            table[row, 2] = ", ".join(hints)
+            row += 1
+        frame.columnconfigure(1, weight=1)
+
+    def get_queue_overrides(self):
+        """The per-directive SLURM overrides the user actually entered or
+        selected in the queue-overrides table. A field left blank means
+        "don't override it" -- the queue's own site default applies,
+        matching the ``<root>/<jobserver-name>.ini`` convention that a
+        blank value means "don't pass that directive."
+        """
+        overrides = {}
+        for field_name, widget in self._queue_override_widgets.items():
+            value = widget.get()
+            if value != "":
+                overrides[field_name] = value
+        return overrides
 
     def display_dashboards(self):
         """Display a list of all the dashboards with their status.
@@ -664,7 +815,6 @@ class TkJobHandler(object):
 
     def handle_add_dialog(self, result):
         """Handle the dialog to add a dashboard to the list."""
-        save_dashboard = self.current_dashboard.name
         w = self["add"]
         dialog = w["dialog"]
         if result is None or result == "Cancel":
@@ -694,13 +844,16 @@ class TkJobHandler(object):
             c.combobox.config({"value": self.dashboard_handler.dashboards})
             c.set(name)
 
-            # check have credentials
-            user, passwd = self.dashboard_handler.get_credentials(
-                name, ask=self.ask_for_credentials
-            )
-            if user is None or passwd is None:
-                # Unable to log in, so go back
-                self["dashboard"].set(save_dashboard)
+            # Setting the combobox via .set() does not fire
+            # <<ComboboxSelected>> -- that only fires on real user
+            # interaction with the dropdown -- so dashboard_cb() has to be
+            # called explicitly here. Without this, current_dashboard
+            # never gets updated and (found via real testing) the
+            # Project/Queue pickers are silently left showing whatever
+            # they had before, with no indication anything is stale.
+            # dashboard_cb() already handles credential-refusal/no-projects
+            # by reverting the combobox itself; nothing further to do here.
+            self.dashboard_cb()
 
         dialog.destroy()
         del self["add"]
@@ -717,6 +870,7 @@ class TkJobHandler(object):
                     "title": w["title"].get(),
                     "dashboard": w["dashboard"].get(),
                     "description": w["description"].get(1.0, tk.END).strip("\n"),
+                    "queue": w["queue"].get(),
                 }
             )
 
@@ -799,15 +953,15 @@ class TkJobHandler(object):
             self["parameters label"].grid_forget()
             self["parameters"].grid_forget()
             d = self.dialog.interior()
-            d.rowconfigure(6, weight=0)
+            d.rowconfigure(9, weight=0)
         else:
-            self["parameters label"].grid(row=6, column=0, columnspan=2, sticky=tk.W)
+            self["parameters label"].grid(row=9, column=0, columnspan=2, sticky=tk.W)
             table = self["parameters"]
             table.clear()
-            table.grid(row=7, column=0, columnspan=2, sticky=tk.NSEW)
+            table.grid(row=10, column=0, columnspan=2, sticky=tk.NSEW)
             frame = table.interior()
             d = self.dialog.interior()
-            d.rowconfigure(7, weight=1)
+            d.rowconfigure(10, weight=1)
             row = 0
             for step in parameter_steps:
                 variables = {**step.parameters["variables"].value}
@@ -868,8 +1022,20 @@ class TkJobHandler(object):
                         value[name] = table[row, 1].get()
 
             dashboard_name = result.pop("dashboard")
+            # "" means no queue was chosen -- either none exist for this
+            # dashboard, or the user left it as the JobServer's own
+            # default. Either way Dashboard.submit() wants None, not "".
+            queue = result.pop("queue") or None
+            slurm_overrides = self.get_queue_overrides()
+
             dashboard = self.dashboard_handler.get_dashboard(dashboard_name)
-            job_id = dashboard.submit(flowchart, values=value, **result)
+            job_id = dashboard.submit(
+                flowchart,
+                values=value,
+                queue=queue,
+                slurm_overrides=slurm_overrides,
+                **result,
+            )
             return job_id
         else:
             return None

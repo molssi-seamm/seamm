@@ -1,6 +1,23 @@
 =======
 History
 =======
+2026.8.10 -- Queue picker in the job submission dialog, and two dashboard-switching bugs
+    * The submit dialog now offers a Queue picker (which cluster, or a
+      local queue, the JobServer should route the job to) when the
+      selected dashboard's paired JobServer has more than one configured
+      -- hidden entirely when it doesn't, rather than shown with nothing
+      to pick. Whichever queue is selected can also expose per-job
+      overrides (e.g. how many cores, how much memory) within whatever
+      bounds the site allows; a field left blank uses the site's own
+      default.
+    * Bugfix: switching dashboards in the submit dialog had a
+      long-standing typo that silently broke the app's own bookkeeping of
+      which dashboard was actually selected.
+    * Bugfix: adding a new dashboard (the "add dashboard..." button)
+      never refreshed the project/queue lists for it -- they stayed
+      showing whatever the previously-selected dashboard had until the
+      user manually reselected the new one from the dropdown.
+
 2026.7.28.1 -- Bugfix: sanitize '/' in model chemistry names; {model} in result names
     * ``Node.model`` now collapses any extra ``/`` in a model-chemistry string
       onto ``-``, keeping only the last ``/`` as the method/basis separator.
