@@ -19,6 +19,7 @@ dependencies:
   - packaging
   - pandas
   - pillow
+  - python-dateutil
   - pyperclip
   - pyuca
   - py-cpuinfo
