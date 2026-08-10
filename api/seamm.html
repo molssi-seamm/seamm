@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.7.28.1 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.8.10 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=400a9811"></script>
+    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28.1" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -2859,6 +2859,22 @@ files and submit the job to a dashboard.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.build_queue_overrides">
+<span class="sig-name descname"><span class="pre">build_queue_overrides</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.build_queue_overrides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.build_queue_overrides" title="Link to this definition">#</a></dt>
+<dd><p>Build the queue-overrides table for whichever queue is
+currently selected, driven by that queue’s <code class="docutils literal notranslate"><span class="pre">limits</span></code> (from
+<code class="docutils literal notranslate"><span class="pre">Dashboard.list_queues()</span></code>) – a dropdown for a field listing
+<code class="docutils literal notranslate"><span class="pre">choices</span></code>, a plain entry otherwise (its current site default and
+min/max, if any, shown as a hint in the Description column, since
+there’s no bounded-numeric entry widget available here). Hidden
+entirely if the queue has no overridable fields at all.</p>
+<p>Purely a UX convenience – the JobServer always re-validates every
+override server-side regardless of what this renders (see
+<code class="docutils literal notranslate"><span class="pre">seamm_slurm.SlurmSection.merge_overrides</span></code>), so getting this
+exactly right isn’t safety-critical.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.check_status_cb">
 <span class="sig-name descname"><span class="pre">check_status_cb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.check_status_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.check_status_cb" title="Link to this definition">#</a></dt>
 <dd><p>Helper for checking the status of a dashboard.</p>
@@ -2956,6 +2972,16 @@ constraint of the window.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.get_queue_overrides">
+<span class="sig-name descname"><span class="pre">get_queue_overrides</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.get_queue_overrides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.get_queue_overrides" title="Link to this definition">#</a></dt>
+<dd><p>The per-directive SLURM overrides the user actually entered or
+selected in the queue-overrides table. A field left blank means
+“don’t override it” – the queue’s own site default applies,
+matching the <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code> convention that a
+blank value means “don’t pass that directive.”</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.handle_add_dialog">
 <span class="sig-name descname"><span class="pre">handle_add_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.handle_add_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.handle_add_dialog" title="Link to this definition">#</a></dt>
 <dd><p>Handle the dialog to add a dashboard to the list.</p>
@@ -2979,6 +3005,12 @@ constraint of the window.</p>
 <dd><p>Handle a change in the project since it might be asking for adding a project
 in which case prompt for the new project’s name, create it, and sleect it in the
 widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.queue_cb">
+<span class="sig-name descname"><span class="pre">queue_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.queue_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.queue_cb" title="Link to this definition">#</a></dt>
+<dd><p>The selected queue has changed – rebuild its overrides table.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3007,6 +3039,21 @@ and submit the job as requested.</p>
 <dd class="field-odd"><p>integer</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_job_handler.TkJobHandler.update_queues">
+<span class="sig-name descname"><span class="pre">update_queues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_job_handler.html#TkJobHandler.update_queues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_job_handler.TkJobHandler.update_queues" title="Link to this definition">#</a></dt>
+<dd><p>Fetch the queues (cluster/section targets) the current
+dashboard’s paired JobServer can route jobs to, and update the
+Queue picker + its overrides table.</p>
+<p>Hides the Queue row entirely when there are none – an old
+seamm_dashboard (which never gets this feature), or a seamm_webui
+with no <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code> configured – rather than
+showing a picker with nothing to choose, per CLAUDE.md’s GUI
+principle of hiding what can’t apply instead of disabling it.
+Never blocks the dialog from opening: a failure here just means no
+queues are offered, the same as the feature not existing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -4289,6 +4336,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler"><code class="docutils literal notranslate"><span class="pre">TkJobHandler</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.add_dashboard_cb"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.add_dashboard_cb()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.ask_for_credentials"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.ask_for_credentials()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.build_queue_overrides"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.build_queue_overrides()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.check_status_cb"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.check_status_cb()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.clear_description"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.clear_description()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.clear_title"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.clear_title()</span></code></a></li>
@@ -4302,13 +4350,16 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.fill_statuses"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.fill_statuses()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.fit_dialog"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.fit_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.get_all_status"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.get_all_status()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.get_queue_overrides"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.get_queue_overrides()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.handle_add_dialog"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.handle_add_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.handle_dashboard_dialog"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.handle_dashboard_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.handle_dialog"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.handle_dialog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.project_cb"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.project_cb()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.queue_cb"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.queue_cb()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.reset_description"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.reset_description()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.reset_title"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.reset_title()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.submit_with_dialog"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.submit_with_dialog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_job_handler.TkJobHandler.update_queues"><code class="docutils literal notranslate"><span class="pre">TkJobHandler.update_queues()</span></code></a></li>
 </ul>
 </li>
 </ul>

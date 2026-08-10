@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_job_handler &#8212; SEAMM 2026.7.28.1 documentation</title>
+    <title>seamm.tk_job_handler &#8212; SEAMM 2026.8.10 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=400a9811"></script>
+    <script src="../../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28.1" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -537,6 +537,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_variable_value</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tk_var</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># For checkbuttons</span>
+        <span class="c1"># Queues the current dashboard&#39;s paired JobServer can route jobs</span>
+        <span class="c1"># to (name -&gt; dict from Dashboard.list_queues(), including</span>
+        <span class="c1"># &quot;limits&quot;) -- empty for a dashboard that doesn&#39;t support/have</span>
+        <span class="c1"># queues configured, in which case the Queue picker stays hidden.</span>
+        <span class="c1"># See seamm_jobserver&#39;s docs/developer_guide/campaigns/2026-08-10/</span>
+        <span class="c1"># (multi-queue routing).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_override_widgets</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resource_path</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;seamm&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
 
         <span class="n">s</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Style</span><span class="p">()</span>
@@ -577,7 +585,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@current_dashboard</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_dashboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dashboard_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -715,6 +723,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Project:&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_cb</span><span class="p">)</span>
 
+        <span class="c1"># Queue (which cluster/section the JobServer routes this job to) --</span>
+        <span class="c1"># hidden entirely (via update_queues) when the current dashboard</span>
+        <span class="c1"># doesn&#39;t support/have queues configured, rather than shown</span>
+        <span class="c1"># disabled with nothing to pick: see CLAUDE.md&#39;s GUI principle on</span>
+        <span class="c1"># preferring hidden over disabled-but-visible for choices that</span>
+        <span class="c1"># can&#39;t apply.</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Queue:&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_cb</span><span class="p">)</span>
+
         <span class="c1"># Title</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Title:&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
@@ -751,6 +768,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;reset description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;clear description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
+        <span class="c1"># Space for any queue overrides (built per-queue by</span>
+        <span class="c1"># build_queue_overrides, driven by that queue&#39;s &quot;limits&quot;)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue overrides label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Queue options:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue overrides&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">ScrolledColumns</span><span class="p">(</span>
+            <span class="n">d</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Value&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
         <span class="c1"># Space for any parameters</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Parameters:&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">ScrolledColumns</span><span class="p">(</span>
@@ -772,17 +801,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
         <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
-        <span class="n">frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;reset frame&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+        <span class="c1"># Row 2 (queue) is gridded by update_queues() itself, called above</span>
+        <span class="c1"># via dashboard_cb() if there&#39;s already a dashboard selected --</span>
+        <span class="c1"># hidden by default (grid_forget) until it&#39;s known whether the</span>
+        <span class="c1"># current dashboard has any queues to offer.</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;description label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;reset frame&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Rows 7-8 (queue overrides) and 9-10 (parameters) are gridded by</span>
+        <span class="c1"># build_queue_overrides()/submit_with_dialog() themselves, since</span>
+        <span class="c1"># both are shown or hidden depending on the current queue/flowchart.</span>
 
-        <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]])</span>
+        <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]]</span>
+        <span class="p">)</span>
 
-        <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
@@ -826,7 +861,135 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">projects</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span> <span class="o">=</span> <span class="n">dashboard</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_queues</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TkJobHandler.update_queues">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.update_queues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_queues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch the queues (cluster/section targets) the current</span>
+<span class="sd">        dashboard&#39;s paired JobServer can route jobs to, and update the</span>
+<span class="sd">        Queue picker + its overrides table.</span>
+
+<span class="sd">        Hides the Queue row entirely when there are none -- an old</span>
+<span class="sd">        seamm_dashboard (which never gets this feature), or a seamm_webui</span>
+<span class="sd">        with no ``&lt;root&gt;/&lt;jobserver-name&gt;.ini`` configured -- rather than</span>
+<span class="sd">        showing a picker with nothing to choose, per CLAUDE.md&#39;s GUI</span>
+<span class="sd">        principle of hiding what can&#39;t apply instead of disabling it.</span>
+<span class="sd">        Never blocks the dialog from opening: a failure here just means no</span>
+<span class="sd">        queues are offered, the same as the feature not existing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">queues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">list_queues</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not fetch queues from the dashboard: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">queues</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span> <span class="o">=</span> <span class="p">{</span><span class="n">q</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">queues</span><span class="p">}</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">config</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">names</span><span class="p">})</span>
+            <span class="n">default_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)),</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">default_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_queue_overrides</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TkJobHandler.queue_cb">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.queue_cb">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">queue_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The selected queue has changed -- rebuild its overrides table.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_queue_overrides</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TkJobHandler.build_queue_overrides">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.build_queue_overrides">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_queue_overrides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the queue-overrides table for whichever queue is</span>
+<span class="sd">        currently selected, driven by that queue&#39;s ``limits`` (from</span>
+<span class="sd">        ``Dashboard.list_queues()``) -- a dropdown for a field listing</span>
+<span class="sd">        ``choices``, a plain entry otherwise (its current site default and</span>
+<span class="sd">        min/max, if any, shown as a hint in the Description column, since</span>
+<span class="sd">        there&#39;s no bounded-numeric entry widget available here). Hidden</span>
+<span class="sd">        entirely if the queue has no overridable fields at all.</span>
+
+<span class="sd">        Purely a UX convenience -- the JobServer always re-validates every</span>
+<span class="sd">        override server-side regardless of what this renders (see</span>
+<span class="sd">        ``seamm_slurm.SlurmSection.merge_overrides``), so getting this</span>
+<span class="sd">        exactly right isn&#39;t safety-critical.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue overrides&quot;</span><span class="p">]</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_override_widgets</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;limits&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">limits</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue overrides label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;queue overrides label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">limit</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">limits</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_name</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+
+            <span class="n">choices</span> <span class="o">=</span> <span class="n">limit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;choices&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">choices</span><span class="p">:</span>
+                <span class="n">widget</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">widget</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue_override_widgets</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span>
+
+            <span class="n">hints</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">limit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;current&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">hints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;current: </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="n">limit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minimum&quot;</span><span class="p">)</span>
+            <span class="n">maximum</span> <span class="o">=</span> <span class="n">limit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maximum&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">minimum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">hints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;range: </span><span class="si">{</span><span class="n">minimum</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">maximum</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hints</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TkJobHandler.get_queue_overrides">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.get_queue_overrides">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_queue_overrides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The per-directive SLURM overrides the user actually entered or</span>
+<span class="sd">        selected in the queue-overrides table. A field left blank means</span>
+<span class="sd">        &quot;don&#39;t override it&quot; -- the queue&#39;s own site default applies,</span>
+<span class="sd">        matching the ``&lt;root&gt;/&lt;jobserver-name&gt;.ini`` convention that a</span>
+<span class="sd">        blank value means &quot;don&#39;t pass that directive.&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">overrides</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue_override_widgets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">overrides</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">overrides</span></div>
 
 
 <div class="viewcode-block" id="TkJobHandler.display_dashboards">
@@ -1189,7 +1352,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../api/seamm.html#seamm.tk_job_handler.TkJobHandler.handle_add_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_add_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the dialog to add a dashboard to the list.&quot;&quot;&quot;</span>
-        <span class="n">save_dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_dashboard</span><span class="o">.</span><span class="n">name</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">:</span>
@@ -1219,13 +1381,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">c</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">config</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">dashboards</span><span class="p">})</span>
             <span class="n">c</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-            <span class="c1"># check have credentials</span>
-            <span class="n">user</span><span class="p">,</span> <span class="n">passwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">(</span>
-                <span class="n">name</span><span class="p">,</span> <span class="n">ask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ask_for_credentials</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">passwd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Unable to log in, so go back</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">save_dashboard</span><span class="p">)</span>
+            <span class="c1"># Setting the combobox via .set() does not fire</span>
+            <span class="c1"># &lt;&lt;ComboboxSelected&gt;&gt; -- that only fires on real user</span>
+            <span class="c1"># interaction with the dropdown -- so dashboard_cb() has to be</span>
+            <span class="c1"># called explicitly here. Without this, current_dashboard</span>
+            <span class="c1"># never gets updated and (found via real testing) the</span>
+            <span class="c1"># Project/Queue pickers are silently left showing whatever</span>
+            <span class="c1"># they had before, with no indication anything is stale.</span>
+            <span class="c1"># dashboard_cb() already handles credential-refusal/no-projects</span>
+            <span class="c1"># by reverting the combobox itself; nothing further to do here.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_cb</span><span class="p">()</span>
 
         <span class="n">dialog</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">]</span></div>
@@ -1245,6 +1410,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
                     <span class="s2">&quot;dashboard&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
                     <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">END</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;queue&quot;</span><span class="p">:</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
                 <span class="p">}</span>
             <span class="p">)</span></div>
 
@@ -1348,15 +1514,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
             <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
             <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span>
             <span class="n">table</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NSEW</span><span class="p">)</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
             <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">parameter_steps</span><span class="p">:</span>
                 <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">step</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;variables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
@@ -1417,8 +1583,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         <span class="n">value</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="n">dashboard_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dashboard&quot;</span><span class="p">)</span>
+            <span class="c1"># &quot;&quot; means no queue was chosen -- either none exist for this</span>
+            <span class="c1"># dashboard, or the user left it as the JobServer&#39;s own</span>
+            <span class="c1"># default. Either way Dashboard.submit() wants None, not &quot;&quot;.</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;queue&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+            <span class="n">slurm_overrides</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queue_overrides</span><span class="p">()</span>
+
             <span class="n">dashboard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">get_dashboard</span><span class="p">(</span><span class="n">dashboard_name</span><span class="p">)</span>
-            <span class="n">job_id</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">job_id</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                <span class="n">flowchart</span><span class="p">,</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">queue</span><span class="o">=</span><span class="n">queue</span><span class="p">,</span>
+                <span class="n">slurm_overrides</span><span class="o">=</span><span class="n">slurm_overrides</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">result</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">job_id</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>

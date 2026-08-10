@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.7.28.1 documentation</title>
+    <title>History &#8212; SEAMM 2026.8.10 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=400a9811"></script>
+    <script src="_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.7.28.1" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.8.10 – Queue picker in the job submission dialog, and two dashboard-switching bugs</dt><dd><ul class="simple">
+<li><p>The submit dialog now offers a Queue picker (which cluster, or a
+local queue, the JobServer should route the job to) when the
+selected dashboard’s paired JobServer has more than one configured
+– hidden entirely when it doesn’t, rather than shown with nothing
+to pick. Whichever queue is selected can also expose per-job
+overrides (e.g. how many cores, how much memory) within whatever
+bounds the site allows; a field left blank uses the site’s own
+default.</p></li>
+<li><p>Bugfix: switching dashboards in the submit dialog had a
+long-standing typo that silently broke the app’s own bookkeeping of
+which dashboard was actually selected.</p></li>
+<li><p>Bugfix: adding a new dashboard (the “add dashboard…” button)
+never refreshed the project/queue lists for it – they stayed
+showing whatever the previously-selected dashboard had until the
+user manually reselected the new one from the dropdown.</p></li>
+</ul>
+</dd>
 <dt>2026.7.28.1 – Bugfix: sanitize ‘/’ in model chemistry names; {model} in result names</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Node.model</span></code> now collapses any extra <code class="docutils literal notranslate"><span class="pre">/</span></code> in a model-chemistry string
 onto <code class="docutils literal notranslate"><span class="pre">-</span></code>, keeping only the last <code class="docutils literal notranslate"><span class="pre">/</span></code> as the method/basis separator.
