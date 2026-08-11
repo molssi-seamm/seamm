@@ -22,6 +22,30 @@ import seamm_util
 logger = logging.getLogger(__name__)
 
 
+def _parse_verify(value):
+    """Interpret dashboards.ini's optional per-dashboard "verify" key into
+    what ``seamm_dashboard_client.Dashboard(verify=...)`` expects.
+
+    Empty/absent -> ``True`` (default: normal certificate verification
+    against the system trust store, matching every dashboard from before
+    this key existed). "false"/"no"/"0" (case-insensitive) -> ``False``
+    (disable verification entirely -- insecure, only for a trusted
+    network). "true"/"yes"/"1" -> ``True`` explicitly. Anything else is a
+    path to a certificate/CA bundle to verify against instead -- e.g. a
+    self-signed ``seamm_webui`` certificate (its ``tls.py`` generates one
+    for any non-loopback bind, since a cluster-internal host has no
+    browser-trusted CA to get a real one from).
+    """
+    if not value:
+        return True
+    normalized = value.strip().lower()
+    if normalized in ("false", "no", "0"):
+        return False
+    if normalized in ("true", "yes", "1"):
+        return True
+    return str(Path(value).expanduser())
+
+
 def safe_filename(filename):
     if filename[0] == "~":
         path = Path(filename).expanduser()
@@ -116,9 +140,17 @@ class DashboardHandler(object):
                 result.append(section)
         return sorted(result)
 
-    def add_dashboard(self, name, url, protocol):
-        "Add a new dashboard to the config file"
-        self.config[name] = {"url": url, "protocol": protocol}
+    def add_dashboard(self, name, url, protocol, verify=""):
+        """Add a new dashboard to the config file.
+
+        Parameters
+        ----------
+        verify : str = ""
+            See ``_parse_verify`` for the accepted forms (blank/true/
+            false/a certificate path). Stored as given (not yet parsed) --
+            ``get_dashboard`` parses it at connection time.
+        """
+        self.config[name] = {"url": url, "protocol": protocol, "verify": verify}
         self.save_configuration()
 
     def get_all_status(self):
@@ -189,9 +221,15 @@ class DashboardHandler(object):
         """
         user, passwd = self.get_credentials(name)
         url = self.config[name]["url"]
+        verify = _parse_verify(self.config[name].get("verify", ""))
 
         return seamm_dashboard_client.Dashboard(
-            name, url, username=user, password=passwd, user_agent=self.user_agent
+            name,
+            url,
+            username=user,
+            password=passwd,
+            user_agent=self.user_agent,
+            verify=verify,
         )
 
     def rename_dashboard(self, old, new):
@@ -219,8 +257,13 @@ class DashboardHandler(object):
 
     def update(self, dashboard):
         "Update the dashboard with that given."
+        verify = dashboard.verify
+        # Round-trips through _parse_verify: True/False become the literal
+        # strings it already recognizes; a certificate path is a string
+        # already and passes through unchanged.
         self.config[dashboard.name] = {
             "url": dashboard.url,
             "protocol": "http",
+            "verify": str(verify) if isinstance(verify, bool) else verify,
         }
         self.save_configuration()
