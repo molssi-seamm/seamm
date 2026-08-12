@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_job_handler &#8212; SEAMM 2026.8.10 documentation</title>
+    <title>seamm.tk_job_handler &#8212; SEAMM 2026.8.11 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=7ddc0e42"></script>
+    <script src="../../_static/documentation_options.js?v=d9a48a5b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10" />
+  <meta name="docsearch:version" content="2026.8.11" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -612,19 +612,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">name</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;URL&quot;</span><span class="p">)</span>
         <span class="n">protocol</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
-            <span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Protocol&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;http&quot;</span><span class="p">,</span> <span class="s2">&quot;sshtunnel&quot;</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Protocol&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;http&quot;</span><span class="p">,</span> <span class="s2">&quot;https&quot;</span><span class="p">,</span> <span class="s2">&quot;sshtunnel&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">protocol</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">)</span>
+        <span class="c1"># TLS verification -- blank (default, normal system-trust-store</span>
+        <span class="c1"># verification), true/false, or a path to a certificate/CA bundle</span>
+        <span class="c1"># to verify against instead (e.g. a self-signed seamm_webui</span>
+        <span class="c1"># certificate for a non-loopback bind -- see its tls.py). Left</span>
+        <span class="c1"># blank for the common https-with-a-real-CA case, so this doesn&#39;t</span>
+        <span class="c1"># add a required field to the common path.</span>
+        <span class="n">verify</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Verify SSL (blank/true/false/cert path)&quot;</span><span class="p">)</span>
 
         <span class="n">w</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
         <span class="n">w</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
         <span class="n">w</span><span class="p">[</span><span class="s2">&quot;protocol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">protocol</span>
+        <span class="n">w</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">verify</span>
 
         <span class="n">name</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="n">url</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="n">protocol</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="n">verify</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
 
-        <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">])</span>
+        <span class="n">sw</span><span class="o">.</span><span class="n">align_labels</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">verify</span><span class="p">])</span>
 
         <span class="n">dialog</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;centerscreenfirst&quot;</span><span class="p">)</span></div>
 
@@ -1360,6 +1369,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">name</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="n">protocol</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;protocol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">verify</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
                 <span class="n">messagebox</span><span class="o">.</span><span class="n">showwarning</span><span class="p">(</span>
@@ -1374,7 +1384,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">dialog</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
             <span class="c1"># Now add to the configuration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">add_dashboard</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dashboard_handler</span><span class="o">.</span><span class="n">add_dashboard</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">verify</span><span class="p">)</span>
 
             <span class="c1"># And reset the list in the dashboard combobox</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dashboard&quot;</span><span class="p">]</span>

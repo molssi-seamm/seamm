@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.8.10 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.8.11 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
+    <script src="../_static/documentation_options.js?v=d9a48a5b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10" />
+  <meta name="docsearch:version" content="2026.8.11" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -599,8 +599,15 @@ files and submit the job to a dashboard.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.dashboard_handler.DashboardHandler.add_dashboard">
-<span class="sig-name descname"><span class="pre">add_dashboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/dashboard_handler.html#DashboardHandler.add_dashboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.add_dashboard" title="Link to this definition">#</a></dt>
-<dd><p>Add a new dashboard to the config file</p>
+<span class="sig-name descname"><span class="pre">add_dashboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/dashboard_handler.html#DashboardHandler.add_dashboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.dashboard_handler.DashboardHandler.add_dashboard" title="Link to this definition">#</a></dt>
+<dd><p>Add a new dashboard to the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verify</strong> (<em>str = &quot;&quot;</em>) – See <code class="docutils literal notranslate"><span class="pre">_parse_verify</span></code> for the accepted forms (blank/true/
+false/a certificate path). Stored as given (not yet parsed) –
+<code class="docutils literal notranslate"><span class="pre">get_dashboard</span></code> parses it at connection time.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
