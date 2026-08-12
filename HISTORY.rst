@@ -1,6 +1,22 @@
 =======
 History
 =======
+2026.8.11 -- Bugfix: no way to trust a self-signed dashboard TLS certificate
+    * ``dashboards.ini`` gained a per-dashboard ``verify`` key (see
+      ``seamm_dashboard_client`` ``2026.8.11``): blank/absent -- unchanged
+      normal certificate verification; ``true``/``false`` -- verify
+      normally or not at all; anything else is a path to a certificate
+      file to verify against instead of the system trust store -- e.g. a
+      self-signed ``seamm_webui`` certificate, which had no way to be
+      trusted at all before this, hard-failing login with
+      ``SSLCertVerificationError``. The "Add Dashboard" dialog gained a
+      matching "Verify SSL" field, and its Protocol choices now include
+      ``https``.
+    * ``protocol`` in ``dashboards.ini`` was already unused at connection
+      time (only the scheme literally in ``url`` matters) -- unchanged,
+      but worth knowing if a dashboard entry has ``protocol = http`` and
+      ``url = https://...`` disagreeing, since only ``url`` is honored.
+
 2026.8.10 -- Queue picker in the job submission dialog, and two dashboard-switching bugs
     * The submit dialog now offers a Queue picker (which cluster, or a
       local queue, the JobServer should route the job to) when the

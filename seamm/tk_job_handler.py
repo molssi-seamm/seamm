@@ -120,19 +120,28 @@ class TkJobHandler(object):
         name = sw.LabeledEntry(d, labeltext="Name", width=50)
         url = sw.LabeledEntry(d, labeltext="URL")
         protocol = sw.LabeledCombobox(
-            d, labeltext="Protocol", values=["http", "sshtunnel"]
+            d, labeltext="Protocol", values=["http", "https", "sshtunnel"]
         )
         protocol.set("http")
+        # TLS verification -- blank (default, normal system-trust-store
+        # verification), true/false, or a path to a certificate/CA bundle
+        # to verify against instead (e.g. a self-signed seamm_webui
+        # certificate for a non-loopback bind -- see its tls.py). Left
+        # blank for the common https-with-a-real-CA case, so this doesn't
+        # add a required field to the common path.
+        verify = sw.LabeledEntry(d, labeltext="Verify SSL (blank/true/false/cert path)")
 
         w["name"] = name
         w["url"] = url
         w["protocol"] = protocol
+        w["verify"] = verify
 
         name.grid(row=0, column=0, sticky=tk.EW)
         url.grid(row=1, column=0, sticky=tk.EW)
         protocol.grid(row=2, column=0, sticky=tk.W)
+        verify.grid(row=3, column=0, sticky=tk.EW)
 
-        sw.align_labels([name, url, protocol])
+        sw.align_labels([name, url, protocol, verify])
 
         dialog.activate(geometry="centerscreenfirst")
 
@@ -823,6 +832,7 @@ class TkJobHandler(object):
             name = w["name"].get()
             url = w["url"].get()
             protocol = w["protocol"].get()
+            verify = w["verify"].get()
 
             if name in self.config:
                 messagebox.showwarning(
@@ -837,7 +847,7 @@ class TkJobHandler(object):
             dialog.deactivate(result)
 
             # Now add to the configuration
-            self.dashboard_handler.add_dashboard(name, url, protocol)
+            self.dashboard_handler.add_dashboard(name, url, protocol, verify)
 
             # And reset the list in the dashboard combobox
             c = self["dashboard"]
