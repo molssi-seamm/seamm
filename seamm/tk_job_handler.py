@@ -451,7 +451,13 @@ class TkJobHandler(object):
 
             choices = limit.get("choices")
             if choices:
-                widget = ttk.Combobox(frame, values=choices, state="readonly")
+                # The blank first entry is what makes a choice reversible.
+                # get_queue_overrides() reads "" as "do not override this
+                # directive", but a readonly combobox offering only real
+                # choices has no way back to blank once one is picked -- so a
+                # directive selected by accident, or no longer wanted, could
+                # not be removed without restarting the dialog.
+                widget = ttk.Combobox(frame, values=["", *choices], state="readonly")
             else:
                 widget = ttk.Entry(frame)
             table[row, 1] = widget
