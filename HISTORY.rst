@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.9.15 -- Bugfix: a queue override could not be cleared once chosen
+    * A SLURM directive the queue offers as a list of choices, such as the number of
+      GPUs, is shown in the submission dialog as a drop-down. The list held only real
+      choices, so once one was picked there was no way back to blank -- and blank is
+      what means "do not set this directive". A directive chosen by accident, or no
+      longer wanted, could not be removed without restarting the dialog. The list now
+      starts with a blank entry.
+
 2026.8.11 -- Bugfix: no way to trust a self-signed dashboard TLS certificate
     * ``dashboards.ini`` gained a per-dashboard ``verify`` key (see
       ``seamm_dashboard_client`` ``2026.8.11``): blank/absent -- unchanged
