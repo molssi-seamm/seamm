@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.standard_parameters &#8212; SEAMM 2026.8.11 documentation</title>
+    <title>seamm.standard_parameters &#8212; SEAMM 2026.9.15 documentation</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=d9a48a5b"></script>
+    <script src="../../_static/documentation_options.js?v=3713ace6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.11" />
+  <meta name="docsearch:version" content="2026.9.15" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -487,7 +487,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   
   <h1>Source code for seamm.standard_parameters</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Standard sets of parameters widely used in SEAMM.</span>
+<span class="sd">"""Standard sets of parameters widely used in SEAMM.</span>
 
 <span class="sd">Parameters</span>
 <span class="sd">----------</span>
@@ -502,78 +502,78 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    In addition, options are provided for naming the system and configuration whether</span>
 <span class="sd">    or not new ones are created, i.e. the system and configuration can be renamed if</span>
 <span class="sd">    they are reused.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="n">structure_handling_parameters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;structure handling&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;enum&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Discard the structure&quot;</span><span class="p">,</span>
+    <span class="s2">"structure handling"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"Overwrite the current configuration"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Overwrite the current configuration"</span><span class="p">,</span>
+            <span class="s2">"Create a new configuration"</span><span class="p">,</span>
+            <span class="s2">"Create a new system and configuration"</span><span class="p">,</span>
+            <span class="s2">"Discard the structure"</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;First structure:&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;Whether to overwrite the current configuration, or create a new &quot;</span>
-            <span class="s2">&quot;configuration or system and configuration for the new structure&quot;</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;subsequent structure handling&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;enum&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Discard the structure&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Subsequent structures:&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;Whether to create a new configuration or system and configuration for &quot;</span>
-            <span class="s2">&quot;new structures after the first structure, if any.&quot;</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"First structure:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Whether to overwrite the current configuration, or create a new "</span>
+            <span class="s2">"configuration or system and configuration for the new structure"</span>
         <span class="p">),</span>
     <span class="p">},</span>
-    <span class="s2">&quot;system name&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;keep current name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use InChI&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use InChIKey&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use chemical formula&quot;</span><span class="p">,</span>
+    <span class="s2">"subsequent structure handling"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"Create a new system and configuration"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"enum"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Create a new configuration"</span><span class="p">,</span>
+            <span class="s2">"Create a new system and configuration"</span><span class="p">,</span>
+            <span class="s2">"Discard the structure"</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;System name:&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="s2">&quot;The name for the new system&quot;</span><span class="p">,</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Subsequent structures:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Whether to create a new configuration or system and configuration for "</span>
+            <span class="s2">"new structures after the first structure, if any."</span>
+        <span class="p">),</span>
     <span class="p">},</span>
-    <span class="s2">&quot;configuration name&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;default_units&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;enumeration&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;keep current name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use InChI&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use InChIKey&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;sequential&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;use chemical formula&quot;</span><span class="p">,</span>
+    <span class="s2">"system name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"keep current name"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"keep current name"</span><span class="p">,</span>
+            <span class="s2">"use SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use Canonical SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use isomeric SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use IUPAC name"</span><span class="p">,</span>
+            <span class="s2">"use InChI"</span><span class="p">,</span>
+            <span class="s2">"use InChIKey"</span><span class="p">,</span>
+            <span class="s2">"use chemical formula"</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;format_string&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Configuration name:&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;help_text&quot;</span><span class="p">:</span> <span class="s2">&quot;The name for the new configuration&quot;</span><span class="p">,</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"System name:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The name for the new system"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"configuration name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"keep current name"</span><span class="p">,</span>
+            <span class="s2">"use SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use Canonical SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use isomeric SMILES string"</span><span class="p">,</span>
+            <span class="s2">"use IUPAC name"</span><span class="p">,</span>
+            <span class="s2">"use InChI"</span><span class="p">,</span>
+            <span class="s2">"use InChIKey"</span><span class="p">,</span>
+            <span class="s2">"sequential"</span><span class="p">,</span>
+            <span class="s2">"use chemical formula"</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Configuration name:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The name for the new configuration"</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">}</span>
 
@@ -581,7 +581,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="structure_handling_description">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.standard_parameters.structure_handling_description">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">structure_handling_description</span><span class="p">(</span><span class="n">__P</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a standard description for how the structure will be handled.</span>
+<span class="w">    </span><span class="sd">"""Return a standard description for how the structure will be handled.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -593,66 +593,66 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        The text for printing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">""</span>
 
-    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will overwrite the current configuration.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will be put in a new configuration.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will be put in a new system.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Discard the structure&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;The structure will be discarded.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;The handling of the structure will be determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"structure handling"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Overwrite the current configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"The structure will overwrite the current configuration."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"The structure will be put in a new configuration."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"The structure will be put in a new system."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Discard the structure"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"The structure will be discarded."</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"$"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"="</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"The handling of the structure will be determined by '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'."</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Do not understand how to handle the structure: '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">handling</span> <span class="o">!=</span> <span class="s2">&quot;Discard the structure&quot;</span><span class="p">:</span>
-        <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;system name&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will not be changed.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its canonical SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its isomeric SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its IUPAC name.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its InChI.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its InChIKey.&quot;</span>
-        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use chemical formula&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its chemical formula.&quot;</span>
+    <span class="k">if</span> <span class="n">handling</span> <span class="o">!=</span> <span class="s2">"Discard the structure"</span><span class="p">:</span>
+        <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"system name"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will not be changed."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its SMILES."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its canonical SMILES."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use isomeric SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its isomeric SMILES."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its IUPAC name."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its InChI."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its InChIKey."</span>
+        <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its chemical formula."</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">sysname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; The name of the system will be &#39;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" The name of the system will be '</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">'."</span>
 
-        <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;configuration name&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will not be changed.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its canonical SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its isomeric SMILES.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its IUPAC name.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its InChI.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its InChIKey.&quot;</span>
-        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use chemical formula&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its chemical formula.&quot;</span>
+        <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will not be changed."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its SMILES."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its canonical SMILES."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use isomeric SMILES string"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its isomeric SMILES."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its IUPAC name."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its InChI."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its InChIKey."</span>
+        <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its chemical formula."</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; The name of the configuration will be &#39;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" The name of the configuration will be '</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">'."</span>
 
     <span class="k">return</span> <span class="n">text</span></div>
 
@@ -661,7 +661,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="multiple_structure_handling_description">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.standard_parameters.multiple_structure_handling_description">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">multiple_structure_handling_description</span><span class="p">(</span><span class="n">__P</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a standard description for how the new structures will be handled.</span>
+<span class="w">    </span><span class="sd">"""Return a standard description for how the new structures will be handled.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -673,66 +673,66 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        The text for printing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The first structure will &quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">"The first structure will "</span>
 
-    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;overwrite the current configuration.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;be added as a new configuration of the current system.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;be added as a new system and configuration.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;be handled as determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"structure handling"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Overwrite the current configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"overwrite the current configuration."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"be added as a new configuration of the current system."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"be added as a new system and configuration."</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"$"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"="</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"be handled as determined by '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'."</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Do not understand how to handle the structure: '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
 
-    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;subsequent structure handling&quot;</span><span class="p">]</span>
-    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; Any subsequent structures will be &quot;</span>
-    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created as a new configuration of the current system.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created in a new system and configuration.&quot;</span>
-    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;handled as determined by &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+    <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"subsequent structure handling"</span><span class="p">]</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="s2">" Any subsequent structures will be "</span>
+    <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"created as a new configuration of the current system."</span>
+    <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">"created in a new system and configuration."</span>
+    <span class="k">elif</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"$"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">handling</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"="</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"handled as determined by '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'."</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Do not understand how to handle the structure: '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
 
-    <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;system name&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will not be changed.&quot;</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its SMILES.&quot;</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its canonical SMILES.&quot;</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its IUPAC name.&quot;</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its InChI.&quot;</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the system will be its InChIKey.&quot;</span>
+    <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"system name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will not be changed."</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its SMILES."</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its canonical SMILES."</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its IUPAC name."</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its InChI."</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the system will be its InChIKey."</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">sysname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; The name of the system will be &#39;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" The name of the system will be '</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">'."</span>
 
-    <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;configuration name&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will not be changed.&quot;</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its SMILES.&quot;</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its canonical SMILES.&quot;</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its IUPAC name.&quot;</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its InChI.&quot;</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; The name of the configuration will be its InChIKey.&quot;</span>
+    <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will not be changed."</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its SMILES."</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its canonical SMILES."</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its IUPAC name."</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its InChI."</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">" The name of the configuration will be its InChIKey."</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; The name of the configuration will be &#39;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" The name of the configuration will be '</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">'."</span>
 
     <span class="k">return</span> <span class="n">text</span></div>
 
@@ -741,7 +741,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="set_names">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.standard_parameters.set_names">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_names</span><span class="p">(</span><span class="n">__system</span><span class="p">,</span> <span class="n">__configuration</span><span class="p">,</span> <span class="n">__P</span><span class="p">,</span> <span class="n">_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the names of the system and configuration.</span>
+<span class="w">    </span><span class="sd">"""Set the names of the system and configuration.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -765,81 +765,81 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    -------</span>
 <span class="sd">    str</span>
 <span class="sd">        The text for printing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Discard the structure&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;The structure was discarded.&quot;</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"structure handling"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Discard the structure"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"The structure was discarded."</span>
 
-    <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;system name&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
+    <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"system name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
         <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">smiles</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">canonical_smiles</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use isomeric SMILES string"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">isomeric_smiles</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">PC_iupac_name</span><span class="p">(</span>
             <span class="n">fallback</span><span class="o">=</span><span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">inchi</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">inchikey</span>
-    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">&quot;use chemical formula&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">sysname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;configuration name&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;keep current name&quot;</span><span class="p">:</span>
+    <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
         <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use SMILES string"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">smiles</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use Canonical SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use Canonical SMILES string"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">canonical_smiles</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use isomeric SMILES string&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use isomeric SMILES string"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">isomeric_smiles</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use IUPAC name&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use IUPAC name"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">PC_iupac_name</span><span class="p">(</span>
             <span class="n">fallback</span><span class="o">=</span><span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChI&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChI"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">inchi</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use InChIKey&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use InChIKey"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">inchikey</span>
-    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">&quot;use chemical formula&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_first</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The structure &quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"The structure "</span>
 
-        <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;structure handling&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Overwrite the current configuration&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;overwrote the current configuration, and was&quot;</span>
-        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;was added as a new configuration of the current system&quot;</span>
-        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;was added as a new system and configuration &quot;</span>
+        <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"structure handling"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Overwrite the current configuration"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"overwrote the current configuration, and was"</span>
+        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"was added as a new configuration of the current system"</span>
+        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"was added as a new system and configuration "</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">"Do not understand how to handle the structure: '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'"</span>
             <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">&quot;subsequent structure handling&quot;</span><span class="p">]</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;This subsequent structure was &quot;</span>
-        <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new configuration&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created as a new configuration of the current system&quot;</span>
-        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">&quot;Create a new system and configuration&quot;</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;created in a new system and configuration&quot;</span>
+        <span class="n">handling</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"subsequent structure handling"</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"This subsequent structure was "</span>
+        <span class="k">if</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"created as a new configuration of the current system"</span>
+        <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s2">"created in a new system and configuration"</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Do not understand how to handle the structure: &#39;</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">"Do not understand how to handle the structure: '</span><span class="si">{</span><span class="n">handling</span><span class="si">}</span><span class="s2">'"</span>
             <span class="p">)</span>
 
-    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; named &#39;</span><span class="si">{</span><span class="n">__system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; / &#39;</span><span class="si">{</span><span class="n">__configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" named '</span><span class="si">{</span><span class="n">__system</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' / '</span><span class="si">{</span><span class="n">__configuration</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">'."</span>
     <span class="k">return</span> <span class="n">text</span></div>
 
 
@@ -852,7 +852,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="k">return</span> <span class="n">__s</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;{</span><span class="si">%s</span><span class="s2">}&quot;</span> <span class="o">%</span> <span class="n">e</span></div>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{</span><span class="si">%s</span><span class="s2">}"</span> <span class="o">%</span> <span class="n">e</span></div>
 
 </pre></div>
 
@@ -883,8 +883,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -896,7 +896,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

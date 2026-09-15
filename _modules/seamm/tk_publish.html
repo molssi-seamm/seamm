@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_publish &#8212; SEAMM 2026.8.11 documentation</title>
+    <title>seamm.tk_publish &#8212; SEAMM 2026.9.15 documentation</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=d9a48a5b"></script>
+    <script src="../../_static/documentation_options.js?v=3713ace6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.11" />
+  <meta name="docsearch:version" content="2026.9.15" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -488,7 +488,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <h1>Source code for seamm.tk_publish</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;The GUI for publishing -- flowcharts for the moment.&quot;&quot;&quot;</span>
+<span class="sd">"""The GUI for publishing -- flowcharts for the moment."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -508,80 +508,80 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="k">class</span><span class="w"> </span><span class="nc">TkPublish</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tk_flowchart</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span> <span class="o">=</span> <span class="n">tk_flowchart</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="n">tk_flowchart</span><span class="o">.</span><span class="n">pw</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"parent"</span><span class="p">:</span> <span class="n">tk_flowchart</span><span class="o">.</span><span class="n">pw</span><span class="p">}</span>
 
     <span class="c1"># Provide dict like access to the widgets to make</span>
     <span class="c1"># the code cleaner</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow [] access to the widgets!&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow [] access to the widgets!"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow x[key] access to the data&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow x[key] access to the data"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow deletion of keys&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow deletion of keys"""</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow iteration over the object&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow iteration over the object"""</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The len() command&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""The len() command"""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TkPublish.create_dialog">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.create_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the dialog for publishing.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;dialog&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create the dialog for publishing."""</span>
+        <span class="k">if</span> <span class="s2">"dialog"</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">toplevel</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parent&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Pmw</span><span class="o">.</span><span class="n">Dialog</span><span class="p">(</span>
+        <span class="n">toplevel</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"parent"</span><span class="p">]</span><span class="o">.</span><span class="n">winfo_toplevel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">"dialog"</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Pmw</span><span class="o">.</span><span class="n">Dialog</span><span class="p">(</span>
             <span class="n">toplevel</span><span class="p">,</span>
-            <span class="n">buttons</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Publish&quot;</span><span class="p">,</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">),</span>
+            <span class="n">buttons</span><span class="o">=</span><span class="p">(</span><span class="s2">"Publish"</span><span class="p">,</span> <span class="s2">"Cancel"</span><span class="p">),</span>
             <span class="n">master</span><span class="o">=</span><span class="n">toplevel</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Publish the flowchart&quot;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">"Publish the flowchart"</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
 
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">interior</span><span class="p">()</span>
         <span class="c1"># P = self.parameters</span>
-        <span class="c1"># for item in (&quot;what&quot;, &quot;destination&quot;):</span>
+        <span class="c1"># for item in ("what", "destination"):</span>
         <span class="c1">#     self[item] = P[item].widget(frame)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"what"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
             <span class="n">frame</span><span class="p">,</span>
-            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;Publish the&quot;</span><span class="p">,</span>
-            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;flowchart&quot;</span><span class="p">,),</span>
-            <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">"Publish the"</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">"flowchart"</span><span class="p">,),</span>
+            <span class="n">state</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;flowchart&quot;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"flowchart"</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"destination"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledCombobox</span><span class="p">(</span>
             <span class="n">frame</span><span class="p">,</span>
-            <span class="n">labeltext</span><span class="o">=</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
-            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Zenodo&quot;</span><span class="p">,</span> <span class="s2">&quot;Zenodo sandbox&quot;</span><span class="p">),</span>
-            <span class="n">state</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">,</span>
+            <span class="n">labeltext</span><span class="o">=</span><span class="s2">"to"</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">"Zenodo"</span><span class="p">,</span> <span class="s2">"Zenodo sandbox"</span><span class="p">),</span>
+            <span class="n">state</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Zenodo&quot;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"Zenodo"</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;what&quot;</span><span class="p">,):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ComboboxSelected&gt;&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;FocusOut&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"what"</span><span class="p">,):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;&lt;ComboboxSelected&gt;&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Return&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;FocusOut&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
 
         <span class="c1"># Need the start node for editing the flowchart metadata</span>
-        <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;flowchart metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_node</span><span class="o">.</span><span class="n">create_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">"flowchart metadata"</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_node</span><span class="o">.</span><span class="n">create_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">()</span></div>
 
@@ -589,20 +589,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="TkPublish.edit">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.edit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Present a dialog for editing the parameters.&quot;&quot;&quot;</span>
-        <span class="c1"># Create the dialog if it doesn&#39;t exist</span>
+<span class="w">        </span><span class="sd">"""Present a dialog for editing the parameters."""</span>
+        <span class="c1"># Create the dialog if it doesn't exist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
 
         <span class="c1"># update the flowchart metadata</span>
-        <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">start_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span>
         <span class="n">start_node</span><span class="o">.</span><span class="n">update_widgets</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">()</span>
 
         <span class="c1"># And put it on-screen, the first time centered.</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;dialog&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;centerscreenfirst&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"dialog"</span><span class="p">]</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">"centerscreenfirst"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="s2">&quot;Publish&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="s2">"Publish"</span><span class="p">:</span>
             <span class="c1"># Reset everything!</span>
             <span class="n">start_node</span><span class="o">.</span><span class="n">cleanup_authors</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -611,66 +611,66 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">start_node</span><span class="o">.</span><span class="n">cleanup_authors</span><span class="p">()</span>
 
             <span class="c1"># Capture the parameters from the widgets</span>
-            <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="n">destination</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"what"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">destination</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"destination"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">destination</span> <span class="o">==</span> <span class="s2">&quot;Zenodo&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">"flowchart"</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">destination</span> <span class="o">==</span> <span class="s2">"Zenodo"</span><span class="p">:</span>
                     <span class="n">doi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">publish_flowchart_to_zenodo</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">destination</span> <span class="o">==</span> <span class="s2">&quot;Zenodo sandbox&quot;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">destination</span> <span class="o">==</span> <span class="s2">"Zenodo sandbox"</span><span class="p">:</span>
                     <span class="n">doi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">publish_flowchart_to_zenodo</span><span class="p">(</span><span class="n">sandbox</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle destination &#39;</span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot handle destination '</span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
                 <span class="n">tk</span><span class="o">.</span><span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span>
-                    <span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;parent&quot;</span><span class="p">],</span>
-                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Published&quot;</span><span class="p">,</span>
-                    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Published the </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="se">\n</span><span class="s2">DOI = </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">"parent"</span><span class="p">],</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s2">"Published"</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Published the </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="se">\n</span><span class="s2">DOI = </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot handle publishing &#39;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot handle publishing '</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TkPublish.reset_dialog">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.reset_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Layout the widgets in the dialog according to the parameters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Layout the widgets in the dialog according to the parameters."""</span>
 
-        <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"what"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
         <span class="c1"># Temporary</span>
-        <span class="k">if</span> <span class="n">what</span> <span class="o">!=</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
-            <span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;flowchart&quot;</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="o">!=</span> <span class="s2">"flowchart"</span><span class="p">:</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="s2">"flowchart"</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">"what"</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
 
         <span class="c1"># Remove all the widgets</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">():</span>
             <span class="n">slave</span><span class="o">.</span><span class="n">grid_forget</span><span class="p">()</span>
 
         <span class="c1"># and put them back in as needed.</span>
         <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">"what"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">"destination"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
         <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;flowchart&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;flowchart metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">"flowchart"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">"flowchart metadata"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span>
-            <span class="k">if</span> <span class="s2">&quot;doi&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"doi"</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">][</span><span class="s2">"text"</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;not published&quot;</span></div>
+                <span class="bp">self</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">][</span><span class="s2">"text"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"not published"</span></div>
 
 
 <div class="viewcode-block" id="TkPublish.publish_flowchart_to_zenodo">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.tk_publish.TkPublish.publish_flowchart_to_zenodo">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">publish_flowchart_to_zenodo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sandbox</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish the flowchart to Zenodo.</span>
+<span class="w">        </span><span class="sd">"""Publish the flowchart to Zenodo.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -681,14 +681,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            The DOI.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">flowchart</span>
 
         <span class="c1"># Get check if the flowchart is fully released</span>
         <span class="k">if</span> <span class="n">sandbox</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">is_development</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Publishing a dirty version to the Zenodo sandbox.&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Publishing a dirty version to the Zenodo sandbox.&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"Publishing a dirty version to the Zenodo sandbox."</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Publishing a dirty version to the Zenodo sandbox."</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">is_development</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
@@ -697,8 +697,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         <span class="c1"># If this flowchart has an existing DOI, create a new version.</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span>
-        <span class="k">if</span> <span class="s2">&quot;doi&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-            <span class="n">_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/zenodo.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">"doi"</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="n">_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/zenodo."</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">record</span> <span class="o">=</span> <span class="n">zenodo</span><span class="o">.</span><span class="n">add_version</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">files</span><span class="p">():</span>
                 <span class="n">record</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -706,25 +706,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">record</span> <span class="o">=</span> <span class="n">zenodo</span><span class="o">.</span><span class="n">create_record</span><span class="p">()</span>
 
         <span class="c1"># Set up the metadata for Zenodo.</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">upload_type</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">creators</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;creators&quot;</span><span class="p">]</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;seamm-flowchart&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">]]</span>
-        <span class="k">if</span> <span class="s2">&quot;grants&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-            <span class="n">record</span><span class="o">.</span><span class="n">grants</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">g</span><span class="p">}</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;grants&quot;</span><span class="p">]]</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">upload_type</span> <span class="o">=</span> <span class="s2">"other"</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">creators</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"creators"</span><span class="p">]</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"seamm-flowchart"</span><span class="p">,</span> <span class="o">*</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"keywords"</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="s2">"grants"</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="n">record</span><span class="o">.</span><span class="n">grants</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">g</span><span class="p">}</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">"grants"</span><span class="p">]]</span>
 
         <span class="c1"># Update the metadata at Zenodo</span>
         <span class="n">record</span><span class="o">.</span><span class="n">update_metadata</span><span class="p">()</span>
 
         <span class="c1"># Update the metadata in the flowchart</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">doi</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">doi</span>
         <span class="n">conceptdoi</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">conceptdoi</span>
         <span class="k">if</span> <span class="n">conceptdoi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;conceptdoi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">conceptdoi</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">"conceptdoi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">conceptdoi</span>
 
         <span class="c1"># Now we can add the flowchart to Zenodo with the correct DOI, etc.</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s2">&quot;flowchart.flow&quot;</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="n">flowchart</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s2">"flowchart.flow"</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="n">flowchart</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
 
         <span class="c1"># And, finally, can publish!</span>
         <span class="n">record</span><span class="o">.</span><span class="n">publish</span><span class="p">()</span>
@@ -761,8 +761,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -774,7 +774,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
