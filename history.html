@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.9.15 documentation</title>
+    <title>History &#8212; SEAMM 2026.9.17 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=3713ace6"></script>
+    <script src="_static/documentation_options.js?v=a493a295"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.15" />
+  <meta name="docsearch:version" content="2026.9.17" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.9.17 – Bugfix: steps failed to load with bibtexparser 2.x</dt><dd><ul class="simple">
+<li><p>Version 2 of the <code class="docutils literal notranslate"><span class="pre">bibtexparser</span></code> library, which conda-forge now installs by
+default, removed the API that SEAMM and <code class="docutils literal notranslate"><span class="pre">reference_handler</span></code> use to read the
+plug-ins’ <code class="docutils literal notranslate"><span class="pre">references.bib</span></code> files. Creating any step then failed with
+<code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">'bibtexparser'</span> <span class="pre">has</span> <span class="pre">no</span> <span class="pre">attribute</span> <span class="pre">'loads'</span></code>. SEAMM now requires
+<code class="docutils literal notranslate"><span class="pre">bibtexparser&lt;2</span></code>.</p></li>
+</ul>
+</dd>
 <dt>2026.9.15 – Bugfix: a queue override could not be cleared once chosen</dt><dd><ul class="simple">
 <li><p>A SLURM directive the queue offers as a list of choices, such as the number of
 GPUs, is shown in the submission dialog as a drop-down. The list held only real
