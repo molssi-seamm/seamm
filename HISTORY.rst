@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.9.17 -- Bugfix: steps failed to load with bibtexparser 2.x
+    * Version 2 of the ``bibtexparser`` library, which conda-forge now installs by
+      default, removed the API that SEAMM and ``reference_handler`` use to read the
+      plug-ins' ``references.bib`` files. Creating any step then failed with
+      ``module 'bibtexparser' has no attribute 'loads'``. SEAMM now requires
+      ``bibtexparser<2``.
+
 2026.9.15 -- Bugfix: a queue override could not be cleared once chosen
     * A SLURM directive the queue offers as a list of choices, such as the number of
       GPUs, is shown in the submission dialog as a drop-down. The list held only real

@@ -1,4 +1,4 @@
-bibtexparser
+bibtexparser<2
 fasteners
 humanize
 jinja2
