@@ -10,7 +10,7 @@ dependencies:
   - pip
 
   # SEAMM requirements
-  - bibtexparser
+  - bibtexparser<2
   - fasteners
   - humanize
   - jinja2
