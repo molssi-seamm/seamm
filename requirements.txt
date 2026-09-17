@@ -9,6 +9,7 @@ pandas
 pillow
 pmw
 py-cpuinfo
+pyperclip
 python-dateutil
 pyuca
 reference_handler

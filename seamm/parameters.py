@@ -3,7 +3,6 @@
 """Control parameters for a step in a MolSSI flowchart"""
 
 import collections.abc
-from distutils.util import strtobool
 import importlib
 import json
 import logging
@@ -12,6 +11,22 @@ from seamm_util import ureg
 import pprint
 
 logger = logging.getLogger(__name__)
+
+
+def strtobool(value):
+    """Convert a string representation of truth to 1 or 0.
+
+    True values are 'y', 'yes', 't', 'true', 'on' and '1'; false values are
+    'n', 'no', 'f', 'false', 'off' and '0'. Raises ValueError otherwise.
+    (Replaces ``distutils.util.strtobool``; distutils was removed in Python 3.12.)
+    """
+    text = str(value).strip().lower()
+    if text in ("y", "yes", "t", "true", "on", "1"):
+        return 1
+    if text in ("n", "no", "f", "false", "off", "0"):
+        return 0
+    raise ValueError(f"invalid truth value {value!r}")
+
 
 # All for a default root context for evaluating expressions
 # and variables

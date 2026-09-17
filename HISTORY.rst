@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.9.17.1 -- Bugfix: pip metadata lacked pyperclip; distutils import removed
+    * ``pip install seamm`` did not install ``pyperclip``, which the flowchart
+      editor's paste needs, so importing SEAMM outside a conda-forge environment
+      failed with ``No module named 'pyperclip'``. It is now an install requirement
+      (the conda-forge recipe already had it).
+    * Removed the last use of ``distutils`` (``strtobool`` in the parameters), which
+      was dropped from the standard library in Python 3.12 and only worked where
+      setuptools happened to be installed.
+
 2026.9.17 -- Bugfix: steps failed to load with bibtexparser 2.x
     * Version 2 of the ``bibtexparser`` library, which conda-forge now installs by
       default, removed the API that SEAMM and ``reference_handler`` use to read the
