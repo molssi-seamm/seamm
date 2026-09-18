@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2026.9.17 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2026.9.18 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=a493a295"></script>
+    <script src="../../_static/documentation_options.js?v=4c890157"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.17" />
+  <meta name="docsearch:version" content="2026.9.18" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -491,7 +491,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">"""Control parameters for a step in a MolSSI flowchart"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">distutils.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">strtobool</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -500,6 +499,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="strtobool">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.strtobool">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">strtobool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert a string representation of truth to 1 or 0.</span>
+
+<span class="sd">    True values are 'y', 'yes', 't', 'true', 'on' and '1'; false values are</span>
+<span class="sd">    'n', 'no', 'f', 'false', 'off' and '0'. Raises ValueError otherwise.</span>
+<span class="sd">    (Replaces ``distutils.util.strtobool``; distutils was removed in Python 3.12.)</span>
+<span class="sd">    """</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"t"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">,</span> <span class="s2">"f"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">,</span> <span class="s2">"off"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"invalid truth value </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
 
 <span class="c1"># All for a default root context for evaluating expressions</span>
 <span class="c1"># and variables</span>

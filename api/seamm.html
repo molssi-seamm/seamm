@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.9.17 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.9.18 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=a493a295"></script>
+    <script src="../_static/documentation_options.js?v=4c890157"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.17" />
+  <meta name="docsearch:version" content="2026.9.18" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -2005,6 +2005,15 @@ formatted for printing</p>
 <span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">set_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#set_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.set_context" title="Link to this definition">#</a></dt>
 <dd><p>Set the default root context for evaluating variables
 and expressions in parameters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.parameters.strtobool">
+<span class="sig-prename descclassname"><span class="pre">seamm.parameters.</span></span><span class="sig-name descname"><span class="pre">strtobool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#strtobool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.strtobool" title="Link to this definition">#</a></dt>
+<dd><p>Convert a string representation of truth to 1 or 0.</p>
+<p>True values are ‘y’, ‘yes’, ‘t’, ‘true’, ‘on’ and ‘1’; false values are
+‘n’, ‘no’, ‘f’, ‘false’, ‘off’ and ‘0’. Raises ValueError otherwise.
+(Replaces <code class="docutils literal notranslate"><span class="pre">distutils.util.strtobool</span></code>; distutils was removed in Python 3.12.)</p>
 </dd></dl>
 
 </section>
@@ -4192,6 +4201,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.set_context"><code class="docutils literal notranslate"><span class="pre">set_context()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.strtobool"><code class="docutils literal notranslate"><span class="pre">strtobool()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.plugin_manager">seamm.plugin_manager module</a><ul class="pst-show_toc_level nav section-nav flex-column">
