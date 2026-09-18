@@ -752,6 +752,29 @@ class Node(collections.abc.Hashable):
 
         return (system, configuration)
 
+    def select_configurations(self, P, errors=True):
+        """The configurations selected by the structure-selection parameters.
+
+        The step's parameters must include
+        :data:`seamm.standard_parameters.structure_selection_parameters`. See
+        :func:`seamm.standard_parameters.select_configurations` for the semantics.
+
+        Parameters
+        ----------
+        P : dict
+            The dereferenced parameter values.
+        errors : bool = True
+            Whether an empty selection raises an error.
+
+        Returns
+        -------
+        [molsystem._Configuration]
+        """
+        system_db = self.get_variable("_system_db")
+        return seamm.standard_parameters.select_configurations(
+            system_db, P, errors=errors
+        )
+
     def get_table(self, tablename, create=True):
         """Get the named table, creating if necessary"""
         if not self.variable_exists(tablename):

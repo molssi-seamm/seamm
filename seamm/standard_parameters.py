@@ -3,6 +3,11 @@
 
 Parameters
 ----------
+structure_selection_parameters : dict(str, dict(str, str))
+    Parameters for selecting which existing structures a step operates on: which
+    systems (current, all, or by name) and which configurations of each (current,
+    all, last, first, or by name). See :func:`select_configurations`.
+
 structure_handling_parameters : dict(str, dict(str, str))
     Parameters for providing options for how to handle newly created structures.
     The options are:
@@ -15,6 +20,65 @@ structure_handling_parameters : dict(str, dict(str, str))
     or not new ones are created, i.e. the system and configuration can be renamed if
     they are reused.
 """
+
+import fnmatch
+import re
+
+structure_selection_parameters = {
+    "source systems": {
+        "default": "current",
+        "kind": "string",
+        "default_units": "",
+        "enumeration": ("current", "all", "name is", "name matches", "name regexp"),
+        "format_string": "s",
+        "description": "Systems:",
+        "help_text": (
+            "Which systems to take the structures from: the current system, all "
+            "systems, or those whose name is / matches (shell wildcards) / matches "
+            "the regular expression given. A variable ($name) holding a list of "
+            "configurations or of systems may also be given."
+        ),
+    },
+    "source system name": {
+        "default": "",
+        "kind": "string",
+        "default_units": "",
+        "enumeration": tuple(),
+        "format_string": "s",
+        "description": "",
+        "help_text": "The system name, wildcard pattern or regular expression.",
+    },
+    "source configurations": {
+        "default": "current",
+        "kind": "string",
+        "default_units": "",
+        "enumeration": (
+            "current",
+            "all",
+            "last",
+            "first",
+            "name is",
+            "name matches",
+            "name regexp",
+        ),
+        "format_string": "s",
+        "description": "Configurations:",
+        "help_text": (
+            "Which configurations of each selected system to use: its current "
+            "configuration, all of them, the last or first, or those whose name is "
+            "/ matches (shell wildcards) / matches the regular expression given."
+        ),
+    },
+    "source configuration name": {
+        "default": "",
+        "kind": "string",
+        "default_units": "",
+        "enumeration": tuple(),
+        "format_string": "s",
+        "description": "",
+        "help_text": "The configuration name, wildcard pattern or regular expression.",
+    },
+}
 
 structure_handling_parameters = {
     "structure handling": {
@@ -354,3 +418,150 @@ def safe_format(__s, *args, **kwargs):
         except KeyError as e:
             e = e.args[0]
             kwargs[e] = "{%s}" % e
+
+
+def _name_filter(items, how, name, what):
+    """Filter systems or configurations by name: 'is', 'matches' or 'regexp'."""
+    if how == "name is":
+        return [x for x in items if x.name == name]
+    if how == "name matches":
+        return [x for x in items if fnmatch.fnmatch(x.name, name)]
+    if how == "name regexp":
+        try:
+            pattern = re.compile(name)
+        except re.error as e:
+            raise ValueError(f"Invalid regular expression for the {what} name: {e}")
+        return [x for x in items if pattern.search(x.name) is not None]
+    raise ValueError(f"Do not understand how to select {what}s: '{how}'")
+
+
+def select_configurations(system_db, P, errors=True):
+    """Select configurations according to the structure-selection parameters.
+
+    Parameters
+    ----------
+    system_db : molsystem.SystemDB
+        The system database.
+    P : dict
+        The (dereferenced) parameter values, containing the keys of
+        :data:`structure_selection_parameters`. ``P["source systems"]`` may also be
+        a list -- from a ``$variable`` -- of configurations (used as is) or of
+        systems (then filtered by the configuration choice).
+    errors : bool = True
+        Whether an empty selection raises an error.
+
+    Returns
+    -------
+    [molsystem._Configuration]
+        The selected configurations, in system order then configuration order.
+    """
+    systems_spec = P.get("source systems", "current")
+    conf_how = P.get("source configurations", "current")
+    conf_name = str(P.get("source configuration name", ""))
+
+    # A variable holding a list: of configurations, or of systems.
+    if not isinstance(systems_spec, str):
+        items = list(systems_spec)
+        if len(items) == 0:
+            if errors:
+                raise ValueError("The variable given for the systems is empty.")
+            return []
+        if hasattr(items[0], "system_db") and hasattr(items[0], "atoms"):
+            return items  # configurations
+        systems = items
+    else:
+        how = systems_spec.strip()
+        if how == "current":
+            systems = [] if system_db.system is None else [system_db.system]
+        elif how == "all":
+            systems = system_db.systems
+        elif how.startswith("name "):
+            systems = _name_filter(
+                system_db.systems, how, str(P.get("source system name", "")), "system"
+            )
+        else:
+            raise ValueError(f"Do not understand how to select systems: '{how}'")
+
+    configurations = []
+    for system in systems:
+        if system.n_configurations == 0:
+            continue
+        if conf_how == "current":
+            c = system.configuration
+            if c is not None:
+                configurations.append(c)
+        elif conf_how == "all":
+            configurations.extend(system.configurations)
+        elif conf_how == "last":
+            configurations.append(system.configurations[-1])
+        elif conf_how == "first":
+            configurations.append(system.configurations[0])
+        elif conf_how.startswith("name "):
+            configurations.extend(
+                _name_filter(
+                    system.configurations, conf_how, conf_name, "configuration"
+                )
+            )
+        else:
+            raise ValueError(
+                f"Do not understand how to select configurations: '{conf_how}'"
+            )
+
+    if errors and len(configurations) == 0:
+        raise ValueError(
+            "No structures matched the selection: systems '"
+            f"{systems_spec if isinstance(systems_spec, str) else 'from variable'}'"
+            + (
+                f" (name {P.get('source system name', '')!r})"
+                if isinstance(systems_spec, str) and systems_spec.startswith("name ")
+                else ""
+            )
+            + f", configurations '{conf_how}'"
+            + (f" (name {conf_name!r})" if conf_how.startswith("name ") else "")
+        )
+    return configurations
+
+
+def structure_selection_description(P):
+    """A sentence describing which structures will be used, for description_text."""
+    systems_spec = P.get("source systems", "current")
+    conf_how = P.get("source configurations", "current")
+    conf_name = P.get("source configuration name", "")
+
+    if not isinstance(systems_spec, str):
+        return "The structures in the given variable will be used."
+    how = systems_spec.strip()
+    if how.startswith("$"):
+        return f"The structures in the variable {how} will be used."
+
+    if conf_how == "current":
+        confs = "the current configuration"
+    elif conf_how == "all":
+        confs = "all configurations"
+    elif conf_how in ("last", "first"):
+        confs = f"the {conf_how} configuration"
+    elif conf_how == "name is":
+        confs = f"the configuration named '{conf_name}'"
+    elif conf_how == "name matches":
+        confs = f"the configurations matching '{conf_name}'"
+    else:
+        confs = f"the configurations matching the regular expression '{conf_name}'"
+
+    sys_name = P.get("source system name", "")
+    if how == "current":
+        if conf_how == "current":
+            return "The current configuration of the current system will be used."
+        return f"{confs[0].upper()}{confs[1:]} of the current system will be used."
+    if how == "all":
+        return f"{confs[0].upper()}{confs[1:]} of every system will be used."
+    if how == "name is":
+        return f"{confs[0].upper()}{confs[1:]} of the system '{sys_name}' will be used."
+    if how == "name matches":
+        return (
+            f"{confs[0].upper()}{confs[1:]} of the systems matching '{sys_name}' "
+            "will be used."
+        )
+    return (
+        f"{confs[0].upper()}{confs[1:]} of the systems matching the regular "
+        f"expression '{sys_name}' will be used."
+    )
