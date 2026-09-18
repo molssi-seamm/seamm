@@ -1135,11 +1135,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">def</span><span class="w"> </span><span class="nf">previous_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""The nodes preceding this one in the flowchart, nearest first.</span>
 
-<span class="sd">        Identical to :meth:`seamm.Node.previous_nodes`, delegating to the</span>
-<span class="sd">        non-graphical node so the interface is the same whether called on a</span>
-<span class="sd">        graphical (Tk) or non-graphical node. Returns non-graphical nodes.</span>
+<span class="sd">        The same interface as :meth:`seamm.Node.previous_nodes`, returning</span>
+<span class="sd">        non-graphical nodes, but it follows the *graphical* flowchart's edges.</span>
+<span class="sd">        While a flowchart is being built in the editor the connections exist</span>
+<span class="sd">        only in the Tk graph -- the non-graphical flowchart is rebuilt from it</span>
+<span class="sd">        when the flowchart is saved or run -- so asking the non-graphical node</span>
+<span class="sd">        would miss every step added since the last save. Falls back to the</span>
+<span class="sd">        non-graphical node when this node is not (yet) in a Tk flowchart.</span>
 <span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">previous_nodes</span><span class="p">(</span><span class="n">node_type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">previous_nodes</span><span class="p">(</span><span class="n">node_type</span><span class="o">=</span><span class="n">node_type</span><span class="p">)</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tk_node</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">tk_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">previous</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tk_flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">tk_node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"in"</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">==</span> <span class="s2">"execution"</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"next"</span><span class="p">:</span>
+                    <span class="n">previous</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">node1</span>
+                    <span class="k">break</span>
+            <span class="n">tk_node</span> <span class="o">=</span> <span class="n">previous</span>
+            <span class="k">if</span> <span class="n">tk_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tk_node</span><span class="o">.</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node_type</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">nodes</span></div>
 
 
 <div class="viewcode-block" id="TkNode.edit">

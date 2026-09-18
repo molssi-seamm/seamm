@@ -3502,9 +3502,13 @@ column, on the same row as their choice.</p></li>
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.previous_nodes">
 <span class="sig-name descname"><span class="pre">previous_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.previous_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.previous_nodes" title="Link to this definition">#</a></dt>
 <dd><p>The nodes preceding this one in the flowchart, nearest first.</p>
-<p>Identical to <code class="xref py py-meth docutils literal notranslate"><span class="pre">seamm.Node.previous_nodes()</span></code>, delegating to the
-non-graphical node so the interface is the same whether called on a
-graphical (Tk) or non-graphical node. Returns non-graphical nodes.</p>
+<p>The same interface as <code class="xref py py-meth docutils literal notranslate"><span class="pre">seamm.Node.previous_nodes()</span></code>, returning
+non-graphical nodes, but it follows the <em>graphical</em> flowchart’s edges.
+While a flowchart is being built in the editor the connections exist
+only in the Tk graph – the non-graphical flowchart is rebuilt from it
+when the flowchart is saved or run – so asking the non-graphical node
+would miss every step added since the last save. Falls back to the
+non-graphical node when this node is not (yet) in a Tk flowchart.</p>
 </dd></dl>
 
 <dl class="py method">
