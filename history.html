@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.9.18 documentation</title>
+    <title>History &#8212; SEAMM 2026.9.18.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=4c890157"></script>
+    <script src="_static/documentation_options.js?v=a31f1ab7"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.18" />
+  <meta name="docsearch:version" content="2026.9.18.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.9.18.1 – Standard structure-selection parameters for plug-ins</dt><dd><ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">seamm.standard_parameters.structure_selection_parameters</span></code>, a standard
+block a step can include to let the user choose which existing structures it
+works on – the current system, all systems, or systems by name (is / matches /
+regexp), and of each the current, all, last, first, or by-name configurations;
+a variable holding a list of configurations or systems is also accepted. The
+defaults are the current configuration of the current system.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Node.select_configurations(P)</span></code> (and the underlying
+<code class="docutils literal notranslate"><span class="pre">select_configurations(system_db,</span> <span class="pre">P)</span></code>) implements the selection once for all
+plug-ins, with a clear error when nothing matches;
+<code class="docutils literal notranslate"><span class="pre">structure_selection_description(P)</span></code> gives the sentence for the step
+description; <code class="docutils literal notranslate"><span class="pre">TkNode.create_structure_selection_widgets</span></code> and
+<code class="docutils literal notranslate"><span class="pre">layout_structure_selection</span></code> lay the block out uniformly, showing a name
+field only when the choice needs one. Documented in the developer guide.</p></li>
+</ul>
+</dd>
 <dt>2026.9.18 – Bugfix: pip metadata lacked pyperclip; distutils import removed</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">seamm</span></code> did not install <code class="docutils literal notranslate"><span class="pre">pyperclip</span></code>, which the flowchart
 editor’s paste needs, so importing SEAMM outside a conda-forge environment

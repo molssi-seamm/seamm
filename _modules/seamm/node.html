@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.9.18 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.9.18.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=4c890157"></script>
+    <script src="../../_static/documentation_options.js?v=a31f1ab7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.18" />
+  <meta name="docsearch:version" content="2026.9.18.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1270,6 +1270,32 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.select_configurations">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.select_configurations">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_configurations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The configurations selected by the structure-selection parameters.</span>
+
+<span class="sd">        The step's parameters must include</span>
+<span class="sd">        :data:`seamm.standard_parameters.structure_selection_parameters`. See</span>
+<span class="sd">        :func:`seamm.standard_parameters.select_configurations` for the semantics.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        P : dict</span>
+<span class="sd">            The dereferenced parameter values.</span>
+<span class="sd">        errors : bool = True</span>
+<span class="sd">            Whether an empty selection raises an error.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        [molsystem._Configuration]</span>
+<span class="sd">        """</span>
+        <span class="n">system_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">"_system_db"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">standard_parameters</span><span class="o">.</span><span class="n">select_configurations</span><span class="p">(</span>
+            <span class="n">system_db</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Node.get_table">

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.9.18 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.9.18.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=4c890157"></script>
+    <script src="../_static/documentation_options.js?v=a31f1ab7"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.18" />
+  <meta name="docsearch:version" content="2026.9.18.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1634,6 +1634,26 @@ return the next node.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.select_configurations">
+<span class="sig-name descname"><span class="pre">select_configurations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.select_configurations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.select_configurations" title="Link to this definition">#</a></dt>
+<dd><p>The configurations selected by the structure-selection parameters.</p>
+<p>The step’s parameters must include
+<code class="xref py py-data docutils literal notranslate"><span class="pre">seamm.standard_parameters.structure_selection_parameters</span></code>. See
+<a class="reference internal" href="#seamm.standard_parameters.select_configurations" title="seamm.standard_parameters.select_configurations"><code class="xref py py-func docutils literal notranslate"><span class="pre">seamm.standard_parameters.select_configurations()</span></code></a> for the semantics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>dict</em>) – The dereferenced parameter values.</p></li>
+<li><p><strong>errors</strong> (<em>bool = True</em>) – Whether an empty selection raises an error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>[molsystem._Configuration]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.set_gui_data">
 <span class="sig-name descname"><span class="pre">set_gui_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.set_gui_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.set_gui_data" title="Link to this definition">#</a></dt>
 <dd><p>Set an element of the GUI dictionary</p>
@@ -2181,6 +2201,14 @@ be used as is.</p>
 <span id="seamm-standard-parameters-module"></span><h2>seamm.standard_parameters module<a class="headerlink" href="#module-seamm.standard_parameters" title="Link to this heading">#</a></h2>
 <p>Standard sets of parameters widely used in SEAMM.</p>
 <dl class="field-list">
+<dt class="field-odd">param structure_selection_parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Parameters for selecting which existing structures a step operates on: which
+systems (current, all, or by name) and which configurations of each (current,
+all, last, first, or by name). See <a class="reference internal" href="#seamm.standard_parameters.select_configurations" title="seamm.standard_parameters.select_configurations"><code class="xref py py-func docutils literal notranslate"><span class="pre">select_configurations()</span></code></a>.</p>
+</dd>
+<dt class="field-even">type structure_selection_parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict(str, dict(str, str))</p>
+</dd>
 <dt class="field-odd">param structure_handling_parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Parameters for providing options for how to handle newly created structures.
 The options are:</p>
@@ -2223,6 +2251,30 @@ handling parameters.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="seamm.standard_parameters.select_configurations">
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">select_configurations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#select_configurations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.select_configurations" title="Link to this definition">#</a></dt>
+<dd><p>Select configurations according to the structure-selection parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system_db</strong> (<em>molsystem.SystemDB</em>) – The system database.</p></li>
+<li><p><strong>P</strong> (<em>dict</em>) – The (dereferenced) parameter values, containing the keys of
+<code class="xref py py-data docutils literal notranslate"><span class="pre">structure_selection_parameters</span></code>. <code class="docutils literal notranslate"><span class="pre">P[&quot;source</span> <span class="pre">systems&quot;]</span></code> may also be
+a list – from a <code class="docutils literal notranslate"><span class="pre">$variable</span></code> – of configurations (used as is) or of
+systems (then filtered by the configuration choice).</p></li>
+<li><p><strong>errors</strong> (<em>bool = True</em>) – Whether an empty selection raises an error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The selected configurations, in system order then configuration order.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[molsystem._Configuration]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="seamm.standard_parameters.set_names">
 <span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">set_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">__configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">__P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#set_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.set_names" title="Link to this definition">#</a></dt>
 <dd><p>Set the names of the system and configuration.</p>
@@ -2262,6 +2314,12 @@ handling parameters.</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.standard_parameters.structure_selection_description">
+<span class="sig-prename descclassname"><span class="pre">seamm.standard_parameters.</span></span><span class="sig-name descname"><span class="pre">structure_selection_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/standard_parameters.html#structure_selection_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.standard_parameters.structure_selection_description" title="Link to this definition">#</a></dt>
+<dd><p>A sentence describing which structures will be used, for description_text.</p>
 </dd></dl>
 
 </section>
@@ -3244,6 +3302,22 @@ for this node, giving the anchor points and other node</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_node.TkNode.create_structure_selection_widgets">
+<span class="sig-name descname"><span class="pre">create_structure_selection_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.create_structure_selection_widgets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.create_structure_selection_widgets" title="Link to this definition">#</a></dt>
+<dd><p>Create the widgets for the standard structure-selection parameters.</p>
+<p>The step’s parameters must include
+<code class="xref py py-data docutils literal notranslate"><span class="pre">seamm.standard_parameters.structure_selection_parameters</span></code>. The
+choice widgets are bound to <code class="docutils literal notranslate"><span class="pre">reset_dialog</span></code> so that the name fields can
+be shown only when a name-based choice is made (see
+<a class="reference internal" href="#seamm.tk_node.TkNode.layout_structure_selection" title="seamm.tk_node.TkNode.layout_structure_selection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">layout_structure_selection()</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> (<em>tk.Frame</em>) – The parent frame for the widgets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.tk_node.TkNode.deactivate">
 <span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.deactivate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.deactivate" title="Link to this definition">#</a></dt>
 <dd><p>Remove the decorations that indicate active anchor points</p>
@@ -3372,6 +3446,29 @@ be put into the <cite>results</cite> parameter.</p>
 <span class="sig-name descname"><span class="pre">is_inside</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.is_inside"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.is_inside" title="Link to this definition">#</a></dt>
 <dd><p>Return a boolean indicating whether the point x, y is inside
 this node, using halo as a size around the point</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_node.TkNode.layout_structure_selection">
+<span class="sig-name descname"><span class="pre">layout_structure_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_node.html#TkNode.layout_structure_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_node.TkNode.layout_structure_selection" title="Link to this definition">#</a></dt>
+<dd><p>Grid the structure-selection widgets, hiding the name fields unless a
+name-based choice needs them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int = 0</em>) – The first row to use.</p></li>
+<li><p><strong>column</strong> (<em>int = 0</em>) – The column for the choice widgets; the name fields go in the next
+column, on the same row as their choice.</p></li>
+<li><p><strong>**kwargs</strong> – Passed to <code class="docutils literal notranslate"><span class="pre">grid</span></code> for the widgets, e.g. <code class="docutils literal notranslate"><span class="pre">sticky</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The next free row, and the choice widgets, for label alignment.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(int, [widget])</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -4141,6 +4238,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.remove_edge"><code class="docutils literal notranslate"><span class="pre">Node.remove_edge()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.reset_id"><code class="docutils literal notranslate"><span class="pre">Node.reset_id()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.run"><code class="docutils literal notranslate"><span class="pre">Node.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.select_configurations"><code class="docutils literal notranslate"><span class="pre">Node.select_configurations()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.set_gui_data"><code class="docutils literal notranslate"><span class="pre">Node.set_gui_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.set_id"><code class="docutils literal notranslate"><span class="pre">Node.set_id()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.set_uuid"><code class="docutils literal notranslate"><span class="pre">Node.set_uuid()</span></code></a></li>
@@ -4248,8 +4346,10 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.standard_parameters">seamm.standard_parameters module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.multiple_structure_handling_description"><code class="docutils literal notranslate"><span class="pre">multiple_structure_handling_description()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.safe_format"><code class="docutils literal notranslate"><span class="pre">safe_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.select_configurations"><code class="docutils literal notranslate"><span class="pre">select_configurations()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.set_names"><code class="docutils literal notranslate"><span class="pre">set_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.structure_handling_description"><code class="docutils literal notranslate"><span class="pre">structure_handling_description()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.standard_parameters.structure_selection_description"><code class="docutils literal notranslate"><span class="pre">structure_selection_description()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.start_node">seamm.start_node module</a><ul class="pst-show_toc_level nav section-nav flex-column">
@@ -4401,6 +4501,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.check_anchor_points"><code class="docutils literal notranslate"><span class="pre">TkNode.check_anchor_points()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.connections"><code class="docutils literal notranslate"><span class="pre">TkNode.connections()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.create_dialog"><code class="docutils literal notranslate"><span class="pre">TkNode.create_dialog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.create_structure_selection_widgets"><code class="docutils literal notranslate"><span class="pre">TkNode.create_structure_selection_widgets()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.deactivate"><code class="docutils literal notranslate"><span class="pre">TkNode.deactivate()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.default_edge_subtype"><code class="docutils literal notranslate"><span class="pre">TkNode.default_edge_subtype()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.double_click"><code class="docutils literal notranslate"><span class="pre">TkNode.double_click()</span></code></a></li>
@@ -4416,6 +4517,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.initialize_results"><code class="docutils literal notranslate"><span class="pre">TkNode.initialize_results()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.is_expr"><code class="docutils literal notranslate"><span class="pre">TkNode.is_expr()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.is_inside"><code class="docutils literal notranslate"><span class="pre">TkNode.is_inside()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.layout_structure_selection"><code class="docutils literal notranslate"><span class="pre">TkNode.layout_structure_selection()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.metadata"><code class="docutils literal notranslate"><span class="pre">TkNode.metadata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.move"><code class="docutils literal notranslate"><span class="pre">TkNode.move()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_node.TkNode.next_anchor"><code class="docutils literal notranslate"><span class="pre">TkNode.next_anchor()</span></code></a></li>

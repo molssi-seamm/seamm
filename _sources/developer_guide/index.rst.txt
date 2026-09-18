@@ -8,4 +8,5 @@ Contents:
 
    installation
    usage
+   structure_selection
    contributing

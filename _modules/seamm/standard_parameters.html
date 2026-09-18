@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.standard_parameters &#8212; SEAMM 2026.9.18 documentation</title>
+    <title>seamm.standard_parameters &#8212; SEAMM 2026.9.18.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=4c890157"></script>
+    <script src="../../_static/documentation_options.js?v=a31f1ab7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.18" />
+  <meta name="docsearch:version" content="2026.9.18.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -491,6 +491,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="sd">Parameters</span>
 <span class="sd">----------</span>
+<span class="sd">structure_selection_parameters : dict(str, dict(str, str))</span>
+<span class="sd">    Parameters for selecting which existing structures a step operates on: which</span>
+<span class="sd">    systems (current, all, or by name) and which configurations of each (current,</span>
+<span class="sd">    all, last, first, or by name). See :func:`select_configurations`.</span>
+
 <span class="sd">structure_handling_parameters : dict(str, dict(str, str))</span>
 <span class="sd">    Parameters for providing options for how to handle newly created structures.</span>
 <span class="sd">    The options are:</span>
@@ -503,6 +508,65 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    or not new ones are created, i.e. the system and configuration can be renamed if</span>
 <span class="sd">    they are reused.</span>
 <span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">fnmatch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">structure_selection_parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"source systems"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"current"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"current"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">,</span> <span class="s2">"name is"</span><span class="p">,</span> <span class="s2">"name matches"</span><span class="p">,</span> <span class="s2">"name regexp"</span><span class="p">),</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Systems:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Which systems to take the structures from: the current system, all "</span>
+            <span class="s2">"systems, or those whose name is / matches (shell wildcards) / matches "</span>
+            <span class="s2">"the regular expression given. A variable ($name) holding a list of "</span>
+            <span class="s2">"configurations or of systems may also be given."</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">"source system name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(),</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The system name, wildcard pattern or regular expression."</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"source configurations"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"current"</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"current"</span><span class="p">,</span>
+            <span class="s2">"all"</span><span class="p">,</span>
+            <span class="s2">"last"</span><span class="p">,</span>
+            <span class="s2">"first"</span><span class="p">,</span>
+            <span class="s2">"name is"</span><span class="p">,</span>
+            <span class="s2">"name matches"</span><span class="p">,</span>
+            <span class="s2">"name regexp"</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Configurations:"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"Which configurations of each selected system to use: its current "</span>
+            <span class="s2">"configuration, all of them, the last or first, or those whose name is "</span>
+            <span class="s2">"/ matches (shell wildcards) / matches the regular expression given."</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">"source configuration name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"default"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span>
+        <span class="s2">"default_units"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"enumeration"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(),</span>
+        <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The configuration name, wildcard pattern or regular expression."</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
 
 <span class="n">structure_handling_parameters</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"structure handling"</span><span class="p">:</span> <span class="p">{</span>
@@ -853,6 +917,159 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{</span><span class="si">%s</span><span class="s2">}"</span> <span class="o">%</span> <span class="n">e</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_name_filter</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">how</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Filter systems or configurations by name: 'is', 'matches' or 'regexp'."""</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"name is"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"name matches"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"name regexp"</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">re</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid regular expression for the </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2"> name: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Do not understand how to select </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">s: '</span><span class="si">{</span><span class="n">how</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="select_configurations">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.standard_parameters.select_configurations">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_configurations</span><span class="p">(</span><span class="n">system_db</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Select configurations according to the structure-selection parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system_db : molsystem.SystemDB</span>
+<span class="sd">        The system database.</span>
+<span class="sd">    P : dict</span>
+<span class="sd">        The (dereferenced) parameter values, containing the keys of</span>
+<span class="sd">        :data:`structure_selection_parameters`. ``P["source systems"]`` may also be</span>
+<span class="sd">        a list -- from a ``$variable`` -- of configurations (used as is) or of</span>
+<span class="sd">        systems (then filtered by the configuration choice).</span>
+<span class="sd">    errors : bool = True</span>
+<span class="sd">        Whether an empty selection raises an error.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [molsystem._Configuration]</span>
+<span class="sd">        The selected configurations, in system order then configuration order.</span>
+<span class="sd">    """</span>
+    <span class="n">systems_spec</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source systems"</span><span class="p">,</span> <span class="s2">"current"</span><span class="p">)</span>
+    <span class="n">conf_how</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source configurations"</span><span class="p">,</span> <span class="s2">"current"</span><span class="p">)</span>
+    <span class="n">conf_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source configuration name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+
+    <span class="c1"># A variable holding a list: of configurations, or of systems.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">systems_spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">systems_spec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The variable given for the systems is empty."</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"system_db"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"atoms"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">items</span>  <span class="c1"># configurations</span>
+        <span class="n">systems</span> <span class="o">=</span> <span class="n">items</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">how</span> <span class="o">=</span> <span class="n">systems_spec</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"current"</span><span class="p">:</span>
+            <span class="n">systems</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">system_db</span><span class="o">.</span><span class="n">system</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">system_db</span><span class="o">.</span><span class="n">system</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+            <span class="n">systems</span> <span class="o">=</span> <span class="n">system_db</span><span class="o">.</span><span class="n">systems</span>
+        <span class="k">elif</span> <span class="n">how</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"name "</span><span class="p">):</span>
+            <span class="n">systems</span> <span class="o">=</span> <span class="n">_name_filter</span><span class="p">(</span>
+                <span class="n">system_db</span><span class="o">.</span><span class="n">systems</span><span class="p">,</span> <span class="n">how</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source system name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span> <span class="s2">"system"</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Do not understand how to select systems: '</span><span class="si">{</span><span class="n">how</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+
+    <span class="n">configurations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">system</span> <span class="ow">in</span> <span class="n">systems</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">system</span><span class="o">.</span><span class="n">n_configurations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"current"</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">configuration</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">configurations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+            <span class="n">configurations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">configurations</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"last"</span><span class="p">:</span>
+            <span class="n">configurations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">configurations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"first"</span><span class="p">:</span>
+            <span class="n">configurations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">configurations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">conf_how</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"name "</span><span class="p">):</span>
+            <span class="n">configurations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">_name_filter</span><span class="p">(</span>
+                    <span class="n">system</span><span class="o">.</span><span class="n">configurations</span><span class="p">,</span> <span class="n">conf_how</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">,</span> <span class="s2">"configuration"</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Do not understand how to select configurations: '</span><span class="si">{</span><span class="n">conf_how</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">errors</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configurations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"No structures matched the selection: systems '"</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">systems_spec</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">systems_spec</span><span class="p">,</span><span class="w"> </span><span class="nb">str</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'from variable'</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="o">+</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">" (name </span><span class="si">{</span><span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'source system name'</span><span class="p">,</span><span class="w"> </span><span class="s1">''</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)"</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">systems_spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">systems_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"name "</span><span class="p">)</span>
+                <span class="k">else</span> <span class="s2">""</span>
+            <span class="p">)</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">", configurations '</span><span class="si">{</span><span class="n">conf_how</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">" (name </span><span class="si">{</span><span class="n">conf_name</span><span class="si">!r}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">conf_how</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"name "</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">configurations</span></div>
+
+
+
+<div class="viewcode-block" id="structure_selection_description">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.standard_parameters.structure_selection_description">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">structure_selection_description</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A sentence describing which structures will be used, for description_text."""</span>
+    <span class="n">systems_spec</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source systems"</span><span class="p">,</span> <span class="s2">"current"</span><span class="p">)</span>
+    <span class="n">conf_how</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source configurations"</span><span class="p">,</span> <span class="s2">"current"</span><span class="p">)</span>
+    <span class="n">conf_name</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source configuration name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">systems_spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"The structures in the given variable will be used."</span>
+    <span class="n">how</span> <span class="o">=</span> <span class="n">systems_spec</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">how</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"$"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"The structures in the variable </span><span class="si">{</span><span class="n">how</span><span class="si">}</span><span class="s2"> will be used."</span>
+
+    <span class="k">if</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"current"</span><span class="p">:</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="s2">"the current configuration"</span>
+    <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="s2">"all configurations"</span>
+    <span class="k">elif</span> <span class="n">conf_how</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"last"</span><span class="p">,</span> <span class="s2">"first"</span><span class="p">):</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"the </span><span class="si">{</span><span class="n">conf_how</span><span class="si">}</span><span class="s2"> configuration"</span>
+    <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"name is"</span><span class="p">:</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"the configuration named '</span><span class="si">{</span><span class="n">conf_name</span><span class="si">}</span><span class="s2">'"</span>
+    <span class="k">elif</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"name matches"</span><span class="p">:</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"the configurations matching '</span><span class="si">{</span><span class="n">conf_name</span><span class="si">}</span><span class="s2">'"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">confs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"the configurations matching the regular expression '</span><span class="si">{</span><span class="n">conf_name</span><span class="si">}</span><span class="s2">'"</span>
+
+    <span class="n">sys_name</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"source system name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"current"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">conf_how</span> <span class="o">==</span> <span class="s2">"current"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"The current configuration of the current system will be used."</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">confs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}{</span><span class="n">confs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> of the current system will be used."</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">confs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}{</span><span class="n">confs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> of every system will be used."</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"name is"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">confs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}{</span><span class="n">confs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> of the system '</span><span class="si">{</span><span class="n">sys_name</span><span class="si">}</span><span class="s2">' will be used."</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">"name matches"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">confs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}{</span><span class="n">confs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> of the systems matching '</span><span class="si">{</span><span class="n">sys_name</span><span class="si">}</span><span class="s2">' "</span>
+            <span class="s2">"will be used."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">confs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}{</span><span class="n">confs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> of the systems matching the regular "</span>
+        <span class="sa">f</span><span class="s2">"expression '</span><span class="si">{</span><span class="n">sys_name</span><span class="si">}</span><span class="s2">' will be used."</span>
+    <span class="p">)</span></div>
 
 </pre></div>
 

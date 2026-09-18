@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_node &#8212; SEAMM 2026.9.18 documentation</title>
+    <title>seamm.tk_node &#8212; SEAMM 2026.9.18.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=4c890157"></script>
+    <script src="../../_static/documentation_options.js?v=a31f1ab7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.18" />
+  <meta name="docsearch:version" content="2026.9.18.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -992,6 +992,67 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="bp">self</span><span class="p">[</span><span class="s2">"keywords"</span><span class="p">]</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="s2">"yes"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"both"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">frame</span></div>
+
+
+<div class="viewcode-block" id="TkNode.create_structure_selection_widgets">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.create_structure_selection_widgets">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_structure_selection_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create the widgets for the standard structure-selection parameters.</span>
+
+<span class="sd">        The step's parameters must include</span>
+<span class="sd">        :data:`seamm.standard_parameters.structure_selection_parameters`. The</span>
+<span class="sd">        choice widgets are bound to ``reset_dialog`` so that the name fields can</span>
+<span class="sd">        be shown only when a name-based choice is made (see</span>
+<span class="sd">        :meth:`layout_structure_selection`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame : tk.Frame</span>
+<span class="sd">            The parent frame for the widgets.</span>
+<span class="sd">        """</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">seamm</span><span class="o">.</span><span class="n">standard_parameters</span><span class="o">.</span><span class="n">structure_selection_parameters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"source systems"</span><span class="p">,</span> <span class="s2">"source configurations"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;&lt;ComboboxSelected&gt;&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;Return&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">combobox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"&lt;FocusOut&gt;"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_dialog</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TkNode.layout_structure_selection">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.tk_node.TkNode.layout_structure_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">layout_structure_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Grid the structure-selection widgets, hiding the name fields unless a</span>
+<span class="sd">        name-based choice needs them.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        row : int = 0</span>
+<span class="sd">            The first row to use.</span>
+<span class="sd">        column : int = 0</span>
+<span class="sd">            The column for the choice widgets; the name fields go in the next</span>
+<span class="sd">            column, on the same row as their choice.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Passed to ``grid`` for the widgets, e.g. ``sticky``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (int, [widget])</span>
+<span class="sd">            The next free row, and the choice widgets, for label alignment.</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"sticky"</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">EW</span><span class="p">)</span>
+        <span class="n">widgets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">choice</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">"source systems"</span><span class="p">,</span> <span class="s2">"source system name"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"source configurations"</span><span class="p">,</span> <span class="s2">"source configuration name"</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">choice</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">choice</span><span class="p">])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">choice</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"name "</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_expr</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">row</span><span class="p">,</span> <span class="n">widgets</span></div>
 
 
 <div class="viewcode-block" id="TkNode.deactivate">
