@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.9.19 -- Bugfix: TkNode.previous_nodes() while editing a flowchart
+    * ``TkNode.previous_nodes()`` now follows the editor's own graph. While a
+      flowchart is being built the connections exist only there (the non-graphical
+      flowchart is rebuilt when the flowchart is saved or run), so a step's dialog
+      asking whether e.g. a Model Chemistry step precedes it saw nothing and showed
+      its "add a Model Chemistry step" reminder even when one was there.
+
 2026.9.18.1 -- Standard structure-selection parameters for plug-ins
     * Added ``seamm.standard_parameters.structure_selection_parameters``, a standard
       block a step can include to let the user choose which existing structures it

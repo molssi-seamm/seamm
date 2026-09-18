@@ -607,11 +607,31 @@ class TkNode(collections.abc.MutableMapping):
     def previous_nodes(self, node_type=None):
         """The nodes preceding this one in the flowchart, nearest first.
 
-        Identical to :meth:`seamm.Node.previous_nodes`, delegating to the
-        non-graphical node so the interface is the same whether called on a
-        graphical (Tk) or non-graphical node. Returns non-graphical nodes.
+        The same interface as :meth:`seamm.Node.previous_nodes`, returning
+        non-graphical nodes, but it follows the *graphical* flowchart's edges.
+        While a flowchart is being built in the editor the connections exist
+        only in the Tk graph -- the non-graphical flowchart is rebuilt from it
+        when the flowchart is saved or run -- so asking the non-graphical node
+        would miss every step added since the last save. Falls back to the
+        non-graphical node when this node is not (yet) in a Tk flowchart.
         """
-        return self.node.previous_nodes(node_type=node_type)
+        if self.tk_flowchart is None:
+            return self.node.previous_nodes(node_type=node_type)
+
+        nodes = []
+        tk_node = self
+        while tk_node is not None:
+            previous = None
+            for edge in self.tk_flowchart.edges(tk_node, direction="in"):
+                if edge.edge_type == "execution" and edge.edge_subtype == "next":
+                    previous = edge.node1
+                    break
+            tk_node = previous
+            if tk_node is not None:
+                nodes.append(tk_node.node)
+        if node_type is not None:
+            nodes = [node for node in nodes if isinstance(node, node_type)]
+        return nodes
 
     def edit(self):
         """Present a dialog for editing this step's parameters.
