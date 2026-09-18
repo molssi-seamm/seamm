@@ -1,6 +1,21 @@
 =======
 History
 =======
+2026.9.18.1 -- Standard structure-selection parameters for plug-ins
+    * Added ``seamm.standard_parameters.structure_selection_parameters``, a standard
+      block a step can include to let the user choose which existing structures it
+      works on -- the current system, all systems, or systems by name (is / matches /
+      regexp), and of each the current, all, last, first, or by-name configurations;
+      a variable holding a list of configurations or systems is also accepted. The
+      defaults are the current configuration of the current system.
+    * ``Node.select_configurations(P)`` (and the underlying
+      ``select_configurations(system_db, P)``) implements the selection once for all
+      plug-ins, with a clear error when nothing matches;
+      ``structure_selection_description(P)`` gives the sentence for the step
+      description; ``TkNode.create_structure_selection_widgets`` and
+      ``layout_structure_selection`` lay the block out uniformly, showing a name
+      field only when the choice needs one. Documented in the developer guide.
+
 2026.9.18 -- Bugfix: pip metadata lacked pyperclip; distutils import removed
     * ``pip install seamm`` did not install ``pyperclip``, which the flowchart
       editor's paste needs, so importing SEAMM outside a conda-forge environment

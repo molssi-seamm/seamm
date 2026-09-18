@@ -486,6 +486,61 @@ class TkNode(collections.abc.MutableMapping):
 
         return frame
 
+    def create_structure_selection_widgets(self, frame):
+        """Create the widgets for the standard structure-selection parameters.
+
+        The step's parameters must include
+        :data:`seamm.standard_parameters.structure_selection_parameters`. The
+        choice widgets are bound to ``reset_dialog`` so that the name fields can
+        be shown only when a name-based choice is made (see
+        :meth:`layout_structure_selection`).
+
+        Parameters
+        ----------
+        frame : tk.Frame
+            The parent frame for the widgets.
+        """
+        P = self.node.parameters
+        for key in seamm.standard_parameters.structure_selection_parameters:
+            self[key] = P[key].widget(frame)
+        for key in ("source systems", "source configurations"):
+            self[key].combobox.bind("<<ComboboxSelected>>", self.reset_dialog)
+            self[key].combobox.bind("<Return>", self.reset_dialog)
+            self[key].combobox.bind("<FocusOut>", self.reset_dialog)
+
+    def layout_structure_selection(self, row=0, column=0, **kwargs):
+        """Grid the structure-selection widgets, hiding the name fields unless a
+        name-based choice needs them.
+
+        Parameters
+        ----------
+        row : int = 0
+            The first row to use.
+        column : int = 0
+            The column for the choice widgets; the name fields go in the next
+            column, on the same row as their choice.
+        **kwargs
+            Passed to ``grid`` for the widgets, e.g. ``sticky``.
+
+        Returns
+        -------
+        (int, [widget])
+            The next free row, and the choice widgets, for label alignment.
+        """
+        kwargs.setdefault("sticky", tk.EW)
+        widgets = []
+        for choice, name in (
+            ("source systems", "source system name"),
+            ("source configurations", "source configuration name"),
+        ):
+            self[choice].grid(row=row, column=column, **kwargs)
+            widgets.append(self[choice])
+            value = self[choice].get()
+            if value.startswith("name ") or self.is_expr(value):
+                self[name].grid(row=row, column=column + 1, **kwargs)
+            row += 1
+        return row, widgets
+
     def deactivate(self):
         """Remove the decorations that indicate active anchor points"""
 
