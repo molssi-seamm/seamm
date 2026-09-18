@@ -1,7 +1,7 @@
 =======
 History
 =======
-2026.9.17.1 -- Bugfix: pip metadata lacked pyperclip; distutils import removed
+2026.9.18 -- Bugfix: pip metadata lacked pyperclip; distutils import removed
     * ``pip install seamm`` did not install ``pyperclip``, which the flowchart
       editor's paste needs, so importing SEAMM outside a conda-forge environment
       failed with ``No module named 'pyperclip'``. It is now an install requirement
