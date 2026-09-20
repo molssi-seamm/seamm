@@ -1,6 +1,16 @@
 =======
 History
 =======
+2026.9.20 -- Bugfix: a property with no units could stop a job
+    * A step storing its results could fail on a property that has no units, such as a
+      statistical inefficiency, if the property already existed in the database with its
+      units undefined rather than empty -- which was the case for any structure read
+      from a file written by an earlier job. The step warned that it could not save the
+      property, and for a property holding a vector, such as the stress, the job stopped
+      altogether. The two are now treated alike, so such a property is stored correctly.
+    * A property whose units cannot be converted now warns and carries on, as it already
+      did for single values, rather than stopping the job.
+
 2026.9.19 -- Bugfix: TkNode.previous_nodes() while editing a flowchart
     * ``TkNode.previous_nodes()`` now follows the editor's own graph. While a
       flowchart is being built the connections exist only there (the non-graphical
