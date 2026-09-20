@@ -2,6 +2,7 @@
 
 """Tests for seamm.Node helpers that don't need a full flowchart."""
 
+import logging
 from pathlib import Path
 
 import pytest
@@ -197,3 +198,113 @@ def test_model_setter_none_unchanged():
     node = _FakeModelNode()
     node.model = None
     assert node.model is None
+
+
+class _FakeParameter:
+    """Stand-in for a seamm.Parameter, which just holds the results dict."""
+
+    def __init__(self, value):
+        self.value = value
+
+
+class _FakeProperties:
+    """Minimal stand-in for molsystem's properties, with settable units."""
+
+    def __init__(self, units):
+        self._units = units
+        self.values = {}
+
+    def exists(self, name):
+        return name in self._units
+
+    def units(self, name):
+        return self._units[name]
+
+    def put(self, name, value):
+        self.values[name] = value
+
+
+class _FakeConfiguration:
+    def __init__(self, properties):
+        self.properties = properties
+
+
+class _FakeResultsNode:
+    """Just enough of a Node to call store_results() on."""
+
+    metadata = {
+        "results": {
+            "T,inefficiency": {
+                "description": "statistical inefficiency of the temperature",
+                "dimensionality": "scalar",
+                "property": "temperature, inefficiency#LAMMPS#{model}",
+                "type": "float",
+                "units": "",
+            },
+            "stress,inefficiency": {
+                "description": "statistical inefficiency of the stress",
+                "dimensionality": "[6]",
+                "property": "stress, inefficiency#LAMMPS#{model}",
+                "type": "json",
+                "units": "",
+            },
+            "T": {
+                "description": "temperature",
+                "dimensionality": "scalar",
+                "property": "temperature#LAMMPS#{model}",
+                "type": "float",
+                "units": "K",
+            },
+        }
+    }
+
+    def __init__(self, results):
+        self.parameters = {"results": _FakeParameter(results)}
+        self.model = "oplsaa+"
+        self.logger = logging.getLogger("test")
+
+
+def test_store_results_dimensionless_units_stored_as_null():
+    """Properties read from e.g. an SDF may have NULL units.
+
+    Those must compare equal to the "" in the step's metadata rather than being
+    handed to Pint, which raises. See the temperature/stress "inefficiency"
+    properties of the LAMMPS step.
+    """
+    results = {
+        "T,inefficiency": {"property": "temperature, inefficiency#LAMMPS#{model}"},
+        "stress,inefficiency": {"property": "stress, inefficiency#LAMMPS#{model}"},
+    }
+    properties = _FakeProperties(
+        {
+            "temperature, inefficiency#LAMMPS#oplsaa+": None,
+            "stress, inefficiency#LAMMPS#oplsaa+": None,
+        }
+    )
+    node = _FakeResultsNode(results)
+    data = {
+        "T,inefficiency": 3.5,
+        "stress,inefficiency": [1.0, 2.0, 3.0, 0.0, 0.0, 0.0],
+    }
+
+    seamm.Node.store_results(
+        node, configuration=_FakeConfiguration(properties), data=data
+    )
+
+    assert properties.values == {
+        "temperature, inefficiency#LAMMPS#oplsaa+": 3.5,
+        "stress, inefficiency#LAMMPS#oplsaa+": [1.0, 2.0, 3.0, 0.0, 0.0, 0.0],
+    }
+
+
+def test_store_results_still_converts_units():
+    """The normalization must not break a real unit conversion."""
+    results = {"T": {"property": "temperature#LAMMPS#{model}"}}
+    properties = _FakeProperties({"temperature#LAMMPS#oplsaa+": "degC"})
+    node = _FakeResultsNode(results)
+
+    seamm.Node.store_results(
+        node, configuration=_FakeConfiguration(properties), data={"T": 298.15}
+    )
+
+    assert properties.values["temperature#LAMMPS#oplsaa+"] == pytest.approx(25.0)

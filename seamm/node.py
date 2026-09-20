@@ -1291,10 +1291,18 @@ class Node(collections.abc.Hashable):
                     # May need to convert units to those for this property.
                     if "units" in result_metadata:
                         current_units = result_metadata["units"]
+                        # Dimensionless properties are stored either as "" or as
+                        # None (NULL) in the database, depending on how they were
+                        # created. Normalize so they compare equal and are never
+                        # handed to Pint as None.
+                        if units is None:
+                            units = ""
+                        if current_units is None:
+                            current_units = ""
                         if units != current_units:
                             if result_metadata["dimensionality"] == "scalar":
-                                tmp = Q_(data[key], current_units)
                                 try:
+                                    tmp = Q_(data[key], current_units)
                                     properties.put(_property, tmp.m_as(units))
                                 except Exception as e:
                                     if printer is not None:
@@ -1310,9 +1318,9 @@ class Node(collections.abc.Hashable):
                                             f"            {e}"
                                         )
                             else:
-                                factor = Q_(1, current_units).m_as(units)
-                                tmp = scale(data[key], factor)
                                 try:
+                                    factor = Q_(1, current_units).m_as(units)
+                                    tmp = scale(data[key], factor)
                                     properties.put(_property, tmp)
                                 except Exception as e:
                                     if printer is not None:
