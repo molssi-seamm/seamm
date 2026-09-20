@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.9.19 documentation</title>
+    <title>History &#8212; SEAMM 2026.9.20 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=e8f1854e"></script>
+    <script src="_static/documentation_options.js?v=c24a4294"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.19" />
+  <meta name="docsearch:version" content="2026.9.20" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.9.20 – Bugfix: a property with no units could stop a job</dt><dd><ul class="simple">
+<li><p>A step storing its results could fail on a property that has no units, such as a
+statistical inefficiency, if the property already existed in the database with its
+units undefined rather than empty – which was the case for any structure read
+from a file written by an earlier job. The step warned that it could not save the
+property, and for a property holding a vector, such as the stress, the job stopped
+altogether. The two are now treated alike, so such a property is stored correctly.</p></li>
+<li><p>A property whose units cannot be converted now warns and carries on, as it already
+did for single values, rather than stopping the job.</p></li>
+</ul>
+</dd>
 <dt>2026.9.19 – Bugfix: TkNode.previous_nodes() while editing a flowchart</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TkNode.previous_nodes()</span></code> now follows the editor’s own graph. While a
 flowchart is being built the connections exist only there (the non-graphical
