@@ -1,6 +1,13 @@
 =======
 History
 =======
+2026.9.25 -- Bugfix: right-click did nothing in the flowchart editor with Tk 9
+    * On macOS the flowchart editor listened for the right mouse button as Tk 8.6
+      numbers it. Tk 9, which Python builds are starting to ship with, numbers the
+      right button the same way on every platform, so under Tk 9 the context menu
+      (edit, delete, ...) never appeared. The editor now accepts either numbering, so
+      it works with both Tk 8.6 and Tk 9.
+
 2026.9.20 -- Bugfix: a property with no units could stop a job
     * A step storing its results could fail on a property that has no units, such as a
       statistical inefficiency, if the property already existed in the database with its
