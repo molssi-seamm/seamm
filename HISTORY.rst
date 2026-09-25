@@ -1,6 +1,12 @@
 =======
 History
 =======
+2026.9.25.1 -- Internal: drop an unused dependency on seamm-datastore
+    * seamm listed seamm-datastore as a requirement but never imports it; the
+      datastore is used by seamm-exec and the web interface. Removing the
+      requirement changes nothing for a normal installation, which installs all
+      the SEAMM packages anyway.
+
 2026.9.25 -- Bugfix: right-click did nothing in the flowchart editor with Tk 9
     * On macOS the flowchart editor listened for the right mouse button as Tk 8.6
       numbers it. Tk 9, which Python builds are starting to ship with, numbers the

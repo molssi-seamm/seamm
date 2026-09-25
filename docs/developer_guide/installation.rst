@@ -12,22 +12,22 @@ To install the SEAMM module, run this command in your terminal:
 
 .. code-block:: console
 
-    $ conda install -c conda-forge seamm
-
-This is the preferred method to install SEAMM, as it will always install the most recent
-stable release, and also installs other dependencies, including those that are compile
-code, not Python.
-
-It can also be installed using `pip`_; however, pip cannot install all the dependencies,
-so this will not work unless they are installed in another way.
-
-.. code-block:: console
-
     $ pip install seamm
+
+This installs the most recent stable release and every dependency, including the
+compiled ones (RDKit and Open Babel, via molsystem), from their PyPI wheels. The one
+thing pip cannot supply is the Python interpreter itself with ``tkinter``, which the
+graphical editor needs; use a Python from python.org, uv, or conda-forge. A
+conda-forge ``seamm`` package also exists but lags the PyPI release, and the two
+should not be mixed in one environment.
+
+For a complete SEAMM installation, with all the plug-ins and the external codes they
+drive, use the `SEAMM installer`_ rather than installing packages by hand.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
 
+.. _SEAMM installer: https://molssi-seamm.github.io/installation/index.html
 .. _pip: https://pip.pypa.io
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
