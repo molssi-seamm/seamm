@@ -170,10 +170,12 @@ class TkFlowchart(object):
         self.canvas.bind("<Motion>", self.mouse_motion)
         self.canvas.bind("<ButtonPress-1>", self.click)
         self.canvas.bind("<Double-ButtonPress-1>", self.double_click)
+        # Tk 8.6 on macOS reports the right mouse button as button 2; Tk 9
+        # numbers it 3 on every platform (2 is then the middle button). Bind
+        # both on macOS so the context menu works with either Tk.
+        self.canvas.bind("<ButtonPress-3>", self.right_click)
         if sys.platform.startswith("darwin"):
             self.canvas.bind("<ButtonPress-2>", self.right_click)
-        else:
-            self.canvas.bind("<ButtonPress-3>", self.right_click)
 
         logger.debug("Finished initializing tk_flowchart")
 
