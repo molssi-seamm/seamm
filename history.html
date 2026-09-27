@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.9.25.1 documentation</title>
+    <title>History &#8212; SEAMM 2026.9.27 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=c1ec65af"></script>
+    <script src="_static/documentation_options.js?v=09c3d259"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.25.1" />
+  <meta name="docsearch:version" content="2026.9.27" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.9.27 – Data, dashboards and flowcharts follow the installation</dt><dd><ul class="simple">
+<li><p>Data files such as <code class="docutils literal notranslate"><span class="pre">local:</span></code> forcefields were looked up only in <code class="docutils literal notranslate"><span class="pre">~/SEAMM/data</span></code>
+(after the user’s <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/data</span></code>). They are now looked up in the <code class="docutils literal notranslate"><span class="pre">data</span></code>
+directory of the SEAMM installation in use first, then in <code class="docutils literal notranslate"><span class="pre">~/SEAMM/data</span></code>, so a
+second installation such as <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> can have its own data and still sees
+the default installation’s.</p></li>
+<li><p>The list of dashboards is read from the installation’s <code class="docutils literal notranslate"><span class="pre">dashboards.ini</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">~/SEAMM/dashboards.ini</span></code> if it has none. The <code class="docutils literal notranslate"><span class="pre">dashboards</span></code> option was never
+honoured before, because of a lookup in the wrong place; it is now.</p></li>
+<li><p>The Open dialog’s default folder for flowcharts follows the installation in the
+same way.</p></li>
+<li><p>Requires seamm-util 2026.9.27.1.</p></li>
+</ul>
+</dd>
 <dt>2026.9.25.1 – Internal: drop an unused dependency on seamm-datastore</dt><dd><ul class="simple">
 <li><p>seamm listed seamm-datastore as a requirement but never imports it; the
 datastore is used by seamm-exec and the web interface. Removing the
