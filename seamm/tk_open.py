@@ -171,7 +171,7 @@ class TkOpen(collections.abc.MutableMapping):
 
         if not self.config.has_option("SEAMM open", "source"):
             self.config.set("SEAMM open", "source", "local files")
-            path = Path("~/SEAMM/flowcharts").expanduser()
+            path = seamm_util.installation_path("flowcharts")
             path.mkdir(parents=True, exist_ok=True)
         source = self.config.get("SEAMM open", "source")
 
@@ -186,9 +186,11 @@ class TkOpen(collections.abc.MutableMapping):
         # For local files, a directory to start from
         if not self.config.has_option("SEAMM open", "directory"):
             self.config.set(
-                "SEAMM open", "directory", json.dumps(["~/SEAMM/flowcharts"])
+                "SEAMM open",
+                "directory",
+                json.dumps([str(seamm_util.installation_path("flowcharts"))]),
             )
-            path = Path("~/SEAMM/flowcharts").expanduser()
+            path = seamm_util.installation_path("flowcharts")
             path.mkdir(parents=True, exist_ok=True)
         directories = json.loads(self.config.get("SEAMM open", "directory"))
         directory = directories[0]

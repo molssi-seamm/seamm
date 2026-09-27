@@ -110,17 +110,20 @@ class Flowchart(object):
     @in_jobserver.setter
     def in_jobserver(self, value):
         self._in_jobserver = value
+        # The user's personal data, then the installation's (its root), then the
+        # default installation's in ~/SEAMM, which a second installation such as
+        # ~/SEAMM_DEV shares unless it has its own copy.
+        local = [Path.home() / ".seamm.d" / "data"]
+        root_data = seamm_util.current_root() / "data"
+        default_data = Path.home() / "SEAMM" / "data"
+        local.append(root_data)
+        if default_data != root_data:
+            local.append(default_data)
         if value:
-            self._data_path = [
-                Path(self.root_directory) / "data",
-                Path.home() / ".seamm.d" / "data",
-                Path.home() / "SEAMM" / "data",
-            ]  # path for local data in JobServer
+            # path for local data in JobServer: the job's own data first
+            self._data_path = [Path(self.root_directory) / "data", *local]
         else:
-            self._data_path = [
-                Path.home() / ".seamm.d" / "data",
-                Path.home() / "SEAMM" / "data",
-            ]  # path for local data on local machine
+            self._data_path = local  # path for local data on local machine
 
     @property
     def is_development(self):
