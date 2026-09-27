@@ -1,6 +1,19 @@
 =======
 History
 =======
+2026.9.27 -- Data, dashboards and flowcharts follow the installation
+    * Data files such as ``local:`` forcefields were looked up only in ``~/SEAMM/data``
+      (after the user's ``~/.seamm.d/data``). They are now looked up in the ``data``
+      directory of the SEAMM installation in use first, then in ``~/SEAMM/data``, so a
+      second installation such as ``~/SEAMM_DEV`` can have its own data and still sees
+      the default installation's.
+    * The list of dashboards is read from the installation's ``dashboards.ini``, or
+      ``~/SEAMM/dashboards.ini`` if it has none. The ``dashboards`` option was never
+      honoured before, because of a lookup in the wrong place; it is now.
+    * The Open dialog's default folder for flowcharts follows the installation in the
+      same way.
+    * Requires seamm-util 2026.9.27.1.
+
 2026.9.25.1 -- Internal: drop an unused dependency on seamm-datastore
     * seamm listed seamm-datastore as a requirement but never imports it; the
       datastore is used by seamm-exec and the web interface. Removing the

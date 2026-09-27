@@ -79,12 +79,16 @@ class DashboardHandler(object):
         self.resource_path = importlib.resources.files("seamm") / "data"
 
         # Get the location of the dashboards configuration file
+        # (The installation's own dashboards.ini, else the default installation's.)
         parser = seamm_util.seamm_parser()
-        options = parser.get_options()
-        if "dashboards" in options:
+        try:
+            options = parser.get_options("SEAMM")
+        except KeyError:  # not parsed yet
+            options = {}
+        if options.get("dashboards"):
             self.configfile = Path(options["dashboards"]).expanduser()
         else:
-            self.configfile = Path.home() / "SEAMM" / "dashboards.ini"
+            self.configfile = seamm_util.installation_path("dashboards.ini")
 
         # Create the file if it doesn't exist
         if not self.configfile.exists():
