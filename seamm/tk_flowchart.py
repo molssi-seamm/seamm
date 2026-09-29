@@ -63,6 +63,61 @@ def grey(value):
     return 255 - (255 - value) * 0.1
 
 
+def place_unpositioned(nodes, edges, grid_x=300, grid_y=70, w=200, h=50):
+    """Give nodes that have no position one, so that they can be drawn.
+
+    A flowchart written by a script or another program may have nodes without the
+    x, y, w and h of the graphical display. Each such node is put one row below
+    the node leading into it, in the same column. If that place is taken, the
+    nodes from there down in that column move down a row, as when a step is
+    inserted by hand. A node with no placed node leading into it goes below the
+    lowest node.
+
+    Parameters
+    ----------
+    nodes : [object]
+        The nodes, with attributes x, y, w and h (None when not set).
+    edges : [(object, object)]
+        The connections, from node to node, in the flowchart's order.
+    grid_x, grid_y : float
+        The width of a column and height of a row.
+    w, h : float
+        The size to give nodes that have none.
+    """
+    for node in nodes:
+        if node.w is None:
+            node.w = w
+        if node.h is None:
+            node.h = h
+    placed = [n for n in nodes if n.x is not None and n.y is not None]
+    todo = [n for n in nodes if n not in placed]
+    sources = {}
+    for u, v in edges:
+        sources.setdefault(id(v), []).append(u)
+
+    def put(node, x, y):
+        if any(abs(o.x - x) < 1 and abs(o.y - y) < 1 for o in placed):
+            for o in placed:
+                if abs(o.x - x) < 1 and o.y >= y - 1:
+                    o.y += grid_y
+        node.x, node.y = x, y
+        placed.append(node)
+
+    progress = True
+    while todo and progress:
+        progress = False
+        for node in list(todo):
+            before = [u for u in sources.get(id(node), []) if u in placed]
+            if before:
+                put(node, before[0].x, before[0].y + grid_y)
+                todo.remove(node)
+                progress = True
+    for node in todo:
+        x = placed[0].x if placed else grid_x / 2
+        y = max((o.y for o in placed), default=-grid_y / 2) + grid_y
+        put(node, x, y)
+
+
 class TkFlowchart(object):
     def __init__(self, master=None, flowchart=None, namespace="org.molssi.seamm.tk"):
         """Initialize a Flowchart object
@@ -1270,6 +1325,7 @@ class TkFlowchart(object):
         # Add all the non-graphical nodes, making copies so that
         # when the flowchart is cleared our objects still exist
         translate = {}
+        new_nodes = []
         for node in wf:
             extension = node.extension
             if extension is None:
@@ -1286,7 +1342,17 @@ class TkFlowchart(object):
                 translate[node] = tk_node
                 tk_node.from_flowchart()
                 self.graph.add_node(tk_node)
-                tk_node.draw()
+                new_nodes.append(tk_node)
+
+        # Nodes made outside the editor (e.g. by a script) may have no position.
+        place_unpositioned(
+            list(translate.values()),
+            [(translate[e.node1], translate[e.node2]) for e in wf.edges()],
+            self.grid_x,
+            self.grid_y,
+        )
+        for tk_node in new_nodes:
+            tk_node.draw()
 
         # And the edges
         for edge in wf.edges():

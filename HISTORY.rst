@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.9.29 -- Bugfix: flowcharts with steps that have no position now open
+    * Opening a flowchart in which a step had no position on the canvas -- one written
+      by a script or another program rather than the editor -- failed with
+      "TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'". Such
+      steps are now placed below the step leading into them, moving the steps below
+      down a row as when a step is inserted by hand, in the flowchart and in the
+      sub-flowcharts of steps such as LAMMPS.
+
 2026.9.27 -- Data, dashboards and flowcharts follow the installation
     * Data files such as ``local:`` forcefields were looked up only in ``~/SEAMM/data``
       (after the user's ``~/.seamm.d/data``). They are now looked up in the ``data``
