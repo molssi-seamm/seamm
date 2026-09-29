@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.9.27 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.9.29 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=09c3d259"></script>
+    <script src="../_static/documentation_options.js?v=45a1f582"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.27" />
+  <meta name="docsearch:version" content="2026.9.29" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -2892,6 +2892,30 @@ posting an action menu</p>
 <span class="sig-prename descclassname"><span class="pre">seamm.tk_flowchart.</span></span><span class="sig-name descname"><span class="pre">grey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_flowchart.html#grey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_flowchart.grey" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.tk_flowchart.place_unpositioned">
+<span class="sig-prename descclassname"><span class="pre">seamm.tk_flowchart.</span></span><span class="sig-name descname"><span class="pre">place_unpositioned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_flowchart.html#place_unpositioned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_flowchart.place_unpositioned" title="Link to this definition">#</a></dt>
+<dd><p>Give nodes that have no position one, so that they can be drawn.</p>
+<p>A flowchart written by a script or another program may have nodes without the
+x, y, w and h of the graphical display. Each such node is put one row below
+the node leading into it, in the same column. If that place is taken, the
+nodes from there down in that column move down a row, as when a step is
+inserted by hand. A node with no placed node leading into it goes below the
+lowest node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> (<em>[</em><em>object</em><em>]</em>) – The nodes, with attributes x, y, w and h (None when not set).</p></li>
+<li><p><strong>edges</strong> (<em>[</em><em>(</em><em>object</em><em>, </em><em>object</em><em>)</em><em>]</em>) – The connections, from node to node, in the flowchart’s order.</p></li>
+<li><p><strong>grid_x</strong> (<em>float</em>) – The width of a column and height of a row.</p></li>
+<li><p><strong>grid_y</strong> (<em>float</em>) – The width of a column and height of a row.</p></li>
+<li><p><strong>w</strong> (<em>float</em>) – The size to give nodes that have none.</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – The size to give nodes that have none.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-seamm.tk_job_handler">
 <span id="seamm-tk-job-handler-module"></span><h2>seamm.tk_job_handler module<a class="headerlink" href="#module-seamm.tk_job_handler" title="Link to this heading">#</a></h2>
@@ -4450,6 +4474,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.grey"><code class="docutils literal notranslate"><span class="pre">grey()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_flowchart.place_unpositioned"><code class="docutils literal notranslate"><span class="pre">place_unpositioned()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_job_handler">seamm.tk_job_handler module</a><ul class="pst-show_toc_level nav section-nav flex-column">
