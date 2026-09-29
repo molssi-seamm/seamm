@@ -794,6 +794,7 @@ class TkNode(collections.abc.MutableMapping):
         # Add all the non-graphical nodes, making copies so that
         # when the flowchart is cleared our objects still exist
         translate = {}
+        new_nodes = []
         for node in self.node.subflowchart:
             extension = node.extension
             if extension is None:
@@ -812,7 +813,20 @@ class TkNode(collections.abc.MutableMapping):
                 translate[node] = tk_node
                 tk_node.from_flowchart()
                 self.tk_subflowchart.graph.add_node(tk_node)
-                tk_node.draw()
+                new_nodes.append(tk_node)
+
+        # Nodes made outside the editor (e.g. by a script) may have no position.
+        seamm.tk_flowchart.place_unpositioned(
+            list(translate.values()),
+            [
+                (translate[e.node1], translate[e.node2])
+                for e in self.node.subflowchart.edges()
+            ],
+            self.tk_subflowchart.grid_x,
+            self.tk_subflowchart.grid_y,
+        )
+        for tk_node in new_nodes:
+            tk_node.draw()
 
         # And the edges
         for edge in self.node.subflowchart.edges():
