@@ -1,7 +1,9 @@
 2026-09-30 -- Building flowcharts programmatically, and flowchart format 3.0
 ============================================================================
 
-Status (2026-09-30): **phase 1 done (committed on dev, not released).** Q1, Q4 and Q7 decided by Paul
+Status (2026-09-30): **phases 0-2 done; phase 3 in progress** -- SEAMM_DEV writes 3.0
+and has been migrated (``NOTES_phase3.rst``); the switch for other installations,
+Zenodo and releases remain. Nothing pushed. Q1, Q4 and Q7 decided by Paul
 (``seamm`` core; keep ``.flow``; rename originals in job directories). The decisions
 reached in discussion are recorded under *Decided*; the ones still open are under *Open
 questions* and are Paul's.
