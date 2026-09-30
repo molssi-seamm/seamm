@@ -79,6 +79,7 @@ setup(
     entry_points={
         'console_scripts': [
             'seamm=seamm.__main__:flowchart',
+            'seamm-flowchart=seamm.flowchart_cli:main',
         ],
         'org.molssi.seamm': [
             'Join = seamm:JoinStep',

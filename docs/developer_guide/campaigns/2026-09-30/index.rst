@@ -1,7 +1,7 @@
 2026-09-30 -- Building flowcharts programmatically, and flowchart format 3.0
 ============================================================================
 
-Status (2026-09-30): **phase 0 done; no code yet.** Q1, Q4 and Q7 decided by Paul
+Status (2026-09-30): **phase 1 done (committed on dev, not released).** Q1, Q4 and Q7 decided by Paul
 (``seamm`` core; keep ``.flow``; rename originals in job directories). The decisions
 reached in discussion are recorded under *Decided*; the ones still open are under *Open
 questions* and are Paul's.
@@ -12,6 +12,11 @@ from the parameters. The one legacy exception that needs handling is lammps_step
 Minimization before 2025.3.16 (settings kept as attributes; 11 nodes, 2 of them
 non-default), mapped by the converter. TinkerCliffs holds about 53,000 job copies of 56
 flowcharts, so migration converts by content hash.
+
+**Phase 1 result** (``NOTES_phase1.rst``): ``seamm.catalog``, ``seamm.builder``,
+``seamm.layout`` and the ``seamm-flowchart`` command; a built loop flowchart ran and
+opened unchanged in the editor. Found that ``Flowchart.digest()`` stops at the first
+loop, so the datastore can link a job to the wrong flowchart (not fixed; Paul's call).
 
 Contents:
 
@@ -158,8 +163,9 @@ Decided (2026-09-30 discussion)
 - **Conversion keeps what was recorded.** A converted job flowchart keeps the versions
   and values it ran with; it is never "refreshed" with current plug-ins or defaults.
 - **The spec is never executed.** It always resolves to a 3.0 flowchart first (see Q3).
-- **The code lives in** ``seamm`` **core** (Q1): ``seamm/builder/``, the 3.0 reader and
-  writer, and a ``seamm-flowchart`` console script.
+- **The code lives in** ``seamm`` **core** (Q1): ``seamm/catalog.py``,
+  ``seamm/builder.py``, ``seamm/layout.py``, the 3.0 reader and writer, and a
+  ``seamm-flowchart`` console script (``seamm/flowchart_cli.py``).
 - **Format 3.0 keeps the** ``.flow`` **extension** (Q4); readers detect the format from
   the content (``format: MolSSI flowchart 3.0`` vs the ``!MolSSI flowchart 2.0`` line).
 
@@ -234,6 +240,10 @@ A resolved flowchart (format 3.0):
 
 D2. Digest for format 3.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Phase 1 found that today's ``Flowchart.digest()`` stops at the first loop (it follows
+only ``next`` edges), so it ignores loop bodies and everything after a loop. The new
+digest must walk the whole step tree.
 
 Redefine the digest from the resolved content rather than Python's ``str()`` of a dict:
 SHA-256 of a canonical JSON serialization (sorted keys, no whitespace) of the step tree
@@ -450,10 +460,11 @@ the plug-ins that use them, with the minimum version pinned.
 parameters are settings; one legacy map for the converter; inventory of every machine's
 datastore.
 
-**Phase 1 -- Catalog and builder.** D5, D6 with per-parameter and flow-level validation
-(D9 phase 1), writing through today's ``Flowchart.write()`` (format 2.0), so nothing
-downstream changes. Test: build ``Testing/test.flow``'s equivalent from Python, open it
-in the editor, run it.
+**Phase 1 -- Catalog and builder.** *Done 2026-09-30* (``NOTES_phase1.rst``). D5, D6
+with per-parameter and flow-level validation (D9 phase 1), writing through today's
+``Flowchart.write()`` (format 2.0). Tested by building ``Testing/builder_loop.flow``,
+running it, and opening it in the editor; ``test.flow``'s structure was rebuilt but not
+run (its ORCA DLPNO-CCSD(T) optimization is too expensive for a check).
 
 **Phase 2 -- Format 3.0.** D1-D4 and D8: the 3.0 reader and writer (parameters only,
 rebuilding ``node.tables`` on load), the new digest, spec resolution and reduction, the headless layout. Test:
