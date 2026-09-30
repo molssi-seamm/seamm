@@ -151,6 +151,9 @@ Findings
    gives a text column ``StringDtype``, so the column is missing from ``column_types``
    and the step raises ``KeyError``. ``~/SEAMM/venv`` and ``~/SEAMM_DEV/venv`` both have
    pandas 3.0.6 (the old conda ``seamm-dev`` has 2.2.3, which is why it worked there).
-   Not fixed; a one-line fix is ``pandas.api.types.is_string_dtype``.
+   **Fixed 2026-09-30** on table_step's ``dev`` (d36200b, not yet released): types
+   now come from the kind of dtype; regression flowchart (built with this builder) in
+   ``table_step/tests/flowcharts/append_text_rows.flow``; job 3977's flowchart reran
+   cleanly in SEAMM_DEV as job 3980.
 8. **The ``WebUI-Dev`` entry in ``~/.seamm.d/seammrc`` is stale**: the web UI on port
    55155 rejects its username or password (401); the ``dev`` entry's credentials work.
