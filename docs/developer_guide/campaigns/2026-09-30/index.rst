@@ -172,6 +172,10 @@ Decided (2026-09-30 discussion)
 - **The code lives in** ``seamm`` **core** (Q1): ``seamm/catalog.py``,
   ``seamm/builder.py``, ``seamm/layout.py``, the 3.0 reader and writer, and a
   ``seamm-flowchart`` console script (``seamm/flowchart_cli.py``).
+- **Unconnected steps are kept, outside the digest** (Paul, 2026-09-30). Steps the
+  editor shows but that are not connected to the flowchart (316 in 219 of 1,320 files)
+  go in an ``unconnected:`` section of a 3.0 file, at each level; they are not part of
+  ``sha256`` or ``sha256_strict``, and specs leave them out since they never run.
 - **Format 3.0 keeps the** ``.flow`` **extension** (Q4); readers detect the format from
   the content (``format: MolSSI flowchart 3.0`` vs the ``!MolSSI flowchart 2.0`` line).
 
