@@ -10,6 +10,13 @@
     seamm-flowchart build spec.yaml -o my.flow [--format 3.0]
     seamm-flowchart show my.flow                 # as a spec
     seamm-flowchart convert my.flow -o my3.flow [--format 3.0]
+    seamm-flowchart tree my.flow                 # steps and their addresses
+    seamm-flowchart set my.flow ORCA/Energy basis=def2-TZVP
+    seamm-flowchart insert my.flow Energy method=MP2 --after ORCA/Optimization
+    seamm-flowchart remove my.flow 3.2
+    seamm-flowchart move my.flow 4 --before 2
+    seamm-flowchart validate my.flow
+    seamm-flowchart migrate --root ~/SEAMM_DEV [--apply]
 """
 
 import argparse
@@ -199,6 +206,121 @@ def migrate(args):
     return 0
 
 
+def _assignments(items):
+    """Parameter values from 'name=value' words; values are read as YAML."""
+    from .format3 import load_yaml
+
+    params = {}
+    for item in items or []:
+        if "=" not in item:
+            raise ValueError(f"'{item}' is not name=value")
+        name, text = item.split("=", 1)
+        try:
+            value = load_yaml(text) if text.strip() != "" else ""
+        except Exception:
+            value = text
+        if value is None:
+            value = ""
+        params[name.strip()] = value
+    return params
+
+
+def _edit(args, action):
+    """Read the flowchart, make an edit, and write it back (or to --output)."""
+    from . import edit
+
+    try:
+        flowchart = edit.read(args.flowchart)
+    except Exception as e:
+        print(f"Could not read {args.flowchart}: {e}", file=sys.stderr)
+        return 1
+    try:
+        message = action(edit, flowchart)
+    except (edit.EditError, ValueError, KeyError) as e:
+        print(str(e).strip('"'), file=sys.stderr)
+        return 1
+    output = args.output or args.flowchart
+    _write_output(flowchart.to_text(format=args.format), output)
+    if message:
+        print(message)
+    return 0
+
+
+def tree(args):
+    """List the steps of a flowchart with their addresses."""
+    from . import edit
+
+    try:
+        flowchart = edit.read(args.flowchart)
+    except Exception as e:
+        print(f"Could not read {args.flowchart}: {e}", file=sys.stderr)
+        return 1
+    print("\n".join(edit.tree(flowchart)))
+    return 0
+
+
+def set_command(args):
+    """Set parameters of a step."""
+    return _edit(
+        args,
+        lambda edit, fc: edit.set_parameters(fc, args.step, _assignments(args.values))
+        and None,
+    )
+
+
+def insert_command(args):
+    """Insert a step."""
+
+    def action(edit, flowchart):
+        address = edit.insert(
+            flowchart,
+            args.new_step,
+            _assignments(args.values),
+            after=args.after,
+            before=args.before,
+            into=args.into,
+        )
+        return f"Inserted {args.new_step} as step {address}"
+
+    return _edit(args, action)
+
+
+def remove_command(args):
+    """Remove a step."""
+    return _edit(args, lambda edit, fc: edit.remove(fc, args.step) and None)
+
+
+def move_command(args):
+    """Move a step."""
+
+    def action(edit, flowchart):
+        address = edit.move(
+            flowchart, args.step, after=args.after, before=args.before, into=args.into
+        )
+        return f"Moved it to step {address}"
+
+    return _edit(args, action)
+
+
+def validate_command(args):
+    """Check a flowchart."""
+    from . import edit
+
+    try:
+        flowchart = edit.read(args.flowchart)
+    except Exception as e:
+        problems = [f"Could not read the flowchart: {e}"]
+    else:
+        problems = edit.validate(flowchart)
+    if args.json:
+        print(json.dumps({"valid": not problems, "problems": problems}, indent=4))
+    elif problems:
+        print("\n".join(problems))
+    else:
+        print("No problems found.")
+    return 1 if problems else 0
+
+
 def main(argv=None):
     """The seamm-flowchart command."""
     parser = argparse.ArgumentParser(
@@ -254,6 +376,58 @@ def main(argv=None):
     )
     p.set_defaults(func=convert)
 
+    p = subparsers.add_parser("tree", help="List a flowchart's steps and addresses")
+    p.add_argument("flowchart", help="The flowchart, or - for standard input")
+    p.set_defaults(func=tree)
+
+    def editing(p):
+        p.add_argument("flowchart", help="The flowchart to edit")
+        p.add_argument(
+            "-o", "--output", help="Write here instead of back to the flowchart"
+        )
+        p.add_argument(
+            "--format", default="3.0", choices=["2.0", "3.0"], help="Flowchart format"
+        )
+
+    def where(p):
+        group = p.add_mutually_exclusive_group()
+        group.add_argument("--after", help="After this step")
+        group.add_argument("--before", help="Before this step")
+        group.add_argument(
+            "--into", help="At the end of this loop's body or step's sub-steps"
+        )
+
+    p = subparsers.add_parser("set", help="Set parameters of a step")
+    editing(p)
+    p.add_argument("step", help="The step, e.g. 3.2 or ORCA/Energy")
+    p.add_argument("values", nargs="+", help="name=value (value is YAML)")
+    p.set_defaults(func=set_command)
+
+    p = subparsers.add_parser("insert", help="Insert a step")
+    editing(p)
+    p.add_argument("new_step", help="The step to insert, e.g. Energy")
+    p.add_argument("values", nargs="*", help="name=value (value is YAML)")
+    where(p)
+    p.set_defaults(func=insert_command)
+
+    p = subparsers.add_parser("remove", help="Remove a step (and steps inside it)")
+    editing(p)
+    p.add_argument("step", help="The step, e.g. 3.2 or ORCA/Energy")
+    p.set_defaults(func=remove_command)
+
+    p = subparsers.add_parser("move", help="Move a step (and steps inside it)")
+    editing(p)
+    p.add_argument("step", help="The step, e.g. 3.2 or ORCA/Energy")
+    where(p)
+    p.set_defaults(func=move_command)
+
+    p = subparsers.add_parser(
+        "validate", help="Check a flowchart's structure and values"
+    )
+    p.add_argument("flowchart", help="The flowchart, or - for standard input")
+    p.add_argument("--json", action="store_true", help="Output JSON")
+    p.set_defaults(func=validate_command)
+
     p = subparsers.add_parser(
         "migrate",
         help="Migrate an installation's jobs and datastore to format 3.0 "
@@ -271,8 +445,11 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=args.log_level)
-    # The plug-ins log a lot while loading; keep it quiet unless asked.
+    # The plug-ins log a lot while loading, and some set their own loggers to DEBUG;
+    # keep it quiet unless asked.
     logging.getLogger().setLevel(args.log_level)
+    for handler in logging.getLogger().handlers:
+        handler.setLevel(args.log_level)
     return args.func(args)
 
 
