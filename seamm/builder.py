@@ -161,6 +161,22 @@ def check_value(parameter, value, name="parameter", units=None):
             )
 
     if is_expression(value):
+        if value[0] == "=":
+            # A Python expression, evaluated with the variables as bare names. Check
+            # the syntax now rather than when the job runs.
+            try:
+                compile(value[1:], "<expression>", "eval")
+            except SyntaxError as e:
+                text = (
+                    f"The expression {value!r} for '{name}' is not valid Python: "
+                    f"{e.msg}"
+                )
+                if "$" in value:
+                    text += (
+                        ". In an '=' expression, use variables by their bare names, "
+                        "e.g. '=2 * n' rather than '=2 * $n'"
+                    )
+                raise FlowchartBuildError(text)
         return value, units
 
     # A Python bool for a yes/no choice, whatever its kind

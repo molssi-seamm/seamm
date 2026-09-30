@@ -368,7 +368,14 @@ def test_integer_choice_allowed():
     assert node.parameters["max iterations"].value == "default"
 
 
-@pytest.mark.parametrize("value", ["$n", "=2*$n"])
+def test_expression_syntax_checked():
+    with pytest.raises(FlowchartBuildError, match="bare names"):
+        set_parameters(calc_node(), method="=('HF', 'MP2')[$i]")
+    with pytest.raises(FlowchartBuildError, match="not valid Python"):
+        set_parameters(calc_node(), method="=('HF', 'MP2'")
+
+
+@pytest.mark.parametrize("value", ["$n", "=2*n", "=('HF', 'MP2')[int(i) - 1]"])
 def test_expressions_pass(value):
     node = calc_node()
     set_parameters(node, method=value, max_iterations=value)

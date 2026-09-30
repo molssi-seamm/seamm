@@ -73,6 +73,31 @@ Checked live
 - ``seamm-flowchart`` against all installed plug-ins: 46 main steps; ``describe
   orca/energy`` lists the parameters, choices and help.
 
+Tested in ~/SEAMM_DEV (2026-09-30)
+----------------------------------
+
+``seamm`` installed editable from the checkout into ``~/SEAMM_DEV/venv`` (``uv pip
+install --no-deps -e``; the only change to the venv, ``uv pip check`` clean; the
+pre-install freeze is kept for rollback). With that Python and its plug-ins:
+
+- the full test suite passes (123 tests, including the real-plug-in ones);
+- **job 3979** (project *test*, ``local`` queue, submitted through the web UI on port
+  55155 and run by SEAMM_DEV's JobServer): a built flowchart with a Table, a ``For i``
+  loop choosing the molecule with an ``=`` expression, MOPAC PM7 energies into the
+  table, and Save as. Finished, no loop errors; ``energies.csv`` has the same three
+  energies as the earlier run (-13.43, -14.52, -17.43 kcal/mol);
+- its ``flowchart.flow`` opens in the editor code with no node moved.
+
+Two earlier jobs failed, and both taught something:
+
+- **Job 3977** (the Foreach/SMILES version) failed in every iteration with
+  ``KeyError: 'SMILES'`` in table_step's "Append a row to" -- a table_step bug with
+  pandas 3, not a builder problem (finding 7).
+- **Job 3978** used ``=('C', 'CC', 'CCC')[int($i) - 1]``. In an ``=`` expression the
+  variables are bare Python names (``Parameter.get`` passes the text to ``eval``), so the
+  ``$`` is a syntax error at run time. The builder now compiles every ``=`` expression
+  when it is set and explains the bare-name rule if it finds a ``$``.
+
 Findings
 --------
 
@@ -121,3 +146,11 @@ Findings
    ``seamm.Flowchart()`` pays it, so a Catalog is shared where possible
    (``FlowchartBuilder(catalog=...)``); a cached step list could make ``seamm-flowchart
    steps`` instant later.
+7. **table_step "Append a row to" fails with pandas 3 for any text column -- in
+   production too.** It maps column dtypes to types with ``== "object"``, but pandas 3
+   gives a text column ``StringDtype``, so the column is missing from ``column_types``
+   and the step raises ``KeyError``. ``~/SEAMM/venv`` and ``~/SEAMM_DEV/venv`` both have
+   pandas 3.0.6 (the old conda ``seamm-dev`` has 2.2.3, which is why it worked there).
+   Not fixed; a one-line fix is ``pandas.api.types.is_string_dtype``.
+8. **The ``WebUI-Dev`` entry in ``~/.seamm.d/seammrc`` is stale**: the web UI on port
+   55155 rejects its username or password (401); the ``dev`` entry's credentials work.
