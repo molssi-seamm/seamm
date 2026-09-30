@@ -133,8 +133,16 @@ def test_problems_from_narrowed_choices():
 
 
 def test_setting_what_does_not_apply_is_refused():
+    # The model chemistry is used, so neither method nor functional applies
+    with pytest.raises(
+        FlowchartBuildError,
+        match=r"it needs 'method', which does not apply \(it applies when 'use model "
+        r"chemistry' is 'no'\)",
+    ):
+        set_parameters(node(), functional="PBE0")
+    # The method applies but is not DFT
     with pytest.raises(FlowchartBuildError, match="it applies when 'method' is 'DFT'"):
-        set_parameters(node(), functional="PBE0")  # the model chemistry is used
+        set_parameters(node(), use_model_chemistry="no", functional="PBE0")
 
 
 def test_order_does_not_matter():

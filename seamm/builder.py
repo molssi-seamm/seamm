@@ -316,9 +316,9 @@ def _set_and_check(node, P, values):
     for key in touched:
         if not P.applies(key, current):
             text = f"'{key}' has no effect in '{node.title}' with these settings"
-            condition = P.describe_condition(key)
-            if condition:
-                text += f": it applies when {condition}"
+            reason = P.not_applicable_reason(key, current)
+            if reason:
+                text += f": {reason}"
             raise FlowchartBuildError(text)
     for key, value in P.implied(current).items():
         if key not in P or _same(current.get(key), value):

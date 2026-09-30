@@ -825,6 +825,24 @@ class Parameters(collections.abc.MutableMapping):
                 )
         return result
 
+    def not_applicable_reason(self, key, values=None):
+        """Why a parameter does not apply, as text ('' if it does, or no reason is
+        known). The default names the declared condition that is not met;
+        override to explain other rules."""
+        if values is None:
+            values = self.current_values()
+        if Parameters.applies(self, key, values):
+            return ""
+        # A parameter it depends on may not apply itself: explain that first.
+        for other in self[key]._data.get("applies_when") or {}:
+            if other in self and not self.applies(other, values):
+                why = self.not_applicable_reason(other, values)
+                return f"it needs '{other}', which does not apply" + (
+                    f" ({why})" if why else ""
+                )
+        condition = self.describe_condition(key)
+        return f"it applies when {condition}" if condition else ""
+
     def describe_condition(self, key):
         """The declared condition for a parameter to apply, as text, or ''."""
         conditions = self[key]._data.get("applies_when") if key in self else None
