@@ -4,7 +4,9 @@
 Status (2026-09-30): **phases 0-2 and 4 done; phase 3 in progress** -- SEAMM_DEV
 writes 3.0 and has been migrated (``NOTES_phase3.rst``); the switch for other
 installations, Zenodo and releases remain. Editing commands and the
-build-seamm-flowchart skill are in (``NOTES_phase4.rst``). Nothing pushed. Q1, Q4 and Q7 decided by Paul
+build-seamm-flowchart skill are in (``NOTES_phase4.rst``). Phase 5 in progress: the
+shared rules are in seamm, ORCA and Model Chemistry (``NOTES_phase5.rst``). Nothing
+pushed. Q1, Q4 and Q7 decided by Paul
 (``seamm`` core; keep ``.flow``; rename originals in job directories). The decisions
 reached in discussion are recorded under *Decided*; the ones still open are under *Open
 questions* and are Paul's.
@@ -439,8 +441,8 @@ Open questions (Paul's)
 
 Q1. **Location.** *Decided 2026-09-30:* ``seamm`` core.
 
-Q2. **Phase-2 validation.** Worth it, given it touches every plug-in's parameter
-    definitions over time?
+Q2. *Decided 2026-09-30: yes* (phase 5). **Phase-2 validation.** Worth it, given it
+    touches every plug-in's parameter definitions over time?
 
 Q3. **Spec in jobs.** Recommended: no. run_flowchart, the JobServer and the Dashboard
     accept only resolved 3.0 (and 2.0 through the converter). A spec is always resolved
