@@ -94,6 +94,15 @@ class CalcParameters(_Parameters):
             "description": "Row:",
             "help_text": "The row.",
         },
+        "potentials": {
+            "default": "",
+            "kind": "enumeration",
+            "default_units": "",
+            "enumeration": ("will be replaced",),  # filled in by the dialog
+            "format_string": "",
+            "description": "Potentials:",
+            "help_text": "Choices that the dialog replaces at run time.",
+        },
         "results": {
             "default": {},
             "kind": "dictionary",
@@ -388,6 +397,40 @@ def test_units(value):
     set_parameters(node, temperature=value)
     assert str(node.parameters["temperature"].value) == "300"
     assert node.parameters["temperature"].units == "degC"
+
+
+def test_placeholder_choices_are_not_strict():
+    """The default is not a choice, so the list is not the real set of choices."""
+    node = calc_node()
+    set_parameters(node, potentials="EAM_Cu_2004")
+    assert node.parameters["potentials"].value == "EAM_Cu_2004"
+    assert (
+        Catalog(fake_flowchart()).describe("Calculation")["parameters"]["potentials"][
+            "strict"
+        ]
+        is False
+    )
+    assert Catalog(fake_flowchart()).describe("Calculation")["parameters"]["method"][
+        "strict"
+    ]
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("300 K", ("300", "K")),
+        ("1e-5 kcal/mol", ("1e-5", "kcal/mol")),
+        ("-2.5 Å", ("-2.5", "Å")),
+        ("0.9", None),  # no units: not '0' plus '.9'
+        ("1e5", None),  # an exponent, not '1' plus 'e5'
+        ("$T", None),
+    ],
+)
+def test_number_and_units(text, expected):
+    from seamm.builder import _number_and_units
+
+    match = _number_and_units.match(text)
+    assert (match.groups() if match else None) == expected
 
 
 def test_incompatible_units():
