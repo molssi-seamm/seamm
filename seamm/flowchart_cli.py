@@ -102,6 +102,8 @@ def describe(args):
                 choices = choices[:30] + [f"... ({len(data['enumeration'])} in all)"]
             label = "choices" if data["strict"] else "suggestions"
             print(wrapper.fill(f"{label}: " + ", ".join(choices)))
+        if data.get("applies when"):
+            print(wrapper.fill(f"applies when {data['applies when']}"))
         text = data["help"] or data["description"]
         if text:
             print(wrapper.fill(" ".join(str(text).split())))

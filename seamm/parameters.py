@@ -417,6 +417,7 @@ class Parameter(collections.abc.MutableMapping):
             "group": "",
             "description": None,
             "help_text": None,
+            "applies_when": None,
         }
         self.dimensionality = None
 
@@ -703,3 +704,140 @@ class Parameters(collections.abc.MutableMapping):
                 raise
             except Exception:
                 raise
+
+    # -------------------------------------------------------------------------
+    # Rules shared by the dialog and by building flowcharts without it
+    #
+    # Which parameters apply, which choices are valid and which values follow
+    # from others depend on the other parameters. A step's dialog uses these to
+    # hide, narrow and set its controls; the flowchart builder uses them to refuse
+    # settings that would have no effect or are not valid. A plug-in declares
+    # simple conditions with "applies_when" in a parameter's definition and
+    # overrides these methods for anything more.
+    #
+    # Each method takes the values to judge -- {name: value}, e.g. the dialog's
+    # current widget values -- or, by default, the parameters' own values. A value
+    # that is a variable or expression ("$x", "=...") is not known until the
+    # flowchart runs, so a condition on it counts as met.
+    # -------------------------------------------------------------------------
+
+    def current_values(self):
+        """The parameters' values, {name: value}."""
+        return {key: parameter.value for key, parameter in self.items()}
+
+    @staticmethod
+    def _is_expr(value):
+        return (
+            isinstance(value, str)
+            and len(value) > 0
+            and value[0] in ("$", "=")
+            and value != "=="
+        )
+
+    def applies(self, key, values=None, _seen=None):
+        """Whether a parameter applies, i.e. has any effect, given the others.
+
+        The default follows the parameter's "applies_when" definition: a mapping
+        from other parameters to the value, list of values, or {"not": value(s)}
+        they must have. The parameters it names must themselves apply.
+
+        Parameters
+        ----------
+        key : str
+            The parameter.
+        values : dict, optional
+            The values to judge; by default the parameters' own.
+
+        Returns
+        -------
+        bool
+        """
+        if values is None:
+            values = self.current_values()
+        if key not in self:
+            return False
+        conditions = self[key]._data.get("applies_when")
+        if not conditions:
+            return True
+        seen = set() if _seen is None else _seen
+        if key in seen:
+            return True  # a circular definition; do not loop
+        seen = seen | {key}
+        for other, wanted in conditions.items():
+            if other not in self:
+                continue
+            if not self.applies(other, values, seen):
+                return False
+            value = values.get(other, self[other].value)
+            if self._is_expr(value):
+                continue
+            negate = isinstance(wanted, dict) and "not" in wanted
+            if negate:
+                wanted = wanted["not"]
+            if not isinstance(wanted, (list, tuple, set)):
+                wanted = [wanted]
+            if (value in wanted) == negate:
+                return False
+        return True
+
+    def applicable(self, values=None):
+        """Which parameters apply, {name: bool}."""
+        if values is None:
+            values = self.current_values()
+        return {key: self.applies(key, values) for key in self}
+
+    def choices(self, key, values=None):
+        """The valid choices for a parameter given the others, or None if the
+        parameter's own list (or any value) is valid. Override to narrow."""
+        return None
+
+    def implied(self, values=None):
+        """Values that other parameters imply, {name: value}. Override when a
+        choice requires a value elsewhere (e.g. a basis set for a method)."""
+        return {}
+
+    def problems(self, values=None):
+        """Combinations of values that cannot work, as messages.
+
+        The default checks that each parameter that applies and has narrowed
+        choices has one of them. Override to add checks.
+        """
+        if values is None:
+            values = self.current_values()
+        result = []
+        for key in self:
+            if not self.applies(key, values):
+                continue
+            allowed = self.choices(key, values)
+            if allowed is None:
+                continue
+            value = values.get(key)
+            if self._is_expr(value):
+                continue
+            name = value.get("name") if isinstance(value, dict) else value
+            if name not in allowed:
+                shown = ", ".join(repr(c) for c in list(allowed)[:20])
+                if len(allowed) > 20:
+                    shown += f", ... ({len(allowed)} in all)"
+                result.append(
+                    f"{value!r} is not valid for '{key}' with these settings; "
+                    f"choose one of: {shown}"
+                )
+        return result
+
+    def describe_condition(self, key):
+        """The declared condition for a parameter to apply, as text, or ''."""
+        conditions = self[key]._data.get("applies_when") if key in self else None
+        if not conditions:
+            return ""
+        parts = []
+        for other, wanted in conditions.items():
+            negate = isinstance(wanted, dict) and "not" in wanted
+            if negate:
+                wanted = wanted["not"]
+            if isinstance(wanted, (list, tuple, set)):
+                text = " or ".join(repr(w) for w in wanted)
+            else:
+                text = repr(wanted)
+            parts.append(f"'{other}' is {'not ' if negate else ''}{text}")
+        return " and ".join(parts)

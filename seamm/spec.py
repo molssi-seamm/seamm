@@ -163,7 +163,11 @@ def changed_parameters(node, default_node):
     result = {}
     if node.parameters is None:
         return result
+    applies = getattr(node.parameters, "applies", None)
+    values = node.parameters.current_values() if applies else None
     for key, parameter in node.parameters.items():
+        if applies is not None and not applies(key, values):
+            continue  # no effect with these settings, e.g. hidden in the dialog
         data = parameter.to_dict()
         value, units = data["value"], data["units"]
         if default_node is not None and key in default_node.parameters:

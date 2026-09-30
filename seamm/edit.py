@@ -427,8 +427,14 @@ def validate(flowchart):
             except Exception as e:
                 problems.append(f"{label}: {e}")
                 continue
+            if node.parameters is not None and hasattr(node.parameters, "problems"):
+                problems.extend(f"{label}: {p}" for p in node.parameters.problems())
             if node.parameters is not None:
                 for key, parameter in node.parameters.items():
+                    if hasattr(node.parameters, "applies") and not (
+                        node.parameters.applies(key)
+                    ):
+                        continue  # no effect, so its value does not matter
                     value = parameter.value
                     if not choices_are_strict(parameter):
                         # Only choices are worth checking again: numbers and units

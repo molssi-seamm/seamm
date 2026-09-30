@@ -271,7 +271,28 @@ def set_parameters(node, params=None, **kwargs):
         raise FlowchartBuildError(f"The step '{node.title}' has no parameters.")
 
     P = node.parameters
+    before = P.to_dict()
+    try:
+        _set_and_check(node, P, values)
+    except FlowchartBuildError:
+        P.from_dict(before)
+        raise
+
+
+def _same(a, b):
+    """Whether two parameter values are the same, allowing '10' == 10 and a basis
+    given by name or as {'name': ...}."""
+    if isinstance(a, dict) and "name" in a:
+        a = a["name"]
+    if isinstance(b, dict) and "name" in b:
+        b = b["name"]
+    return a == b or str(a) == str(b)
+
+
+def _set_and_check(node, P, values):
+    """Set values, then check them against the step's rules (see Parameters)."""
     by_normal = {normalize(key): key for key in P}
+    touched = []
     for name, value in values.items():
         key = name if name in P else by_normal.get(normalize(name))
         if key is None:
@@ -285,6 +306,32 @@ def set_parameters(node, params=None, **kwargs):
         parameter.value = value
         if units is not None:
             parameter.units = units
+        touched.append(key)
+
+    # The step's rules: settings that would have no effect, values that others
+    # imply, and combinations that cannot work -- as the dialog enforces them.
+    if not hasattr(P, "applies"):
+        return
+    current = P.current_values()
+    for key in touched:
+        if not P.applies(key, current):
+            text = f"'{key}' has no effect in '{node.title}' with these settings"
+            condition = P.describe_condition(key)
+            if condition:
+                text += f": it applies when {condition}"
+            raise FlowchartBuildError(text)
+    for key, value in P.implied(current).items():
+        if key not in P or _same(current.get(key), value):
+            continue
+        if key in touched:
+            raise FlowchartBuildError(
+                f"'{key}' cannot be {current[key]!r} in '{node.title}' with these "
+                f"settings; it must be {value!r}"
+            )
+        P[key].value = value
+    problems = P.problems()
+    if problems:
+        raise FlowchartBuildError(f"In '{node.title}': " + "; ".join(problems))
 
 
 class Step(object):

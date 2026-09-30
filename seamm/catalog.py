@@ -380,8 +380,16 @@ class Catalog(object):
             "parameters": {},
         }
         if node.parameters is not None:
-            for key, parameter in node.parameters.items():
+            P = node.parameters
+            for key, parameter in P.items():
                 result["parameters"][key] = parameter_info(parameter)
+                condition = (
+                    P.describe_condition(key)
+                    if hasattr(P, "describe_condition")
+                    else ""
+                )
+                if condition:
+                    result["parameters"][key]["applies when"] = condition
         if catalog.has_subflowchart(extension):
             sub = catalog.subcatalog(extension)
             result["substep namespace"] = sub.namespace
