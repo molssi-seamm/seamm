@@ -205,7 +205,7 @@ def main(argv=None):
     p.add_argument("spec", help="The spec file, or - for standard input")
     p.add_argument("-o", "--output", help="The flowchart to write (default: stdout)")
     p.add_argument(
-        "--format", default="2.0", choices=["2.0", "3.0"], help="Flowchart format"
+        "--format", default="3.0", choices=["2.0", "3.0"], help="Flowchart format"
     )
     p.add_argument(
         "--no-check",

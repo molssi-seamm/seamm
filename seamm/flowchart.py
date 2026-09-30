@@ -464,7 +464,7 @@ class Flowchart(object):
 
             logger.debug("Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
-    def write(self, filename, format="2.0"):
+    def write(self, filename, format="3.0"):
         """Write the serialized form to disk
 
         Parameters
@@ -472,7 +472,7 @@ class Flowchart(object):
         filename : str
             The file to write.
         format : str
-            The flowchart format, "2.0" (the default) or "3.0".
+            The flowchart format, "3.0" (the default) or "2.0".
         """
         with open(filename, "w") as fd:
             fd.write(self.to_text(format=format))
@@ -490,7 +490,7 @@ class Flowchart(object):
         """Copy the flowchart to the clipboard"""
         pyperclip.copy(self.to_text())
 
-    def to_text(self, format="2.0"):
+    def to_text(self, format="3.0"):
         """Return the text for the flowchart.
 
         This is the representation written to disk, submitted
@@ -500,7 +500,7 @@ class Flowchart(object):
         Parameters
         ----------
         format : str
-            The flowchart format, "2.0" (the default) or "3.0".
+            The flowchart format, "3.0" (the default) or "2.0".
 
         Returns
         -------

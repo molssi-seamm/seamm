@@ -621,7 +621,7 @@ def test_substeps_laid_out(builder):
 def test_write(builder, tmp_path):
     builder.add("Calculation", method="MP2", temperature=(300, "K"))
     path = tmp_path / "test.flow"
-    builder.write(path)
+    builder.write(path, format="2.0")
     assert os.access(path, os.X_OK)
     text = path.read_text()
     assert text.startswith("#!/usr/bin/env run_flowchart\n!MolSSI flowchart 2.0\n")

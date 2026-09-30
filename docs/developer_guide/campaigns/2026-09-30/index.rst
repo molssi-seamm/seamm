@@ -447,12 +447,17 @@ Q4. **File extension for 3.0.** *Decided 2026-09-30:* keep ``.flow``, detect the
     format from the content. File associations, the Open dialog's filters, the
     Dashboard's upload and ``flowchart.flow`` in job directories keep working.
 
-Q5. **Where the frozen converter lives.** A module in ``seamm`` that is never edited, or
+Q5. *Decided 2026-09-30:* a frozen module in ``seamm`` (``seamm/convert_v2.py``), with
+    a test that forbids any import from SEAMM or plug-ins. **Where the frozen converter
+    lives.** A module in ``seamm`` that is never edited, or
     a tiny separate package (e.g. ``seamm_flowchart_v2``) pinned forever. The separate
     package is more clearly "frozen" and can be installed on its own to read an old
     Zenodo file.
 
-Q6. **Datastore digest collisions.** When the new digest merges rows that differed only
+Q6. *Decided 2026-09-30:* each job points at the row made from its own
+    ``flowchart.flow`` -- rows that now match are merged, rows the loop bug merged are
+    split -- and rows left unused are deleted after a backup. **Datastore digest
+    collisions.** When the new digest merges rows that differed only
     in leaked state, re-point their jobs to one row (recommended) or keep both rows with
     the strict digest cleared on the later one? The reverse also happens: rows that the
     loop bug merged must be split, each job pointing at a row made from its own

@@ -517,7 +517,7 @@ class FlowchartBuilder(Sequence):
         restore_tables(self.flowchart)
         self.layout()
 
-    def to_text(self, check=True, format="2.0"):
+    def to_text(self, check=True, format="3.0"):
         """The flowchart as the text of a .flow file.
 
         Parameters
@@ -525,12 +525,12 @@ class FlowchartBuilder(Sequence):
         check : bool
             Validate first and raise FlowchartBuildError if there are problems.
         format : str
-            The flowchart format, "2.0" (the default) or "3.0".
+            The flowchart format, "3.0" (the default) or "2.0".
         """
         self._finish(check)
         return self.flowchart.to_text(format=format)
 
-    def write(self, path, check=True, format="2.0"):
+    def write(self, path, check=True, format="3.0"):
         """Write the flowchart to a .flow file, which is made executable.
 
         Parameters
@@ -540,7 +540,7 @@ class FlowchartBuilder(Sequence):
         check : bool
             Validate first and raise FlowchartBuildError if there are problems.
         format : str
-            The flowchart format, "2.0" (the default) or "3.0".
+            The flowchart format, "3.0" (the default) or "2.0".
         """
         self._finish(check)
         self.flowchart.write(str(path), format=format)

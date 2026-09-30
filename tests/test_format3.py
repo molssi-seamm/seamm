@@ -195,6 +195,9 @@ def test_format_detection():
     assert not format3.is_format3("#!/usr/bin/env run_flowchart\n!MolSSI flowchart 2.0")
 
 
-def test_2_0_still_default():
-    text = build().flowchart.to_text()
-    assert "!MolSSI flowchart 2.0" in text.splitlines()[1]
+def test_3_0_is_the_default():
+    fb = build()
+    assert fb.flowchart.to_text().splitlines()[1] == "format: MolSSI flowchart 3.0"
+    assert fb.to_text().splitlines()[1] == "format: MolSSI flowchart 3.0"
+    # 2.0 can still be written when asked for
+    assert fb.flowchart.to_text(format="2.0").splitlines()[1] == "!MolSSI flowchart 2.0"
