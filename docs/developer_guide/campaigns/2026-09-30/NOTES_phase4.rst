@@ -1,5 +1,5 @@
 Phase 4 -- Editing from the command line, and a skill (2026-09-30)
-=================================================================
+==================================================================
 
 **seamm.edit** (seamm 9cde481): ``set_parameters``, ``insert`` (after, before, or into
 a loop's body or a step's sub-steps), ``remove``, ``move``, ``tree`` and ``validate``.
