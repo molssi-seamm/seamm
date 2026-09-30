@@ -130,7 +130,7 @@ Findings
    dimensionality it converted from ``self._data["units"]``, which raises ``KeyError``
    if the units were never read or set. With context conversions allowed, the builder
    reached it (a temperature in kcal/mol). It now converts from ``self.units``.
-4. **table_step enumerations.** ``index column``, ``row`` and ``column`` use
+4. **table_step enumerations** (fixed in table_step 2026.9.30). ``index column``, ``row`` and ``column`` use
    ``tuple("--none--")`` / ``tuple("current")`` -- tuples of letters, so the editor's
    dropdowns offer single characters. Should be ``("--none--",)`` / ``("current",)``.
    The catalog now treats a string enumeration as one choice, but ``tuple("current")``
@@ -151,7 +151,8 @@ Findings
    gives a text column ``StringDtype``, so the column is missing from ``column_types``
    and the step raises ``KeyError``. ``~/SEAMM/venv`` and ``~/SEAMM_DEV/venv`` both have
    pandas 3.0.6 (the old conda ``seamm-dev`` has 2.2.3, which is why it worked there).
-   **Fixed 2026-09-30** on table_step's ``dev`` (d36200b, not yet released): types
+   **Fixed and released** in table_step 2026.9.30 (PR #97, with the dropdown fix of
+   finding 4): types
    now come from the kind of dtype; regression flowchart (built with this builder) in
    ``table_step/tests/flowcharts/append_text_rows.flow``; job 3977's flowchart reran
    cleanly in SEAMM_DEV as job 3980.
