@@ -174,6 +174,31 @@ def convert(args):
     return 0
 
 
+def migrate(args):
+    """Migrate an installation's jobs and datastore to format 3.0 (dry run default)."""
+    from . import migrate3
+
+    try:
+        the_plan = migrate3.plan(args.root, datastore=args.datastore)
+    except migrate3.MigrationError as e:
+        print(e, file=sys.stderr)
+        return 1
+    print(migrate3.text_report(the_plan))
+    if args.plan:
+        slim = {k: v for k, v in the_plan.items() if k not in ("files", "data")}
+        slim["files"] = {p: d["report"] for p, d in the_plan["files"].items()}
+        with open(args.plan, "w") as fd:
+            json.dump(slim, fd, indent=2, default=str)
+        print(f"The full plan is in {args.plan}")
+    if not args.apply:
+        print("Dry run: nothing was changed. Use --apply to migrate.")
+        return 0
+    result = migrate3.apply(the_plan)
+    print(f"Datastore backup: {result.get('backup')}")
+    print(f"Manifest of file changes: {result['manifest']}")
+    return 0
+
+
 def main(argv=None):
     """The seamm-flowchart command."""
     parser = argparse.ArgumentParser(
@@ -228,6 +253,21 @@ def main(argv=None):
         "--format", default="3.0", choices=["2.0", "3.0"], help="Flowchart format"
     )
     p.set_defaults(func=convert)
+
+    p = subparsers.add_parser(
+        "migrate",
+        help="Migrate an installation's jobs and datastore to format 3.0 "
+        "(a dry run unless --apply)",
+    )
+    p.add_argument("--root", required=True, help="The SEAMM root, e.g. ~/SEAMM_DEV")
+    p.add_argument("--datastore", help="The datastore (default <root>/Jobs/seamm.db)")
+    p.add_argument("--plan", help="Write the full plan as JSON to this file")
+    p.add_argument(
+        "--apply",
+        action="store_true",
+        help="Make the changes (stop the JobServer and web UI first)",
+    )
+    p.set_defaults(func=migrate)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=args.log_level)
