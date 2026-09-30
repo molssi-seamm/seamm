@@ -101,3 +101,68 @@ def test_describe_real_substep(catalog):
     data = catalog.describe("MOPAC/Energy")
     assert data["parameters"]["hamiltonian"]["kind"] == "enumeration"
     assert "PM7" in data["parameters"]["hamiltonian"]["enumeration"]
+
+
+SPEC = """\
+title: Spec with real plug-ins
+steps:
+- Table:
+    method: Create
+    columns:
+    - {name: SMILES, type: string, default: ''}
+    - {name: energy, type: float, default: ''}
+- Loop:
+    type: Foreach
+    variable: SMILES
+    values: C CC CCC
+    body:
+    - Table:
+        method: Append a row to
+        columns:
+        - {name: SMILES, value: $SMILES}
+    - from SMILES: {smiles string: $SMILES}
+    - MOPAC:
+        steps:
+        - Energy:
+            hamiltonian: PM7
+            results:
+              energy: {table: table1, column: energy}
+- Table: {method: Save as, filename: energies.csv}
+"""
+
+
+def test_cli_build_show_convert(tmp_path, capsys):
+    from seamm import flowchart_cli, format3, spec
+
+    spec_file = tmp_path / "spec.yaml"
+    spec_file.write_text(SPEC)
+    flow3 = tmp_path / "energies.flow"
+    assert (
+        flowchart_cli.main(
+            ["build", str(spec_file), "-o", str(flow3), "--format", "3.0"]
+        )
+        == 0
+    )
+    text = flow3.read_text()
+    assert text.splitlines()[1] == "format: MolSSI flowchart 3.0"
+
+    # 'show' gives back what the spec said, and nothing more
+    capsys.readouterr()
+    assert flowchart_cli.main(["show", str(flow3)]) == 0
+    shown = spec.load(capsys.readouterr().out)
+    assert shown["title"] == "Spec with real plug-ins"
+    assert shown["steps"][1]["Loop"]["values"] == "C CC CCC"
+    mopac = shown["steps"][1]["Loop"]["body"][2]["MOPAC"]
+    assert mopac["steps"][0]["Energy"]["hamiltonian"] == "PM7"
+
+    # 3.0 -> 2.0 -> 3.0 keeps every value
+    flow2 = tmp_path / "energies2.flow"
+    flow3b = tmp_path / "energies3.flow"
+    assert (
+        flowchart_cli.main(["convert", str(flow3), "-o", str(flow2), "--format", "2.0"])
+        == 0
+    )
+    assert flowchart_cli.main(["convert", str(flow2), "-o", str(flow3b)]) == 0
+    a, b = format3.load_yaml(text), format3.load_yaml(flow3b.read_text())
+    assert a["digest"] == b["digest"]
+    assert a["steps"] == b["steps"]

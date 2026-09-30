@@ -90,6 +90,20 @@ def enumeration_of(parameter):
     return enumeration if len(enumeration) > 0 else None
 
 
+def choices_are_strict(parameter):
+    """Whether a value must be one of the parameter's choices.
+
+    Only 'enum', 'enumeration' and 'boolean' parameters restrict the value, and only
+    when their own default is one of the choices: some plug-ins give a placeholder
+    list that the dialog replaces at run time (e.g. ("will be replaced",)), and the
+    list is then not the real set of choices.
+    """
+    enumeration = enumeration_of(parameter)
+    if enumeration is None or parameter.kind not in ("enum", "enumeration", "boolean"):
+        return False
+    return parameter.default in enumeration
+
+
 def parameter_info(parameter):
     """The description of a single parameter, as plain data.
 
@@ -112,6 +126,7 @@ def parameter_info(parameter):
         "default": parameter.default,
         "units": units if units else None,
         "enumeration": enumeration if enumeration else None,
+        "strict": choices_are_strict(parameter),
         "description": parameter.description,
         "help": parameter.help_text,
     }
@@ -201,9 +216,10 @@ class Catalog(object):
     def resolve(self, name):
         """The extension name of a step given any of its names.
 
-        A step may be named by its extension name ("FromSMILESStep"), its name in the
-        editor's menu ("from SMILES") or its default title. Matching ignores case,
-        spaces, underscores and hyphens.
+        A step may be named by its extension name, which the editor's step menu shows
+        ("FromSMILESStep"), the name in its description ("from SMILES") or its default
+        title, which the editor shows on the canvas. Matching ignores case, spaces,
+        underscores and hyphens.
 
         Parameters
         ----------

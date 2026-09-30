@@ -312,7 +312,7 @@ def test_keyword_names():
     node = calc_node()
     set_parameters(node, extra_keywords="TightSCF", max_iterations=50)
     assert node.parameters["extra keywords"].value == "TightSCF"
-    assert node.parameters["max iterations"].value == "50"
+    assert node.parameters["max iterations"].value == 50
 
 
 def test_dict_names():
@@ -386,7 +386,7 @@ def test_expressions_pass(value):
 def test_units(value):
     node = calc_node()
     set_parameters(node, temperature=value)
-    assert node.parameters["temperature"].value == "300"
+    assert str(node.parameters["temperature"].value) == "300"
     assert node.parameters["temperature"].units == "degC"
 
 
@@ -406,7 +406,7 @@ def test_context_conversions_allowed(units):
     node = calc_node()
     set_parameters(node, temperature=(0.6, units))
     assert node.parameters["temperature"].units == units
-    assert node.parameters["temperature"].value == "0.6"
+    assert node.parameters["temperature"].value == 0.6
 
 
 def test_units_not_taken():
@@ -587,7 +587,7 @@ def test_write(builder, tmp_path):
     assert calc["extension"] == "CalcStep"
     assert calc["attributes"]["parameters"]["method"] == {"value": "MP2", "units": None}
     assert calc["attributes"]["parameters"]["temperature"] == {
-        "value": "300",
+        "value": 300,
         "units": "K",
     }
     (edge,) = data["edges"]

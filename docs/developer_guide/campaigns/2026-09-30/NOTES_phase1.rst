@@ -14,7 +14,7 @@ a package):
 
 ``seamm/catalog.py``
     ``Catalog``: the steps of a flowchart's plug-in namespace, from the installed
-    plug-ins. ``steps()``, ``resolve(name)`` (extension name, menu name or default
+    plug-ins. ``steps()``, ``resolve(name)`` (extension name, description name or default
     title; ignores case, spaces, underscores and hyphens; suggests close matches),
     ``describe(path)`` (``"ORCA/Energy"`` reaches sub-steps), ``subcatalog(step)``.
     ``enumeration_of()`` treats a string enumeration as one choice (see below).

@@ -12,6 +12,7 @@ py-cpuinfo
 pyperclip
 python-dateutil
 pyuca
+pyyaml
 reference_handler
 seamm-dashboard-client
 seamm-util>=2026.9.27.1

@@ -464,10 +464,18 @@ class Flowchart(object):
 
             logger.debug("Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
-    def write(self, filename):
-        """Write the serialized form to disk"""
+    def write(self, filename, format="2.0"):
+        """Write the serialized form to disk
+
+        Parameters
+        ----------
+        filename : str
+            The file to write.
+        format : str
+            The flowchart format, "2.0" (the default) or "3.0".
+        """
         with open(filename, "w") as fd:
-            fd.write(self.to_text())
+            fd.write(self.to_text(format=format))
 
         logger.info(f"Wrote flowchart to {filename}")
 
@@ -482,17 +490,29 @@ class Flowchart(object):
         """Copy the flowchart to the clipboard"""
         pyperclip.copy(self.to_text())
 
-    def to_text(self):
+    def to_text(self, format="2.0"):
         """Return the text for the flowchart.
 
         This is the representation written to disk, submitted
-        as jobs, etc. There are two header lines followed by json
-        representing the flowchart.
+        as jobs, etc. In format 2.0 there are two header lines followed by json
+        representing the flowchart; format 3.0 is YAML (see seamm.format3).
+
+        Parameters
+        ----------
+        format : str
+            The flowchart format, "2.0" (the default) or "3.0".
 
         Returns
         -------
         str : the text representation.
         """
+        if str(format) == "3.0":
+            from . import format3
+
+            return format3.to_text(self)
+        if str(format) != "2.0":
+            raise ValueError(f"Unknown flowchart format '{format}'")
+
         text = "#!/usr/bin/env run_flowchart\n"
         text += "!MolSSI flowchart 2.0\n"
         text += "#metadata\n"
@@ -508,7 +528,14 @@ class Flowchart(object):
         return text
 
     def from_text(self, text):
-        """Recreate the flowchart from text"""
+        """Recreate the flowchart from text, in format 3.0, 2.0 or 1.0"""
+        from . import format3
+
+        if format3.is_format3(text):
+            logger.info("Reading flowchart format 3.0")
+            format3.from_text(self, text)
+            return
+
         lines = iter(text.splitlines())
 
         line = next(lines)

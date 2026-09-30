@@ -16,11 +16,12 @@ A flowchart is built from the top down, one step after another, as it will run::
         body.add("Custom Python", ...)
     fb.write("water.flow")
 
-Steps are named as in the editor's menu, by their extension name, or by their default
-title. Parameters are given as keyword arguments, with underscores for the spaces in
-their names, or as a dict. Every value is checked when it is set: the parameter must
-exist, a choice must be one of the allowed ones, a number must be a number, and units
-must match -- unless the value is a variable or expression such as ``$SMILES``.
+Steps are named by their extension name, as in the editor's step menu, by the name in
+their description, or by their default title. Parameters are given as keyword arguments,
+with underscores for the spaces in their names, or as a dict. Every value is checked
+when it is set: the parameter must exist, a choice must be one of the allowed ones, a
+number must be a number, and units must match -- unless the value is a variable or
+expression such as ``$SMILES``.
 
 The builder makes the Join node that a loop needs, sets the types of the edges, and
 lays out the steps as the editor's "clean layout" does, so the editor opens the result
@@ -35,7 +36,7 @@ import re
 from seamm_util import Q_, ureg
 
 import seamm
-from .catalog import Catalog, enumeration_of, normalize, suggestions
+from .catalog import Catalog, choices_are_strict, enumeration_of, normalize, suggestions
 from .layout import layout
 
 logger = logging.getLogger(__name__)
@@ -47,7 +48,8 @@ class FlowchartBuildError(ValueError):
 
 # A number followed by units, e.g. "300 K" or "-1.5e-3 kcal/mol"
 _number_and_units = re.compile(
-    r"^\s*([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)\s*([^\d\s].*?)\s*$"
+    r"^\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)"
+    r"\s*(?![eE][-+]?\d)([A-Za-z\u00b5\u03bc\u00c5\u00b0%].*?)\s*$"
 )
 
 
@@ -189,7 +191,7 @@ def check_value(parameter, value, name="parameter", units=None):
     if kind == "boolean":
         if isinstance(value, bool):
             value = "yes" if value else "no"
-        if enumeration:
+        if enumeration and choices_are_strict(parameter):
             for choice in enumeration:
                 if normalize(choice) == normalize(value):
                     return choice, units
@@ -204,7 +206,7 @@ def check_value(parameter, value, name="parameter", units=None):
         return value, units
 
     if kind in ("enum", "enumeration"):
-        if enumeration:
+        if enumeration and choices_are_strict(parameter):
             if value in enumeration:
                 return value, units
             for choice in enumeration:
@@ -228,8 +230,9 @@ def check_value(parameter, value, name="parameter", units=None):
             raise FlowchartBuildError(text)
         if integer and isinstance(value, float):
             value = int(value)
-        # The editor stores numbers as the text typed in
-        return str(value), units
+        # Kept as given: the editor stores text, defaults are often numbers, and
+        # Parameter.get() converts either.
+        return value, units
 
     if kind in ("list", "periodic table"):
         if not isinstance(value, (list, str)):
@@ -379,8 +382,8 @@ class Sequence(object):
         Parameters
         ----------
         step : str
-            Any name of the step: its name in the editor's menu, its extension name or
-            its default title.
+            Any name of the step: its extension name (as in the editor's step menu),
+            the name in its description, or its default title.
         params : dict, optional
             Parameter values by exact name.
         kwargs
@@ -509,20 +512,25 @@ class FlowchartBuilder(Sequence):
                 raise FlowchartBuildError(
                     "The flowchart has problems:\n  " + "\n  ".join(problems)
                 )
+        from .format3 import restore_tables
+
+        restore_tables(self.flowchart)
         self.layout()
 
-    def to_text(self, check=True):
+    def to_text(self, check=True, format="2.0"):
         """The flowchart as the text of a .flow file.
 
         Parameters
         ----------
         check : bool
             Validate first and raise FlowchartBuildError if there are problems.
+        format : str
+            The flowchart format, "2.0" (the default) or "3.0".
         """
         self._finish(check)
-        return self.flowchart.to_text()
+        return self.flowchart.to_text(format=format)
 
-    def write(self, path, check=True):
+    def write(self, path, check=True, format="2.0"):
         """Write the flowchart to a .flow file, which is made executable.
 
         Parameters
@@ -531,9 +539,11 @@ class FlowchartBuilder(Sequence):
             The file to write.
         check : bool
             Validate first and raise FlowchartBuildError if there are problems.
+        format : str
+            The flowchart format, "2.0" (the default) or "3.0".
         """
         self._finish(check)
-        self.flowchart.write(str(path))
+        self.flowchart.write(str(path), format=format)
 
 
 def _main_line(flowchart):

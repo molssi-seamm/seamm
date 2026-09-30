@@ -7,6 +7,9 @@
     seamm-flowchart steps [--json]              # every step, by group
     seamm-flowchart steps ORCA [--json]         # the sub-steps of a step
     seamm-flowchart describe "ORCA/Energy" [--json]
+    seamm-flowchart build spec.yaml -o my.flow [--format 3.0]
+    seamm-flowchart show my.flow                 # as a spec
+    seamm-flowchart convert my.flow -o my3.flow [--format 3.0]
 """
 
 import argparse
@@ -47,9 +50,9 @@ def steps(args):
         if step["group"] != group:
             group = step["group"]
             print(f"\n{group}")
-        name = step["name"]
-        if step["extension"] != name:
-            name += f" [{step['extension']}]"
+        name = step["extension"]
+        if step["name"] != name:
+            name += f" [{step['name']}]"
         print(f"    {name:40s} {step['description']}")
     return 0
 
@@ -90,15 +93,84 @@ def describe(args):
             choices = [str(c) for c in data["enumeration"]]
             if len(choices) > 30:
                 choices = choices[:30] + [f"... ({len(data['enumeration'])} in all)"]
-            label = (
-                "choices"
-                if data["kind"] in ("enum", "enumeration", "boolean")
-                else "suggestions"
-            )
+            label = "choices" if data["strict"] else "suggestions"
             print(wrapper.fill(f"{label}: " + ", ".join(choices)))
         text = data["help"] or data["description"]
         if text:
             print(wrapper.fill(" ".join(str(text).split())))
+    return 0
+
+
+def _read_input(path):
+    """The text of a file, or of standard input for '-'."""
+    if path == "-":
+        return sys.stdin.read()
+    with open(path) as fd:
+        return fd.read()
+
+
+def _write_output(text, path, executable=True):
+    """Write text to a file, made executable, or to standard output."""
+    if path is None or path == "-":
+        sys.stdout.write(text)
+        return
+    with open(path, "w") as fd:
+        fd.write(text)
+    if executable:
+        import os
+        import stat
+
+        mode = stat.S_IMODE(os.lstat(path).st_mode)
+        os.chmod(path, mode | stat.S_IXUSR | stat.S_IXGRP)
+
+
+def build(args):
+    """Build a complete flowchart from a spec."""
+    from . import spec
+
+    try:
+        fb = spec.build(_read_input(args.spec))
+        text = fb.to_text(check=not args.no_check, format=args.format)
+    except (spec.SpecError, ValueError) as e:
+        print(e, file=sys.stderr)
+        return 1
+    _write_output(text, args.output)
+    return 0
+
+
+def _read_flowchart(path):
+    import seamm
+
+    flowchart = seamm.Flowchart()
+    flowchart.from_text(_read_input(path))
+    return flowchart
+
+
+def show(args):
+    """Show a flowchart as a spec: its steps and the parameters not at defaults."""
+    from . import spec
+
+    try:
+        flowchart = _read_flowchart(args.flowchart)
+    except Exception as e:
+        print(f"Could not read {args.flowchart}: {e}", file=sys.stderr)
+        return 1
+    data = spec.reduce(flowchart)
+    if args.json:
+        print(json.dumps(data, indent=4, default=str))
+    else:
+        sys.stdout.write(spec.dump(data))
+    return 0
+
+
+def convert(args):
+    """Write a flowchart in another format."""
+    try:
+        flowchart = _read_flowchart(args.flowchart)
+    except Exception as e:
+        print(f"Could not read {args.flowchart}: {e}", file=sys.stderr)
+        return 1
+    _write_output(flowchart.to_text(format=args.format), args.output)
     return 0
 
 
@@ -126,6 +198,36 @@ def main(argv=None):
     p.add_argument("step", help="A step, or a path to a sub-step, e.g. ORCA/Energy")
     p.add_argument("--json", action="store_true", help="Output JSON")
     p.set_defaults(func=describe)
+
+    p = subparsers.add_parser(
+        "build", help="Build a complete flowchart from a spec (YAML)"
+    )
+    p.add_argument("spec", help="The spec file, or - for standard input")
+    p.add_argument("-o", "--output", help="The flowchart to write (default: stdout)")
+    p.add_argument(
+        "--format", default="2.0", choices=["2.0", "3.0"], help="Flowchart format"
+    )
+    p.add_argument(
+        "--no-check",
+        action="store_true",
+        help="Write the flowchart even if it has problems as a whole",
+    )
+    p.set_defaults(func=build)
+
+    p = subparsers.add_parser(
+        "show", help="Show a flowchart as a spec: the parameters that are not defaults"
+    )
+    p.add_argument("flowchart", help="The flowchart, or - for standard input")
+    p.add_argument("--json", action="store_true", help="Output JSON")
+    p.set_defaults(func=show)
+
+    p = subparsers.add_parser("convert", help="Write a flowchart in another format")
+    p.add_argument("flowchart", help="The flowchart, or - for standard input")
+    p.add_argument("-o", "--output", help="The flowchart to write (default: stdout)")
+    p.add_argument(
+        "--format", default="3.0", choices=["2.0", "3.0"], help="Flowchart format"
+    )
+    p.set_defaults(func=convert)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=args.log_level)
