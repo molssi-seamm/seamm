@@ -384,8 +384,22 @@ def test_units(value):
 
 
 def test_incompatible_units():
-    with pytest.raises(FlowchartBuildError, match="not compatible"):
-        set_parameters(calc_node(), temperature=(300, "kcal/mol"))
+    with pytest.raises(FlowchartBuildError, match="cannot be converted"):
+        set_parameters(calc_node(), temperature=(3, "Pa"))
+
+
+def test_unknown_units():
+    with pytest.raises(FlowchartBuildError, match="not units that SEAMM knows"):
+        set_parameters(calc_node(), temperature=(3, "flibbertigibbet"))
+
+
+@pytest.mark.parametrize("units", ["kcal/mol", "kJ/mol", "eV", "cm^-1"])
+def test_context_conversions_allowed(units):
+    """SEAMM's units convert energy to temperature, wavenumbers and frequency."""
+    node = calc_node()
+    set_parameters(node, temperature=(0.6, units))
+    assert node.parameters["temperature"].units == units
+    assert node.parameters["temperature"].value == "0.6"
 
 
 def test_units_not_taken():

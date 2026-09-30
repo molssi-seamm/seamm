@@ -233,7 +233,8 @@ class Parameter(collections.abc.MutableMapping):
 
             if tmp.dimensionality != self.dimensionality:
                 try:
-                    Q_(1.0, self._data["units"]).to(value)
+                    # The current units; self._data["units"] may not be set yet.
+                    Q_(1.0, self.units).to(value)
                 except Exception:
                     raise RuntimeError(
                         (

@@ -16,7 +16,13 @@ flowcharts, so migration converts by content hash.
 **Phase 1 result** (``NOTES_phase1.rst``): ``seamm.catalog``, ``seamm.builder``,
 ``seamm.layout`` and the ``seamm-flowchart`` command; a built loop flowchart ran and
 opened unchanged in the editor. Found that ``Flowchart.digest()`` stops at the first
-loop, so the datastore can link a job to the wrong flowchart (not fixed; Paul's call).
+loop, so the datastore can link a job to the wrong flowchart; left for D2 and the phase 3
+migration rather than fixed now.
+
+**Where the work happens (Paul, 2026-09-30):** all of this campaign is developed and
+tested in the development installation, ``~/SEAMM_DEV``, with ``seamm`` installed
+editable from the checkout into ``~/SEAMM_DEV/venv``. No PRs or releases until the
+whole switch is ready, so no other installation changes before then.
 
 Contents:
 
@@ -243,7 +249,9 @@ D2. Digest for format 3.0
 
 Phase 1 found that today's ``Flowchart.digest()`` stops at the first loop (it follows
 only ``next`` edges), so it ignores loop bodies and everything after a loop. The new
-digest must walk the whole step tree.
+digest must walk the whole step tree. It is deliberately not fixed in 2.0: the datastore
+reads the digest from each file's metadata, so changing it mid-stream would give
+unchanged flowcharts new rows. The phase 3 migration recomputes all digests at once.
 
 Redefine the digest from the resolved content rather than Python's ``str()`` of a dict:
 SHA-256 of a canonical JSON serialization (sorted keys, no whitespace) of the step tree
@@ -442,7 +450,9 @@ Q5. **Where the frozen converter lives.** A module in ``seamm`` that is never ed
 
 Q6. **Datastore digest collisions.** When the new digest merges rows that differed only
     in leaked state, re-point their jobs to one row (recommended) or keep both rows with
-    the strict digest cleared on the later one?
+    the strict digest cleared on the later one? The reverse also happens: rows that the
+    loop bug merged must be split, each job pointing at a row made from its own
+    ``flowchart.flow``.
 
 Q7. **File names in converted job directories** (follows from Q4).
     *Decided 2026-09-30: the recommendation.* Rename the original to ``flowchart.v2.flow`` (content unchanged) and write the 3.0 file as

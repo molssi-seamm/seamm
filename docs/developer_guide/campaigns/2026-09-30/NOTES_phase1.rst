@@ -84,16 +84,27 @@ Findings
    deduplicates flowcharts by the unique ``sha256_strict``, so a job whose flowchart
    differs only inside or after a loop is linked to the first such flowchart's row.
    Each job directory's own ``flowchart.flow`` is right, so jobs run correctly; the
-   datastore's record of the flowchart can be wrong. Not fixed here -- a fix changes
-   the digest of every flowchart with a loop (only those). Belongs with D2, or a small
-   fix before it (Paul's call).
-2. **Unit checks must compare dimensionality.** ``seamm_util``'s unit registry has
-   contexts enabled, so ``Q_(1, "kcal/mol").to("K")`` succeeds (via Boltzmann's
-   constant). The builder compares ``ureg.Unit(...).dimensionality`` instead.
-3. **Parameter.units setter bug.** When the dimensionality differs it evaluates
-   ``Q_(1.0, self._data["units"])``, which raises ``KeyError`` if the value's units
-   were never set. The builder's own check runs first, so it is not reached from the
-   builder; the core bug remains.
+   datastore's record of the flowchart can be wrong.
+
+   **Not fixed now (Paul, 2026-09-30).** The datastore takes ``sha256_strict`` from the
+   file's own metadata (written when it was saved), not by recomputing it, so a fix
+   would split the world: files saved before keep the old digest, files saved after get
+   a new one, and an unchanged flowchart with a loop would get a second row. Instead the
+   format 3.0 digest (D2) walks the whole flowchart, and the phase 3 migration
+   recomputes every digest from the job directories' own files at once -- which must
+   also *split* rows that the bug merged (Q6).
+2. **Units: any conversion SEAMM's registry allows is valid.** ``seamm_util``'s unit
+   registry deliberately enables contexts, so energy converts to temperature,
+   wavenumbers and frequency (kcal/mol → K, cm⁻¹ → K, THz → K), as is common in
+   chemistry; the editor's ``Parameter.units`` allows the same. The builder checks
+   ``Q_(1, units).to(default_units)``. (A first version compared dimensionality and
+   wrongly rejected kcal/mol for a temperature; corrected after Paul's review.) The
+   contexts also chain -- Å and even kg convert to K -- so the check stops only truly
+   incompatible units such as Pa for a temperature, and unknown ones.
+3. **Parameter.units setter bug -- fixed.** When the new units differ in
+   dimensionality it converted from ``self._data["units"]``, which raises ``KeyError``
+   if the units were never read or set. With context conversions allowed, the builder
+   reached it (a temperature in kcal/mol). It now converts from ``self.units``.
 4. **table_step enumerations.** ``index column``, ``row`` and ``column`` use
    ``tuple("--none--")`` / ``tuple("current")`` -- tuples of letters, so the editor's
    dropdowns offer single characters. Should be ``("--none--",)`` / ``("current",)``.

@@ -146,15 +146,17 @@ def check_value(parameter, value, name="parameter", units=None):
             raise FlowchartBuildError(
                 f"'{name}' does not take units, but got '{units}'"
             )
-        # Compare dimensions: the unit registry's contexts would convert e.g.
-        # kcal/mol to K, which is not what a parameter's units mean.
+        # Any conversion SEAMM's unit registry allows, including those through its
+        # contexts, e.g. kcal/mol to K or to wavenumbers, as the editor allows.
         try:
-            dimensionality = ureg.Unit(units).dimensionality
+            ureg.Unit(units)
         except Exception:
             raise FlowchartBuildError(f"'{units}' are not units that SEAMM knows")
-        if dimensionality != ureg.Unit(parameter.default_units).dimensionality:
+        try:
+            Q_(1.0, units).to(parameter.default_units)
+        except Exception:
             raise FlowchartBuildError(
-                f"The units '{units}' for '{name}' are not compatible with its "
+                f"The units '{units}' for '{name}' cannot be converted to its "
                 f"default units '{parameter.default_units}'"
             )
 
