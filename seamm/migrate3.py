@@ -179,12 +179,22 @@ def plan(root, datastore=None):
         job_digest[job["id"]] = digest
         job_data[digest] = data
 
-    # Job directories on disk that the datastore does not know
-    known = {str(Path(j["path"]) / "flowchart.flow") for j in jobs if j["path"]}
-    for path in sorted(
-        glob.glob(str(root / "Jobs" / "projects" / "*" / "*" / "flowchart.flow"))
-    ):
-        if path in known:
+    # Job directories on disk that the datastore does not know. Compare the files
+    # themselves: the datastore's path may differ in case (e.g. 'Water' for 'water'
+    # on a file system that ignores case) or through links.
+    def identity(path):
+        try:
+            info = os.stat(path)
+        except OSError:
+            return None
+        return (info.st_dev, info.st_ino)
+
+    known = {
+        identity(Path(j["path"]) / "flowchart.flow") for j in jobs if j["path"]
+    } - {None}
+    pattern = str(root / "Jobs" / "projects" / "*" / "*" / "flowchart.flow")
+    for path in sorted(glob.glob(pattern)):
+        if identity(path) in known:
             continue
         text3, data, report, error = convert(_flowchart_text(path))
         if error:
