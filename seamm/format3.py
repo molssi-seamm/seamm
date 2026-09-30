@@ -355,13 +355,12 @@ def requirements(flowchart):
     Returns
     -------
     {str: str}
-        Distribution name -> version, sorted by name.
+        Package (the name that is imported, e.g. 'table_step') -> version, sorted by
+        name. The frozen 2.0 converter can find the same names in a 2.0 file.
     """
-    distributions = importlib.metadata.packages_distributions()
     result = {}
     for node in _nodes(flowchart):
-        package = type(node).__module__.split(".")[0]
-        name = distributions.get(package, [package])[0]
+        name = type(node).__module__.split(".")[0]
         try:
             version = node.version
         except Exception:
@@ -465,9 +464,10 @@ class FlowchartFormatError(ValueError):
 def apply_parameters(node, parameters):
     """Set a node's parameters from 3.0 data, as format 2.0 would restore them.
 
-    The values go through the node's ``Parameters.update``, so a plug-in's translation
-    of old parameter names applies, and a parameter the plug-in does not have is an
-    error, as in 2.0.
+    As in 2.0, a new object of the node's parameters class is made from the data, so
+    the fixes plug-ins make in ``__init__`` for renamed or replaced parameters apply
+    (e.g. lammps_step's NPT turns 'keep orthorhombic' into 'allow shear'), and a
+    parameter the plug-in does not have is an error.
     """
     if parameters is None:
         return
@@ -492,7 +492,7 @@ def apply_parameters(node, parameters):
         ):
             value, units = value
         data[key] = {"value": value, "units": units}
-    node.parameters.update(data)
+    node.parameters = type(node.parameters)(data=data)
 
 
 def _create(flowchart, extension):
@@ -617,9 +617,10 @@ def from_data(flowchart, data):
         clean_layout(flowchart)
 
     # Warn about plug-ins that are missing or at another version
+    distributions = importlib.metadata.packages_distributions()
     for name, version in (data.get("requires") or {}).items():
         try:
-            installed = importlib.metadata.version(name)
+            installed = importlib.metadata.version(distributions.get(name, [name])[0])
         except importlib.metadata.PackageNotFoundError:
             logger.warning(
                 f"The flowchart was made with {name} {version}, "

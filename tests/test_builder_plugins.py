@@ -75,19 +75,13 @@ def test_round_trip(catalog):
         "energy": {"table": "table1", "column": "energy"}
     }
 
-    # The same flowchart, parameter for parameter. (Not Flowchart.digest(), which
-    # stops at the first loop.)
-    def parameters(fc):
-        result = {}
-        for node in fc:
-            if node.parameters is not None:
-                result[node.uuid] = node.parameters.to_dict()
-            if hasattr(node, "subflowchart"):
-                result.update(parameters(node.subflowchart))
-        return result
+    # The same flowchart, step for step and parameter for parameter. (Not
+    # Flowchart.digest(), which stops at the first loop, and not node uuids, which
+    # are not kept.)
+    from seamm import format3
 
-    assert parameters(flowchart) == parameters(fb.flowchart)
-    assert len(parameters(flowchart)) == 6
+    assert format3.steps_data(flowchart) == format3.steps_data(fb.flowchart)
+    assert format3.digest(flowchart) == format3.digest(fb.flowchart)
 
 
 def test_real_choices_checked(catalog):

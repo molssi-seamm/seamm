@@ -804,11 +804,22 @@ class TkOpen(collections.abc.MutableMapping):
             self["version"].configure(text="")
             path = self._data[selected[0]]
             if path.suffix == ".flow":
-                capture = False
-                lines = []
-                with path.open() as fd:
-                    for line in fd:
+                from . import format3
+
+                text = path.read_text()
+                data = None
+                if format3.is_format3(text):
+                    try:
+                        data = format3.load_yaml(text).get("metadata") or {}
+                    except Exception:
+                        data = None
+                else:
+                    capture = False
+                    lines = []
+                    for line in text.splitlines():
                         line = line.strip()
+                        if line == "":
+                            continue
                         if line[0] == "#":
                             if line == "#metadata":
                                 capture = True
@@ -816,10 +827,11 @@ class TkOpen(collections.abc.MutableMapping):
                                 break
                         elif capture:
                             lines.append(line)
-                if len(lines) > 0:
+                    if len(lines) > 0:
+                        data = json.loads("\n".join(lines))
+                if data is not None:
                     mtime = path.stat().st_mtime
                     date = datetime.datetime.fromtimestamp(mtime).isoformat(" ")
-                    data = json.loads("\n".join(lines))
                     if "title" in data:
                         self["title"].configure(text=data["title"])
                     if "description" in data:

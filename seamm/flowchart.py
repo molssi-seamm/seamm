@@ -528,14 +528,28 @@ class Flowchart(object):
         return text
 
     def from_text(self, text):
-        """Recreate the flowchart from text, in format 3.0, 2.0 or 1.0"""
-        from . import format3
+        """Recreate the flowchart from text, in format 3.0, 2.0 or 1.0.
+
+        A 2.0 or 1.0 flowchart is first converted to 3.0 by the frozen converter
+        (seamm.convert_v2), so that every flowchart is read the same way.
+        """
+        from . import convert_v2, format3
 
         if format3.is_format3(text):
             logger.info("Reading flowchart format 3.0")
             format3.from_text(self, text)
             return
 
+        text3, report = convert_v2.convert(text)
+        for line in report:
+            logger.info(f"Converting the flowchart to format 3.0: {line}")
+        format3.from_text(self, text3)
+
+    def _from_text_objects(self, text):
+        """The previous reader of format 2.0 and 1.0, which restores node objects.
+
+        Kept only to compare against while format 3.0 is introduced; not used.
+        """
         lines = iter(text.splitlines())
 
         line = next(lines)
