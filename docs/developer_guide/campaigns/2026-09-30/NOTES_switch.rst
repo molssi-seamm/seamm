@@ -18,8 +18,12 @@ but still writing 2.0, then -- once every machine has it -- writing 3.0.
 - [x] **Two seamm releases**: release 1 reads 3.0 and writes 2.0; release 2 writes 3.0.
 - [x] **Q3**: no spec inside a job; only complete 3.0 (or 2.0 through the converter)
   is run.
-- [x] **The old seamm_dashboard is retired** everywhere; the web UI replaces it. Find
-  which machines still run it and stop it there (SEAMM_DEV runs one on port 55066).
+- [x] **The old seamm_dashboard is retired** everywhere; the web UI replaces it.
+  *This Mac, 2026-10-01:* it was a conda-era launchd agent
+  (``org.molssi.seamm.dev_dashboard``, the ``seamm-dev`` conda env, port 55066), not a
+  seamm-manager service; unloaded, and its plist moved to ``~/SEAMM_DEV/retired/``.
+  The ``dev`` entry in ``~/SEAMM/dashboards.ini`` points at it. Still to check: the
+  other machines.
 - [x] **D11** (package versions in each job): not part of the switch; later.
 - [x] **Phase 5 for the other plug-ins**: not part of the switch; plug-in by plug-in.
 - [x] **The first installation to update is the production ``~/SEAMM`` on this Mac,
@@ -56,9 +60,10 @@ use pins it: ``lib>=version`` in ``requirements.txt``).
 
 Wave A -- libraries the servers need (independent of seamm):
 
-- [ ] **seamm_datastore** -- reads 3.0 flowcharts; ``build_from_jobs`` (2 commits).
-- [ ] **seamm_dashboard_client** -- ``Job.list_files``; files inside or after a loop
-  uploaded (2 commits).
+- [ ] **seamm_datastore** 2026.10.1 -- reads 3.0 flowcharts; ``build_from_jobs``.
+  PR #42 open (CI green), for **seamm** to merge and release.
+- [ ] **seamm_dashboard_client** 2026.10.1 -- ``Job.list_files``; files inside or after
+  a loop uploaded; CI moved from conda to uv. PR #18 open, for **seamm**.
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
