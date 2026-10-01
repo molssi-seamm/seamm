@@ -84,6 +84,25 @@ def _bibliography_path(package):
     return found[0] if found else None
 
 
+# The parsed bibliographies, by path and modification time: parsing a references.bib
+# takes about 0.2 s (over 3 s for a large one), and every new step parses its
+# plug-in's, so building or reading a flowchart parsed the same files many times.
+_bibliographies = {}
+
+
+def _read_bibliography(path):
+    """The entries of a references.bib, as {key: BibTeX text}, parsed once."""
+    path = Path(path)
+    key = (str(path), path.stat().st_mtime_ns)
+    if key not in _bibliographies:
+        entries = bibtexparser.loads(path.read_text()).entries_dict
+        writer = bibtexparser.bwriter.BibTexWriter()
+        _bibliographies[key] = {
+            name: writer._entry_to_bibtex(data) for name, data in entries.items()
+        }
+    return _bibliographies[key]
+
+
 def _templates_path(package):
     """The templates directory of a package, or None.
 
@@ -248,13 +267,8 @@ class Node(collections.abc.Hashable):
         path = _bibliography_path(package)
         if path is not None:
             self.logger.info(f"bibliography file path = '{path}'")
-
-            data = path.read_text()
-            tmp = bibtexparser.loads(data).entries_dict
-            writer = bibtexparser.bwriter.BibTexWriter()
-            for key, data in tmp.items():
-                self.logger.info(f"      {key}")
-                self._bibliography[key] = writer._entry_to_bibtex(data)
+            # A copy: some steps add their own entries
+            self._bibliography = dict(_read_bibliography(path))
             self.logger.debug("Bibliography\n" + pprint.pformat(self._bibliography))
 
     def __hash__(self):

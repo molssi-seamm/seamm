@@ -24,3 +24,21 @@ def test_plugin_bibliography():
     pytest.importorskip("lammps_step")
     path = _bibliography_path("lammps_step")
     assert path is not None and path.name == "references.bib"
+
+
+def test_bibliography_parsed_once(tmp_path):
+    """Every new step reads its plug-in's references.bib, so it is parsed once."""
+    from seamm.node import _read_bibliography
+
+    path = tmp_path / "references.bib"
+    path.write_text("@misc{one, title = {One}}\n")
+    first = _read_bibliography(path)
+    assert list(first) == ["one"]
+    assert _read_bibliography(path) is first
+    # A changed file is read again
+    import os
+
+    path.write_text("@misc{two, title = {Two}}\n")
+    stamp = path.stat().st_mtime_ns + 1_000_000
+    os.utime(path, ns=(stamp, stamp))
+    assert list(_read_bibliography(path)) == ["two"]

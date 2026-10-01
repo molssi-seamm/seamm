@@ -154,8 +154,9 @@ def _find(level, segment, whole):
         available = ", ".join(
             f"{level.label(i)} {s['step']}" for i, s in enumerate(level.steps)
         )
+        where = "" if segment == whole else f" in '{whole}'"
         raise _NoSuchStep(
-            f"No step '{segment}' in '{whole}'. The steps are: {available}"
+            f"No step '{segment}'{where}. The steps at this level are: {available}"
         )
     raise EditError(
         f"Several steps match '{segment}' in '{whole}': "

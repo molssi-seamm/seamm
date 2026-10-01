@@ -37,6 +37,7 @@ or a cache derivable from the parameters. The caches -- the tables a step create
 are rebuilt when a flowchart is read.
 """
 
+import functools
 import hashlib
 import importlib.metadata
 import json
@@ -581,6 +582,13 @@ def restore_tables(flowchart):
         node.tables = sorted(str(t) for t in tables)
 
 
+@functools.lru_cache(maxsize=1)
+def _packages_distributions():
+    """Which distribution provides each top-level package. Finding out reads every
+    installed package's files (about 0.5 s), so it is done once per process."""
+    return importlib.metadata.packages_distributions()
+
+
 def from_data(flowchart, data):
     """Recreate a flowchart from 3.0 data (a dict), replacing what it holds."""
     if not isinstance(data, dict) or not str(data.get("format", "")).startswith(
@@ -617,7 +625,7 @@ def from_data(flowchart, data):
         clean_layout(flowchart)
 
     # Warn about plug-ins that are missing or at another version
-    distributions = importlib.metadata.packages_distributions()
+    distributions = _packages_distributions()
     for name, version in (data.get("requires") or {}).items():
         try:
             installed = importlib.metadata.version(distributions.get(name, [name])[0])
