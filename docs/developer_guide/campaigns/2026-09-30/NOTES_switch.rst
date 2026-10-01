@@ -83,7 +83,7 @@ Wave C -- services (pin seamm_datastore):
 - [x] **seamm_manager** 2026.10.1 (released, on PyPI, checked from PyPI against ~/SEAMM) -- ``datastore rebuild``; editable-install paths;
   ``flowcharts migrate``/``status`` and the update notice; Usage and Installation
   updated. **PR #20 open, CI green.**
-- [ ] **seamm_webui** 2026.10.1 -- **not published**: its own Release.yaml (it adds the
+- [x] **seamm_webui** **2026.10.1.1** released and on PyPI. 2026.10.1 was **not published**: its own Release.yaml (it adds the
   frontend build) still used the conda env file the release removed. Fixed in PR #10
   (CI green), to be released as **2026.10.1.1**. -- rebuild a missing datastore from the job directories;
   pins ``seamm-datastore>=2026.10.1``; CI moved from conda to uv. **PR #9 open, CI
@@ -91,12 +91,19 @@ Wave C -- services (pin seamm_datastore):
 
 Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 
-- [ ] **model_chemistry_step** (first: others consume Model Chemistry)
-- [ ] **orca_step** (2 commits)
-- [ ] **gaussian_step** (3)
-- [ ] **psi4_step** (3)
-- [ ] **mopac_step** (2)
-- [ ] **lammps_step** (4)
+All six opened 2026-10-01 as 2026.10.1, CI green, each pinning ``seamm>=2026.10.1``,
+with HISTORY, a "Settings that depend on each other" section in the user guide, and CI
+moved from conda to uv (no custom workflow used the env file). The uv move found three
+undeclared dependencies, now declared: ``seamm-exec`` (psi4_step, mopac_step) and
+``model-chemistry-step`` (lammps_step). The docs mock ``seamm_installer``, which the
+installers import and SEAMM's manager provides.
+
+- [ ] **model_chemistry_step** -- PR #6 (merge first: lammps_step uses it)
+- [ ] **orca_step** -- PR #34
+- [ ] **gaussian_step** -- PR #32
+- [ ] **psi4_step** -- PR #45
+- [ ] **mopac_step** -- PR #156
+- [ ] **lammps_step** -- PR #113
 
 3. Update every installation (servers before desktops)
 ------------------------------------------------------
@@ -199,4 +206,6 @@ Loose ends (not blocking)
   ``~/.seamm.d/seammrc``.
 - MOPAC's step ``__init__`` runs ``cpuinfo`` (a subprocess) for every MOPAC step.
 - ``ChemAI_WebUI`` and ``MacMini`` report errors from this Mac (not investigated).
+- The plug-ins' installers import ``seamm_installer`` (provided by seamm-manager) without
+  declaring it; fine in an installation, which always has the manager.
 - An MCP endpoint in the web UI (Option 2) when someone beyond the two of us needs it.
