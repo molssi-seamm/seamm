@@ -23,6 +23,24 @@ import seamm_util
 
 logger = logging.getLogger(__name__)
 
+# The format Flowchart.write() and to_text() use when none is given. Format 3.0 is
+# introduced in two releases: the first reads 3.0 but still writes 2.0, so that every
+# machine can read 3.0 before any writes it; the second writes 3.0. An installation can
+# choose its own with the environment variable SEAMM_FLOWCHART_FORMAT ("2.0" or "3.0").
+DEFAULT_FORMAT = "2.0"
+
+
+def default_format():
+    """The flowchart format to write when none is given."""
+    value = os.environ.get("SEAMM_FLOWCHART_FORMAT", "").strip()
+    if value in ("2.0", "3.0"):
+        return value
+    if value != "":
+        logger.warning(
+            f"Ignoring SEAMM_FLOWCHART_FORMAT='{value}': it must be '2.0' or '3.0'."
+        )
+    return DEFAULT_FORMAT
+
 
 class Flowchart(object):
     graphics = "Tk"
@@ -464,7 +482,7 @@ class Flowchart(object):
 
             logger.debug("Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
-    def write(self, filename, format="3.0"):
+    def write(self, filename, format=None):
         """Write the serialized form to disk
 
         Parameters
@@ -472,7 +490,7 @@ class Flowchart(object):
         filename : str
             The file to write.
         format : str
-            The flowchart format, "3.0" (the default) or "2.0".
+            The flowchart format, "3.0" or "2.0"; by default default_format().
         """
         with open(filename, "w") as fd:
             fd.write(self.to_text(format=format))
@@ -490,7 +508,7 @@ class Flowchart(object):
         """Copy the flowchart to the clipboard"""
         pyperclip.copy(self.to_text())
 
-    def to_text(self, format="3.0"):
+    def to_text(self, format=None):
         """Return the text for the flowchart.
 
         This is the representation written to disk, submitted
@@ -500,12 +518,14 @@ class Flowchart(object):
         Parameters
         ----------
         format : str
-            The flowchart format, "3.0" (the default) or "2.0".
+            The flowchart format, "3.0" or "2.0"; by default default_format().
 
         Returns
         -------
         str : the text representation.
         """
+        if format is None:
+            format = default_format()
         if str(format) == "3.0":
             from . import format3
 

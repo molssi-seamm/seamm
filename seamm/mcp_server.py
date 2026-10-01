@@ -490,6 +490,19 @@ def dashboard_info(dashboard: str) -> dict:
     }
 
 
+def _all_steps(flowchart):
+    """Every step connected to the start, following every edge (get_nodes() follows
+    only "next" edges, so it stops at a loop)."""
+    result, seen, queue = [], set(), [flowchart.get_node("1")]
+    while queue:
+        node = queue.pop(0)
+        if node.uuid not in seen:
+            seen.add(node.uuid)
+            result.append(node)
+            queue.extend(edge.node2 for edge in flowchart.edges(node, direction="out"))
+    return result
+
+
 def _control_values(flowchart, values):
     """The values for the flowchart's Parameters steps (its command-line
     arguments): those given, else the defaults. Files must exist here; they are
@@ -497,7 +510,7 @@ def _control_values(flowchart, values):
     import shlex
 
     variables = {}
-    for node in flowchart.get_nodes():
+    for node in _all_steps(flowchart):
         if node.step_type == "control-parameters-step":
             variables.update(node.parameters["variables"].value)
     values = dict(values or {})

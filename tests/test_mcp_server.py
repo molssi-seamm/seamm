@@ -382,3 +382,33 @@ def test_dashboards_need_credentials(tmp_path, monkeypatch):
         mcp_server._dashboard("three")
     assert mcp_server._dashboard("one").url == "http://x:1"
     assert rc.read_text() == before
+
+
+def test_parameters_found_after_a_loop(fake, tmp_path):
+    """A Parameters step after a loop was missed (get_nodes() stops at a loop)."""
+    spec = """\
+title: Parameters after a loop
+steps:
+- Loop:
+    type: Foreach
+    variable: X
+    values: C CC
+    body:
+    - FromSMILESStep: {smiles string: $X}
+- Parameters:
+    variables:
+      SMILES:
+        optional: 'Yes'
+        type: str
+        nargs: a single value
+        overwrite: 'No'
+        default: O
+        choices: []
+        help: The molecule
+- FromSMILESStep: {smiles string: $SMILES}
+"""
+    path = tmp_path / "after_loop.flow"
+    mcp_server.build_flowchart(spec, str(path))
+    client = fake()
+    mcp_server.submit_job(str(path), "fake", values={"SMILES": "CCO"})
+    assert client.submitted["values"] == {"SMILES": "CCO"}

@@ -12,20 +12,20 @@ writes 3.0, or a job sent to it fails at once (old ``run_flowchart`` cannot read
 an old datastore cannot record it). So seamm is released twice: first able to read 3.0
 but still writing 2.0, then -- once every machine has it -- writing 3.0.
 
-0. Decisions for Paul (before starting)
----------------------------------------
+0. Decisions (Paul, 2026-10-01: the recommendations)
+----------------------------------------------------
 
-- [ ] **Two seamm releases** (read 3.0 first, write 3.0 later), as above. Recommended.
-  The alternative is one release and updating every machine the same day, servers
-  first.
-- [ ] **Q3** -- a spec inside a job: recommended *no* (only complete 3.0 is run).
-- [ ] **The old seamm_dashboard.** Its job-upload views
-  (``routes/jobs/views.py:191``, ``:220``) reject anything without the 2.0 header. It
-  still runs on SEAMM_DEV (port 55066). Retire it everywhere (recommended; the web UI
-  replaces it), or patch it to accept 3.0. Find which machines still run it.
-- [ ] **D11** (record package versions in each job): include now or later?
-- [ ] **Phase 5 for the other ~60 plug-ins**: not needed for the switch (they keep
-  working without the shared rules); done plug-in by plug-in as each is next released.
+- [x] **Two seamm releases**: release 1 reads 3.0 and writes 2.0; release 2 writes 3.0.
+- [x] **Q3**: no spec inside a job; only complete 3.0 (or 2.0 through the converter)
+  is run.
+- [x] **The old seamm_dashboard is retired** everywhere; the web UI replaces it. Find
+  which machines still run it and stop it there (SEAMM_DEV runs one on port 55066).
+- [x] **D11** (package versions in each job): not part of the switch; later.
+- [x] **Phase 5 for the other plug-ins**: not part of the switch; plug-in by plug-in.
+- [x] **The first installation to update is the production ``~/SEAMM`` on this Mac,
+  exactly as a user would** (``seamm-manager update`` from PyPI, then the one-command
+  migration), to find what a user would meet. So the releases come first, and the
+  user-facing upgrade command (step 9) is released before ``~/SEAMM`` is updated.
 
 1. Before any release
 ---------------------

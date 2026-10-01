@@ -195,9 +195,22 @@ def test_format_detection():
     assert not format3.is_format3("#!/usr/bin/env run_flowchart\n!MolSSI flowchart 2.0")
 
 
-def test_3_0_is_the_default():
+def test_default_format(monkeypatch):
+    """Release 1 writes 2.0 by default (every machine must read 3.0 before any writes
+    it); SEAMM_FLOWCHART_FORMAT chooses; the builder always writes 3.0."""
+    import seamm.flowchart
+
     fb = build()
-    assert fb.flowchart.to_text().splitlines()[1] == "format: MolSSI flowchart 3.0"
-    assert fb.to_text().splitlines()[1] == "format: MolSSI flowchart 3.0"
-    # 2.0 can still be written when asked for
-    assert fb.flowchart.to_text(format="2.0").splitlines()[1] == "!MolSSI flowchart 2.0"
+    monkeypatch.delenv("SEAMM_FLOWCHART_FORMAT", raising=False)
+    header = {"2.0": "!MolSSI flowchart 2.0", "3.0": "format: MolSSI flowchart 3.0"}
+    default = seamm.flowchart.DEFAULT_FORMAT
+    assert fb.flowchart.to_text().splitlines()[1] == header[default]
+    assert fb.to_text().splitlines()[1] == header["3.0"]
+    for value in ("2.0", "3.0"):
+        monkeypatch.setenv("SEAMM_FLOWCHART_FORMAT", value)
+        assert fb.flowchart.to_text().splitlines()[1] == header[value]
+    monkeypatch.setenv("SEAMM_FLOWCHART_FORMAT", "4.0")
+    assert fb.flowchart.to_text().splitlines()[1] == header[default]
+    # Either can be asked for
+    assert fb.flowchart.to_text(format="2.0").splitlines()[1] == header["2.0"]
+    assert fb.flowchart.to_text(format="3.0").splitlines()[1] == header["3.0"]
