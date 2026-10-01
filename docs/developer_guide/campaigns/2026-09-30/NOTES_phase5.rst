@@ -140,7 +140,7 @@ sub-steps only for code steps (Dimer Builder's are optional); and a plug-in's
 
 Checked in ``~/SEAMM_DEV``: the 30 most recent job flowcharts all validate; the
 Testing flowcharts show only old problems (8 with ORCA's renamed BSSE parameter
-``fragment A atoms``, one stale ``CCSD(T)-F12D``); MOPAC job 3986 (PM7, COSMO
+``fragment A atoms``, one stale ``CCSD(T)-F12D``; both since fixed); MOPAC job 3986 (PM7, COSMO
 water, built from a spec) ran.
 
 Decisions for Paul (found by the agents, not changed)
@@ -150,19 +150,37 @@ Decisions for Paul (found by the agents, not changed)
   ``qeq convergence``/``iterations`` (ReaxFF under "default for forcefield"),
   ``Pdamp`` and the stress damping (Berendsen barostat), ``allow shear`` for fluids.
   The rules follow the dialog, so the builder refuses them too.
-- **LAMMPS run-time bugs**: ``initialization.py:431`` reads ``P["kspace_style"]``
-  (no such key: any explicit k-space method on a charged periodic system raises
-  KeyError); Minimization ``Sxy = _P["Sxz"]``; NPT's damping times converted as a
-  pressure and ``Szz1 = Szz1`` (should be ``Syy1``) in the "y and z" branch;
-  ``nreset``, ``mtk`` and ``run_control`` shown or defined but never read.
 - **Psi4**: BSSE shows Energy settings ``bsse.py`` ignores (could be ``unused``);
   Thermochemistry shows plot settings that have no effect with "use existing
-  parameters"; ``energy.get_method`` raises KeyError for a functional's short name;
-  "Thermochemistry right after Initialization" depends on position, so the builder
-  cannot check it.
+  parameters"; "Thermochemistry right after Initialization" depends on position, so
+  the builder cannot check it.
 - **MOPAC**: ``structure`` is never shown though used at run time; Force Constants
   fails at run time if MOZYME gives more than one input (a ``problems()`` candidate).
 - **Gaussian**: ``configuration name`` edits in ``__init__`` are still lost by
   ``from_dict``; a stored ``DG2`` dispersion (never offered) is now refused.
-- **ORCA**: old flowcharts using ``fragment A atoms`` cannot be read (the BSSE
-  redesign renamed it without a translation in ``BSSEParameters.__init__``).
+
+Run-time bugs fixed (2026-09-30)
+--------------------------------
+
+Committed locally on each ``dev``; not pushed.
+
+- **LAMMPS** (7950681): an explicit k-space method on a charged system raised
+  KeyError (``P["kspace_style"]``); the pair style and ``kspace_style`` line now come
+  from a testable ``explicit_kspace()``. Minimization's ``Sxy`` was read from ``Sxz``.
+  NPT's six damping times were converted as pressures (now times), the "y and z"
+  branch set ``Szz1 = Szz1`` (now ``Syy1``), and ``mtk`` and ``nreset`` are now
+  written to the ``fix npt`` line. NVE's ``run_control`` / ``maximum_time`` /
+  ``control_properties`` are marked not implemented (``not_implemented``), so the
+  builder refuses them with that reason, rather than being implemented. Also:
+  Velocities' ``remove_momentum`` default ended in a period, so was not one of its
+  own choices; old flowcharts' spelling is translated.
+- **Psi4** (293719a): ``energy.get_method`` raised KeyError when the functional was
+  given by its short name (the dispersion check looked it up by that name).
+- **ORCA** (0170ba3): old flowcharts' ``fragment A atoms`` becomes ``fragment
+  atoms: "X; rest"`` (a last group ``rest`` = the remaining atoms) and ``auto (2
+  molecules)`` becomes ``auto (molecules)``; the method ``CCSD(T)-F12D``, renamed
+  ``CCSD(T)-F12D/RI`` in da696be, is translated too.
+- **seamm** (b56a2c9): ``problems()`` no longer flags a variable inside a named
+  value (Model Chemistry's basis ``{'name': '$basis'}``).
+
+After these, all 58 Testing and recent-job flowcharts in the sweep validate.
