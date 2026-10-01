@@ -125,11 +125,26 @@ def test_unconnected_and_missing_positions():
 
 
 def test_version_conflict_reported():
+    """Steps of one package at different versions are reported, and the newest is
+    required. Every version is set here: the installed one depends on how seamm was
+    installed (a shallow checkout without tags gives '0+unknown')."""
     _, data = two_point_oh(build().flowchart)
+
+    def set_versions(item):
+        if isinstance(item, dict):
+            if "version" in item and "module" in item:
+                item["version"] = "2021.2.2"
+            for value in item.values():
+                set_versions(value)
+        elif isinstance(item, list):
+            for value in item:
+                set_versions(value)
+
+    set_versions(data)  # sub-flowcharts' start steps carry versions too
     data["nodes"][1]["version"] = "2020.1.1"
     converted, report = convert_v2.convert_data(rebuild(data))
-    assert any("have versions 2020.1.1" in line for line in report)
-    assert converted["requires"]["seamm"] != "2020.1.1"
+    assert any("have versions 2020.1.1, 2021.2.2" in line for line in report)
+    assert converted["requires"]["seamm"] == "2021.2.2"
 
 
 def test_format_1_0():
