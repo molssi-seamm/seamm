@@ -135,7 +135,13 @@ small test job and check it runs and its flowchart is recorded.
   works over stdio; job 4000 finished. ``SEAMM_FLOWCHART_FORMAT`` not set: SEAMM_DEV writes
   2.0 until release 2 like the others, and is migrated again then.
 - [ ] paul.local.
-- [ ] MolSSI10.
+- [x] MolSSI10 (2026-10-01). Backup ``~/SEAMM_backups/2026-10-01-before-format3/`` (the
+  database and every job's ``flowchart.flow``/``job_data.json`` -- what the migration
+  touches -- and the venv freezes; ``Jobs`` is 125 GB on ext4, so no full copy). **The old
+  dashboard retired**: systemd user unit ``org.molssi.seamm.dashboard`` (conda ``seamm``
+  env, port 55055) stopped and disabled, unit file kept. One plain
+  ``seamm-manager update --all`` (login shell): the tool upgraded itself to 2026.10.1.1,
+  the main environment, the web interface (updated and restarted) and the JobServer.
 - [ ] TinkerCliffs/ARC (``/projects/seamm``; no services).
 - [ ] ChemAI -- **Paul's explicit OK for each action.**
 
@@ -163,7 +169,10 @@ for undo), restart, open a few converted jobs in the web UI.
   ``/root/SEAMM/...`` paths, so the web UI cannot show their files (``datastore rebuild``
   would record the real paths).
 - [ ] paul.local.
-- [ ] MolSSI10.
+- [x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
+  LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
+  ``Jobs/seamm.db.bak-2026-10-01-150006-before-format3``). Job 682 (queue ``molssi10``)
+  finished; ``submit_job`` without a queue was refused, listing the two queues.
 - [ ] TinkerCliffs/ARC (about 53,000 job copies of 56 flowcharts; converts by content).
 - [ ] ChemAI -- with Paul's OK.
 
