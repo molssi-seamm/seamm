@@ -812,9 +812,10 @@ class Parameters(collections.abc.MutableMapping):
             if allowed is None:
                 continue
             value = values.get(key)
-            if self._is_expr(value):
-                continue
+            # A value may be a mapping with a name, e.g. a basis set
             name = value.get("name") if isinstance(value, dict) else value
+            if self._is_expr(name):
+                continue
             if name not in allowed:
                 shown = ", ".join(repr(c) for c in list(allowed)[:20])
                 if len(allowed) > 20:

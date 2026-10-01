@@ -197,3 +197,14 @@ def test_validate_reports_problems():
     fb.flowchart.get_nodes()[1].parameters["basis"].value = "def2-SVP"
     problems = edit.validate(fb.flowchart)
     assert any("'def2-SVP' is not valid for 'basis'" in p for p in problems)
+
+
+def test_a_variable_inside_a_named_value_counts_as_met():
+    P = RulesParameters()
+    values = {
+        **P.current_values(),
+        "use model chemistry": "no",
+        "method": "CCSD(T)-F12",
+        "basis": {"name": "$basis", "elements": []},
+    }
+    assert P.problems(values) == []
