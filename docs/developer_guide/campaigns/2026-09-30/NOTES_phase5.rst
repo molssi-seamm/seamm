@@ -143,18 +143,6 @@ Testing flowcharts show only old problems (8 with ORCA's renamed BSSE parameter
 ``fragment A atoms``, one stale ``CCSD(T)-F12D``; both since fixed); MOPAC job 3986 (PM7, COSMO
 water, built from a spec) ran.
 
-Decisions for Paul (found by the agents, not changed)
------------------------------------------------------
-
-- **Psi4**: BSSE shows Energy settings ``bsse.py`` ignores (could be ``unused``);
-  Thermochemistry shows plot settings that have no effect with "use existing
-  parameters"; "Thermochemistry right after Initialization" depends on position, so
-  the builder cannot check it.
-- **MOPAC**: ``structure`` is never shown though used at run time; Force Constants
-  fails at run time if MOZYME gives more than one input (a ``problems()`` candidate).
-- **Gaussian**: ``configuration name`` edits in ``__init__`` are still lost by
-  ``from_dict``; a stored ``DG2`` dispersion (never offered) is now refused.
-
 Run-time bugs fixed (2026-09-30)
 --------------------------------
 
@@ -212,3 +200,27 @@ Found by running the check job in ``~/SEAMM_DEV``:
   stops with the sub-step, LAMMPS's message, the last command, advice for common
   errors and where the log is; no ``success.dat`` is written (lammps_step bda3a70,
   job 3993).
+
+Smaller gaps fixed (2026-10-01)
+-------------------------------
+
+The last of the agents' findings, each checked with a job in ``~/SEAMM_DEV``:
+
+- **Psi4** (6d9e07b): BSSE's 17 ignored Energy settings are ``unused`` (hidden,
+  refused); Thermochemistry's plots apply only with its own settings (the Output tab
+  hides); right after Initialization, "use existing parameters" falls back to its own
+  settings at run time, as the dialog does (job 3995). The builder still needs
+  ``use existing parameters: no`` to set Energy settings there.
+- **MOPAC** (f6e5c81): ``structure`` is shown; an explicit ``initial`` after the first
+  sub-step crashed (UnboundLocalError); Force Constants with MOZYME raised
+  NotImplementedError -- MOPAC's FORCE works with MOZYME (checked directly), so only
+  the main input is used and ``structure``/``MOZYME follow-up`` are unused there, and
+  Energy's analysis no longer expects a follow-up that does not apply (job 3994 failed
+  on that, 3997 finished). Also ``["MOZYME"] == "always"`` (always False) and the
+  "will be che Hartree-Fock" description.
+- **Gaussian** (bfee70f): the ``system name`` edit had been applied to
+  ``configuration name`` (choice listed twice, "keep current name" lost); old ``DG2``
+  is translated to ``GD2`` (job 3996).
+- **seamm** (1ebcff6): ``Parameters.from_dict`` keeps ``__init__`` edits.
+  (packmol_step's 11 failing output comparisons are a pre-existing number-format
+  difference, the same with the old code.)
