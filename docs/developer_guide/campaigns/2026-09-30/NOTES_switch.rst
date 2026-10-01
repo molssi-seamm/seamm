@@ -142,7 +142,14 @@ small test job and check it runs and its flowchart is recorded.
   env, port 55055) stopped and disabled, unit file kept. One plain
   ``seamm-manager update --all`` (login shell): the tool upgraded itself to 2026.10.1.1,
   the main environment, the web interface (updated and restarted) and the JobServer.
-- [ ] TinkerCliffs/ARC (``/projects/seamm``; no services).
+- [x] TinkerCliffs/ARC (2026-10-01; ``/projects/seamm``, no services). Backup
+  ``/projects/seamm/SEAMM_backups/2026-10-01-before-format3/`` (database + all 56,924 job
+  flowcharts and job_data.json, 357 MB). The first ``update --all`` hit the known GPFS
+  self-reinstall bug of the old tool (2026.9.29.1, before the 2026.9.29.2 fix): the tool
+  was half-deleted, fell back to the cached package list ("Everything is up to date") and
+  crashed (no ``seamm_manager.policy``). Repaired with ``uv tool install --force
+  seamm-manager`` (``env.sh``); the second ``update --all`` updated everything (no web
+  interface, no services).
 - [ ] ChemAI -- **Paul's explicit OK for each action.**
 
 4. Switch the writer to 3.0
@@ -173,7 +180,11 @@ for undo), restart, open a few converted jobs in the web UI.
   LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
   ``Jobs/seamm.db.bak-2026-10-01-150006-before-format3``). Job 682 (queue ``molssi10``)
   finished; ``submit_job`` without a queue was refused, listing the two queues.
-- [ ] TinkerCliffs/ARC (about 53,000 job copies of 56 flowcharts; converts by content).
+- [x] TinkerCliffs/ARC (2026-10-01): 52,736 + 4,083 job flowcharts converted, 46 rows
+  split, 1,037 jobs re-pointed; backup ``Jobs/seamm.db.bak-2026-10-01-153534-before-format3``.
+  The 105 "problems" are empty ``flowchart.flow`` files in GM jobs from 2025-12 that never
+  ran (no ``job_data.json``); migrate skips them, unchanged. A converted job validates and
+  shows with ARC's plug-ins. Moving ARC's jobs to ChemAI is a separate, later task (Paul).
 - [ ] ChemAI -- with Paul's OK.
 
 (``~/SEAMM_DEV`` was migrated on 2026-09-30.)
