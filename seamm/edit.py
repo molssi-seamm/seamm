@@ -421,7 +421,12 @@ def validate(flowchart):
             if "body" in step and not step["body"]:
                 problems.append(f"{label}: the loop has no steps in its body.")
             if "steps" in step and not step["steps"]:
-                problems.append(f"{label}: has no sub-steps, so it does nothing.")
+                # Only a code step (ORCA, MOPAC, ...), whose sub-steps come from its
+                # own namespace, does nothing without them; for steps like Dimer
+                # Builder or Loop-like ones, the sub-steps are optional.
+                inner = _children(level, i)
+                if inner is not None and inner.catalog.namespace != "org.molssi.seamm":
+                    problems.append(f"{label}: has no sub-steps, so it does nothing.")
             try:
                 node = _fresh(level.catalog, step["step"], step.get("parameters"))
             except Exception as e:
