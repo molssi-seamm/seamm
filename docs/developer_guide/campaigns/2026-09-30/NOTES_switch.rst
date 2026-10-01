@@ -134,7 +134,13 @@ small test job and check it runs and its flowchart is recorded.
   ``2026.8.7.1+0.gd387828.dirty`` (its code is the release's). ``mcp`` kept; the MCP server
   works over stdio; job 4000 finished. ``SEAMM_FLOWCHART_FORMAT`` not set: SEAMM_DEV writes
   2.0 until release 2 like the others, and is migrated again then.
-- [ ] paul.local.
+- [x] paul.local (2026-10-01): ``~/SEAMM`` and ``~/SEAMM_DEV`` (no editable installs, no old
+  dashboard, nothing running), backed up in full to ``~/SEAMM_backups/2026-10-01-*-before-format3``.
+  One plain ``update --all`` each (the tool in ``~/.local/bin``, not on the non-interactive
+  ssh PATH; ``--root ~/SEAMM_DEV`` for the second): the tool upgraded itself from 2026.9.28.1
+  (local APFS, so no self-reinstall trouble), the main environment (also fhi-aims-step and
+  vasp-step, which had lagged), the web interfaces (updated and restarted), and the
+  databases, which had no version recorded (stamped d7d6859198e9, then updated).
 - [x] MolSSI10 (2026-10-01). Backup ``~/SEAMM_backups/2026-10-01-before-format3/`` (the
   database and every job's ``flowchart.flow``/``job_data.json`` -- what the migration
   touches -- and the venv freezes; ``Jobs`` is 125 GB on ext4, so no full copy). **The old
@@ -175,7 +181,9 @@ for undo), restart, open a few converted jobs in the web UI.
   command. ``status``: all 3.0. Found, unrelated: 28 Docker-era jobs (ids 1-52) record
   ``/root/SEAMM/...`` paths, so the web UI cannot show their files (``datastore rebuild``
   would record the real paths).
-- [ ] paul.local.
+- [x] paul.local (2026-10-01): ``~/SEAMM`` 2 job flowcharts and 1 row converted (backup
+  ``Jobs/seamm.db.bak-2026-10-01-165151-before-format3``), services restarted, web UI 200;
+  ``~/SEAMM_DEV`` has no jobs: nothing to convert.
 - [x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
   LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
   ``Jobs/seamm.db.bak-2026-10-01-150006-before-format3``). Job 682 (queue ``molssi10``)
