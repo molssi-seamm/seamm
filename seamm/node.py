@@ -62,6 +62,28 @@ def_fmt = {
 }
 
 
+def _bibliography_path(package):
+    """The references.bib of a package, or None.
+
+    The installed package's list of files names it -- except for an editable
+    (development) install, whose list holds only its link to the source, so then
+    look in the package's directory.
+    """
+    try:
+        files = [p for p in (implib.files(package) or []) if "references.bib" in str(p)]
+    except Exception:
+        files = []
+    if files:
+        return files[0].locate()
+    try:
+        import importlib.resources
+
+        found = sorted(Path(importlib.resources.files(package)).rglob("references.bib"))
+    except Exception:
+        found = []
+    return found[0] if found else None
+
+
 class Node(collections.abc.Hashable):
     """The base class for nodes (steps) in flowcharts.
 
@@ -202,9 +224,8 @@ class Node(collections.abc.Hashable):
 
         # Setup the bibliography
         package = self.__module__.split(".")[0]
-        files = [p for p in implib.files(package) if "references.bib" in str(p)]
-        if len(files) > 0:
-            path = files[0].locate()
+        path = _bibliography_path(package)
+        if path is not None:
             self.logger.info(f"bibliography file path = '{path}'")
 
             data = path.read_text()
