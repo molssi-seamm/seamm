@@ -98,7 +98,7 @@ undeclared dependencies, now declared: ``seamm-exec`` (psi4_step, mopac_step) an
 ``model-chemistry-step`` (lammps_step). The docs mock ``seamm_installer``, which the
 installers import and SEAMM's manager provides.
 
-- [ ] **model_chemistry_step** -- PR #6 (merge first: lammps_step uses it)
+- [x] **model_chemistry_step** 2026.10.1 -- released and on PyPI (PR #6)
 - [ ] **orca_step** -- PR #34
 - [ ] **gaussian_step** -- PR #32
 - [ ] **psi4_step** -- PR #45
