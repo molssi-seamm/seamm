@@ -117,17 +117,14 @@ that the manager upgrades from PyPI into ``venv-webui`` (2026.10.1.1). So a plai
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
 
-- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would. *2026-10-01:* backup in
-  ``~/SEAMM_backups/2026-10-01-before-format3/`` (Jobs + venv freezes); plain
-  ``seamm-manager update --all`` updated the main environment (all 2026.10.1, the
-  manager tool too) and restarted the JobServer, and printed the migration notice --
-  **but left the web interface** (``venv-webui``: seamm-webui 2026.8.13.1, datastore
-  2026.9.25, not restarted): ``update`` never touched that environment. Fix: seamm_manager
-  2026.10.1.1 (PR #21); then refresh the package list and run ``update --all`` again,
-  before migrating. Note: ``update --all``
-  installs the versions in the *published lock* (the nightly package list), so a release
-  made today needs the nightly list or ``--latest``; decide which a user would do (256 job flowcharts
-  in 2.0 found by ``seamm-manager flowcharts status``).
+- [x] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would (2026-10-01). Backup in
+  ``~/SEAMM_backups/2026-10-01-before-format3/`` (Jobs + venv freezes). The first plain
+  ``seamm-manager update --all`` updated the main environment and the JobServer but **not
+  the web interface** (``venv-webui`` was never updated by ``update``): fixed in
+  seamm_manager 2026.10.1.1 (PR #21), package list refreshed (Zenodo
+  ``10.5281/zenodo.23088748``), and a second plain ``update --all`` upgraded the manager
+  tool itself, then the web interface (seamm-webui 2026.10.1.1, datastore 2026.10.1) and
+  restarted it. Job 551 (SMILES=CCO, MOPAC PM7, -53.29 kcal/mol) finished.
 - [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions; set
   ``SEAMM_FLOWCHART_FORMAT=3.0`` there to keep writing 3.0 (it is already migrated).
 - [ ] paul.local.
@@ -140,6 +137,8 @@ small test job and check it runs and its flowchart is recorded.
 
 - [ ] **seamm release 2**: ``Flowchart.write()``/``to_text()`` default to 3.0.
 - [ ] Update every installation again (as in step 3).
+- [ ] Run ``seamm-manager flowcharts migrate`` again on every migrated installation: jobs
+  run between its migration and release 2 still write 2.0 (``~/SEAMM`` job 551 on).
 
 5. Migrate the job directories and datastores
 ---------------------------------------------
@@ -148,7 +147,14 @@ Per installation: ``seamm-flowchart migrate --root ROOT`` (dry run), review the 
 stop the JobServer and web UI, ``--apply`` (backs up the datastore, writes a manifest
 for undo), restart, open a few converted jobs in the web UI.
 
-- [ ] ``~/SEAMM`` on this Mac (about 1,200 job directories).
+- [x] ``~/SEAMM`` on this Mac (2026-10-01): ``seamm-manager flowcharts migrate`` (dry run
+  reviewed: 228 + 28 job flowcharts, 8 rows split, no problems; ``tensor_labels`` dropped
+  from diffusivity steps is a constant, not a setting). Datastore backup
+  ``Jobs/seamm.db.bak-2026-10-01-142410-before-format3``, manifest
+  ``Jobs/format3-migration-2026-10-01-142410.json``; services stopped and restarted by the
+  command. ``status``: all 3.0. Found, unrelated: 28 Docker-era jobs (ids 1-52) record
+  ``/root/SEAMM/...`` paths, so the web UI cannot show their files (``datastore rebuild``
+  would record the real paths).
 - [ ] paul.local.
 - [ ] MolSSI10.
 - [ ] TinkerCliffs/ARC (about 53,000 job copies of 56 flowcharts; converts by content).
