@@ -77,7 +77,7 @@ one failure, ``test_frequencies_ir_spectrum_graph``, predates this work: a
 ``line.graph_template`` lookup), model_chemistry_step 99.
 
 Gaussian, Psi4, MOPAC and LAMMPS (2026-09-30)
---------------------------------------------
+---------------------------------------------
 
 Done in parallel, each following the ORCA implementation; each is committed locally
 on its ``dev`` and installed editable in ``~/SEAMM_DEV``:
