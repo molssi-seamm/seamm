@@ -208,3 +208,40 @@ def test_a_variable_inside_a_named_value_counts_as_met():
         "basis": {"name": "$basis", "elements": []},
     }
     assert P.problems(values) == []
+
+
+class _Edited(seamm.Parameters):
+    """Parameters whose __init__ changes a definition, as plug-ins do."""
+
+    parameters = {
+        "name": {
+            "default": "keep",
+            "kind": "string",
+            "enumeration": ("keep", "rename"),
+            "description": "Name:",
+            "help_text": "",
+        },
+    }
+
+    def __init__(self, defaults={}, data=None):
+        super().__init__(defaults={**self.parameters, **defaults}, data=data)
+        self["name"]._data["enumeration"] = ("optimized", "keep", "rename")
+        self["name"].default = "optimized"
+
+
+def test_from_dict_keeps_init_edits():
+    P = _Edited()
+    P["name"].value = "rename"
+    P.from_dict(P.to_dict())
+    assert P["name"].enumeration == ("optimized", "keep", "rename")
+    assert P["name"].default == "optimized"
+    assert P["name"].value == "rename"
+
+
+def test_from_dict_without_a_class_of_its_own():
+    """Plain Parameters made from definitions are rebuilt from them."""
+    P = seamm.Parameters(defaults=_Edited.parameters)
+    P["name"].value = "rename"
+    P.from_dict(P.to_dict())
+    assert P["name"].enumeration == ("keep", "rename")
+    assert P["name"].value == "rename"

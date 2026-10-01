@@ -649,10 +649,23 @@ class Parameters(collections.abc.MutableMapping):
         return data
 
     def from_dict(self, data):
-        """Recreate the object from a dictionary"""
-        self._data = dict()
-        # Put back in all the constant data
-        self.initialize()
+        """Recreate the object from a dictionary.
+
+        The definitions come from a new instance of the class, so that changes its
+        __init__ makes (e.g. adding a choice or changing a default) are kept. If that
+        is not possible, or would not give the same parameters, they are rebuilt
+        from the defaults.
+        """
+        try:
+            fresh = type(self)()
+        except Exception:
+            fresh = None
+        if fresh is not None and set(fresh.defaults) == set(self.defaults):
+            self._data = fresh._data
+        else:
+            self._data = dict()
+            # Put back in all the constant data
+            self.initialize()
         # and update with the new data
         self.update(data)
 
