@@ -17,6 +17,7 @@
     seamm-flowchart move my.flow 4 --before 2
     seamm-flowchart validate my.flow
     seamm-flowchart migrate --root ~/SEAMM_DEV [--apply]
+    seamm-flowchart mcp                          # serve the tools to AI clients
 """
 
 import argparse
@@ -323,6 +324,22 @@ def validate_command(args):
     return 1 if problems else 0
 
 
+def mcp_command(args):
+    """Serve the flowchart tools to AI clients (MCP, over stdio)."""
+    try:
+        import mcp  # noqa: F401
+    except ImportError:
+        print(
+            "The MCP server needs the 'mcp' package: pip install 'seamm[mcp]'",
+            file=sys.stderr,
+        )
+        return 1
+    from . import mcp_server
+
+    mcp_server.main()
+    return 0
+
+
 def main(argv=None):
     """The seamm-flowchart command."""
     parser = argparse.ArgumentParser(
@@ -444,6 +461,13 @@ def main(argv=None):
         help="Make the changes (stop the JobServer and web UI first)",
     )
     p.set_defaults(func=migrate)
+
+    p = subparsers.add_parser(
+        "mcp",
+        help="Serve these tools to AI clients such as Claude (an MCP server, over "
+        "stdio; needs seamm[mcp])",
+    )
+    p.set_defaults(func=mcp_command)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=args.log_level)

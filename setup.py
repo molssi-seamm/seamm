@@ -51,6 +51,9 @@ setup(
     # deployment
     install_requires=requirements,
 
+    # The MCP server for AI clients (seamm-flowchart mcp)
+    extras_require={"mcp": ["mcp>=2.2"]},
+
     test_suite='tests',
 
     # Valid platforms your code works on, adjust to your flavor
