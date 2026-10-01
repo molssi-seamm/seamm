@@ -60,10 +60,10 @@ use pins it: ``lib>=version`` in ``requirements.txt``).
 
 Wave A -- libraries the servers need (independent of seamm):
 
-- [ ] **seamm_datastore** 2026.10.1 -- reads 3.0 flowcharts; ``build_from_jobs``.
-  PR #42 open (CI green), for **seamm** to merge and release.
-- [ ] **seamm_dashboard_client** 2026.10.1 -- ``Job.list_files``; files inside or after
-  a loop uploaded; CI moved from conda to uv. PR #18 open, for **seamm**.
+- [x] **seamm_datastore** 2026.10.1 -- reads 3.0 flowcharts; ``build_from_jobs``.
+  PR #42 merged; released and on PyPI; checked in a clean PyPI-only environment.
+- [x] **seamm_dashboard_client** 2026.10.1 -- ``Job.list_files``; files inside or after
+  a loop uploaded; CI moved from conda to uv. PR #18 merged; released and on PyPI.
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
