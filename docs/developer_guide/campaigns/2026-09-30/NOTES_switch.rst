@@ -186,7 +186,7 @@ for undo), restart, open a few converted jobs in the web UI.
   ``~/SEAMM_DEV`` has no jobs: nothing to convert.
   Its web UIs listen only on 127.0.0.1 without logins; reached from this Mac through an
   SSH tunnel (``ssh -f -N -L 55057:localhost:55055 -L 55058:localhost:55056 paul.local``),
-  job 3 finished. That needed the MCP job tools to accept a dashboard without
+  job 3 (``~/SEAMM``) and job 1 (``~/SEAMM_DEV``, its first job) finished. That needed the MCP job tools to accept a dashboard without
   credentials (seamm dev, for release 2).
 - [x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
   LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
