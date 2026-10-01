@@ -184,6 +184,10 @@ for undo), restart, open a few converted jobs in the web UI.
 - [x] paul.local (2026-10-01): ``~/SEAMM`` 2 job flowcharts and 1 row converted (backup
   ``Jobs/seamm.db.bak-2026-10-01-165151-before-format3``), services restarted, web UI 200;
   ``~/SEAMM_DEV`` has no jobs: nothing to convert.
+  Its web UIs listen only on 127.0.0.1 without logins; reached from this Mac through an
+  SSH tunnel (``ssh -f -N -L 55057:localhost:55055 -L 55058:localhost:55056 paul.local``),
+  job 3 finished. That needed the MCP job tools to accept a dashboard without
+  credentials (seamm dev, for release 2).
 - [x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
   LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
   ``Jobs/seamm.db.bak-2026-10-01-150006-before-format3``). Job 682 (queue ``molssi10``)
