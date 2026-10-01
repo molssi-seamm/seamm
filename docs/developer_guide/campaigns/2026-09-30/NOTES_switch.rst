@@ -166,8 +166,13 @@ small test job and check it runs and its flowchart is recorded.
   ``org.molssi.seamm.dashboard`` (conda ``seamm``, port 55055) stopped and disabled;
   (2) backup ``/home/seamm/SEAMM_backups/2026-10-01-before-format3/`` (database, all 2,606
   job flowcharts + job_data.json, venv freezes; Paul runs no jobs until the update).
-  Next, each with Paul's OK: (3) ``update --all``; (4) migrate dry run; (5) migrate;
-  (6) test job on the ``ChemAI`` queue.
+  Timing (from the mlff session, 18:00 EDT): the snapshot jobs 11749-11752 are **held**
+  (``scontrol hold``, Paul's request); wait only for the density runs 11747/11748 (34.5 of
+  100 ps, about 21:05 EDT). Next, each with Paul's OK: (3) ``update --all``; (4) migrate
+  dry run; (5) migrate; (6) check a job can still start (seamm-lammps env, xnn, LAMMPS +
+  MDI, GPUs) and a SEAMM test job on the ``ChemAI`` queue; (7)
+  ``scontrol release 11749 11750 11751 11752`` so the snapshots and the queued density
+  ladder run overnight.
 
 4. Switch the writer to 3.0
 ---------------------------
