@@ -1,13 +1,12 @@
 2026-09-30 -- Building flowcharts programmatically, and flowchart format 3.0
 ============================================================================
 
-Status (2026-09-30): **phases 0-2 and 4 done; phase 3 in progress** -- SEAMM_DEV
-writes 3.0 and has been migrated (``NOTES_phase3.rst``); the switch for other
-installations, Zenodo and releases remain. Editing commands and the
-build-seamm-flowchart skill are in (``NOTES_phase4.rst``). Phase 5 in progress: the
-shared rules are in seamm, ORCA and Model Chemistry (``NOTES_phase5.rst``). Phase 6
-(2026-10-01): a local MCP server, ``seamm-flowchart mcp`` (``NOTES_phase6.rst``). Nothing
-pushed. Q1, Q4 and Q7 decided by Paul
+Status (2026-10-01): **phases 0-2 and 4-6 done; phase 3 done in SEAMM_DEV only** --
+SEAMM_DEV writes 3.0 and has been migrated (``NOTES_phase3.rst``); editing commands and the
+skill (``NOTES_phase4.rst``); shared rules in seamm and six plug-ins (``NOTES_phase5.rst``);
+a local MCP server with flowchart and job tools (``NOTES_phase6.rst``). What remains is the
+switch -- releases, the other installations, Zenodo and removing the 2.0 code -- in
+``NOTES_switch.rst``, awaiting Paul's approval. Nothing pushed. Q1, Q4 and Q7 decided by Paul
 (``seamm`` core; keep ``.flow``; rename originals in job directories). The decisions
 reached in discussion are recorded under *Decided*; the ones still open are under *Open
 questions* and are Paul's.
