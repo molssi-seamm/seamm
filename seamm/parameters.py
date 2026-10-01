@@ -93,7 +93,7 @@ class Parameter(collections.abc.MutableMapping):
     def __repr__(self):
         """The official string representation of this object"""
         if self.units is None or self.units == "":
-            return self.value
+            return str(self.value)
         else:
             return ("{} {}").format(self.value, self.units)
 
@@ -853,9 +853,14 @@ class Parameters(collections.abc.MutableMapping):
             negate = isinstance(wanted, dict) and "not" in wanted
             if negate:
                 wanted = wanted["not"]
-            if isinstance(wanted, (list, tuple, set)):
-                text = " or ".join(repr(w) for w in wanted)
+            if not isinstance(wanted, (list, tuple, set)):
+                wanted = [wanted]
+            wanted = [repr(w) for w in wanted]
+            if not negate:
+                text = "is " + " or ".join(wanted)
+            elif len(wanted) == 1:
+                text = f"is not {wanted[0]}"
             else:
-                text = repr(wanted)
-            parts.append(f"'{other}' is {'not ' if negate else ''}{text}")
+                text = "is neither " + ", ".join(wanted[:-1]) + f" nor {wanted[-1]}"
+            parts.append(f"'{other}' {text}")
         return " and ".join(parts)

@@ -271,11 +271,16 @@ def set_parameters(node, params=None, **kwargs):
         raise FlowchartBuildError(f"The step '{node.title}' has no parameters.")
 
     P = node.parameters
-    before = P.to_dict()
+    # Restore only the values if anything is refused: from_dict() would rebuild
+    # the parameters from their class definitions, losing changes a plug-in makes
+    # in its __init__ (e.g. a narrowed enumeration).
+    before = {key: (P[key].value, P[key]._data.get("units")) for key in P}
     try:
         _set_and_check(node, P, values)
     except FlowchartBuildError:
-        P.from_dict(before)
+        for key, (value, units) in before.items():
+            P[key]._data["value"] = value
+            P[key]._data["units"] = units
         raise
 
 

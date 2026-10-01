@@ -110,6 +110,11 @@ def test_expressions_count_as_met():
 
 def test_describe_condition():
     P = RulesParameters()
+    P["family"]._data["applies_when"] = {"extrapolation": {"not": ["none", "cc"]}}
+    assert (
+        P.describe_condition("family") == "'extrapolation' is neither 'none' nor 'cc'"
+    )
+    P = RulesParameters()
     assert P.describe_condition("functional") == "'method' is 'DFT'"
     assert P.describe_condition("family") == "'extrapolation' is not 'none'"
     assert P.describe_condition("use model chemistry") == ""
