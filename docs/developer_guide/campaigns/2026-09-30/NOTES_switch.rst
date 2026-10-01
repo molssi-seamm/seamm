@@ -125,8 +125,15 @@ small test job and check it runs and its flowchart is recorded.
   ``10.5281/zenodo.23088748``), and a second plain ``update --all`` upgraded the manager
   tool itself, then the web interface (seamm-webui 2026.10.1.1, datastore 2026.10.1) and
   restarted it. Job 551 (SMILES=CCO, MOPAC PM7, -53.29 kcal/mol) finished.
-- [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions; set
-  ``SEAMM_FLOWCHART_FORMAT=3.0`` there to keep writing 3.0 (it is already migrated).
+- [x] ``~/SEAMM_DEV`` (2026-10-01) -- backup ``~/SEAMM_backups/2026-10-01-SEAMM_DEV-before-release-update/``
+  (Jobs 43 GB clone; 2,099 jobs / 876 directories match); plain
+  ``~/SEAMM_DEV/venv/bin/seamm-manager update --all`` replaced the editable installs with
+  the releases, updated and restarted the web interface and the JobServer, and updated
+  the development tools. Still editable: seamm-packaging (not in the package list) and
+  seamm_bsse -- the lock's ``==2026.8.7.1`` is satisfied by the editable
+  ``2026.8.7.1+0.gd387828.dirty`` (its code is the release's). ``mcp`` kept; the MCP server
+  works over stdio; job 4000 finished. ``SEAMM_FLOWCHART_FORMAT`` not set: SEAMM_DEV writes
+  2.0 until release 2 like the others, and is migrated again then.
 - [ ] paul.local.
 - [ ] MolSSI10.
 - [ ] TinkerCliffs/ARC (``/projects/seamm``; no services).
