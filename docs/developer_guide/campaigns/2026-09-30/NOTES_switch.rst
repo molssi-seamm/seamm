@@ -117,7 +117,14 @@ that the manager upgrades from PyPI into ``venv-webui`` (2026.10.1.1). So a plai
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
 
-- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would. Note: ``update --all``
+- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would. *2026-10-01:* backup in
+  ``~/SEAMM_backups/2026-10-01-before-format3/`` (Jobs + venv freezes); plain
+  ``seamm-manager update --all`` updated the main environment (all 2026.10.1, the
+  manager tool too) and restarted the JobServer, and printed the migration notice --
+  **but left the web interface** (``venv-webui``: seamm-webui 2026.8.13.1, datastore
+  2026.9.25, not restarted): ``update`` never touched that environment. Fix: seamm_manager
+  2026.10.1.1 (PR #21); then refresh the package list and run ``update --all`` again,
+  before migrating. Note: ``update --all``
   installs the versions in the *published lock* (the nightly package list), so a release
   made today needs the nightly list or ``--latest``; decide which a user would do (256 job flowcharts
   in 2.0 found by ``seamm-manager flowcharts status``).
