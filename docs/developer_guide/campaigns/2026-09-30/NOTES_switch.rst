@@ -67,12 +67,15 @@ Wave A -- libraries the servers need (independent of seamm):
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
-- [ ] **seamm** -- format 3.0 reader, spec, builder, layout, edit, the frozen
+- [ ] **seamm** 2026.10.1 -- format 3.0 reader, spec, builder, layout, edit, the frozen
   converter, ``seamm-flowchart`` (incl. ``migrate`` and ``mcp``), shared rules
   (``applies_when`` and friends), the SEAMMrc race fix, the bibliography cache,
-  ``from_dict``, editable-install fixes. Pin ``seamm_datastore>=`` (Wave A).
-  Older seamm rejects a plug-in that uses ``applies_when``, so this must precede every
-  plug-in below.
+  ``from_dict``, editable-install fixes, and the user guide page "Flowcharts without the
+  editor". Pins ``seamm-dashboard-client>=2026.10.1`` (seamm does not depend on
+  seamm_datastore; the migration uses SQLite directly). **PR #216 open, CI green** (after
+  fixing a test that assumed the installed seamm version sorted highest -- not true in
+  CI's shallow checkout). Older seamm rejects a plug-in that uses ``applies_when``, so
+  this must precede every plug-in below.
 
 Wave C -- services (pin seamm_datastore):
 
