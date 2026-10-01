@@ -69,9 +69,48 @@ The real file was **not** restored automatically (blocked as an overwrite): Paul
 restore it from ``~/.seamm.d/seammrc~`` (2026-08-11, 16 sections), re-adding anything
 added since. Time Machine's disk could not be mounted and there are no local snapshots.
 
+Job tools (2026-10-01)
+----------------------
+
+Committed on ``dev`` (19d884b), not pushed. Seven tools talk to dashboards:
+``list_dashboards``, ``dashboard_info`` (status, projects, queues with their SLURM
+limits), ``submit_job``, ``job_status``, ``list_jobs``, ``list_job_files`` and
+``read_job_file``.
+
+- The dashboards are those in the installation's ``dashboards.ini``
+  (``seamm_util.installation_path``, so ``~/SEAMM``'s for SEAMM_DEV) and the credentials
+  those in ``~/.seamm.d/seammrc``. Both are only read -- deliberately not through
+  ``DashboardHandler``, which creates ``dashboards.ini`` if missing and adds empty
+  sections to ``seammrc`` -- and credentials are never returned.
+- ``submit_job`` refuses a flowchart with problems; fills in the defaults of the
+  Parameters step's variables (``Dashboard.submit`` indexes every one) and converts
+  yes/no to booleans; checks that files exist (they are uploaded with the job) and the
+  project exists; and needs one of the dashboard's queues when it lists any (a
+  submission without a queue once went to ``molssi10``). Marked open-world and not read
+  only; the instructions say to confirm the dashboard, project and queue first.
+- **Checked:** 6 tests with a stand-in client (the queue rule, defaults, refusals, both
+  file-list formats, read-only credentials); 233 passed. Live on the dev web UI:
+  job 3999, built and submitted through the tools with ``SMILES=CCO``, finished (PM7
+  ΔHf -53.29 kcal/mol); status, job list, files and ``job.out`` read back; all 18
+  tools over real stdio.
+
+Found along the way:
+
+- **seamm_dashboard_client ``Job.list_files`` found no files** (tested the list, not
+  each entry) and failed with ``KeyError: 'parent'`` on seamm_webui's
+  ``{"path", "size"}`` listing. Fixed in the client (e9e83de, local); the server reads
+  both formats itself, so it does not depend on the fix. The client's test file needs
+  ``responses``, which the SEAMM_DEV venv lacks.
+- **The queue configuration on this Mac is ignored.** The JobServer and web UI run
+  without ``--name``/``--jobserver-name``, so they look for ``<hostname>.ini``; the
+  hostname is now ``PaulVT.local`` but the file is ``PaulsPersonal.local.ini`` (queues
+  ``local`` and ``molssi10``, default ``molssi10``). So the web UI lists no queues and
+  every job runs locally. For Paul.
+- ``list_dashboards(check=True)``: ``ChemAI_WebUI`` and ``MacMini`` report errors from
+  here (not investigated).
+
 Next
 ----
 
-Job tools (submit to a dashboard queue, status, results) through
-``seamm_dashboard_client`` and ``~/.seamm.d/seammrc``; registering the server with
-Claude Code / Claude Desktop; the skill pointing at the server where available.
+Registering the server with Claude Code / Claude Desktop; the skill pointing at the
+server where available.
