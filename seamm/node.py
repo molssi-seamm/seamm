@@ -84,6 +84,27 @@ def _bibliography_path(package):
     return found[0] if found else None
 
 
+def _templates_path(package):
+    """The templates directory of a package, or None.
+
+    As for references.bib (see _bibliography_path), an editable install's list of
+    files holds only its link to the source, so then look in the package's directory.
+    """
+    try:
+        for p in implib.files(package) or []:
+            if p.parent.name == "templates":
+                return p.locate().parent
+    except Exception:
+        pass
+    try:
+        import importlib.resources
+
+        path = Path(importlib.resources.files(package)) / "templates"
+    except Exception:
+        return None
+    return path if path.is_dir() else None
+
+
 class Node(collections.abc.Hashable):
     """The base class for nodes (steps) in flowcharts.
 
@@ -1644,16 +1665,10 @@ class Node(collections.abc.Hashable):
                 )
                 loaders = []
                 for module in module_path:
-                    paths = []
-                    for p in implib.files(module):
-                        if p.parent.name == "templates":
-                            paths.append(p)
-                            break
-
-                    if len(paths) == 0:
+                    path = _templates_path(module)
+                    if path is None:
                         self.logger.debug(f"\t{module} -- found no templates directory")
                     else:
-                        path = paths[0].locate().parent
                         self.logger.debug(f"\t{module} --> {path}")
                         loaders.append(jinja2.FileSystemLoader(path))
 
