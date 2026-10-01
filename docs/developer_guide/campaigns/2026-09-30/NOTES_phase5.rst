@@ -146,10 +146,6 @@ water, built from a spec) ran.
 Decisions for Paul (found by the agents, not changed)
 -----------------------------------------------------
 
-- **LAMMPS: hidden in the dialog but read at run time** -- ``kspace_smallq``,
-  ``qeq convergence``/``iterations`` (ReaxFF under "default for forcefield"),
-  ``Pdamp`` and the stress damping (Berendsen barostat), ``allow shear`` for fluids.
-  The rules follow the dialog, so the builder refuses them too.
 - **Psi4**: BSSE shows Energy settings ``bsse.py`` ignores (could be ``unused``);
   Thermochemistry shows plot settings that have no effect with "use existing
   parameters"; "Thermochemistry right after Initialization" depends on position, so
@@ -184,3 +180,32 @@ Committed locally on each ``dev``; not pushed.
   value (Model Chemistry's basis ``{'name': '$basis'}``).
 
 After these, all 58 Testing and recent-job flowcharts in the sweep validate.
+
+LAMMPS settings hidden but used at run time (2026-10-01)
+--------------------------------------------------------
+
+Paul chose all four suggestions (lammps_step 9929131):
+
+- ``kspace_smallq`` applies whenever there is a k-space method (it always sets which
+  atoms count as charged; "automatic" may use ``msm/cg`` with it).
+- The QEq convergence and iterations apply to "default for forcefield" too.
+- ``Pdamp`` and the stress damping times apply to the Berendsen barostat too
+  (``press/berendsen`` requires them; the default 1000 fs was always used).
+- ``allow shear`` applies only to a solid with the Nose-Hoover barostat
+  (``press/berendsen`` cannot control a triclinic cell, per the LAMMPS docs), and is
+  ignored at run time where it does not apply.
+
+Found by running the check job in ``~/SEAMM_DEV``:
+
+- LAMMPS writes one box for all the steps of a LAMMPS step, so a Berendsen NPT
+  followed by a step allowing shear (or on a non-orthorhombic cell) failed in LAMMPS
+  ("Cannot use fix press/berendsen with triclinic box"). This is now caught before
+  running, with a clear message (job 3988). A builder check would need to look
+  across sub-steps and at the structure, so it is left to run time.
+- Graph templates were not found for an editable seamm (seamm 560429e), the cause of
+  ORCA's long-failing ``test_frequencies_ir_spectrum_graph`` too.
+- Job 3991 (Berendsen with ``Pdamp`` 500 fs; then, in its own LAMMPS step, Nose-Hoover
+  with shear) finished.
+- **Not fixed:** when LAMMPS itself fails (e.g. "Lost atoms", job 3989), lammps_step
+  does not notice and fails later in the trajectory analysis with an unrelated
+  ``IndexError``.
