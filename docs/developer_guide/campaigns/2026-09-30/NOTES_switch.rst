@@ -80,10 +80,12 @@ Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
 Wave C -- services (pin seamm_datastore):
 
-- [ ] **seamm_manager** 2026.10.1 -- ``datastore rebuild``; editable-install paths;
+- [x] **seamm_manager** 2026.10.1 (released, on PyPI, checked from PyPI against ~/SEAMM) -- ``datastore rebuild``; editable-install paths;
   ``flowcharts migrate``/``status`` and the update notice; Usage and Installation
   updated. **PR #20 open, CI green.**
-- [ ] **seamm_webui** 2026.10.1 -- rebuild a missing datastore from the job directories;
+- [ ] **seamm_webui** 2026.10.1 -- **not published**: its own Release.yaml (it adds the
+  frontend build) still used the conda env file the release removed. Fixed in PR #10
+  (CI green), to be released as **2026.10.1.1**. -- rebuild a missing datastore from the job directories;
   pins ``seamm-datastore>=2026.10.1``; CI moved from conda to uv. **PR #9 open, CI
   green.**
 
