@@ -206,6 +206,9 @@ Found by running the check job in ``~/SEAMM_DEV``:
   ORCA's long-failing ``test_frequencies_ir_spectrum_graph`` too.
 - Job 3991 (Berendsen with ``Pdamp`` 500 fs; then, in its own LAMMPS step, Nose-Hoover
   with shear) finished.
-- **Not fixed:** when LAMMPS itself fails (e.g. "Lost atoms", job 3989), lammps_step
-  does not notice and fails later in the trajectory analysis with an unrelated
-  ``IndexError``.
+- When LAMMPS itself failed (e.g. "Lost atoms", job 3989), lammps_step did not notice
+  and failed later in the trajectory analysis with an unrelated ``IndexError``. It now
+  finds the ``ERROR`` in ``log.lammps`` (or the screen output, for other processes) and
+  stops with the sub-step, LAMMPS's message, the last command, advice for common
+  errors and where the log is; no ``success.dat`` is written (lammps_step bda3a70,
+  job 3993).
