@@ -99,11 +99,17 @@ undeclared dependencies, now declared: ``seamm-exec`` (psi4_step, mopac_step) an
 installers import and SEAMM's manager provides.
 
 - [x] **model_chemistry_step** 2026.10.1 -- released and on PyPI (PR #6)
-- [ ] **orca_step** -- PR #34
-- [ ] **gaussian_step** -- PR #32
-- [ ] **psi4_step** -- PR #45
-- [ ] **mopac_step** -- PR #156
-- [ ] **lammps_step** -- PR #113
+- [x] **orca_step** 2026.10.1 -- released and on PyPI (PR #34)
+- [x] **gaussian_step** 2026.10.1 -- released and on PyPI (PR #32)
+- [x] **psi4_step** 2026.10.1 -- released and on PyPI (PR #45)
+- [x] **mopac_step** 2026.10.1 -- released and on PyPI (PR #156)
+- [x] **lammps_step** 2026.10.1 -- released and on PyPI (PR #113)
+
+**The published package list** (seamm_packaging, run by hand on 2026-10-01 once all were
+on PyPI): Zenodo ``10.5281/zenodo.23088483``, seamm_packaging release 2026.10.1.1. The lock
+pins all ten main-environment packages at 2026.10.1; seamm-webui is a standalone package
+that the manager upgrades from PyPI into ``venv-webui`` (2026.10.1.1). So a plain
+``seamm-manager update --all`` now picks everything up, as it would after a nightly run.
 
 3. Update every installation (servers before desktops)
 ------------------------------------------------------
