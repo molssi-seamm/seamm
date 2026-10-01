@@ -138,6 +138,20 @@ for undo), restart, open a few converted jobs in the web UI.
 9. Documentation and housekeeping
 ---------------------------------
 
+- [ ] **One command to upgrade an installation's flowcharts**, for users outside the two
+  of us (e.g. Hasnain at GM): ``seamm-manager flowcharts migrate [--root ROOT]``. It
+  stops the JobServer and web UI, runs ``seamm-flowchart migrate`` as a dry run and shows
+  the summary, asks for confirmation, applies (database backup + undo manifest), restarts
+  the services and says where the backup is. Released with seamm_manager before external
+  users are told to upgrade.
+- [ ] **``seamm-manager update`` notices format 2.0 job directories** and prints a short
+  notice pointing at that command (report only; it never migrates by itself).
+- [ ] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
+  ``seamm-manager update``, then ``seamm-manager flowcharts migrate``. Warn that moving
+  the database aside and restarting the web UI is *not* an upgrade: the rebuilt database
+  keeps no accounts and converts nothing (``seamm-manager datastore rebuild`` keeps the
+  accounts, but also converts nothing). An installation must have seamm release 1 before
+  it receives any 3.0 flowchart.
 - [ ] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server.
 - [ ] The build-seamm-flowchart skill: drop the "SEAMM_DEV only, no PRs" caveat; point
   the registered MCP server at ``~/SEAMM`` instead of ``~/SEAMM_DEV``.
