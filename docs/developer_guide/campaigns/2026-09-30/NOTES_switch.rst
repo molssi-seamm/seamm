@@ -67,7 +67,8 @@ Wave A -- libraries the servers need (independent of seamm):
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
-- [ ] **seamm** 2026.10.1 -- format 3.0 reader, spec, builder, layout, edit, the frozen
+- [x] **seamm** 2026.10.1 (released, on PyPI, checked in a clean PyPI-only environment:
+  writes 2.0 by default, reads both) -- format 3.0 reader, spec, builder, layout, edit, the frozen
   converter, ``seamm-flowchart`` (incl. ``migrate`` and ``mcp``), shared rules
   (``applies_when`` and friends), the SEAMMrc race fix, the bibliography cache,
   ``from_dict``, editable-install fixes, and the user guide page "Flowcharts without the
