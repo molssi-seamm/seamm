@@ -396,12 +396,10 @@ def _dashboard(name):
             f"There is no dashboard '{name}' in {path}. The dashboards are: "
             + ", ".join(names)
         )
+    # Without a user and password the client connects without logging in, which is
+    # what a web UI running without logins (e.g. one on 127.0.0.1) expects; one that
+    # needs a login then refuses the requests, and says so.
     user, password = _credentials(name)
-    if user is None or password is None:
-        raise ValueError(
-            f"There is no user and password for the dashboard '{name}' in "
-            f"~/.seamm.d/seammrc (a [Dashboard: {name}] section)."
-        )
     try:
         from . import __version__ as version
     except Exception:
@@ -446,7 +444,8 @@ def _job(dashboard, job_id):
 
 def list_dashboards(check: bool = False) -> list[dict]:
     """The dashboards that jobs can be submitted to, from the installation's
-    dashboards.ini, and whether there are credentials for each.
+    dashboards.ini, and whether there are credentials for each (a web UI running
+    without logins needs none).
 
     Args:
         check: Also contact each dashboard for its status ("running", "down" or
@@ -459,6 +458,7 @@ def list_dashboards(check: bool = False) -> list[dict]:
         entry = {
             "name": name,
             "url": config[name].get("url", ""),
+            # Not needed for a web UI that runs without logins
             "credentials": user is not None and password is not None,
         }
         if check:
