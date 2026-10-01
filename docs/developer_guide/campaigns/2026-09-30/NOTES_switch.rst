@@ -32,13 +32,16 @@ but still writing 2.0, then -- once every machine has it -- writing 3.0.
 
 - [ ] Full test suites of the 11 packages pass in ``~/SEAMM_DEV`` (done piecemeal; run
   once more together).
-- [ ] Fix ``Flowchart.get_nodes()`` stopping at the first loop where it matters for
+- [x] Fix ``Flowchart.get_nodes()`` stopping at the first loop where it matters for
   submission: ``Dashboard.submit`` uses it to find Parameters steps and the files to
-  upload, so a step after a loop does not get its files uploaded.
-- [ ] Update packmol_step's 11 stale test reference outputs (number formatting), so CI
-  is green.
-- [ ] Update the campaign's ``index.rst`` status line.
-- [ ] Prepare the seamm **writer switch** as a separate commit: release 1 keeps
+  upload, so a step after a loop does not get its files uploaded. *Done: the client
+  (204a5fe) and the MCP server (2c8db92) follow every edge; get_nodes() itself is left,
+  since the 2.0 digest uses it.*
+- [ ] Update packmol_step's 11 stale test reference outputs (number formatting) --
+  only when packmol_step is next released; it is not part of the switch.
+- [x] Update the campaign's ``index.rst`` status line.
+- [x] Prepare the seamm **writer switch** as a separate commit (2c8db92:
+  ``flowchart.DEFAULT_FORMAT``, overridable with ``SEAMM_FLOWCHART_FORMAT``): release 1 keeps
   ``Flowchart.write()``/``to_text()`` defaulting to 2.0 (the builder, ``seamm-flowchart``
   and the MCP server still write 3.0 explicitly); release 2 flips the default.
 
@@ -54,7 +57,8 @@ use pins it: ``lib>=version`` in ``requirements.txt``).
 Wave A -- libraries the servers need (independent of seamm):
 
 - [ ] **seamm_datastore** -- reads 3.0 flowcharts; ``build_from_jobs`` (2 commits).
-- [ ] **seamm_dashboard_client** -- ``Job.list_files`` fix (1 commit).
+- [ ] **seamm_dashboard_client** -- ``Job.list_files``; files inside or after a loop
+  uploaded (2 commits).
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
@@ -67,7 +71,8 @@ Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
 Wave C -- services (pin seamm_datastore):
 
-- [ ] **seamm_manager** -- ``datastore rebuild``; editable-install paths (1 commit).
+- [ ] **seamm_manager** -- ``datastore rebuild``; editable-install paths;
+  ``flowcharts migrate``/``status`` and the update notice (2 commits).
 - [ ] **seamm_webui** -- rebuild a missing datastore from the job directories (1 commit).
 
 Wave D -- plug-ins (each pins ``seamm>=`` release 1):
@@ -85,8 +90,10 @@ Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
 
-- [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions.
-- [ ] ``~/SEAMM`` on this Mac.
+- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would (256 job flowcharts
+  in 2.0 found by ``seamm-manager flowcharts status``).
+- [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions; set
+  ``SEAMM_FLOWCHART_FORMAT=3.0`` there to keep writing 3.0 (it is already migrated).
 - [ ] paul.local.
 - [ ] MolSSI10.
 - [ ] TinkerCliffs/ARC (``/projects/seamm``; no services).
@@ -138,13 +145,13 @@ for undo), restart, open a few converted jobs in the web UI.
 9. Documentation and housekeeping
 ---------------------------------
 
-- [ ] **One command to upgrade an installation's flowcharts**, for users outside the two
+- [x] **One command to upgrade an installation's flowcharts** (seamm_manager, local), for users outside the two
   of us (e.g. Hasnain at GM): ``seamm-manager flowcharts migrate [--root ROOT]``. It
   stops the JobServer and web UI, runs ``seamm-flowchart migrate`` as a dry run and shows
   the summary, asks for confirmation, applies (database backup + undo manifest), restarts
   the services and says where the backup is. Released with seamm_manager before external
   users are told to upgrade.
-- [ ] **``seamm-manager update`` notices format 2.0 job directories** and prints a short
+- [x] **``seamm-manager update`` notices format 2.0 job directories** and prints a short
   notice pointing at that command (report only; it never migrates by itself).
 - [ ] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
   ``seamm-manager update``, then ``seamm-manager flowcharts migrate``. Warn that moving
