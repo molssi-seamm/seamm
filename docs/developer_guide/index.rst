@@ -10,3 +10,4 @@ Contents:
    usage
    structure_selection
    contributing
+   campaigns/index

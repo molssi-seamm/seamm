@@ -23,6 +23,24 @@ import seamm_util
 
 logger = logging.getLogger(__name__)
 
+# The format Flowchart.write() and to_text() use when none is given. Format 3.0 is
+# introduced in two releases: the first reads 3.0 but still writes 2.0, so that every
+# machine can read 3.0 before any writes it; the second writes 3.0. An installation can
+# choose its own with the environment variable SEAMM_FLOWCHART_FORMAT ("2.0" or "3.0").
+DEFAULT_FORMAT = "2.0"
+
+
+def default_format():
+    """The flowchart format to write when none is given."""
+    value = os.environ.get("SEAMM_FLOWCHART_FORMAT", "").strip()
+    if value in ("2.0", "3.0"):
+        return value
+    if value != "":
+        logger.warning(
+            f"Ignoring SEAMM_FLOWCHART_FORMAT='{value}': it must be '2.0' or '3.0'."
+        )
+    return DEFAULT_FORMAT
+
 
 class Flowchart(object):
     graphics = "Tk"
@@ -464,10 +482,18 @@ class Flowchart(object):
 
             logger.debug("Adding edges, nodes:\n\t" + "\n\t".join(self.list_nodes()))
 
-    def write(self, filename):
-        """Write the serialized form to disk"""
+    def write(self, filename, format=None):
+        """Write the serialized form to disk
+
+        Parameters
+        ----------
+        filename : str
+            The file to write.
+        format : str
+            The flowchart format, "3.0" or "2.0"; by default default_format().
+        """
         with open(filename, "w") as fd:
-            fd.write(self.to_text())
+            fd.write(self.to_text(format=format))
 
         logger.info(f"Wrote flowchart to {filename}")
 
@@ -482,17 +508,31 @@ class Flowchart(object):
         """Copy the flowchart to the clipboard"""
         pyperclip.copy(self.to_text())
 
-    def to_text(self):
+    def to_text(self, format=None):
         """Return the text for the flowchart.
 
         This is the representation written to disk, submitted
-        as jobs, etc. There are two header lines followed by json
-        representing the flowchart.
+        as jobs, etc. In format 2.0 there are two header lines followed by json
+        representing the flowchart; format 3.0 is YAML (see seamm.format3).
+
+        Parameters
+        ----------
+        format : str
+            The flowchart format, "3.0" or "2.0"; by default default_format().
 
         Returns
         -------
         str : the text representation.
         """
+        if format is None:
+            format = default_format()
+        if str(format) == "3.0":
+            from . import format3
+
+            return format3.to_text(self)
+        if str(format) != "2.0":
+            raise ValueError(f"Unknown flowchart format '{format}'")
+
         text = "#!/usr/bin/env run_flowchart\n"
         text += "!MolSSI flowchart 2.0\n"
         text += "#metadata\n"
@@ -508,7 +548,28 @@ class Flowchart(object):
         return text
 
     def from_text(self, text):
-        """Recreate the flowchart from text"""
+        """Recreate the flowchart from text, in format 3.0, 2.0 or 1.0.
+
+        A 2.0 or 1.0 flowchart is first converted to 3.0 by the frozen converter
+        (seamm.convert_v2), so that every flowchart is read the same way.
+        """
+        from . import convert_v2, format3
+
+        if format3.is_format3(text):
+            logger.info("Reading flowchart format 3.0")
+            format3.from_text(self, text)
+            return
+
+        text3, report = convert_v2.convert(text)
+        for line in report:
+            logger.info(f"Converting the flowchart to format 3.0: {line}")
+        format3.from_text(self, text3)
+
+    def _from_text_objects(self, text):
+        """The previous reader of format 2.0 and 1.0, which restores node objects.
+
+        Kept only to compare against while format 3.0 is introduced; not used.
+        """
         lines = iter(text.splitlines())
 
         line = next(lines)

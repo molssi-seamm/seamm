@@ -1,6 +1,37 @@
 =======
 History
 =======
+2026.10.1 -- Flowcharts without the editor, and flowchart format 3.0
+    * Flowcharts can now be built, read, changed and checked without the graphical
+      editor, with the same checks the editor makes: the ``seamm-flowchart`` command
+      (``steps``, ``describe``, ``build``, ``show``, ``tree``, ``set``, ``insert``,
+      ``remove``, ``move``, ``validate``, ``convert``), short YAML *specs* that give
+      only what differs from the defaults, and Python (``seamm.builder``,
+      ``seamm.spec``, ``seamm.edit``). See "Flowcharts without the editor" in the user
+      guide.
+    * A new, readable flowchart format 3.0 (YAML) holding the metadata, the plug-in
+      versions, a digest of the whole flowchart (the old digest stopped at the first
+      loop), every parameter, unconnected steps and the layout. Format 2.0 is still
+      read, through a converter that never changes. This release still writes 2.0 by
+      default from the editor, so that every installation reads 3.0 before any writes
+      it; the next release writes 3.0. ``SEAMM_FLOWCHART_FORMAT`` chooses now.
+    * ``seamm-flowchart migrate`` converts an installation's job flowcharts and
+      datastore to 3.0 (backing up the datastore); ``seamm-manager flowcharts migrate``
+      wraps it for users.
+    * Steps can declare which of their parameters apply given the others, narrow
+      choices and fill in values that follow from others; their dialogs and these tools
+      share the rules, so a setting with no effect is refused with the reason.
+    * ``seamm-flowchart mcp``: an MCP server giving AI assistants (Claude Desktop,
+      Claude Code, ...) these operations as tools, plus submitting and following jobs
+      through a dashboard. Optional: ``pip install 'seamm[mcp]'``.
+    * Bugfix: using SEAMM from several threads at once could wipe
+      ``~/.seamm.d/seammrc``, losing every dashboard's credentials. Saves are now
+      atomic and never overwrite the file with an empty one.
+    * Bugfix: graph templates and plug-ins' citations were not found when SEAMM or a
+      plug-in was installed for development (editable).
+    * Reading and editing flowcharts is several times faster: each plug-in's
+      bibliography is parsed once, not for every step.
+
 2026.9.29 -- Bugfix: flowcharts with steps that have no position now open
     * Opening a flowchart in which a step had no position on the canvas -- one written
       by a script or another program rather than the editor -- failed with

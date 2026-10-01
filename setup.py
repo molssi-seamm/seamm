@@ -51,6 +51,9 @@ setup(
     # deployment
     install_requires=requirements,
 
+    # The MCP server for AI clients (seamm-flowchart mcp)
+    extras_require={"mcp": ["mcp>=2.2"]},
+
     test_suite='tests',
 
     # Valid platforms your code works on, adjust to your flavor
@@ -79,6 +82,7 @@ setup(
     entry_points={
         'console_scripts': [
             'seamm=seamm.__main__:flowchart',
+            'seamm-flowchart=seamm.flowchart_cli:main',
         ],
         'org.molssi.seamm': [
             'Join = seamm:JoinStep',

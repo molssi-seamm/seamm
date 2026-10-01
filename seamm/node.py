@@ -62,6 +62,68 @@ def_fmt = {
 }
 
 
+def _bibliography_path(package):
+    """The references.bib of a package, or None.
+
+    The installed package's list of files names it -- except for an editable
+    (development) install, whose list holds only its link to the source, so then
+    look in the package's directory.
+    """
+    try:
+        files = [p for p in (implib.files(package) or []) if "references.bib" in str(p)]
+    except Exception:
+        files = []
+    if files:
+        return files[0].locate()
+    try:
+        import importlib.resources
+
+        found = sorted(Path(importlib.resources.files(package)).rglob("references.bib"))
+    except Exception:
+        found = []
+    return found[0] if found else None
+
+
+# The parsed bibliographies, by path and modification time: parsing a references.bib
+# takes about 0.2 s (over 3 s for a large one), and every new step parses its
+# plug-in's, so building or reading a flowchart parsed the same files many times.
+_bibliographies = {}
+
+
+def _read_bibliography(path):
+    """The entries of a references.bib, as {key: BibTeX text}, parsed once."""
+    path = Path(path)
+    key = (str(path), path.stat().st_mtime_ns)
+    if key not in _bibliographies:
+        entries = bibtexparser.loads(path.read_text()).entries_dict
+        writer = bibtexparser.bwriter.BibTexWriter()
+        _bibliographies[key] = {
+            name: writer._entry_to_bibtex(data) for name, data in entries.items()
+        }
+    return _bibliographies[key]
+
+
+def _templates_path(package):
+    """The templates directory of a package, or None.
+
+    As for references.bib (see _bibliography_path), an editable install's list of
+    files holds only its link to the source, so then look in the package's directory.
+    """
+    try:
+        for p in implib.files(package) or []:
+            if p.parent.name == "templates":
+                return p.locate().parent
+    except Exception:
+        pass
+    try:
+        import importlib.resources
+
+        path = Path(importlib.resources.files(package)) / "templates"
+    except Exception:
+        return None
+    return path if path.is_dir() else None
+
+
 class Node(collections.abc.Hashable):
     """The base class for nodes (steps) in flowcharts.
 
@@ -202,17 +264,11 @@ class Node(collections.abc.Hashable):
 
         # Setup the bibliography
         package = self.__module__.split(".")[0]
-        files = [p for p in implib.files(package) if "references.bib" in str(p)]
-        if len(files) > 0:
-            path = files[0].locate()
+        path = _bibliography_path(package)
+        if path is not None:
             self.logger.info(f"bibliography file path = '{path}'")
-
-            data = path.read_text()
-            tmp = bibtexparser.loads(data).entries_dict
-            writer = bibtexparser.bwriter.BibTexWriter()
-            for key, data in tmp.items():
-                self.logger.info(f"      {key}")
-                self._bibliography[key] = writer._entry_to_bibtex(data)
+            # A copy: some steps add their own entries
+            self._bibliography = dict(_read_bibliography(path))
             self.logger.debug("Bibliography\n" + pprint.pformat(self._bibliography))
 
     def __hash__(self):
@@ -1623,16 +1679,10 @@ class Node(collections.abc.Hashable):
                 )
                 loaders = []
                 for module in module_path:
-                    paths = []
-                    for p in implib.files(module):
-                        if p.parent.name == "templates":
-                            paths.append(p)
-                            break
-
-                    if len(paths) == 0:
+                    path = _templates_path(module)
+                    if path is None:
                         self.logger.debug(f"\t{module} -- found no templates directory")
                     else:
-                        path = paths[0].locate().parent
                         self.logger.debug(f"\t{module} --> {path}")
                         loaders.append(jinja2.FileSystemLoader(path))
 
