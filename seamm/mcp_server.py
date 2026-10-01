@@ -14,6 +14,12 @@ checked by the same code, and rules, as the builder and the editor.
 
 The flowchart files are the single source of truth: each tool reads the file it is
 given and writes the result back (or to ``output``), in format 3.0.
+
+The job tools run flowcharts through the dashboards in the installation's
+``dashboards.ini``, with the credentials in ``~/.seamm.d/seammrc``; both files are only
+read, and the credentials are never returned. ``submit_job`` checks the flowchart first,
+fills in the defaults of its command-line parameters, and needs a queue when the
+dashboard has queues.
 """
 
 import logging
@@ -52,6 +58,13 @@ To change a flowchart, use flowchart_tree for the steps' addresses ("3", "3.2",
 "ORCA/Energy"), then set_parameters, insert_step, remove_step or move_step, and
 validate_flowchart. Settings that have no effect with the others are refused, with the
 reason: set the controlling parameters in the same call.
+
+To run a flowchart: list_dashboards, then dashboard_info for the dashboard's projects
+and queues. Confirm the dashboard, project and queue with the user before
+submit_job, which starts a real calculation. Then follow it with job_status, and read
+its output with read_job_file ("job.out", a table's .csv, ...); list_job_files lists
+what it has written. Loops carry on past errors, so a finished job can still have
+failed iterations: look for "Caught exception in loop iteration" in job.out.
 """
 
 # SEAMM's objects are not thread safe, and the tools run in worker threads.
@@ -337,6 +350,368 @@ def convert_flowchart(path: str, output: str, format: str = "3.0") -> dict:
         return {"path": str(target), "format": format}
 
 
+# -----------------------------------------------------------------------------
+# Jobs: running flowcharts through a dashboard (the web UI or the old Dashboard).
+# The dashboards are those in the installation's dashboards.ini, and the credentials
+# those in ~/.seamm.d/seammrc. Both files are only read, never written, and the
+# credentials are never returned.
+# -----------------------------------------------------------------------------
+
+
+def _dashboards_config():
+    import configparser
+
+    import seamm_util
+
+    path = seamm_util.installation_path("dashboards.ini")
+    config = configparser.ConfigParser()
+    if path.exists():
+        config.read(path)
+    names = sorted(s for s in config.sections() if s != "GENERAL")
+    return path, config, names
+
+
+def _credentials(name):
+    """The user and password for a dashboard from ~/.seamm.d/seammrc, read only."""
+    import configparser
+
+    config = configparser.ConfigParser()
+    config.read(Path("~/.seamm.d/seammrc").expanduser())
+    section = f"Dashboard: {name}"
+    return (
+        config.get(section, "user", fallback=None),
+        config.get(section, "password", fallback=None),
+    )
+
+
+def _dashboard(name):
+    """A client for the named dashboard."""
+    import seamm_dashboard_client
+
+    from .dashboard_handler import _parse_verify
+
+    path, config, names = _dashboards_config()
+    if name not in names:
+        raise ValueError(
+            f"There is no dashboard '{name}' in {path}. The dashboards are: "
+            + ", ".join(names)
+        )
+    user, password = _credentials(name)
+    if user is None or password is None:
+        raise ValueError(
+            f"There is no user and password for the dashboard '{name}' in "
+            f"~/.seamm.d/seammrc (a [Dashboard: {name}] section)."
+        )
+    try:
+        from . import __version__ as version
+    except Exception:
+        version = ""
+    return seamm_dashboard_client.Dashboard(
+        name,
+        config[name]["url"],
+        username=user,
+        password=password,
+        user_agent=f"SEAMM-MCP/{version}",
+        verify=_parse_verify(config[name].get("verify", "")),
+    )
+
+
+def _job_summary(job):
+    """The useful fields of a job, as plain data."""
+    data = dict(job)
+    parameters = data.get("parameters") or {}
+    projects = data.get("projects") or []
+    return {
+        "id": data.get("id"),
+        "title": data.get("title"),
+        "description": data.get("description"),
+        "status": data.get("status"),
+        "projects": [p.get("name", p) if isinstance(p, dict) else p for p in projects],
+        "queue": parameters.get("queue"),
+        "submitted": data.get("submitted"),
+        "started": data.get("started"),
+        "finished": data.get("finished"),
+        "path": data.get("path"),
+    }
+
+
+def _job(dashboard, job_id):
+    job = dashboard.job(int(job_id))
+    if not job:
+        raise ValueError(
+            f"There is no job {job_id} on the dashboard '{dashboard.name}'."
+        )
+    return job
+
+
+def list_dashboards(check: bool = False) -> list[dict]:
+    """The dashboards that jobs can be submitted to, from the installation's
+    dashboards.ini, and whether there are credentials for each.
+
+    Args:
+        check: Also contact each dashboard for its status ("running", "down" or
+            "error"); slower, up to several seconds for one that is down.
+    """
+    _, config, names = _dashboards_config()
+    result = []
+    for name in names:
+        user, password = _credentials(name)
+        entry = {
+            "name": name,
+            "url": config[name].get("url", ""),
+            "credentials": user is not None and password is not None,
+        }
+        if check:
+            try:
+                entry["status"] = _dashboard(name).status()
+            except Exception as e:
+                entry["status"] = f"error: {e}"
+        result.append(entry)
+    return result
+
+
+def dashboard_info(dashboard: str) -> dict:
+    """What a dashboard offers for submitting a job: its status, projects and
+    queues (with the SLURM settings each queue lets a job override, and their
+    limits).
+
+    Args:
+        dashboard: The dashboard's name (see list_dashboards).
+    """
+    client = _dashboard(dashboard)
+    status = client.status()
+    if status != "running":
+        return {"dashboard": dashboard, "status": status}
+    return {
+        "dashboard": dashboard,
+        "status": status,
+        "projects": client.list_projects(),
+        "queues": client.list_queues(),
+    }
+
+
+def _control_values(flowchart, values):
+    """The values for the flowchart's Parameters steps (its command-line
+    arguments): those given, else the defaults. Files must exist here; they are
+    uploaded with the job."""
+    import shlex
+
+    variables = {}
+    for node in flowchart.get_nodes():
+        if node.step_type == "control-parameters-step":
+            variables.update(node.parameters["variables"].value)
+    values = dict(values or {})
+    unknown = sorted(set(values) - set(variables))
+    if unknown:
+        raise ValueError(
+            "The flowchart has no parameter "
+            + ", ".join(repr(u) for u in unknown)
+            + ". Its parameters are: "
+            + (", ".join(variables) or "none")
+        )
+    result = {}
+    for name, data in variables.items():
+        value = values.get(name, data.get("default", ""))
+        if data.get("type") == "bool":
+            if isinstance(value, str):
+                value = value.strip().lower() in ("yes", "true", "1", "on")
+            result[name] = bool(value)
+            continue
+        if isinstance(value, (list, tuple)):
+            value = shlex.join(str(v) for v in value)
+        value = "" if value is None else str(value)
+        if data.get("optional") != "Yes" and value == "":
+            raise ValueError(f"The flowchart's parameter '{name}' needs a value.")
+        if data.get("type") == "file" and value != "":
+            paths = (
+                [value] if data.get("nargs") == "a single value" else shlex.split(value)
+            )
+            for path in paths:
+                if not Path(path).expanduser().exists():
+                    raise ValueError(f"The file '{path}' for '{name}' does not exist.")
+        result[name] = value
+    return result
+
+
+def submit_job(
+    path: str,
+    dashboard: str,
+    project: str = "default",
+    title: str = "",
+    description: str = "",
+    queue: str | None = None,
+    values: dict | None = None,
+    slurm: dict | None = None,
+) -> dict:
+    """Submit a flowchart to run as a job. The flowchart is checked first and not
+    submitted if it has problems. This starts a calculation on real computers, so
+    confirm the dashboard, project and queue with the user first.
+
+    Args:
+        path: The flowchart (.flow).
+        dashboard: The dashboard to submit to (see list_dashboards).
+        project: An existing project on that dashboard (see dashboard_info).
+        title: The job's title.
+        description: The job's description.
+        queue: Where the job runs, one of the dashboard's queues (see
+            dashboard_info). Needed when the dashboard has queues.
+        values: Values for the flowchart's command-line parameters (its Parameters
+            step), by name; the defaults are used for those not given. Files are
+            local paths, uploaded with the job.
+        slurm: SLURM settings to override for this job, e.g. {"ntasks": "4",
+            "time": "1:00:00"}, within the queue's limits.
+
+    Returns the job's id and status.
+    """
+    from . import edit
+
+    client = _dashboard(dashboard)
+    with _lock:
+        flowchart = _read(_path(path))
+        problems = edit.validate(flowchart)
+        if problems:
+            raise ValueError(
+                "The flowchart has problems, so it was not submitted:\n"
+                + "\n".join(problems)
+            )
+        control = _control_values(flowchart, values)
+
+    status = client.status()
+    if status != "running":
+        raise ValueError(f"The dashboard '{dashboard}' is not running ({status}).")
+    projects = client.list_projects()
+    if project not in projects:
+        raise ValueError(
+            f"There is no project '{project}' on '{dashboard}'. The projects are: "
+            + ", ".join(projects)
+        )
+    queues = [q["name"] if isinstance(q, dict) else q for q in client.list_queues()]
+    if queues and queue is None:
+        raise ValueError(f"Choose a queue on '{dashboard}': " + ", ".join(queues))
+    if queues and queue not in queues:
+        raise ValueError(
+            f"There is no queue '{queue}' on '{dashboard}'. The queues are: "
+            + ", ".join(queues)
+        )
+
+    with _lock:
+        job_id = client.submit(
+            flowchart,
+            values=control,
+            project=project,
+            title=title or flowchart.metadata.get("title", ""),
+            description=description or flowchart.metadata.get("description", ""),
+            queue=queue,
+            slurm_overrides=slurm,
+        )
+    return _job_summary(_job(client, job_id))
+
+
+def job_status(dashboard: str, job_id: int) -> dict:
+    """A job's status ("submitted", "running", "finished", "error", ...), its
+    times, project, queue and directory.
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        job_id: The job's id.
+    """
+    return _job_summary(_job(_dashboard(dashboard), job_id))
+
+
+def list_jobs(dashboard: str, limit: int = 10) -> list[dict]:
+    """The most recent jobs on a dashboard, newest first.
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        limit: How many jobs, at most.
+    """
+    client = _dashboard(dashboard)
+    response = client._url_get(
+        "/api/jobs",
+        params={"limit": int(limit), "sortby": "id", "sort_by": "id", "order": "desc"},
+    )
+    if response.status_code != 200:
+        raise ValueError(
+            f"Could not list the jobs on '{dashboard}' (code {response.status_code})."
+        )
+    jobs = sorted(response.json(), key=lambda j: j.get("id", 0), reverse=True)
+    return [_job_summary(job) for job in jobs[: int(limit)]]
+
+
+def _file_list(data):
+    """The files of a job, from either dashboard's file listing."""
+    from pathlib import PurePath
+
+    if all("path" in entry for entry in data):  # the web UI
+        return [{"path": e["path"], "size": e.get("size")} for e in data]
+    # The old Dashboard: a tree, whose files have an "a_attr"
+    root = None
+    for entry in data:
+        if entry.get("parent") == "#":
+            root = PurePath(entry["id"])
+            break
+    result = []
+    for entry in data:
+        if "a_attr" in entry:
+            path = PurePath(entry["parent"]) / entry["text"]
+            if root is not None:
+                path = path.relative_to(root)
+            result.append({"path": str(path), "size": None})
+    return result
+
+
+def list_job_files(dashboard: str, job_id: int) -> list[dict]:
+    """The files a job has written so far: job.out, each step's step.out, tables
+    (.csv), structures, graphs and so on, by path within the job.
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        job_id: The job's id.
+    """
+    client = _dashboard(dashboard)
+    response = client._url_get(f"/api/jobs/{int(job_id)}/files")
+    if response.status_code != 200:
+        raise ValueError(
+            f"Could not list the files of job {job_id} on '{dashboard}' (code "
+            f"{response.status_code})."
+        )
+    return _file_list(response.json())
+
+
+def read_job_file(
+    dashboard: str,
+    job_id: int,
+    filename: str,
+    tail_lines: int | None = None,
+    max_characters: int = 50000,
+) -> str:
+    """The text of a file of a job, e.g. "job.out" (the job's output; look for
+    "Caught exception in loop iteration", since loops carry on past errors), a
+    step's "2/step.out", or a table such as "energies.csv".
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        job_id: The job's id.
+        filename: The file's path within the job (see list_job_files).
+        tail_lines: Only the last this many lines.
+        max_characters: At most this many characters (the end of the file when
+            tail_lines is given, else the start).
+    """
+    job = _job(_dashboard(dashboard), job_id)
+    text = job.get_file(filename)
+    if text is None:
+        raise ValueError(
+            f"Could not read '{filename}' of job {job_id} on '{dashboard}'."
+        )
+    if tail_lines is not None:
+        text = "\n".join(text.splitlines()[-int(tail_lines) :])
+        if len(text) > max_characters:
+            text = text[-max_characters:]
+    elif len(text) > max_characters:
+        text = text[:max_characters] + f"\n... ({len(text)} characters in all)"
+    return text
+
+
 _READ_ONLY = (
     list_steps,
     describe_step,
@@ -352,6 +727,33 @@ _WRITING = (
     move_step,
     convert_flowchart,
 )
+# Talk to dashboards: reading, and submitting (which starts real calculations)
+_JOBS_READ = (
+    list_dashboards,
+    dashboard_info,
+    job_status,
+    list_jobs,
+    list_job_files,
+    read_job_file,
+)
+
+
+def _dashboard_errors():
+    """The dashboard client's errors (connection, login, timeouts, ...)."""
+    import seamm_dashboard_client.dashboard as client
+
+    return tuple(
+        getattr(client, name)
+        for name in (
+            "DashboardConnectionError",
+            "DashboardLoginError",
+            "DashboardNotRunningError",
+            "DashboardSubmitError",
+            "DashboardTimeoutError",
+            "DashboardUnknownError",
+        )
+        if hasattr(client, name)
+    )
 
 
 def _guarded(function):
@@ -373,6 +775,7 @@ def _guarded(function):
         SpecError,
         ValueError,
         KeyError,
+        *_dashboard_errors(),
     )
 
     @functools.wraps(function)
@@ -429,6 +832,20 @@ def create_server():
                 openWorldHint=False,
             ),
         )
+    for function in _JOBS_READ:
+        server.add_tool(
+            _guarded(function),
+            annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True),
+        )
+    server.add_tool(
+        _guarded(submit_job),
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=False,
+            idempotentHint=False,
+            openWorldHint=True,
+        ),
+    )
     return server
 
 
