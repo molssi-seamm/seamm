@@ -156,7 +156,18 @@ small test job and check it runs and its flowchart is recorded.
   crashed (no ``seamm_manager.policy``). Repaired with ``uv tool install --force
   seamm-manager`` (``env.sh``); the second ``update --all`` updated everything (no web
   interface, no services).
-- [ ] ChemAI -- **Paul's explicit OK for each action.**
+- [ ] ChemAI -- **Paul's explicit OK for each action.** Survey (2026-10-01): only
+  ``/home/seamm/SEAMM`` is an installation (``/home/seamm/SEAMM_DEV`` and
+  ``/home/psaxe/SEAMM`` have no venv); disk 95% full (45 GB free); 112 stale ``started``
+  rows. Six xnn D4 benchmark jobs (``~/xnn_d4_bench``, sbatch, conda ``seamm-lammps`` and
+  ``~/SEAMM/bin/mdi_bind.sh``) were running or pending, which ``update --all``'s plug-in
+  installers could disturb, so **the update waits for them to finish** (Paul).
+  Done with Paul's OK: (1) the old dashboard retired -- systemd unit
+  ``org.molssi.seamm.dashboard`` (conda ``seamm``, port 55055) stopped and disabled;
+  (2) backup ``/home/seamm/SEAMM_backups/2026-10-01-before-format3/`` (database, all 2,606
+  job flowcharts + job_data.json, venv freezes; Paul runs no jobs until the update).
+  Next, each with Paul's OK: (3) ``update --all``; (4) migrate dry run; (5) migrate;
+  (6) test job on the ``ChemAI`` queue.
 
 4. Switch the writer to 3.0
 ---------------------------
