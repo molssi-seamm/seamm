@@ -80,9 +80,12 @@ Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
 Wave C -- services (pin seamm_datastore):
 
-- [ ] **seamm_manager** -- ``datastore rebuild``; editable-install paths;
-  ``flowcharts migrate``/``status`` and the update notice (2 commits).
-- [ ] **seamm_webui** -- rebuild a missing datastore from the job directories (1 commit).
+- [ ] **seamm_manager** 2026.10.1 -- ``datastore rebuild``; editable-install paths;
+  ``flowcharts migrate``/``status`` and the update notice; Usage and Installation
+  updated. **PR #20 open, CI green.**
+- [ ] **seamm_webui** 2026.10.1 -- rebuild a missing datastore from the job directories;
+  pins ``seamm-datastore>=2026.10.1``; CI moved from conda to uv. **PR #9 open, CI
+  green.**
 
 Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 
@@ -99,7 +102,9 @@ Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
 
-- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would (256 job flowcharts
+- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would. Note: ``update --all``
+  installs the versions in the *published lock* (the nightly package list), so a release
+  made today needs the nightly list or ``--latest``; decide which a user would do (256 job flowcharts
   in 2.0 found by ``seamm-manager flowcharts status``).
 - [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions; set
   ``SEAMM_FLOWCHART_FORMAT=3.0`` there to keep writing 3.0 (it is already migrated).
