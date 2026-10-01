@@ -90,7 +90,7 @@ Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 - [ ] **lammps_step** (4)
 
 3. Update every installation (servers before desktops)
------------------------------------------------------
+------------------------------------------------------
 
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
