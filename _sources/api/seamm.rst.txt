@@ -4,10 +4,34 @@ seamm package
 Submodules
 ----------
 
+seamm.builder module
+--------------------
+
+.. automodule:: seamm.builder
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm.builtins module
 ---------------------
 
 .. automodule:: seamm.builtins
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.catalog module
+--------------------
+
+.. automodule:: seamm.catalog
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.convert\_v2 module
+------------------------
+
+.. automodule:: seamm.convert_v2
    :members:
    :show-inheritance:
    :undoc-members:
@@ -28,10 +52,34 @@ seamm.data module
    :show-inheritance:
    :undoc-members:
 
+seamm.edit module
+-----------------
+
+.. automodule:: seamm.edit
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm.flowchart module
 ----------------------
 
 .. automodule:: seamm.flowchart
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.flowchart\_cli module
+---------------------------
+
+.. automodule:: seamm.flowchart_cli
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.format3 module
+--------------------
+
+.. automodule:: seamm.format3
    :members:
    :show-inheritance:
    :undoc-members:
@@ -48,6 +96,30 @@ seamm.join\_node module
 -----------------------
 
 .. automodule:: seamm.join_node
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.layout module
+-------------------
+
+.. automodule:: seamm.layout
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.mcp\_server module
+------------------------
+
+.. automodule:: seamm.mcp_server
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.migrate3 module
+---------------------
+
+.. automodule:: seamm.migrate3
    :members:
    :show-inheritance:
    :undoc-members:
@@ -80,6 +152,14 @@ seamm.seammrc module
 --------------------
 
 .. automodule:: seamm.seammrc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.spec module
+-----------------
+
+.. automodule:: seamm.spec
    :members:
    :show-inheritance:
    :undoc-members:

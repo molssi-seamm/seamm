@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.migrate3 &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/migrate3';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm.migrate3</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for seamm.migrate3</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">"""Migrate an installation's jobs and datastore to flowchart format 3.0.</span>
+
+<span class="sd">For an installation (a SEAMM root such as ~/SEAMM_DEV) this</span>
+
+<span class="sd">* converts each job's ``flowchart.flow`` from format 2.0 (or 1.0) to 3.0 with the</span>
+<span class="sd">  frozen converter, renaming the original to ``flowchart.v2.flow`` -- its content is</span>
+<span class="sd">  never changed -- and writing the 3.0 file as ``flowchart.flow``;</span>
+<span class="sd">* points each job in the datastore at the flowchart row for its own file's digest:</span>
+<span class="sd">  rows that now have the same digest are merged, rows that the old digest wrongly</span>
+<span class="sd">  merged (it stopped at the first loop) are split, and rows left without jobs are</span>
+<span class="sd">  deleted. Rows keep their id where possible; permissions, projects and DOIs are</span>
+<span class="sd">  carried over;</span>
+<span class="sd">* converts rows that have no jobs from their own stored content.</span>
+
+<span class="sd">By default nothing is changed: the plan is worked out and reported (a dry run).</span>
+<span class="sd">With ``apply=True`` the datastore is first backed up, then changed in one</span>
+<span class="sd">transaction, then the files are converted; a manifest of the file changes is written</span>
+<span class="sd">so that they can be undone with ``undo()``.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stat</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_v2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.format3</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMAT</span><span class="p">,</span> <span class="n">SHEBANG</span><span class="p">,</span> <span class="n">dump_yaml</span><span class="p">,</span> <span class="n">is_format3</span><span class="p">,</span> <span class="n">load_yaml</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MigrationError">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.migrate3.MigrationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MigrationError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The migration cannot go ahead."""</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_flowchart_text</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">NotADirectoryError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Converter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Converts flowchart texts, each distinct text once."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reports</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""(3.0 text or None, 3.0 data or None, report lines, error or None)"""</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">is_format3</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="p">[],</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">convert_v2</span><span class="o">.</span><span class="n">convert_data</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="n">text3</span> <span class="o">=</span> <span class="n">SHEBANG</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">dump_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">text3</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_row_text</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A 2.0 flowchart's text rebuilt from its datastore row."""</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"flowchart_metadata"</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">"</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"title"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"keywords"</span><span class="p">,</span> <span class="s2">"creators"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"json"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="ow">or</span> <span class="mf">2.0</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"#!/usr/bin/env run_flowchart</span><span class="se">\n</span><span class="s2">!MolSSI flowchart </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="se">\n</span><span class="s2">#metadata</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">#flowchart</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="o">+</span> <span class="n">body</span>
+        <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">#end</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_row_values</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The datastore columns for a 3.0 flowchart, as seamm_datastore stores them."""</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"title"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"description"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"keywords"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"keywords"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+        <span class="s2">"creators"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"creators"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+        <span class="s2">"sha256"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"digest"</span><span class="p">][</span><span class="s2">"sha256"</span><span class="p">],</span>
+        <span class="s2">"sha256_strict"</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">"digest"</span><span class="p">][</span><span class="s2">"sha256_strict"</span><span class="p">],</span>
+        <span class="s2">"flowchart_version"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"format"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="s2">"json"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"doi"</span><span class="p">,</span> <span class="s2">"conceptdoi"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="n">columns</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">columns</span><span class="p">[</span><span class="s2">"flowchart_metadata"</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">columns</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_out</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A row id, or ["new", n] for the n'th new row -- as JSON can hold it."""</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">target</span>
+
+
+<div class="viewcode-block" id="plan">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.migrate3.plan">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plan</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Work out what migrating an installation would do, changing nothing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : str or Path</span>
+<span class="sd">        The SEAMM root, e.g. ~/SEAMM_DEV.</span>
+<span class="sd">    datastore : str or Path, optional</span>
+<span class="sd">        The datastore; by default &lt;root&gt;/Jobs/seamm.db.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The plan: files to convert, datastore changes, and a summary.</span>
+<span class="sd">    """</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+    <span class="n">datastore</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">datastore</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="k">if</span> <span class="n">datastore</span> <span class="k">else</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">"Jobs"</span> <span class="o">/</span> <span class="s2">"seamm.db"</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">datastore</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">MigrationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There is no datastore at </span><span class="si">{</span><span class="n">datastore</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">"file:</span><span class="si">{</span><span class="n">datastore</span><span class="si">}</span><span class="s2">?mode=ro"</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"select * from flowcharts"</span><span class="p">)}</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"select id, flowchart_id, path from jobs"</span><span class="p">)]</span>
+    <span class="n">projects</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"select flowchart, project from flowchart_project"</span><span class="p">):</span>
+        <span class="n">projects</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"flowchart"</span><span class="p">]),</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"project"</span><span class="p">]))</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">convert</span> <span class="o">=</span> <span class="n">_Converter</span><span class="p">()</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">summary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span>
+
+    <span class="c1"># 1. The jobs' own flowcharts</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># path of flowchart.flow -&gt; {"text3", "report"}</span>
+    <span class="n">job_digest</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># job id -&gt; sha256_strict of its own flowchart</span>
+    <span class="n">job_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># sha256_strict -&gt; 3.0 data</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span> <span class="o">/</span> <span class="s2">"flowchart.flow"</span> <span class="k">if</span> <span class="n">job</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_flowchart_text</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"jobs without a flowchart file"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">text3</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"jobs whose flowchart cannot be converted"</span><span class="p">)</span>
+            <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Job </span><span class="si">{</span><span class="n">job</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">text3</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"text3"</span><span class="p">:</span> <span class="n">text3</span><span class="p">,</span> <span class="s2">"report"</span><span class="p">:</span> <span class="n">report</span><span class="p">}</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"job flowcharts to convert"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"job flowcharts already 3.0"</span><span class="p">)</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"digest"</span><span class="p">][</span><span class="s2">"sha256_strict"</span><span class="p">]</span>
+        <span class="n">job_digest</span><span class="p">[</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]]</span> <span class="o">=</span> <span class="n">digest</span>
+        <span class="n">job_data</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="c1"># Job directories on disk that the datastore does not know. Compare the files</span>
+    <span class="c1"># themselves: the datastore's path may differ in case (e.g. 'Water' for 'water'</span>
+    <span class="c1"># on a file system that ignores case) or through links.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">identity</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">st_dev</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">st_ino</span><span class="p">)</span>
+
+    <span class="n">known</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">identity</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span> <span class="o">/</span> <span class="s2">"flowchart.flow"</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jobs</span> <span class="k">if</span> <span class="n">j</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span>
+    <span class="p">}</span> <span class="o">-</span> <span class="p">{</span><span class="kc">None</span><span class="p">}</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"Jobs"</span> <span class="o">/</span> <span class="s2">"projects"</span> <span class="o">/</span> <span class="s2">"*"</span> <span class="o">/</span> <span class="s2">"*"</span> <span class="o">/</span> <span class="s2">"flowchart.flow"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">identity</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">known</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">text3</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">_flowchart_text</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> (not in the datastore): </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">text3</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"text3"</span><span class="p">:</span> <span class="n">text3</span><span class="p">,</span> <span class="s2">"report"</span><span class="p">:</span> <span class="n">report</span><span class="p">}</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"flowcharts in job directories not in the datastore, to convert"</span><span class="p">)</span>
+
+    <span class="c1"># 2. Which row each job's flowchart goes in</span>
+    <span class="n">old_row</span> <span class="o">=</span> <span class="p">{</span><span class="n">j</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]:</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="s2">"flowchart_id"</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">jobs</span> <span class="k">if</span> <span class="n">j</span><span class="p">[</span><span class="s2">"flowchart_id"</span><span class="p">]}</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">job_id</span><span class="p">,</span> <span class="n">digest</span> <span class="ow">in</span> <span class="n">job_digest</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+    <span class="n">by_digest</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">r</span><span class="p">[</span><span class="s2">"sha256_strict"</span><span class="p">]:</span> <span class="n">rid</span>
+        <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+    <span class="p">}</span>
+    <span class="n">claimed</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># row id -&gt; digest</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># digest -&gt; row id, or ("new", n)</span>
+    <span class="n">creations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">digest</span><span class="p">,</span> <span class="n">members</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">digest</span> <span class="ow">in</span> <span class="n">by_digest</span> <span class="ow">and</span> <span class="n">by_digest</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">claimed</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">by_digest</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tally</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">old_row</span><span class="p">:</span>
+                    <span class="n">tally</span><span class="p">[</span><span class="n">old_row</span><span class="p">[</span><span class="n">job_id</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tally</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_row</span><span class="p">[</span><span class="n">job_id</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">candidates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">rid</span> <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">tally</span> <span class="k">if</span> <span class="n">rid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">claimed</span> <span class="ow">and</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">),</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">rid</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">tally</span><span class="p">[</span><span class="n">rid</span><span class="p">],</span> <span class="n">rid</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">candidates</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">source</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">tally</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">rid</span><span class="p">:</span> <span class="p">(</span><span class="n">tally</span><span class="p">[</span><span class="n">rid</span><span class="p">],</span> <span class="o">-</span><span class="n">rid</span><span class="p">))</span> <span class="k">if</span> <span class="n">tally</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"new"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">creations</span><span class="p">))</span>
+                <span class="n">creations</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"digest"</span><span class="p">:</span> <span class="n">digest</span><span class="p">,</span> <span class="s2">"copy from"</span><span class="p">:</span> <span class="n">source</span><span class="p">})</span>
+        <span class="n">claimed</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">digest</span>
+        <span class="n">targets</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="n">updates</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># row id -&gt; digest to write into it</span>
+    <span class="k">for</span> <span class="n">digest</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="n">current</span><span class="p">[</span><span class="s2">"sha256_strict"</span><span class="p">]</span> <span class="o">==</span> <span class="n">digest</span>
+                <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+            <span class="p">):</span>
+                <span class="n">updates</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">digest</span>
+
+    <span class="n">repoint</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">job_id</span><span class="p">,</span> <span class="n">digest</span> <span class="ow">in</span> <span class="n">job_digest</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">old_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span> <span class="o">!=</span> <span class="n">target</span><span class="p">:</span>
+            <span class="n">repoint</span><span class="p">[</span><span class="n">job_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">final_counts</span><span class="p">():</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+            <span class="n">rid</span> <span class="o">=</span> <span class="n">repoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">old_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]))</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1"># Rows not chosen for any job's own flowchart: converted from their own content.</span>
+    <span class="c1"># Those that still have jobs (whose files are missing or cannot be converted) keep</span>
+    <span class="c1"># them, unless the content matches another row, into which they are merged.</span>
+    <span class="n">deletions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">own</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># row id -&gt; digest after converting its own content</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">final_counts</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rows</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">claimed</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rid</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">old_row</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">deletions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>  <span class="c1"># all its jobs went elsewhere</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">"flowchart_version"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">text3</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">_row_text</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Row </span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s2">: its own content cannot be converted: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"digest"</span><span class="p">][</span><span class="s2">"sha256_strict"</span><span class="p">]</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">own</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">digest</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">repoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">old_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]))</span> <span class="o">==</span> <span class="n">rid</span><span class="p">:</span>
+                    <span class="n">repoint</span><span class="p">[</span><span class="n">job</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]]</span> <span class="o">=</span> <span class="n">other</span>
+            <span class="n">deletions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>
+            <span class="n">count</span><span class="p">(</span><span class="s2">"rows whose own content duplicates another row, merged into it"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">own</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span> <span class="o">=</span> <span class="n">digest</span>
+            <span class="n">job_data</span><span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">count</span><span class="p">(</span><span class="s2">"rows converted from their own content (their jobs lack files)"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">(</span><span class="s2">"rows without jobs, converted from their own content"</span><span class="p">)</span>
+
+    <span class="c1"># DOIs and projects of deleted rows go to the row(s) their jobs went to</span>
+    <span class="n">carry</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">deletions</span><span class="p">:</span>
+        <span class="n">moved_to</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">repoint</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">repoint</span> <span class="k">if</span> <span class="n">old_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">==</span> <span class="n">rid</span><span class="p">},</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">moved_to</span><span class="p">:</span>
+            <span class="n">carry</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"to"</span><span class="p">:</span> <span class="n">_out</span><span class="p">(</span><span class="n">target</span><span class="p">),</span> <span class="s2">"from"</span><span class="p">:</span> <span class="n">rid</span><span class="p">})</span>
+
+    <span class="n">summary</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"rows updated in place"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">updates</span><span class="p">),</span>
+            <span class="s2">"rows created (splits)"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">creations</span><span class="p">),</span>
+            <span class="s2">"rows deleted (merged, or unused)"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">deletions</span><span class="p">),</span>
+            <span class="s2">"jobs pointed at another row"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">repoint</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">report_lines</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"report"</span><span class="p">]:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">": "</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">report_lines</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_lines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">),</span>
+        <span class="s2">"datastore"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datastore</span><span class="p">),</span>
+        <span class="s2">"summary"</span><span class="p">:</span> <span class="n">summary</span><span class="p">,</span>
+        <span class="s2">"problems"</span><span class="p">:</span> <span class="n">problems</span><span class="p">,</span>
+        <span class="s2">"converter report"</span><span class="p">:</span> <span class="n">report_lines</span><span class="p">,</span>
+        <span class="s2">"files"</span><span class="p">:</span> <span class="n">files</span><span class="p">,</span>
+        <span class="s2">"updates"</span><span class="p">:</span> <span class="n">updates</span><span class="p">,</span>
+        <span class="s2">"creations"</span><span class="p">:</span> <span class="n">creations</span><span class="p">,</span>
+        <span class="s2">"repoint"</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">_out</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">repoint</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="s2">"deletions"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">deletions</span><span class="p">),</span>
+        <span class="s2">"own"</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">own</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="s2">"carry"</span><span class="p">:</span> <span class="n">carry</span><span class="p">,</span>
+        <span class="s2">"data"</span><span class="p">:</span> <span class="n">job_data</span><span class="p">,</span>
+        <span class="s2">"rows before"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span>
+        <span class="s2">"dois"</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">):</span> <span class="n">rows</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="s2">"doi"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span> <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="s2">"doi"</span><span class="p">]},</span>
+        <span class="s2">"projects"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">projects</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="apply">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.migrate3.apply">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="n">the_plan</span><span class="p">,</span> <span class="n">backup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Carry out a plan made by plan(). The services must be stopped first.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    the_plan : dict</span>
+<span class="sd">        From plan().</span>
+<span class="sd">    backup : bool</span>
+<span class="sd">        Back up the datastore first.</span>
+<span class="sd">    files : bool</span>
+<span class="sd">        Also convert the job directories' files (False: only the datastore, e.g. to</span>
+<span class="sd">        rehearse on a copy of it).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The paths of the datastore backup and of the manifest of file changes.</span>
+<span class="sd">    """</span>
+    <span class="n">datastore</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"datastore"</span><span class="p">])</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"root"</span><span class="p">])</span>
+    <span class="n">stamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">-%H%M%S"</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">backup</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">datastore</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">datastore</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bak-</span><span class="si">{</span><span class="n">stamp</span><span class="si">}</span><span class="s2">-before-format3"</span><span class="p">)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datastore</span><span class="p">))</span>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">dst</span><span class="p">:</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+        <span class="n">src</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">dst</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"backup"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datastore</span><span class="p">))</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">db</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"select * from flowcharts"</span><span class="p">)}</span>
+            <span class="n">touched</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"updates"</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"own"</span><span class="p">])</span>
+            <span class="n">touched</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">touched</span><span class="p">]</span>
+            <span class="c1"># Clear the digests being replaced first: sha256_strict is unique</span>
+            <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">touched</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="s2">"update flowcharts set sha256_strict=NULL where id=?"</span><span class="p">,</span> <span class="p">(</span><span class="n">rid</span><span class="p">,)</span>
+                <span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="n">digest</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">_row_values</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">digest</span><span class="p">])</span>
+                <span class="n">old</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"doi"</span><span class="p">,</span> <span class="s2">"conceptdoi"</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">sets</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=?"</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"update flowcharts set </span><span class="si">{</span><span class="n">sets</span><span class="si">}</span><span class="s2"> where id=?"</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">rid</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">digest</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"updates"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">write</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rid</span><span class="p">),</span> <span class="n">digest</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">digest</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"own"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">write</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rid</span><span class="p">),</span> <span class="n">digest</span><span class="p">)</span>
+
+            <span class="n">new_ids</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">creation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"creations"</span><span class="p">]):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">_row_values</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">creation</span><span class="p">[</span><span class="s2">"digest"</span><span class="p">]])</span>
+                <span class="n">source</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">rows</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">creation</span><span class="p">[</span><span class="s2">"copy from"</span><span class="p">])</span> <span class="k">if</span> <span class="n">creation</span><span class="p">[</span><span class="s2">"copy from"</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="s2">"doi"</span><span class="p">,</span>
+                    <span class="s2">"conceptdoi"</span><span class="p">,</span>
+                    <span class="s2">"owner_id"</span><span class="p">,</span>
+                    <span class="s2">"owner_permissions"</span><span class="p">,</span>
+                    <span class="s2">"group_id"</span><span class="p">,</span>
+                    <span class="s2">"group_permissions"</span><span class="p">,</span>
+                    <span class="s2">"other_permissions"</span><span class="p">,</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">marks</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"?"</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span>
+                <span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"insert into flowcharts (</span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">) values (</span><span class="si">{</span><span class="n">marks</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+                    <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+                <span class="p">)</span>
+                <span class="n">new_ids</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+                <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">project</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                        <span class="s2">"select project from flowchart_project where flowchart=?"</span><span class="p">,</span>
+                        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]),),</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">():</span>
+                        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                            <span class="s2">"insert into flowchart_project (flowchart, project) "</span>
+                            <span class="s2">"values (?, ?)"</span><span class="p">,</span>
+                            <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span><span class="p">),</span> <span class="n">project</span><span class="p">),</span>
+                        <span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">row_id</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="n">new_ids</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">job_id</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"repoint"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="s2">"update jobs set flowchart_id=? where id=?"</span><span class="p">,</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row_id</span><span class="p">(</span><span class="n">target</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">job_id</span><span class="p">)),</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Carry DOIs and projects from deleted rows, then delete them</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"carry"</span><span class="p">]:</span>
+                <span class="n">tid</span> <span class="o">=</span> <span class="n">row_id</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"to"</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">"from"</span><span class="p">]]:</span>
+                    <span class="n">old</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"doi"</span><span class="p">,</span> <span class="s2">"conceptdoi"</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">old</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">"update flowcharts set </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=coalesce(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">, ?) "</span>
+                                <span class="s2">"where id=?"</span><span class="p">,</span>
+                                <span class="p">(</span><span class="n">old</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">tid</span><span class="p">),</span>
+                            <span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">project</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                        <span class="s2">"select project from flowchart_project where flowchart=?"</span><span class="p">,</span>
+                        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rid</span><span class="p">),),</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">():</span>
+                        <span class="n">exists</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                            <span class="s2">"select 1 from flowchart_project where flowchart=? and "</span>
+                            <span class="s2">"project=?"</span><span class="p">,</span>
+                            <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tid</span><span class="p">),</span> <span class="n">project</span><span class="p">),</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">:</span>
+                            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                                <span class="s2">"insert into flowchart_project (flowchart, project) "</span>
+                                <span class="s2">"values (?, ?)"</span><span class="p">,</span>
+                                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tid</span><span class="p">),</span> <span class="n">project</span><span class="p">),</span>
+                            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"deletions"</span><span class="p">]:</span>
+                <span class="n">remaining</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="s2">"select count(*) from jobs where flowchart_id=?"</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rid</span><span class="p">),)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">remaining</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">MigrationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Row </span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s2"> still has </span><span class="si">{</span><span class="n">remaining</span><span class="si">}</span><span class="s2"> jobs"</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="s2">"delete from flowchart_project where flowchart=?"</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rid</span><span class="p">),)</span>
+                <span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"delete from flowcharts where id=?"</span><span class="p">,</span> <span class="p">(</span><span class="n">rid</span><span class="p">,))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1"># The files: rename the original, write the 3.0 flowchart</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">),</span>
+        <span class="s2">"datastore backup"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"backup"</span><span class="p">),</span>
+        <span class="s2">"files"</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">"flowchart.v2.flow"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">original</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">original</span><span class="si">}</span><span class="s2"> exists; not converting </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IMODE</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">original</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"text3"</span><span class="p">])</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="n">manifest</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="n">manifest_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">"Jobs"</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"format3-migration-</span><span class="si">{</span><span class="n">stamp</span><span class="si">}</span><span class="s2">.json"</span>
+    <span class="n">manifest_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">"manifest"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="undo_files">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.migrate3.undo_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">undo_files</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Put back the original flowchart.flow files recorded in a manifest.</span>
+
+<span class="sd">    The datastore is restored separately, from the backup named in the manifest.</span>
+<span class="sd">    """</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+    <span class="n">restored</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"files"</span><span class="p">]:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">"flowchart.v2.flow"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">original</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">restored</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">restored</span></div>
+
+
+
+<div class="viewcode-block" id="text_report">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.migrate3.text_report">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">text_report</span><span class="p">(</span><span class="n">the_plan</span><span class="p">,</span> <span class="n">examples</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A readable summary of a plan."""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">"Migration of </span><span class="si">{</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'root'</span><span class="p">]</span><span class="si">}</span><span class="s2"> to flowchart format 3.0"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"Datastore: </span><span class="si">{</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'datastore'</span><span class="p">]</span><span class="si">}</span><span class="s2"> "</span>
+        <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'rows before'</span><span class="p">]</span><span class="si">}</span><span class="s2"> flowchart rows)"</span><span class="p">,</span>
+        <span class="s2">""</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"summary"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">key</span><span class="si">:</span><span class="s2">66s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"converter report"</span><span class="p">]:</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"What the converter reported, by kind:"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s2">"converter report"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"problems"</span><span class="p">]:</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Problems (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'problems'</span><span class="p">])</span><span class="si">}</span><span class="s2">):"</span><span class="p">]</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"problems"</span><span class="p">][:</span> <span class="n">examples</span> <span class="o">*</span> <span class="mi">4</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"creations"</span><span class="p">]:</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"New rows (a row whose jobs have different flowcharts is split):"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"creations"</span><span class="p">][:</span><span class="n">examples</span><span class="p">]:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  from row </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'copy from'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'digest'</span><span class="p">][:</span><span class="mi">12</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"deletions"</span><span class="p">]:</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Rows to delete: </span><span class="si">{</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'deletions'</span><span class="p">][:</span><span class="n">examples</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+    <span class="n">dois</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"carry"</span><span class="p">]</span> <span class="k">if</span> <span class="n">the_plan</span><span class="p">[</span><span class="s2">"dois"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"from"</span><span class="p">]))]</span>
+    <span class="k">if</span> <span class="n">dois</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"DOIs carried from deleted rows:"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dois</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"  row </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'from'</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">the_plan</span><span class="p">[</span><span class="s1">'dois'</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'from'</span><span class="p">])]</span><span class="si">}</span><span class="s2">) -&gt; </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="s1">'to'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"plan"</span><span class="p">,</span> <span class="s2">"apply"</span><span class="p">,</span> <span class="s2">"undo_files"</span><span class="p">,</span> <span class="s2">"text_report"</span><span class="p">,</span> <span class="s2">"MigrationError"</span><span class="p">,</span> <span class="s2">"FORMAT"</span><span class="p">]</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

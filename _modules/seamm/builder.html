@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.builder &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/builder';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm.builder</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for seamm.builder</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">"""Build flowcharts programmatically, without the graphical editor.</span>
+
+<span class="sd">A flowchart is built from the top down, one step after another, as it will run::</span>
+
+<span class="sd">    from seamm.builder import FlowchartBuilder</span>
+
+<span class="sd">    fb = FlowchartBuilder(title="Water optimization")</span>
+<span class="sd">    fb.add("Model Chemistry", model_chemistry="ORCA:DFT@B3LYP/bse:def2-SVPD")</span>
+<span class="sd">    fb.add("from SMILES", smiles_string="O")</span>
+<span class="sd">    orca = fb.add("ORCA")</span>
+<span class="sd">    orca.add("Optimization")</span>
+<span class="sd">    orca.add("Energy", extra_keywords="TightSCF")</span>
+<span class="sd">    with fb.loop(type="For", variable="i", start=1, end=10) as body:</span>
+<span class="sd">        body.add("Custom Python", ...)</span>
+<span class="sd">    fb.write("water.flow")</span>
+
+<span class="sd">Steps are named by their extension name, as in the editor's step menu, by the name in</span>
+<span class="sd">their description, or by their default title. Parameters are given as keyword arguments,</span>
+<span class="sd">with underscores for the spaces in their names, or as a dict. Every value is checked</span>
+<span class="sd">when it is set: the parameter must exist, a choice must be one of the allowed ones, a</span>
+<span class="sd">number must be a number, and units must match -- unless the value is a variable or</span>
+<span class="sd">expression such as ``$SMILES``.</span>
+
+<span class="sd">The builder makes the Join node that a loop needs, sets the types of the edges, and</span>
+<span class="sd">lays out the steps as the editor's "clean layout" does, so the editor opens the result</span>
+<span class="sd">as if it had been drawn by hand.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seamm_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q_</span><span class="p">,</span> <span class="n">ureg</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">seamm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.catalog</span><span class="w"> </span><span class="kn">import</span> <span class="n">Catalog</span><span class="p">,</span> <span class="n">choices_are_strict</span><span class="p">,</span> <span class="n">enumeration_of</span><span class="p">,</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">suggestions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">layout</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FlowchartBuildError">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuildError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlowchartBuildError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A step or parameter value that cannot go in the flowchart."""</span></div>
+
+
+
+<span class="c1"># A number followed by units, e.g. "300 K" or "-1.5e-3 kcal/mol"</span>
+<span class="n">_number_and_units</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">"^\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)"</span>
+    <span class="sa">r</span><span class="s2">"\s*(?![eE][-+]?\d)([A-Za-z\u00b5\u03bc\u00c5\u00b0%].*?)\s*$"</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_choices_text</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The allowed choices for an error message, shortened if there are many."""</span>
+    <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">]</span>
+    <span class="n">close</span> <span class="o">=</span> <span class="n">suggestions</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choices</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"Choose one of: "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span><span class="si">}</span><span class="s2"> choices"</span>
+    <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">". Closest: "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">close</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span>
+
+
+<div class="viewcode-block" id="is_expression">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.is_expression">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether a value is a variable or expression, such as '$SMILES' or '=2*$n'."""</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"$"</span><span class="p">,</span> <span class="s2">"="</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">"=="</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_number</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">integer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether a value is a number, or text that is one; optionally an integer."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">integer</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="check_value">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.check_value">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_value</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"parameter"</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Check and normalize a value for a parameter.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    parameter : seamm.Parameter</span>
+<span class="sd">        The parameter.</span>
+<span class="sd">    value : any</span>
+<span class="sd">        The value: a string, number, bool, list or dict as the parameter needs; a</span>
+<span class="sd">        (value, units) pair or Pint quantity for a parameter with units; or a variable</span>
+<span class="sd">        or expression such as ``$SMILES``.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The parameter's name, for error messages.</span>
+<span class="sd">    units : str, optional</span>
+<span class="sd">        Units given separately.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (value, units)</span>
+<span class="sd">        The value as the editor would store it, and the units (None to keep the</span>
+<span class="sd">        parameter's current units).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    FlowchartBuildError</span>
+<span class="sd">        If the value is not valid for the parameter.</span>
+<span class="sd">    """</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span>
+    <span class="n">enumeration</span> <span class="o">=</span> <span class="n">enumeration_of</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+    <span class="n">has_units</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+
+    <span class="c1"># Split off units</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">has_units</span><span class="p">:</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"list"</span><span class="p">,</span> <span class="s2">"periodic table"</span><span class="p">,</span> <span class="s2">"dictionary"</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">has_units</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">enumeration</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">_number_and_units</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' does not take units, but got '</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="p">)</span>
+        <span class="c1"># Any conversion SEAMM's unit registry allows, including those through its</span>
+        <span class="c1"># contexts, e.g. kcal/mol to K or to wavenumbers, as the editor allows.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">' are not units that SEAMM knows"</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">Q_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"The units '</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">' for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' cannot be converted to its "</span>
+                <span class="sa">f</span><span class="s2">"default units '</span><span class="si">{</span><span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"="</span><span class="p">:</span>
+            <span class="c1"># A Python expression, evaluated with the variables as bare names. Check</span>
+            <span class="c1"># the syntax now rather than when the job runs.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">compile</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s2">"&lt;expression&gt;"</span><span class="p">,</span> <span class="s2">"eval"</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"The expression </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' is not valid Python: "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="s2">"$"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="s2">". In an '=' expression, use variables by their bare names, "</span>
+                        <span class="s2">"e.g. '=2 * n' rather than '=2 * $n'"</span>
+                    <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="c1"># A Python bool for a yes/no choice, whatever its kind</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">enumeration</span><span class="p">:</span>
+        <span class="n">wanted</span> <span class="o">=</span> <span class="s2">"yes"</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">"no"</span>
+        <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">normalize</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span> <span class="o">==</span> <span class="n">wanted</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">choice</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"boolean"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s2">"yes"</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">"no"</span>
+        <span class="k">if</span> <span class="n">enumeration</span> <span class="ow">and</span> <span class="n">choices_are_strict</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">normalize</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span> <span class="o">==</span> <span class="n">normalize</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">choice</span><span class="p">,</span> <span class="n">units</span>
+            <span class="k">if</span> <span class="n">normalize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"true"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">enumeration</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">units</span>
+            <span class="k">if</span> <span class="n">normalize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"false"</span><span class="p">,</span> <span class="s2">"off"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">enumeration</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">units</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">' is not valid for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">'. "</span>
+                <span class="o">+</span> <span class="n">_choices_text</span><span class="p">(</span><span class="n">enumeration</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"enum"</span><span class="p">,</span> <span class="s2">"enumeration"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">enumeration</span> <span class="ow">and</span> <span class="n">choices_are_strict</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+            <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">normalize</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span> <span class="o">==</span> <span class="n">normalize</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">choice</span><span class="p">,</span> <span class="n">units</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">' is not valid for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">'. "</span>
+                <span class="o">+</span> <span class="n">_choices_text</span><span class="p">(</span><span class="n">enumeration</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"integer"</span><span class="p">,</span> <span class="s2">"int"</span><span class="p">,</span> <span class="s2">"float"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">enumeration</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+        <span class="n">integer</span> <span class="o">=</span> <span class="n">kind</span> <span class="o">!=</span> <span class="s2">"float"</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_number</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">integer</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' needs </span><span class="si">{</span><span class="s1">'an integer'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'a number'</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">", not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="k">if</span> <span class="n">enumeration</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">", or one of "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">enumeration</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">integer</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># Kept as given: the editor stores text, defaults are often numbers, and</span>
+        <span class="c1"># Parameter.get() converts either.</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"list"</span><span class="p">,</span> <span class="s2">"periodic table"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' needs a list, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"dictionary"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' needs a dict, not </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
+
+    <span class="c1"># string, str, special and anything else: stored as given</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span></div>
+
+
+
+<div class="viewcode-block" id="set_parameters">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.set_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set the parameters of a node, checking each value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : seamm.Node</span>
+<span class="sd">        The node.</span>
+<span class="sd">    params : dict, optional</span>
+<span class="sd">        Parameter values by their exact names, e.g. {"smiles string": "O"}.</span>
+<span class="sd">    kwargs</span>
+<span class="sd">        Parameter values by name with underscores for spaces, e.g. smiles_string="O".</span>
+<span class="sd">        Names are matched ignoring case, spaces, underscores and hyphens.</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The step '</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' has no parameters."</span><span class="p">)</span>
+
+    <span class="n">P</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parameters</span>
+    <span class="c1"># Restore only the values if anything is refused: from_dict() would rebuild</span>
+    <span class="c1"># the parameters from their class definitions, losing changes a plug-in makes</span>
+    <span class="c1"># in its __init__ (e.g. a narrowed enumeration).</span>
+    <span class="n">before</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"units"</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">P</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_set_and_check</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">FlowchartBuildError</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span> <span class="ow">in</span> <span class="n">before</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="k">raise</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_same</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether two parameter values are the same, allowing '10' == 10 and a basis</span>
+<span class="sd">    given by name or as {'name': ...}."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"name"</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"name"</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_and_check</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set values, then check them against the step's rules (see Parameters)."""</span>
+    <span class="n">by_normal</span> <span class="o">=</span> <span class="p">{</span><span class="n">normalize</span><span class="p">(</span><span class="n">key</span><span class="p">):</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">P</span><span class="p">}</span>
+    <span class="n">touched</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">P</span> <span class="k">else</span> <span class="n">by_normal</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">close</span> <span class="o">=</span> <span class="n">suggestions</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">P</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"The step '</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' has no parameter '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">'"</span>
+            <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">". Did you mean: "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">close</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"?"</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">parameter</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">check_value</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">parameter</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="n">touched</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># The step's rules: settings that would have no effect, values that others</span>
+    <span class="c1"># imply, and combinations that cannot work -- as the dialog enforces them.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="s2">"applies"</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">current_values</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">touched</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">P</span><span class="o">.</span><span class="n">applies</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">current</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' has no effect in '</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' with these settings"</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">not_applicable_reason</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">reason</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">": </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">P</span><span class="o">.</span><span class="n">implied</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">P</span> <span class="ow">or</span> <span class="n">_same</span><span class="p">(</span><span class="n">current</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">touched</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' cannot be </span><span class="si">{</span><span class="n">current</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">!r}</span><span class="s2"> in '</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' with these "</span>
+                <span class="sa">f</span><span class="s2">"settings; it must be </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">problems</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">problems</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"In '</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">': "</span> <span class="o">+</span> <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">problems</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Step">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Step">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Step</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A step that has been added to a flowchart.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : seamm.Node</span>
+<span class="sd">        The node for the step.</span>
+<span class="sd">    catalog : Catalog</span>
+<span class="sd">        The catalog the step came from.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">catalog</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Step(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">!r}</span><span class="s2">)"</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The title of the step."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">title</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The extension name of the step."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">extension</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The step's control parameters (a seamm.Parameters), or None."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span>
+
+<div class="viewcode-block" id="Step.set">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Step.set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Set parameters of the step, checking each value. See set_parameters()."""</span>
+        <span class="n">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_substeps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Whether this step holds sub-steps, like ORCA or MOPAC."""</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="s2">"subflowchart"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Flowchart</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The sequence of sub-steps of a step with a subflowchart."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_substeps</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The step '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' has no sub-steps."</span><span class="p">)</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">subcatalog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+            <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">subflowchart</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sequence</span>
+
+<div class="viewcode-block" id="Step.add">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Step.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Add a sub-step, e.g. an Energy step to ORCA. See Sequence.add()."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Step.loop">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Step.loop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Add a loop of sub-steps. See Sequence.loop()."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Sequence">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Sequence">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sequence</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A sequence of steps that run one after another.</span>
+
+<span class="sd">    The main flowchart, the sub-steps of a step like ORCA, and the body of a loop are</span>
+<span class="sd">    each a sequence. New steps go after the last one.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    catalog : Catalog</span>
+<span class="sd">        The catalog of steps that may be added.</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The flowchart the steps go in.</span>
+<span class="sd">    after : seamm.Node</span>
+<span class="sd">        The node the first step follows.</span>
+<span class="sd">    edge_subtype : str</span>
+<span class="sd">        The kind of the edge to the first step: "next", or "loop" for a loop body.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">,</span> <span class="n">after</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">"next"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span> <span class="o">=</span> <span class="n">catalog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span> <span class="o">=</span> <span class="n">flowchart</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">after</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_subtype</span> <span class="o">=</span> <span class="n">edge_subtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Sequence.add">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Sequence.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Add a step after the last one.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : str</span>
+<span class="sd">            Any name of the step: its extension name (as in the editor's step menu),</span>
+<span class="sd">            the name in its description, or its default title.</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            Parameter values by exact name.</span>
+<span class="sd">        kwargs</span>
+<span class="sd">            Parameter values by name with underscores for spaces.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Step</span>
+<span class="sd">            The new step. For a step with sub-steps, use its add() to add them.</span>
+<span class="sd">        """</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+        <span class="n">set_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Step</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Add a node to the flowchart and connect it after the last one."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="s2">"execution"</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_subtype</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_subtype</span> <span class="o">=</span> <span class="s2">"next"</span>
+
+<div class="viewcode-block" id="Sequence.loop">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.Sequence.loop">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Add a loop, whose body is built inside a with block.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            with fb.loop(type="For", variable="i", start=1, end=10) as body:</span>
+<span class="sd">                body.add(...)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            The Loop step's parameter values by exact name.</span>
+<span class="sd">        kwargs</span>
+<span class="sd">            Its parameter values by name with underscores for spaces.</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Sequence</span>
+<span class="sd">            The body of the loop.</span>
+<span class="sd">        """</span>
+        <span class="n">join</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">create_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="s2">"Join"</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append</span><span class="p">(</span><span class="n">join</span><span class="p">)</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Loop"</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">loop</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="s2">"loop"</span><span class="p">)</span>
+        <span class="n">body</span><span class="o">.</span><span class="n">loop_step</span> <span class="o">=</span> <span class="n">loop</span>
+        <span class="k">yield</span> <span class="n">body</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="s2">"The body of a loop needs at least one step."</span><span class="p">)</span>
+        <span class="c1"># The end of the body goes back to the Join in front of the loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">.</span><span class="n">_last</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="s2">"execution"</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">_edge_subtype</span>
+        <span class="p">)</span>
+        <span class="c1"># and the flowchart carries on from the loop's exit.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_subtype</span> <span class="o">=</span> <span class="s2">"exit"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FlowchartBuilder">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlowchartBuilder</span><span class="p">(</span><span class="n">Sequence</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build a flowchart step by step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    title : str</span>
+<span class="sd">        The title of the flowchart.</span>
+<span class="sd">    description : str</span>
+<span class="sd">        A description of the flowchart.</span>
+<span class="sd">    keywords : [str], optional</span>
+<span class="sd">        Keywords for the flowchart's metadata.</span>
+<span class="sd">    catalog : Catalog, optional</span>
+<span class="sd">        The catalog of steps. By default one is created for the flowchart.</span>
+<span class="sd">    flowchart : seamm.Flowchart, optional</span>
+<span class="sd">        An empty flowchart to build in. By default a new one is created, which loads</span>
+<span class="sd">        all the installed plug-ins.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">flowchart</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flowchart</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Flowchart</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">flowchart</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The flowchart to build in must be empty"</span><span class="p">)</span>
+            <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
+            <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="k">if</span> <span class="n">keywords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"keywords"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">catalog</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">catalog</span><span class="o">.</span><span class="n">namespace</span> <span class="o">!=</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">namespace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The catalog must be for the main flowchart"</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">,</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The flowchart's metadata: title, description, keywords, creators, ..."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span>
+
+<div class="viewcode-block" id="FlowchartBuilder.validate">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuilder.validate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Check the flowchart as a whole.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        [str]</span>
+<span class="sd">            A description of each problem found; empty if none.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FlowchartBuilder.layout">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuilder.layout">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Lay out the steps as the editor's clean layout does."""</span>
+        <span class="n">layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Validate if asked, raising FlowchartBuildError on problems, and lay out."""</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="n">problems</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">problems</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span>
+                    <span class="s2">"The flowchart has problems:</span><span class="se">\n</span><span class="s2">  "</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">  "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.format3</span><span class="w"> </span><span class="kn">import</span> <span class="n">restore_tables</span>
+
+        <span class="n">restore_tables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FlowchartBuilder.to_text">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuilder.to_text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"3.0"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The flowchart as the text of a .flow file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        check : bool</span>
+<span class="sd">            Validate first and raise FlowchartBuildError if there are problems.</span>
+<span class="sd">        format : str</span>
+<span class="sd">            The flowchart format, "3.0" (the default) or "2.0".</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finish</span><span class="p">(</span><span class="n">check</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FlowchartBuilder.write">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.FlowchartBuilder.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"3.0"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Write the flowchart to a .flow file, which is made executable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or pathlib.Path</span>
+<span class="sd">            The file to write.</span>
+<span class="sd">        check : bool</span>
+<span class="sd">            Validate first and raise FlowchartBuildError if there are problems.</span>
+<span class="sd">        format : str</span>
+<span class="sd">            The flowchart format, "3.0" (the default) or "2.0".</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finish</span><span class="p">(</span><span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_main_line</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The nodes of a flowchart in execution order, including loop bodies."""</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">walk</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">following</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"out"</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">!=</span> <span class="s2">"execution"</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"loop"</span><span class="p">:</span>
+                    <span class="n">walk</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"next"</span><span class="p">,</span> <span class="s2">"exit"</span><span class="p">):</span>
+                    <span class="n">following</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">following</span>
+
+    <span class="n">walk</span><span class="p">(</span><span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">nodes</span>
+
+
+<div class="viewcode-block" id="validate">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.validate">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Check a flowchart as a whole, beyond the individual parameter values.</span>
+
+<span class="sd">    Checks that a step using the model chemistry (its "use model chemistry"</span>
+<span class="sd">    parameter is "yes") comes after a Model Chemistry step; for a sub-step, that the</span>
+<span class="sd">    Model Chemistry step comes before the step holding it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The main flowchart.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [str]</span>
+<span class="sd">        A description of each problem found; empty if none.</span>
+<span class="sd">    """</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">uses_model_chemistry</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s2">"use model chemistry"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">P</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"use model chemistry"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">normalize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">have_model_chemistry</span><span class="p">,</span> <span class="n">where</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">_main_line</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s2">"Model Chemistry"</span><span class="p">:</span>
+                <span class="n">have_model_chemistry</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">uses_model_chemistry</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">have_model_chemistry</span><span class="p">:</span>
+                <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">where</span><span class="si">}{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' uses the model chemistry, but no Model "</span>
+                    <span class="s2">"Chemistry step comes before it. Add one, or set 'use model "</span>
+                    <span class="s2">"chemistry' to 'no' and choose the method explicitly."</span>
+                <span class="p">)</span>
+            <span class="n">subflowchart</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"subflowchart"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">,</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Flowchart</span><span class="p">):</span>
+                <span class="n">check</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">,</span> <span class="n">have_model_chemistry</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}{</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">/"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">have_model_chemistry</span>
+
+    <span class="n">check</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">problems</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

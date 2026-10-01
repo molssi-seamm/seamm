@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.9.29 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=45a1f582"></script>
+    <script src="_static/documentation_options.js?v=65cfade2"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.1 – Flowcharts without the editor, and flowchart format 3.0</dt><dd><ul class="simple">
+<li><p>Flowcharts can now be built, read, changed and checked without the graphical
+editor, with the same checks the editor makes: the <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> command
+(<code class="docutils literal notranslate"><span class="pre">steps</span></code>, <code class="docutils literal notranslate"><span class="pre">describe</span></code>, <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">show</span></code>, <code class="docutils literal notranslate"><span class="pre">tree</span></code>, <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">insert</span></code>,
+<code class="docutils literal notranslate"><span class="pre">remove</span></code>, <code class="docutils literal notranslate"><span class="pre">move</span></code>, <code class="docutils literal notranslate"><span class="pre">validate</span></code>, <code class="docutils literal notranslate"><span class="pre">convert</span></code>), short YAML <em>specs</em> that give
+only what differs from the defaults, and Python (<code class="docutils literal notranslate"><span class="pre">seamm.builder</span></code>,
+<code class="docutils literal notranslate"><span class="pre">seamm.spec</span></code>, <code class="docutils literal notranslate"><span class="pre">seamm.edit</span></code>). See “Flowcharts without the editor” in the user
+guide.</p></li>
+<li><p>A new, readable flowchart format 3.0 (YAML) holding the metadata, the plug-in
+versions, a digest of the whole flowchart (the old digest stopped at the first
+loop), every parameter, unconnected steps and the layout. Format 2.0 is still
+read, through a converter that never changes. This release still writes 2.0 by
+default from the editor, so that every installation reads 3.0 before any writes
+it; the next release writes 3.0. <code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT</span></code> chooses now.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">migrate</span></code> converts an installation’s job flowcharts and
+datastore to 3.0 (backing up the datastore); <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code>
+wraps it for users.</p></li>
+<li><p>Steps can declare which of their parameters apply given the others, narrow
+choices and fill in values that follow from others; their dialogs and these tools
+share the rules, so a setting with no effect is refused with the reason.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">mcp</span></code>: an MCP server giving AI assistants (Claude Desktop,
+Claude Code, …) these operations as tools, plus submitting and following jobs
+through a dashboard. Optional: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'seamm[mcp]'</span></code>.</p></li>
+<li><p>Bugfix: using SEAMM from several threads at once could wipe
+<code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code>, losing every dashboard’s credentials. Saves are now
+atomic and never overwrite the file with an empty one.</p></li>
+<li><p>Bugfix: graph templates and plug-ins’ citations were not found when SEAMM or a
+plug-in was installed for development (editable).</p></li>
+<li><p>Reading and editing flowcharts is several times faster: each plug-in’s
+bibliography is parsed once, not for every step.</p></li>
+</ul>
+</dd>
 <dt>2026.9.29 – Bugfix: flowcharts with steps that have no position now open</dt><dd><ul class="simple">
 <li><p>Opening a flowchart in which a step had no position on the canvas – one written
 by a script or another program rather than the editor – failed with

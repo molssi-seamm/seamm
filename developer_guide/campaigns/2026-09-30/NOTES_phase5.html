@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress) &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/campaigns/2026-09-30/NOTES_phase5';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Phase 6 – The MCP server (2026-10-01)" href="NOTES_phase6.html" />
+    <link rel="prev" title="Phase 4 – Editing from the command line, and a skill (2026-09-30)" href="NOTES_phase4.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../structure_selection.html">Selecting structures in a plug-in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Campaigns</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase0.html">Phase 0 – Inventory and triage (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase1.html">Phase 1 – Catalog and builder (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase3.html">Phase 3 – Converter and migration (2026-09-30, in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase4.html">Phase 4 – Editing from the command line, and a skill (2026-09-30)</a></li>
+<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase6.html">Phase 6 – The MCP server (2026-10-01)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_switch.html">The switch – checklist (draft for Paul, 2026-10-01)</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Developer Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Campaigns</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="phase-5-rules-shared-by-the-dialogs-and-the-builder-2026-09-30-in-progress">
+<h1>Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)<a class="headerlink" href="#phase-5-rules-shared-by-the-dialogs-and-the-builder-2026-09-30-in-progress" title="Link to this heading">#</a></h1>
+<p>Q2 decided yes (Paul: “start phase 5”).</p>
+<section id="in-seamm-9ce27eb-d5be0d6">
+<h2>In seamm (9ce27eb, d5be0d6)<a class="headerlink" href="#in-seamm-9ce27eb-d5be0d6" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">seamm.Parameters</span></code> gains the rules a step’s dialog and the flowchart builder share:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">applies(key,</span> <span class="pre">values)</span></code> – whether a parameter has any effect given the others. The
+default follows <code class="docutils literal notranslate"><span class="pre">&quot;applies_when&quot;</span></code> in the parameter’s definition: a mapping from other
+parameters to a value, a list of values, or <code class="docutils literal notranslate"><span class="pre">{&quot;not&quot;:</span> <span class="pre">value(s)}</span></code>. Conditions chain
+(a parameter applies only if those it names do), and a variable or expression counts
+as met, since its value is known only when the flowchart runs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">choices(key,</span> <span class="pre">values)</span></code> – narrowed valid choices, or None (override).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implied(values)</span></code> – values that others imply (override).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">problems(values)</span></code> – combinations that cannot work; by default, values outside
+narrowed choices (extend in overrides).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">not_applicable_reason(key,</span> <span class="pre">values)</span></code> – why a parameter does not apply, following
+the chain of conditions by default (“it needs ‘method’, which does not apply (it
+applies when ‘use model chemistry’ is ‘no’)”); override for plug-in rules.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">describe_condition(key)</span></code>, <code class="docutils literal notranslate"><span class="pre">applicable(values)</span></code>, <code class="docutils literal notranslate"><span class="pre">current_values()</span></code>.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code> is any {name: value} – the dialog passes its current widget values, the
+builder the parameters’ own.</p>
+<p>Used by: the builder (refuses a setting that has no effect, with the reason; fills in
+implied values, refusing a contradiction; refuses problems; restores the step when it
+refuses), <code class="docutils literal notranslate"><span class="pre">spec.reduce</span></code>/<code class="docutils literal notranslate"><span class="pre">show</span></code> (leaves out settings that do not apply),
+<code class="docutils literal notranslate"><span class="pre">describe</span></code> (“applies when …”), and <code class="docutils literal notranslate"><span class="pre">edit.validate</span></code> (reports problems, ignores
+values that do not apply).</p>
+<p><strong>Release note:</strong> a parameter definition containing <code class="docutils literal notranslate"><span class="pre">&quot;applies_when&quot;</span></code> is rejected by
+older seamm (<code class="docutils literal notranslate"><span class="pre">Parameter.update</span></code> refuses unknown keys), so a plug-in using it must
+require the new seamm, and seamm must be released first.</p>
+</section>
+<section id="orca-orca-step-97a07fe">
+<h2>ORCA (orca_step 97a07fe)<a class="headerlink" href="#orca-orca-step-97a07fe" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EnergyParameters</span></code> declares <code class="docutils literal notranslate"><span class="pre">applies_when</span></code> for method, functional type,
+functional, basis, basis source, basis-set extrapolation, extrapolation family, the
+checkpoint name and the two initial-guess sub-controls, and overrides the rules for
+the rest: no extrapolation for F12 methods or for steps that need a gradient or
+Hessian (<code class="docutils literal notranslate"><span class="pre">extrapolation</span> <span class="pre">=</span> <span class="pre">False</span></code> on Optimization, Frequencies, BSSE); the
+extrapolation replaces the basis and its source; F12 methods take only the F12 bases,
+from ORCA itself; the functionals are those of the functional type, and a functional
+implies its type. Frequencies and BSSE list the Energy settings they do not use
+(<code class="docutils literal notranslate"><span class="pre">unused</span></code>); BSSE’s fragment atoms apply only for specified fragments.</p></li>
+<li><p>The Energy dialog, and so its sub-steps, asks these rules what to show and offer;
+indentation and order stay in the dialog. The sub-steps’ <code class="docutils literal notranslate"><span class="pre">_show_cbs()</span></code> overrides
+are gone.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/test_gui.py</span></code> lays out every sub-step for every choice that drives the layout
+and checks both ways that exactly the controls that apply are shown.</p></li>
+<li><p>Checked with the builder: the functional refused while the model chemistry is used;
+a meta-GGA functional sets its type; an F12 method gets cc-pVTZ-F12 from ORCA, and a
+non-F12 basis with it is refused; extrapolation is accepted in Energy and refused in
+Optimization with the reason; polarizability refused in Frequencies; fragment atoms
+only with specified fragments.</p></li>
+</ul>
+</section>
+<section id="model-chemistry-model-chemistry-step-ec14597">
+<h2>Model Chemistry (model_chemistry_step ec14597)<a class="headerlink" href="#model-chemistry-model-chemistry-step-ec14597" title="Link to this heading">#</a></h2>
+<p>Its dialog is a picker over what the installed programs offer, stored as one string, so
+its rule is a check: the model chemistry must be offered (any basis). Discovery, the
+basis-free match and the message are now module functions used by both the run-time
+check and <code class="docutils literal notranslate"><span class="pre">ModelChemistryParameters.problems()</span></code>; an unavailable model chemistry is
+refused when the flowchart is built. A variable (<code class="docutils literal notranslate"><span class="pre">$mc</span></code>) passes.</p>
+</section>
+<section id="checked-in-seamm-dev">
+<h2>Checked in ~/SEAMM_DEV<a class="headerlink" href="#checked-in-seamm-dev" title="Link to this heading">#</a></h2>
+<p>orca_step and model_chemistry_step installed editable (their checkouts match the
+installed releases); job 3984, a spec-built ORCA B3LYP/def2-SVP energy of water, ran
+through the JobServer (-76.3197 E_h). Tests: seamm 205, orca_step 152 (+4 dialog; the
+one failure, <code class="docutils literal notranslate"><span class="pre">test_frequencies_ir_spectrum_graph</span></code>, predates this work: a
+<code class="docutils literal notranslate"><span class="pre">line.graph_template</span></code> lookup), model_chemistry_step 99.</p>
+</section>
+<section id="gaussian-psi4-mopac-and-lammps-2026-09-30">
+<h2>Gaussian, Psi4, MOPAC and LAMMPS (2026-09-30)<a class="headerlink" href="#gaussian-psi4-mopac-and-lammps-2026-09-30" title="Link to this heading">#</a></h2>
+<p>Done in parallel, each following the ORCA implementation; each is committed locally
+on its <code class="docutils literal notranslate"><span class="pre">dev</span></code> and installed editable in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Plug-in</p></th>
+<th class="head"><p>Commit</p></th>
+<th class="head"><p>Rules</p></th>
+<th class="head"><p>Tests</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gaussian_step</p></td>
+<td><p>397bd97, f1d1d3a</p></td>
+<td><p>level/method/functional, DFT-only (functional, grid, dispersion), dispersion
+narrowed to the functional’s list, freeze-cores by method, basis only for
+methods with one, Optimization/Thermodynamics/Stability specifics, <code class="docutils literal notranslate"><span class="pre">unused</span></code>
+per sub-step; Stability’s <code class="docutils literal notranslate"><span class="pre">advanced_method</span></code> implied from <code class="docutils literal notranslate"><span class="pre">method</span></code></p></td>
+<td><p>34 (17 new)</p></td>
+</tr>
+<tr class="row-odd"><td><p>psi4_step</p></td>
+<td><p>78c5330</p></td>
+<td><p>level/method/functional, freeze-cores by method, dispersion narrowed and
+implied, convergence sub-switches, Thermochemistry’s “use existing
+parameters”, BSSE fragment atoms</p></td>
+<td><p>29 (15 new)</p></td>
+</tr>
+<tr class="row-even"><td><p>mopac_step</p></td>
+<td><p>8ab92e9</p></td>
+<td><p>all simple conditions: HF-only and CI-only settings, MOZYME, COSMO,
+convergence, optimization method, lattice optimization</p></td>
+<td><p>26 (13 new)</p></td>
+</tr>
+<tr class="row-odd"><td><p>lammps_step</p></td>
+<td><p>72035b0</p></td>
+<td><p>Initialization (k-space, charges), Velocities, Minimization and NPT stresses
+(one <code class="docutils literal notranslate"><span class="pre">pressure_keys</span></code> override), NVE run control and trajectories, NVT
+thermostats, NPT barostats</p></td>
+<td><p>104 (+3 skipped; 39 new)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each dialog now asks the rules what to show (and, for Gaussian and Psi4, what to offer
+and set); a dialog test lays out every sub-step for every layout-driving choice and
+checks both ways. Layout logic that duplicated conditions was removed (LAMMPS: about
+500 lines of stress-table branches replaced by one helper; Gaussian Stability’s copy of
+the calculation layout replaced by an override). One deliberate change everywhere:
+when a driving choice is a variable, the controls depending on it are shown (the old
+dialogs hid some of them, so they could not be set at all).</p>
+<p><strong>Dialog bugs fixed on the way:</strong> Gaussian’s dispersion list did not follow the
+functional, <code class="docutils literal notranslate"><span class="pre">input</span> <span class="pre">only</span></code> did not hide <code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">handling</span></code> until reopened, the
+dispersion choices had a typo (<code class="docutils literal notranslate"><span class="pre">DG2</span></code>) and lacked <code class="docutils literal notranslate"><span class="pre">GD2</span></code>/<code class="docutils literal notranslate"><span class="pre">PFD</span></code>, and a built
+Stability flowchart could run the wrong method; Psi4’s dispersion update raised
+TypeError (<code class="docutils literal notranslate"><span class="pre">value</span></code> used as a method) and a typed method name raised KeyError;
+LAMMPS’s Heat Flux dialog could not open (KeyError), plus stress-table and label
+fixes.</p>
+<p><strong>Core fixes from their reports</strong> (seamm e862b43, 4b364c6, b4fbc40): “is neither A
+nor B” for negated lists; the builder restores only values when refusing
+(<code class="docutils literal notranslate"><span class="pre">from_dict</span></code> lost plug-ins’ <code class="docutils literal notranslate"><span class="pre">__init__</span></code> changes, e.g. Gaussian Stability’s narrowed
+methods); <code class="docutils literal notranslate"><span class="pre">Parameter.__repr__</span></code> returned a non-string; <code class="docutils literal notranslate"><span class="pre">validate</span></code> warns about empty
+sub-steps only for code steps (Dimer Builder’s are optional); and a plug-in’s
+<code class="docutils literal notranslate"><span class="pre">references.bib</span></code> is found for an editable install too (MOPAC job 3985 failed with
+<code class="docutils literal notranslate"><span class="pre">KeyError:</span> <span class="pre">'Stewart_2012'</span></code> until then; job 3986 then finished).</p>
+<p>Checked in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>: the 30 most recent job flowcharts all validate; the
+Testing flowcharts show only old problems (8 with ORCA’s renamed BSSE parameter
+<code class="docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">A</span> <span class="pre">atoms</span></code>, one stale <code class="docutils literal notranslate"><span class="pre">CCSD(T)-F12D</span></code>; both since fixed); MOPAC job 3986 (PM7, COSMO
+water, built from a spec) ran.</p>
+</section>
+<section id="run-time-bugs-fixed-2026-09-30">
+<h2>Run-time bugs fixed (2026-09-30)<a class="headerlink" href="#run-time-bugs-fixed-2026-09-30" title="Link to this heading">#</a></h2>
+<p>Committed locally on each <code class="docutils literal notranslate"><span class="pre">dev</span></code>; not pushed.</p>
+<ul class="simple">
+<li><p><strong>LAMMPS</strong> (7950681): an explicit k-space method on a charged system raised
+KeyError (<code class="docutils literal notranslate"><span class="pre">P[&quot;kspace_style&quot;]</span></code>); the pair style and <code class="docutils literal notranslate"><span class="pre">kspace_style</span></code> line now come
+from a testable <code class="docutils literal notranslate"><span class="pre">explicit_kspace()</span></code>. Minimization’s <code class="docutils literal notranslate"><span class="pre">Sxy</span></code> was read from <code class="docutils literal notranslate"><span class="pre">Sxz</span></code>.
+NPT’s six damping times were converted as pressures (now times), the “y and z”
+branch set <code class="docutils literal notranslate"><span class="pre">Szz1</span> <span class="pre">=</span> <span class="pre">Szz1</span></code> (now <code class="docutils literal notranslate"><span class="pre">Syy1</span></code>), and <code class="docutils literal notranslate"><span class="pre">mtk</span></code> and <code class="docutils literal notranslate"><span class="pre">nreset</span></code> are now
+written to the <code class="docutils literal notranslate"><span class="pre">fix</span> <span class="pre">npt</span></code> line. NVE’s <code class="docutils literal notranslate"><span class="pre">run_control</span></code> / <code class="docutils literal notranslate"><span class="pre">maximum_time</span></code> /
+<code class="docutils literal notranslate"><span class="pre">control_properties</span></code> are marked not implemented (<code class="docutils literal notranslate"><span class="pre">not_implemented</span></code>), so the
+builder refuses them with that reason, rather than being implemented. Also:
+Velocities’ <code class="docutils literal notranslate"><span class="pre">remove_momentum</span></code> default ended in a period, so was not one of its
+own choices; old flowcharts’ spelling is translated.</p></li>
+<li><p><strong>Psi4</strong> (293719a): <code class="docutils literal notranslate"><span class="pre">energy.get_method</span></code> raised KeyError when the functional was
+given by its short name (the dispersion check looked it up by that name).</p></li>
+<li><p><strong>ORCA</strong> (0170ba3): old flowcharts’ <code class="docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">A</span> <span class="pre">atoms</span></code> becomes <code class="docutils literal notranslate"><span class="pre">fragment</span>
+<span class="pre">atoms:</span> <span class="pre">&quot;X;</span> <span class="pre">rest&quot;</span></code> (a last group <code class="docutils literal notranslate"><span class="pre">rest</span></code> = the remaining atoms) and <code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">(2</span>
+<span class="pre">molecules)</span></code> becomes <code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">(molecules)</span></code>; the method <code class="docutils literal notranslate"><span class="pre">CCSD(T)-F12D</span></code>, renamed
+<code class="docutils literal notranslate"><span class="pre">CCSD(T)-F12D/RI</span></code> in da696be, is translated too.</p></li>
+<li><p><strong>seamm</strong> (b56a2c9): <code class="docutils literal notranslate"><span class="pre">problems()</span></code> no longer flags a variable inside a named
+value (Model Chemistry’s basis <code class="docutils literal notranslate"><span class="pre">{'name':</span> <span class="pre">'$basis'}</span></code>).</p></li>
+</ul>
+<p>After these, all 58 Testing and recent-job flowcharts in the sweep validate.</p>
+</section>
+<section id="lammps-settings-hidden-but-used-at-run-time-2026-10-01">
+<h2>LAMMPS settings hidden but used at run time (2026-10-01)<a class="headerlink" href="#lammps-settings-hidden-but-used-at-run-time-2026-10-01" title="Link to this heading">#</a></h2>
+<p>Paul chose all four suggestions (lammps_step 9929131):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kspace_smallq</span></code> applies whenever there is a k-space method (it always sets which
+atoms count as charged; “automatic” may use <code class="docutils literal notranslate"><span class="pre">msm/cg</span></code> with it).</p></li>
+<li><p>The QEq convergence and iterations apply to “default for forcefield” too.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pdamp</span></code> and the stress damping times apply to the Berendsen barostat too
+(<code class="docutils literal notranslate"><span class="pre">press/berendsen</span></code> requires them; the default 1000 fs was always used).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">allow</span> <span class="pre">shear</span></code> applies only to a solid with the Nose-Hoover barostat
+(<code class="docutils literal notranslate"><span class="pre">press/berendsen</span></code> cannot control a triclinic cell, per the LAMMPS docs), and is
+ignored at run time where it does not apply.</p></li>
+</ul>
+<p>Found by running the check job in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>:</p>
+<ul class="simple">
+<li><p>LAMMPS writes one box for all the steps of a LAMMPS step, so a Berendsen NPT
+followed by a step allowing shear (or on a non-orthorhombic cell) failed in LAMMPS
+(“Cannot use fix press/berendsen with triclinic box”). This is now caught before
+running, with a clear message (job 3988). A builder check would need to look
+across sub-steps and at the structure, so it is left to run time.</p></li>
+<li><p>Graph templates were not found for an editable seamm (seamm 560429e), the cause of
+ORCA’s long-failing <code class="docutils literal notranslate"><span class="pre">test_frequencies_ir_spectrum_graph</span></code> too.</p></li>
+<li><p>Job 3991 (Berendsen with <code class="docutils literal notranslate"><span class="pre">Pdamp</span></code> 500 fs; then, in its own LAMMPS step, Nose-Hoover
+with shear) finished.</p></li>
+<li><p>When LAMMPS itself failed (e.g. “Lost atoms”, job 3989), lammps_step did not notice
+and failed later in the trajectory analysis with an unrelated <code class="docutils literal notranslate"><span class="pre">IndexError</span></code>. It now
+finds the <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> in <code class="docutils literal notranslate"><span class="pre">log.lammps</span></code> (or the screen output, for other processes) and
+stops with the sub-step, LAMMPS’s message, the last command, advice for common
+errors and where the log is; no <code class="docutils literal notranslate"><span class="pre">success.dat</span></code> is written (lammps_step bda3a70,
+job 3993).</p></li>
+</ul>
+</section>
+<section id="smaller-gaps-fixed-2026-10-01">
+<h2>Smaller gaps fixed (2026-10-01)<a class="headerlink" href="#smaller-gaps-fixed-2026-10-01" title="Link to this heading">#</a></h2>
+<p>The last of the agents’ findings, each checked with a job in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Psi4</strong> (6d9e07b): BSSE’s 17 ignored Energy settings are <code class="docutils literal notranslate"><span class="pre">unused</span></code> (hidden,
+refused); Thermochemistry’s plots apply only with its own settings (the Output tab
+hides); right after Initialization, “use existing parameters” falls back to its own
+settings at run time, as the dialog does (job 3995). The builder still needs
+<code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">existing</span> <span class="pre">parameters:</span> <span class="pre">no</span></code> to set Energy settings there.</p></li>
+<li><p><strong>MOPAC</strong> (f6e5c81): <code class="docutils literal notranslate"><span class="pre">structure</span></code> is shown; an explicit <code class="docutils literal notranslate"><span class="pre">initial</span></code> after the first
+sub-step crashed (UnboundLocalError); Force Constants with MOZYME raised
+NotImplementedError – MOPAC’s FORCE works with MOZYME (checked directly), so only
+the main input is used and <code class="docutils literal notranslate"><span class="pre">structure</span></code>/<code class="docutils literal notranslate"><span class="pre">MOZYME</span> <span class="pre">follow-up</span></code> are unused there, and
+Energy’s analysis no longer expects a follow-up that does not apply (job 3994 failed
+on that, 3997 finished). Also <code class="docutils literal notranslate"><span class="pre">[&quot;MOZYME&quot;]</span> <span class="pre">==</span> <span class="pre">&quot;always&quot;</span></code> (always False) and the
+“will be che Hartree-Fock” description.</p></li>
+<li><p><strong>Gaussian</strong> (bfee70f): the <code class="docutils literal notranslate"><span class="pre">system</span> <span class="pre">name</span></code> edit had been applied to
+<code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">name</span></code> (choice listed twice, “keep current name” lost); old <code class="docutils literal notranslate"><span class="pre">DG2</span></code>
+is translated to <code class="docutils literal notranslate"><span class="pre">GD2</span></code> (job 3996).</p></li>
+<li><p><strong>seamm</strong> (1ebcff6): <code class="docutils literal notranslate"><span class="pre">Parameters.from_dict</span></code> keeps <code class="docutils literal notranslate"><span class="pre">__init__</span></code> edits.
+(packmol_step’s 11 failing output comparisons are a pre-existing number-format
+difference, the same with the old code.)</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="NOTES_phase4.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Phase 4 – Editing from the command line, and a skill (2026-09-30)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="NOTES_phase6.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Phase 6 – The MCP server (2026-10-01)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#in-seamm-9ce27eb-d5be0d6">In seamm (9ce27eb, d5be0d6)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orca-orca-step-97a07fe">ORCA (orca_step 97a07fe)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-chemistry-model-chemistry-step-ec14597">Model Chemistry (model_chemistry_step ec14597)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checked-in-seamm-dev">Checked in ~/SEAMM_DEV</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-psi4-mopac-and-lammps-2026-09-30">Gaussian, Psi4, MOPAC and LAMMPS (2026-09-30)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-time-bugs-fixed-2026-09-30">Run-time bugs fixed (2026-09-30)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lammps-settings-hidden-but-used-at-run-time-2026-10-01">LAMMPS settings hidden but used at run time (2026-10-01)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#smaller-gaps-fixed-2026-10-01">Smaller gaps fixed (2026-10-01)</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/developer_guide/campaigns/2026-09-30/NOTES_phase5.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

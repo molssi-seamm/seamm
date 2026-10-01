@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.mcp_server &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/mcp_server';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm.mcp_server</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for seamm.mcp_server</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">"""An MCP server for building, reading and editing SEAMM flowcharts.</span>
+
+<span class="sd">It offers the same operations as the ``seamm-flowchart`` command as tools for AI</span>
+<span class="sd">clients (Claude Desktop, Claude Code and others), keeping the plug-ins loaded between</span>
+<span class="sd">calls, so each call takes well under a second rather than the 6-25 s of loading</span>
+<span class="sd">them. It runs locally, next to a SEAMM installation, over stdio::</span>
+
+<span class="sd">    seamm-flowchart mcp</span>
+
+<span class="sd">and needs the optional ``mcp`` package (``pip install seamm[mcp]``). Every value is</span>
+<span class="sd">checked by the same code, and rules, as the builder and the editor.</span>
+
+<span class="sd">The flowchart files are the single source of truth: each tool reads the file it is</span>
+<span class="sd">given and writes the result back (or to ``output``), in format 3.0.</span>
+
+<span class="sd">The job tools run flowcharts through the dashboards in the installation's</span>
+<span class="sd">``dashboards.ini``, with the credentials in ``~/.seamm.d/seammrc``; both files are only</span>
+<span class="sd">read, and the credentials are never returned. ``submit_job`` checks the flowchart first,</span>
+<span class="sd">fills in the defaults of its command-line parameters, and needs a queue when the</span>
+<span class="sd">dashboard has queues.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">INSTRUCTIONS</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<span class="s2">Tools for SEAMM flowcharts (.flow files): graphs of steps, each a plug-in with</span>
+<span class="s2">parameters. Never write or edit a .flow file by hand; use these tools, which check</span>
+<span class="s2">every step name, parameter, choice, number and unit.</span>
+
+<span class="s2">To make a flowchart:</span>
+<span class="s2">1. Look up the steps with list_steps (and list_steps with a step name for the</span>
+<span class="s2">   sub-steps of ORCA, MOPAC, LAMMPS, ...), and their parameters, choices, defaults and</span>
+<span class="s2">   units with describe_step (e.g. "ORCA/Energy"). Don't guess names or values.</span>
+<span class="s2">2. Write a spec in YAML, giving only what differs from the defaults:</span>
+<span class="s2">       title: Water optimization</span>
+<span class="s2">       steps:</span>
+<span class="s2">       - Model Chemistry: {model chemistry: "ORCA:DFT@B3LYP/bse:def2-SVP"}</span>
+<span class="s2">       - FromSMILESStep: {smiles string: O}</span>
+<span class="s2">       - ORCA:</span>
+<span class="s2">           steps:</span>
+<span class="s2">           - Optimization</span>
+<span class="s2">   'steps:' holds a code step's sub-steps; 'body:' holds a Loop's steps (the Join is</span>
+<span class="s2">   added). Units as "300 K"; variables as "$name"; an "=" expression is Python with</span>
+<span class="s2">   bare variable names.</span>
+<span class="s2">3. build_flowchart the spec; an error names the step and the closest choices. Fix the</span>
+<span class="s2">   spec and build again.</span>
+<span class="s2">4. validate_flowchart, then show the user show_flowchart's summary.</span>
+
+<span class="s2">To change a flowchart, use flowchart_tree for the steps' addresses ("3", "3.2",</span>
+<span class="s2">"ORCA/Energy"), then set_parameters, insert_step, remove_step or move_step, and</span>
+<span class="s2">validate_flowchart. Settings that have no effect with the others are refused, with the</span>
+<span class="s2">reason: set the controlling parameters in the same call.</span>
+
+<span class="s2">To run a flowchart: list_dashboards, then dashboard_info for the dashboard's projects</span>
+<span class="s2">and queues. Confirm the dashboard, project and queue with the user before</span>
+<span class="s2">submit_job, which starts a real calculation. Then follow it with job_status, and read</span>
+<span class="s2">its output with read_job_file ("job.out", a table's .csv, ...); list_job_files lists</span>
+<span class="s2">what it has written. Loops carry on past errors, so a finished job can still have</span>
+<span class="s2">failed iterations: look for "Caught exception in loop iteration" in job.out.</span>
+<span class="s2">"""</span>
+
+<span class="c1"># SEAMM's objects are not thread safe, and the tools run in worker threads.</span>
+<span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+<span class="n">_catalog</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="catalog">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.catalog">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">catalog</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The catalog of steps, loading the plug-ins the first time."""</span>
+    <span class="k">global</span> <span class="n">_catalog</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_catalog</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.catalog</span><span class="w"> </span><span class="kn">import</span> <span class="n">Catalog</span>
+
+            <span class="n">_catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_catalog</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">must_exist</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An absolute path, with ~ expanded, relative to the server's directory."""</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"A path to a flowchart is needed."</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">must_exist</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There is no file </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"3.0"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Write a flowchart, made executable, as the editor and command do."""</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IMODE</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+
+    <span class="n">catalog</span><span class="p">()</span>  <span class="c1"># the plug-ins, loaded once</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">edit</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_edited</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Read a flowchart, change it, write it, and say what it now holds."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">action</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_path</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">must_exist</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">output</span> <span class="k">else</span> <span class="n">source</span>
+        <span class="n">_write</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="s2">"message"</span><span class="p">:</span> <span class="n">message</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="s2">"steps"</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">tree</span><span class="p">(</span><span class="n">flowchart</span><span class="p">),</span>
+            <span class="s2">"problems"</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">),</span>
+        <span class="p">}</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># The tools, as plain functions (tested directly) registered with the server below</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="list_steps">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_steps">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_steps</span><span class="p">(</span><span class="n">step</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The steps that can go in a flowchart, or the sub-steps of a step.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        step: A step with sub-steps, e.g. "ORCA", "MOPAC" or "LAMMPS", to list its</span>
+<span class="sd">            sub-steps; or "ORCA/..." paths. Omit for the main steps.</span>
+
+<span class="sd">    Returns each step's extension name (use it in specs), name, group and description.</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">steps_catalog</span> <span class="o">=</span> <span class="n">catalog</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">step</span><span class="p">:</span>
+            <span class="n">parent</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">steps_catalog</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+            <span class="n">steps_catalog</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">subcatalog</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">steps_catalog</span><span class="o">.</span><span class="n">steps</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="describe_step">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.describe_step">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">describe_step</span><span class="p">(</span><span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A step's parameters: kind, default, units, choices (strict) or suggestions,</span>
+<span class="sd">    when each applies, and help; plus its sub-steps if it has them.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        step: The step, e.g. "Loop", "FromSMILESStep", or a path to a sub-step such</span>
+<span class="sd">            as "ORCA/Energy" or "LAMMPS/NPT".</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">catalog</span><span class="p">()</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">step</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="build_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.build_flowchart">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_flowchart</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Build a complete flowchart from a spec (YAML text, see the server</span>
+<span class="sd">    instructions) and write it in format 3.0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spec: The spec as YAML (or JSON) text.</span>
+<span class="sd">        path: Where to write the flowchart (.flow).</span>
+<span class="sd">        overwrite: Replace an existing file. By default an existing file is not</span>
+<span class="sd">            replaced.</span>
+
+<span class="sd">    Returns the path, the steps with their addresses, and the flowchart read back as</span>
+<span class="sd">    a spec (only the settings that are not defaults).</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span><span class="p">,</span> <span class="n">spec</span> <span class="k">as</span> <span class="n">spec_module</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">must_exist</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> exists. Use overwrite=true to replace it, or choose another "</span>
+                <span class="s2">"path."</span>
+            <span class="p">)</span>
+        <span class="n">fb</span> <span class="o">=</span> <span class="n">spec_module</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">())</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">"3.0"</span><span class="p">)</span>  <span class="c1"># validates first</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IMODE</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="s2">"steps"</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">tree</span><span class="p">(</span><span class="n">fb</span><span class="o">.</span><span class="n">flowchart</span><span class="p">),</span>
+            <span class="s2">"spec"</span><span class="p">:</span> <span class="n">spec_module</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">spec_module</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">fb</span><span class="o">.</span><span class="n">flowchart</span><span class="p">)),</span>
+        <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="show_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.show_flowchart">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_flowchart</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What a flowchart does, as a spec in YAML: its steps and only the parameters</span>
+<span class="sd">    that differ from the defaults. Much easier to read than the file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow), format 3.0 or 2.0.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">spec</span> <span class="k">as</span> <span class="n">spec_module</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">spec_module</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">spec_module</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">flowchart</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="flowchart_tree">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.flowchart_tree">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_tree</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The steps of a flowchart with their addresses ("3", "3.2", ...), which the</span>
+<span class="sd">    editing tools take.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">edit</span><span class="o">.</span><span class="n">tree</span><span class="p">(</span><span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span></div>
+
+
+
+<div class="viewcode-block" id="validate_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.validate_flowchart">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_flowchart</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Check a flowchart: its structure and every stored value, including old values</span>
+<span class="sd">    the plug-ins no longer accept and settings that cannot work together.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+
+<span class="sd">    Returns whether it is valid, and a description of each problem.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"valid"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)]}</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"valid"</span><span class="p">:</span> <span class="ow">not</span> <span class="n">problems</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="n">problems</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="set_parameters">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.set_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Set parameters of a step in a flowchart.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        step: The step's address: a position ("3", "3.2"), a name ("ORCA/Energy"),</span>
+<span class="sd">            or both ("3/Energy").</span>
+<span class="sd">        parameters: Parameter names (as describe_step gives them) and values, e.g.</span>
+<span class="sd">            {"basis": "def2-TZVP", "temperature": "300 K"}. Set controlling</span>
+<span class="sd">            parameters in the same call as those that depend on them.</span>
+<span class="sd">        output: Write the result here instead of back to path.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">_edited</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="n">output</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">edit</span><span class="p">,</span> <span class="n">fc</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span> <span class="ow">and</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="insert_step">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.insert_step">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert_step</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">after</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">before</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">into</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Insert a step into a flowchart, after or before another step, or into a code</span>
+<span class="sd">    step (as a sub-step) or loop (into its body).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        step: The step to insert, by extension name (see list_steps).</span>
+<span class="sd">        parameters: Its parameters that differ from the defaults.</span>
+<span class="sd">        after: The address of the step to insert after.</span>
+<span class="sd">        before: The address of the step to insert before.</span>
+<span class="sd">        into: The address of a step with sub-steps, or a loop, to insert at the end of.</span>
+<span class="sd">        output: Write the result here instead of back to path.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">):</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+            <span class="n">flowchart</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">parameters</span> <span class="ow">or</span> <span class="p">{},</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">into</span><span class="o">=</span><span class="n">into</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Inserted </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2"> as step </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">return</span> <span class="n">_edited</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="remove_step">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.remove_step">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_step</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Remove a step, and any steps inside it, from a flowchart.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        step: The step's address (see flowchart_tree).</span>
+<span class="sd">        output: Write the result here instead of back to path.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">_edited</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">edit</span><span class="p">,</span> <span class="n">fc</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span> <span class="ow">and</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="move_step">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.move_step">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_step</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">after</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">before</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">into</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Move a step, and any steps inside it, within a flowchart.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        step: The address of the step to move (see flowchart_tree).</span>
+<span class="sd">        after: The address of the step to move it after.</span>
+<span class="sd">        before: The address of the step to move it before.</span>
+<span class="sd">        into: The address of a step with sub-steps, or a loop, to move it into.</span>
+<span class="sd">        output: Write the result here instead of back to path.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">):</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">into</span><span class="o">=</span><span class="n">into</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Moved it to step </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">return</span> <span class="n">_edited</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="convert_flowchart">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.convert_flowchart">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_flowchart</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"3.0"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Write a flowchart in another format, e.g. an old format 2.0 file as 3.0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        output: Where to write the converted flowchart.</span>
+<span class="sd">        format: The format to write, "3.0" (the default) or "2.0".</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_path</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">must_exist</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_write</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span> <span class="s2">"format"</span><span class="p">:</span> <span class="nb">format</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Jobs: running flowcharts through a dashboard (the web UI or the old Dashboard).</span>
+<span class="c1"># The dashboards are those in the installation's dashboards.ini, and the credentials</span>
+<span class="c1"># those in ~/.seamm.d/seammrc. Both files are only read, never written, and the</span>
+<span class="c1"># credentials are never returned.</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dashboards_config</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">seamm_util</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">seamm_util</span><span class="o">.</span><span class="n">installation_path</span><span class="p">(</span><span class="s2">"dashboards.ini"</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="s2">"GENERAL"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">names</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_credentials</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The user and password for a dashboard from ~/.seamm.d/seammrc, read only."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"~/.seamm.d/seammrc"</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">())</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Dashboard: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s2">"user"</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s2">"password"</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dashboard</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A client for the named dashboard."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">seamm_dashboard_client</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.dashboard_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">_parse_verify</span>
+
+    <span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">_dashboards_config</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"There is no dashboard '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' in </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. The dashboards are: "</span>
+            <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">user</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">_credentials</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"There is no user and password for the dashboard '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' in "</span>
+            <span class="sa">f</span><span class="s2">"~/.seamm.d/seammrc (a [Dashboard: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] section)."</span>
+        <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="n">seamm_dashboard_client</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">"url"</span><span class="p">],</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+        <span class="n">user_agent</span><span class="o">=</span><span class="sa">f</span><span class="s2">"SEAMM-MCP/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="n">verify</span><span class="o">=</span><span class="n">_parse_verify</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"verify"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_job_summary</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The useful fields of a job, as plain data."""</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">projects</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"projects"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"id"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">),</span>
+        <span class="s2">"title"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
+        <span class="s2">"description"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"description"</span><span class="p">),</span>
+        <span class="s2">"status"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">),</span>
+        <span class="s2">"projects"</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">],</span>
+        <span class="s2">"queue"</span><span class="p">:</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"queue"</span><span class="p">),</span>
+        <span class="s2">"submitted"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"submitted"</span><span class="p">),</span>
+        <span class="s2">"started"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"started"</span><span class="p">),</span>
+        <span class="s2">"finished"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"finished"</span><span class="p">),</span>
+        <span class="s2">"path"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_job</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span> <span class="n">job_id</span><span class="p">):</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">job_id</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">job</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"There is no job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on the dashboard '</span><span class="si">{</span><span class="n">dashboard</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">'."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">job</span>
+
+
+<div class="viewcode-block" id="list_dashboards">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_dashboards">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_dashboards</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The dashboards that jobs can be submitted to, from the installation's</span>
+<span class="sd">    dashboards.ini, and whether there are credentials for each.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        check: Also contact each dashboard for its status ("running", "down" or</span>
+<span class="sd">            "error"); slower, up to several seconds for one that is down.</span>
+<span class="sd">    """</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">_dashboards_config</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">user</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">_credentials</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"url"</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"url"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="s2">"credentials"</span><span class="p">:</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="dashboard_info">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.dashboard_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dashboard_info</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What a dashboard offers for submitting a job: its status, projects and</span>
+<span class="sd">    queues (with the SLURM settings each queue lets a job override, and their</span>
+<span class="sd">    limits).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard's name (see list_dashboards).</span>
+<span class="sd">    """</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">"running"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"dashboard"</span><span class="p">:</span> <span class="n">dashboard</span><span class="p">,</span> <span class="s2">"status"</span><span class="p">:</span> <span class="n">status</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"dashboard"</span><span class="p">:</span> <span class="n">dashboard</span><span class="p">,</span>
+        <span class="s2">"status"</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+        <span class="s2">"projects"</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">list_projects</span><span class="p">(),</span>
+        <span class="s2">"queues"</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">list_queues</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_all_steps</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Every step connected to the start, following every edge (get_nodes() follows</span>
+<span class="sd">    only "next" edges, so it stops at a loop)."""</span>
+    <span class="n">result</span><span class="p">,</span> <span class="n">seen</span><span class="p">,</span> <span class="n">queue</span> <span class="o">=</span> <span class="p">[],</span> <span class="nb">set</span><span class="p">(),</span> <span class="p">[</span><span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)]</span>
+    <span class="k">while</span> <span class="n">queue</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">node2</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"out"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_control_values</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The values for the flowchart's Parameters steps (its command-line</span>
+<span class="sd">    arguments): those given, else the defaults. Files must exist here; they are</span>
+<span class="sd">    uploaded with the job."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">shlex</span>
+
+    <span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">_all_steps</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">step_type</span> <span class="o">==</span> <span class="s2">"control-parameters-step"</span><span class="p">:</span>
+            <span class="n">variables</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"variables"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">values</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">unknown</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"The flowchart has no parameter "</span>
+            <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">unknown</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">". Its parameters are: "</span>
+            <span class="o">+</span> <span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"none"</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"bool"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"optional"</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">"Yes"</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The flowchart's parameter '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' needs a value."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"file"</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nargs"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"a single value"</span> <span class="k">else</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The file '</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">' for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' does not exist."</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="submit_job">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.submit_job">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">submit_job</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">queue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">slurm</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Submit a flowchart to run as a job. The flowchart is checked first and not</span>
+<span class="sd">    submitted if it has problems. This starts a calculation on real computers, so</span>
+<span class="sd">    confirm the dashboard, project and queue with the user first.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The flowchart (.flow).</span>
+<span class="sd">        dashboard: The dashboard to submit to (see list_dashboards).</span>
+<span class="sd">        project: An existing project on that dashboard (see dashboard_info).</span>
+<span class="sd">        title: The job's title.</span>
+<span class="sd">        description: The job's description.</span>
+<span class="sd">        queue: Where the job runs, one of the dashboard's queues (see</span>
+<span class="sd">            dashboard_info). Needed when the dashboard has queues.</span>
+<span class="sd">        values: Values for the flowchart's command-line parameters (its Parameters</span>
+<span class="sd">            step), by name; the defaults are used for those not given. Files are</span>
+<span class="sd">            local paths, uploaded with the job.</span>
+<span class="sd">        slurm: SLURM settings to override for this job, e.g. {"ntasks": "4",</span>
+<span class="sd">            "time": "1:00:00"}, within the queue's limits.</span>
+
+<span class="sd">    Returns the job's id and status.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">problems</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"The flowchart has problems, so it was not submitted:</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">_control_values</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+
+    <span class="n">status</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">"running"</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The dashboard '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' is not running (</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">)."</span><span class="p">)</span>
+    <span class="n">projects</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_projects</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">projects</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"There is no project '</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">' on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">'. The projects are: "</span>
+            <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">queues</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">list_queues</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">queues</span> <span class="ow">and</span> <span class="n">queue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Choose a queue on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">': "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">queues</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">queues</span> <span class="ow">and</span> <span class="n">queue</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">queues</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"There is no queue '</span><span class="si">{</span><span class="n">queue</span><span class="si">}</span><span class="s2">' on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">'. The queues are: "</span>
+            <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">queues</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+            <span class="n">flowchart</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+            <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span> <span class="ow">or</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span> <span class="ow">or</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"description"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">queue</span><span class="o">=</span><span class="n">queue</span><span class="p">,</span>
+            <span class="n">slurm_overrides</span><span class="o">=</span><span class="n">slurm</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_job_summary</span><span class="p">(</span><span class="n">_job</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">job_id</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="job_status">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.job_status">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">job_status</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A job's status ("submitted", "running", "finished", "error", ...), its</span>
+<span class="sd">    times, project, queue and directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard (see list_dashboards).</span>
+<span class="sd">        job_id: The job's id.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">_job_summary</span><span class="p">(</span><span class="n">_job</span><span class="p">(</span><span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">),</span> <span class="n">job_id</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="list_jobs">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_jobs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_jobs</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The most recent jobs on a dashboard, newest first.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard (see list_dashboards).</span>
+<span class="sd">        limit: How many jobs, at most.</span>
+<span class="sd">    """</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_url_get</span><span class="p">(</span>
+        <span class="s2">"/api/jobs"</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"limit"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">),</span> <span class="s2">"sortby"</span><span class="p">:</span> <span class="s2">"id"</span><span class="p">,</span> <span class="s2">"sort_by"</span><span class="p">:</span> <span class="s2">"id"</span><span class="p">,</span> <span class="s2">"order"</span><span class="p">:</span> <span class="s2">"desc"</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Could not list the jobs on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' (code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">)."</span>
+        <span class="p">)</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">j</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_job_summary</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">)]]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_file_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The files of a job, from either dashboard's file listing."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">PurePath</span>
+
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="s2">"path"</span> <span class="ow">in</span> <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">):</span>  <span class="c1"># the web UI</span>
+        <span class="k">return</span> <span class="p">[{</span><span class="s2">"path"</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">"path"</span><span class="p">],</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"size"</span><span class="p">)}</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="c1"># The old Dashboard: a tree, whose files have an "a_attr"</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parent"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"#"</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span>
+            <span class="k">break</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"a_attr"</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"parent"</span><span class="p">])</span> <span class="o">/</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">"size"</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="list_job_files">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_job_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_job_files</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The files a job has written so far: job.out, each step's step.out, tables</span>
+<span class="sd">    (.csv), structures, graphs and so on, by path within the job.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard (see list_dashboards).</span>
+<span class="sd">        job_id: The job's id.</span>
+<span class="sd">    """</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_url_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/api/jobs/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span><span class="si">}</span><span class="s2">/files"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Could not list the files of job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' (code "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">)."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_file_list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="read_job_file">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.read_job_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_job_file</span><span class="p">(</span>
+    <span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">tail_lines</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_characters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50000</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The text of a file of a job, e.g. "job.out" (the job's output; look for</span>
+<span class="sd">    "Caught exception in loop iteration", since loops carry on past errors), a</span>
+<span class="sd">    step's "2/step.out", or a table such as "energies.csv".</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard (see list_dashboards).</span>
+<span class="sd">        job_id: The job's id.</span>
+<span class="sd">        filename: The file's path within the job (see list_job_files).</span>
+<span class="sd">        tail_lines: Only the last this many lines.</span>
+<span class="sd">        max_characters: At most this many characters (the end of the file when</span>
+<span class="sd">            tail_lines is given, else the start).</span>
+<span class="sd">    """</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_job</span><span class="p">(</span><span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">),</span> <span class="n">job_id</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Could not read '</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">' of job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">'."</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">tail_lines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">tail_lines</span><span class="p">)</span> <span class="p">:])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_characters</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="o">-</span><span class="n">max_characters</span><span class="p">:]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_characters</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[:</span><span class="n">max_characters</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2"> characters in all)"</span>
+    <span class="k">return</span> <span class="n">text</span></div>
+
+
+
+<span class="n">_READ_ONLY</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">list_steps</span><span class="p">,</span>
+    <span class="n">describe_step</span><span class="p">,</span>
+    <span class="n">show_flowchart</span><span class="p">,</span>
+    <span class="n">flowchart_tree</span><span class="p">,</span>
+    <span class="n">validate_flowchart</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">_WRITING</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">build_flowchart</span><span class="p">,</span>
+    <span class="n">set_parameters</span><span class="p">,</span>
+    <span class="n">insert_step</span><span class="p">,</span>
+    <span class="n">remove_step</span><span class="p">,</span>
+    <span class="n">move_step</span><span class="p">,</span>
+    <span class="n">convert_flowchart</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Talk to dashboards: reading, and submitting (which starts real calculations)</span>
+<span class="n">_JOBS_READ</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">list_dashboards</span><span class="p">,</span>
+    <span class="n">dashboard_info</span><span class="p">,</span>
+    <span class="n">job_status</span><span class="p">,</span>
+    <span class="n">list_jobs</span><span class="p">,</span>
+    <span class="n">list_job_files</span><span class="p">,</span>
+    <span class="n">read_job_file</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dashboard_errors</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The dashboard client's errors (connection, login, timeouts, ...)."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">seamm_dashboard_client.dashboard</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">client</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">"DashboardConnectionError"</span><span class="p">,</span>
+            <span class="s2">"DashboardLoginError"</span><span class="p">,</span>
+            <span class="s2">"DashboardNotRunningError"</span><span class="p">,</span>
+            <span class="s2">"DashboardSubmitError"</span><span class="p">,</span>
+            <span class="s2">"DashboardTimeoutError"</span><span class="p">,</span>
+            <span class="s2">"DashboardUnknownError"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_guarded</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Report the errors users can fix to the client as tool errors, with their</span>
+<span class="sd">    message, rather than as an unexplained failure."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.server.mcpserver.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolError</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowchartBuildError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.catalog</span><span class="w"> </span><span class="kn">import</span> <span class="n">StepNotFoundError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.edit</span><span class="w"> </span><span class="kn">import</span> <span class="n">EditError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.spec</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpecError</span>
+
+    <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">FlowchartBuildError</span><span class="p">,</span>
+        <span class="n">StepNotFoundError</span><span class="p">,</span>
+        <span class="n">EditError</span><span class="p">,</span>
+        <span class="n">SpecError</span><span class="p">,</span>
+        <span class="ne">ValueError</span><span class="p">,</span>
+        <span class="ne">KeyError</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">_dashboard_errors</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">expected</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ToolError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'"'</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
+<div class="viewcode-block" id="create_server">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.create_server">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_server</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The MCP server with the flowchart tools."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">asynccontextmanager</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.server.mcpserver</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServer</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mcp.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolAnnotations</span>
+
+    <span class="nd">@asynccontextmanager</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">lifespan</span><span class="p">(</span><span class="n">server</span><span class="p">):</span>
+        <span class="c1"># Load the plug-ins in the background once serving has started (when stray</span>
+        <span class="c1"># output from them cannot reach the protocol stream), so the first call is</span>
+        <span class="c1"># quick and the client is not kept waiting to connect.</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_warm_up</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="p">{}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="n">MCPServer</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"seamm-flowchart"</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"SEAMM flowcharts"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Build, read, edit and check SEAMM flowcharts."</span><span class="p">,</span>
+        <span class="n">instructions</span><span class="o">=</span><span class="n">INSTRUCTIONS</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">),</span>
+        <span class="n">lifespan</span><span class="o">=</span><span class="n">lifespan</span><span class="p">,</span>
+        <span class="n">log_level</span><span class="o">=</span><span class="s2">"WARNING"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">_READ_ONLY</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">add_tool</span><span class="p">(</span>
+            <span class="n">_guarded</span><span class="p">(</span><span class="n">function</span><span class="p">),</span>
+            <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span><span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">_WRITING</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">add_tool</span><span class="p">(</span>
+            <span class="n">_guarded</span><span class="p">(</span><span class="n">function</span><span class="p">),</span>
+            <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span>
+                <span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">destructiveHint</span><span class="o">=</span><span class="n">function</span> <span class="ow">is</span> <span class="n">remove_step</span><span class="p">,</span>
+                <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">_JOBS_READ</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">add_tool</span><span class="p">(</span>
+            <span class="n">_guarded</span><span class="p">(</span><span class="n">function</span><span class="p">),</span>
+            <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span><span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">add_tool</span><span class="p">(</span>
+        <span class="n">_guarded</span><span class="p">(</span><span class="n">submit_job</span><span class="p">),</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span>
+            <span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">destructiveHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">idempotentHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">server</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_warm_up</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># One step of each kind, which also parses the plug-ins' bibliographies. Under</span>
+        <span class="c1"># the lock, like the tools: SEAMM's objects are not thread safe.</span>
+        <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+            <span class="n">catalog</span><span class="p">()</span><span class="o">.</span><span class="n">titles</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not load the plug-ins: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Run the server over stdio."""</span>
+    <span class="n">create_server</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"stdio"</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

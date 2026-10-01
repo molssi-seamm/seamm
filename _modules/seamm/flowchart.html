@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.flowchart &#8212; SEAMM 2026.9.29 documentation</title>
+    <title>seamm.flowchart &#8212; SEAMM 2026.10.1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=45a1f582"></script>
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.9.29" />
+  <meta name="docsearch:version" content="2026.10.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -509,6 +509,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">seamm_util</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># The format Flowchart.write() and to_text() use when none is given. Format 3.0 is</span>
+<span class="c1"># introduced in two releases: the first reads 3.0 but still writes 2.0, so that every</span>
+<span class="c1"># machine can read 3.0 before any writes it; the second writes 3.0. An installation can</span>
+<span class="c1"># choose its own with the environment variable SEAMM_FLOWCHART_FORMAT ("2.0" or "3.0").</span>
+<span class="n">DEFAULT_FORMAT</span> <span class="o">=</span> <span class="s2">"2.0"</span>
+
+
+<div class="viewcode-block" id="default_format">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.default_format">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_format</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The flowchart format to write when none is given."""</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"SEAMM_FLOWCHART_FORMAT"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"2.0"</span><span class="p">,</span> <span class="s2">"3.0"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Ignoring SEAMM_FLOWCHART_FORMAT='</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">': it must be '2.0' or '3.0'."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">DEFAULT_FORMAT</span></div>
+
 
 
 <div class="viewcode-block" id="Flowchart">
@@ -1006,10 +1027,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="Flowchart.write">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.write">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Write the serialized form to disk"""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Write the serialized form to disk</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The file to write.</span>
+<span class="sd">        format : str</span>
+<span class="sd">            The flowchart format, "3.0" or "2.0"; by default default_format().</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
-            <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">))</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Wrote flowchart to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
@@ -1033,17 +1062,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="Flowchart.to_text">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.to_text">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Return the text for the flowchart.</span>
 
 <span class="sd">        This is the representation written to disk, submitted</span>
-<span class="sd">        as jobs, etc. There are two header lines followed by json</span>
-<span class="sd">        representing the flowchart.</span>
+<span class="sd">        as jobs, etc. In format 2.0 there are two header lines followed by json</span>
+<span class="sd">        representing the flowchart; format 3.0 is YAML (see seamm.format3).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        format : str</span>
+<span class="sd">            The flowchart format, "3.0" or "2.0"; by default default_format().</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str : the text representation.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="n">default_format</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"3.0"</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">format3</span>
+
+            <span class="k">return</span> <span class="n">format3</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">"2.0"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown flowchart format '</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+
         <span class="n">text</span> <span class="o">=</span> <span class="s2">"#!/usr/bin/env run_flowchart</span><span class="se">\n</span><span class="s2">"</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">"!MolSSI flowchart 2.0</span><span class="se">\n</span><span class="s2">"</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">"#metadata</span><span class="se">\n</span><span class="s2">"</span>
@@ -1062,7 +1105,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="Flowchart.from_text">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.from_text">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Recreate the flowchart from text"""</span>
+<span class="w">        </span><span class="sd">"""Recreate the flowchart from text, in format 3.0, 2.0 or 1.0.</span>
+
+<span class="sd">        A 2.0 or 1.0 flowchart is first converted to 3.0 by the frozen converter</span>
+<span class="sd">        (seamm.convert_v2), so that every flowchart is read the same way.</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_v2</span><span class="p">,</span> <span class="n">format3</span>
+
+        <span class="k">if</span> <span class="n">format3</span><span class="o">.</span><span class="n">is_format3</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Reading flowchart format 3.0"</span><span class="p">)</span>
+            <span class="n">format3</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">text3</span><span class="p">,</span> <span class="n">report</span> <span class="o">=</span> <span class="n">convert_v2</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">report</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Converting the flowchart to format 3.0: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">format3</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text3</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_text_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The previous reader of format 2.0 and 1.0, which restores node objects.</span>
+
+<span class="sd">        Kept only to compare against while format 3.0 is introduced; not used.</span>
+<span class="sd">        """</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
@@ -1107,8 +1172,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">if</span> <span class="s2">"class"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">"class"</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"Flowchart"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Text does not contain a flowchart"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Flowchart.read">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart.Flowchart.read">[docs]</a>

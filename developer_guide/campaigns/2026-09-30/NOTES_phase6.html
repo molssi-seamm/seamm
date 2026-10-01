@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Phase 6 – The MCP server (2026-10-01) &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/campaigns/2026-09-30/NOTES_phase6';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="The switch – checklist (draft for Paul, 2026-10-01)" href="NOTES_switch.html" />
+    <link rel="prev" title="Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)" href="NOTES_phase5.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../structure_selection.html">Selecting structures in a plug-in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Campaigns</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase0.html">Phase 0 – Inventory and triage (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase1.html">Phase 1 – Catalog and builder (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase3.html">Phase 3 – Converter and migration (2026-09-30, in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase4.html">Phase 4 – Editing from the command line, and a skill (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase5.html">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</a></li>
+<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">Phase 6 – The MCP server (2026-10-01)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_switch.html">The switch – checklist (draft for Paul, 2026-10-01)</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Developer Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Campaigns</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Phase 6 – The MCP server (2026-10-01)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="phase-6-the-mcp-server-2026-10-01">
+<h1>Phase 6 – The MCP server (2026-10-01)<a class="headerlink" href="#phase-6-the-mcp-server-2026-10-01" title="Link to this heading">#</a></h1>
+<p><strong>Result:</strong> <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">mcp</span></code> serves the flowchart tools to AI clients over stdio
+(<code class="docutils literal notranslate"><span class="pre">seamm/mcp_server.py</span></code>, optional <code class="docutils literal notranslate"><span class="pre">seamm[mcp]</span></code>, mcp &gt;= 2.2). Local only (Option 1
+of the design); a web UI endpoint is left for later. Committed on <code class="docutils literal notranslate"><span class="pre">dev</span></code> (eda33ae),
+not pushed. <code class="docutils literal notranslate"><span class="pre">mcp</span></code> 2.2.0 installed in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv</span></code> (only additions;
+pre-install freeze in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv-freeze-2026-10-01-before-mcp.txt</span></code>).</p>
+<section id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">list_steps</span></code>, <code class="docutils literal notranslate"><span class="pre">describe_step</span></code>, <code class="docutils literal notranslate"><span class="pre">show_flowchart</span></code>, <code class="docutils literal notranslate"><span class="pre">flowchart_tree</span></code> and
+<code class="docutils literal notranslate"><span class="pre">validate_flowchart</span></code> (read only); <code class="docutils literal notranslate"><span class="pre">build_flowchart</span></code> (will not replace a file unless
+<code class="docutils literal notranslate"><span class="pre">overwrite</span></code>), <code class="docutils literal notranslate"><span class="pre">set_parameters</span></code>, <code class="docutils literal notranslate"><span class="pre">insert_step</span></code>, <code class="docutils literal notranslate"><span class="pre">remove_step</span></code> (marked
+destructive), <code class="docutils literal notranslate"><span class="pre">move_step</span></code> and <code class="docutils literal notranslate"><span class="pre">convert_flowchart</span></code>. Thin wrappers over <code class="docutils literal notranslate"><span class="pre">catalog</span></code>,
+<code class="docutils literal notranslate"><span class="pre">spec</span></code> and <code class="docutils literal notranslate"><span class="pre">edit</span></code>. The files stay the source of truth: each tool reads the
+<code class="docutils literal notranslate"><span class="pre">.flow</span></code> it is given and writes the result back (or to <code class="docutils literal notranslate"><span class="pre">output</span></code>) in 3.0, and the
+editing tools return the new step tree and any problems. Errors users can fix
+(unknown step, bad value, no-effect setting) come back as tool errors with the
+builder’s message. The server’s instructions carry the skill’s workflow (look up,
+spec, build, validate, show).</p>
+</section>
+<section id="design-points">
+<h2>Design points<a class="headerlink" href="#design-points" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>stdout is the protocol.</strong> mcp 2’s stdio transport diverts fd 1 to stderr while
+serving, so the plug-ins are loaded after serving starts (a background warm-up in the
+lifespan), never before. The client connects in about 1.5 s; the first call waits for
+the warm-up (about 4 s).</p></li>
+<li><p><strong>One lock</strong> around every tool and the warm-up: SEAMM’s objects are not thread safe,
+and the SDK runs synchronous tools in worker threads.</p></li>
+</ul>
+</section>
+<section id="speed">
+<h2>Speed<a class="headerlink" href="#speed" title="Link to this heading">#</a></h2>
+<p>Warm calls first took 4-6 s. Profiling found two costs in SEAMM itself, now fixed in
+core (874c90e): every new step re-parsed its plug-in’s <code class="docutils literal notranslate"><span class="pre">references.bib</span></code> (cached by
+path and modification time) and every 3.0 read called
+<code class="docutils literal notranslate"><span class="pre">importlib.metadata.packages_distributions()</span></code> (cached per process). Warm calls now
+take 0.2-0.8 s (edit 0.8 s, tree 0.5 s, validate 0.2 s); the editor, the builder and
+job start-up gain too. MOPAC’s step <code class="docutils literal notranslate"><span class="pre">__init__</span></code> still runs <code class="docutils literal notranslate"><span class="pre">cpuinfo</span></code> (a subprocess)
+for every MOPAC step created – a plug-in fix for later.</p>
+</section>
+<section id="checked">
+<h2>Checked<a class="headerlink" href="#checked" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>9 tests through a real MCP client in-process (<code class="docutils literal notranslate"><span class="pre">tests/test_mcp_server.py</span></code>, skipped
+without <code class="docutils literal notranslate"><span class="pre">mcp</span></code> or the plug-ins); the full suite: 227 passed.</p></li>
+<li><p>End to end over real stdio, starting <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv/bin/seamm-flowchart</span> <span class="pre">mcp</span></code>:
+all 11 tools, a loop flowchart built, a step inserted and edited, “PM9” refused with
+the closest choices.</p></li>
+</ul>
+</section>
+<section id="incident-seamm-d-seammrc-wiped">
+<h2>Incident: ~/.seamm.d/seammrc wiped<a class="headerlink" href="#incident-seamm-d-seammrc-wiped" title="Link to this heading">#</a></h2>
+<p>The first stdio test wiped <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code> down to <code class="docutils literal notranslate"><span class="pre">[VERSION]</span></code> (06:34), losing
+the dashboard credentials and Zenodo tokens. Cause: a latent race in <code class="docutils literal notranslate"><span class="pre">SEAMMrc</span></code> –
+every new Flowchart creates one, its <code class="docutils literal notranslate"><span class="pre">__init__</span></code> re-ran on the singleton, emptying the
+shared parser before re-reading, and a second thread could find it empty, “upgrade” it
+and save it. The warm-up thread ran outside the lock while a tool call created
+flowcharts. Reproduced 3/3 with four threads (under a fake <code class="docutils literal notranslate"><span class="pre">HOME</span></code>). <strong>Fixed</strong> in core
+(d6c9feb): one lock, read into a new parser, never save over a file that reads as empty,
+atomic saves keeping the mode; <code class="docutils literal notranslate"><span class="pre">SEAMMrc(path)</span></code> no longer raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>. 5/5
+clean after the fix; 6 tests, all with their own <code class="docutils literal notranslate"><span class="pre">HOME</span></code>. The warm-up now holds the
+server’s lock too.</p>
+<p>The real file was <strong>not</strong> restored automatically (blocked as an overwrite): Paul to
+restore it from <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc~</span></code> (2026-08-11, 16 sections), re-adding anything
+added since. Time Machine’s disk could not be mounted and there are no local snapshots.</p>
+</section>
+<section id="job-tools-2026-10-01">
+<h2>Job tools (2026-10-01)<a class="headerlink" href="#job-tools-2026-10-01" title="Link to this heading">#</a></h2>
+<p>Committed on <code class="docutils literal notranslate"><span class="pre">dev</span></code> (19d884b), not pushed. Seven tools talk to dashboards:
+<code class="docutils literal notranslate"><span class="pre">list_dashboards</span></code>, <code class="docutils literal notranslate"><span class="pre">dashboard_info</span></code> (status, projects, queues with their SLURM
+limits), <code class="docutils literal notranslate"><span class="pre">submit_job</span></code>, <code class="docutils literal notranslate"><span class="pre">job_status</span></code>, <code class="docutils literal notranslate"><span class="pre">list_jobs</span></code>, <code class="docutils literal notranslate"><span class="pre">list_job_files</span></code> and
+<code class="docutils literal notranslate"><span class="pre">read_job_file</span></code>.</p>
+<ul class="simple">
+<li><p>The dashboards are those in the installation’s <code class="docutils literal notranslate"><span class="pre">dashboards.ini</span></code>
+(<code class="docutils literal notranslate"><span class="pre">seamm_util.installation_path</span></code>, so <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code>’s for SEAMM_DEV) and the credentials
+those in <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code>. Both are only read – deliberately not through
+<code class="docutils literal notranslate"><span class="pre">DashboardHandler</span></code>, which creates <code class="docutils literal notranslate"><span class="pre">dashboards.ini</span></code> if missing and adds empty
+sections to <code class="docutils literal notranslate"><span class="pre">seammrc</span></code> – and credentials are never returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">submit_job</span></code> refuses a flowchart with problems; fills in the defaults of the
+Parameters step’s variables (<code class="docutils literal notranslate"><span class="pre">Dashboard.submit</span></code> indexes every one) and converts
+yes/no to booleans; checks that files exist (they are uploaded with the job) and the
+project exists; and needs one of the dashboard’s queues when it lists any (a
+submission without a queue once went to <code class="docutils literal notranslate"><span class="pre">molssi10</span></code>). Marked open-world and not read
+only; the instructions say to confirm the dashboard, project and queue first.</p></li>
+<li><p><strong>Checked:</strong> 6 tests with a stand-in client (the queue rule, defaults, refusals, both
+file-list formats, read-only credentials); 233 passed. Live on the dev web UI:
+job 3999, built and submitted through the tools with <code class="docutils literal notranslate"><span class="pre">SMILES=CCO</span></code>, finished (PM7
+ΔHf -53.29 kcal/mol); status, job list, files and <code class="docutils literal notranslate"><span class="pre">job.out</span></code> read back; all 18
+tools over real stdio.</p></li>
+</ul>
+<p>Found along the way:</p>
+<ul class="simple">
+<li><p><strong>seamm_dashboard_client ``Job.list_files`` found no files</strong> (tested the list, not
+each entry) and failed with <code class="docutils literal notranslate"><span class="pre">KeyError:</span> <span class="pre">'parent'</span></code> on seamm_webui’s
+<code class="docutils literal notranslate"><span class="pre">{&quot;path&quot;,</span> <span class="pre">&quot;size&quot;}</span></code> listing. Fixed in the client (e9e83de, local); the server reads
+both formats itself, so it does not depend on the fix. The client’s test file needs
+<code class="docutils literal notranslate"><span class="pre">responses</span></code>, which the SEAMM_DEV venv lacks.</p></li>
+<li><p><strong>The queue configuration on this Mac is ignored.</strong> The JobServer and web UI run
+without <code class="docutils literal notranslate"><span class="pre">--name</span></code>/<code class="docutils literal notranslate"><span class="pre">--jobserver-name</span></code>, so they look for <code class="docutils literal notranslate"><span class="pre">&lt;hostname&gt;.ini</span></code>; the
+hostname is now <code class="docutils literal notranslate"><span class="pre">PaulVT.local</span></code> but the file is <code class="docutils literal notranslate"><span class="pre">PaulsPersonal.local.ini</span></code> (queues
+<code class="docutils literal notranslate"><span class="pre">local</span></code> and <code class="docutils literal notranslate"><span class="pre">molssi10</span></code>, default <code class="docutils literal notranslate"><span class="pre">molssi10</span></code>). So the web UI lists no queues and
+every job runs locally. For Paul.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list_dashboards(check=True)</span></code>: <code class="docutils literal notranslate"><span class="pre">ChemAI_WebUI</span></code> and <code class="docutils literal notranslate"><span class="pre">MacMini</span></code> report errors from
+here (not investigated).</p></li>
+</ul>
+</section>
+<section id="next">
+<h2>Next<a class="headerlink" href="#next" title="Link to this heading">#</a></h2>
+<p>Registering the server with Claude Code / Claude Desktop; the skill pointing at the
+server where available.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="NOTES_phase5.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="NOTES_switch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The switch – checklist (draft for Paul, 2026-10-01)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tools">Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-points">Design points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#speed">Speed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checked">Checked</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#incident-seamm-d-seammrc-wiped">Incident: ~/.seamm.d/seammrc wiped</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#job-tools-2026-10-01">Job tools (2026-10-01)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next">Next</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/developer_guide/campaigns/2026-09-30/NOTES_phase6.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

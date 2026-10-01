@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0 &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/campaigns/2026-09-30/index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Phase 0 – Inventory and triage (2026-09-30)" href="NOTES_phase0.html" />
+    <link rel="prev" title="Campaigns" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../structure_selection.html">Selecting structures in a plug-in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Campaigns</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a aria-current="page" class="current reference internal" href="#">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase0.html">Phase 0 – Inventory and triage (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase1.html">Phase 1 – Catalog and builder (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase3.html">Phase 3 – Converter and migration (2026-09-30, in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase4.html">Phase 4 – Editing from the command line, and a skill (2026-09-30)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase5.html">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_phase6.html">Phase 6 – The MCP server (2026-10-01)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NOTES_switch.html">The switch – checklist (draft for Paul, 2026-10-01)</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Developer Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Campaigns</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="building-flowcharts-programmatically-and-flowchart-format-3-0">
+<h1>2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0<a class="headerlink" href="#building-flowcharts-programmatically-and-flowchart-format-3-0" title="Link to this heading">#</a></h1>
+<p>Status (2026-10-01): <strong>phases 0-2 and 4-6 done; phase 3 done in SEAMM_DEV only</strong> –
+SEAMM_DEV writes 3.0 and has been migrated (<code class="docutils literal notranslate"><span class="pre">NOTES_phase3.rst</span></code>); editing commands and the
+skill (<code class="docutils literal notranslate"><span class="pre">NOTES_phase4.rst</span></code>); shared rules in seamm and six plug-ins (<code class="docutils literal notranslate"><span class="pre">NOTES_phase5.rst</span></code>);
+a local MCP server with flowchart and job tools (<code class="docutils literal notranslate"><span class="pre">NOTES_phase6.rst</span></code>). What remains is the
+switch – releases, the other installations, Zenodo and removing the 2.0 code – in
+<code class="docutils literal notranslate"><span class="pre">NOTES_switch.rst</span></code>, awaiting Paul’s approval. Nothing pushed. Q1, Q4 and Q7 decided by Paul
+(<code class="docutils literal notranslate"><span class="pre">seamm</span></code> core; keep <code class="docutils literal notranslate"><span class="pre">.flow</span></code>; rename originals in job directories). The decisions
+reached in discussion are recorded under <em>Decided</em>; the ones still open are under <em>Open
+questions</em> and are Paul’s.</p>
+<p><strong>Phase 0 result</strong> (<code class="docutils literal notranslate"><span class="pre">NOTES_phase0.rst</span></code>): only a node’s parameters are settings. Every
+other attribute in a 2.0 file is a constant, run-time state, or a GUI cache derivable
+from the parameters. The one legacy exception that needs handling is lammps_step
+Minimization before 2025.3.16 (settings kept as attributes; 11 nodes, 2 of them
+non-default), mapped by the converter. TinkerCliffs holds about 53,000 job copies of 56
+flowcharts, so migration converts by content hash.</p>
+<p><strong>Phase 1 result</strong> (<code class="docutils literal notranslate"><span class="pre">NOTES_phase1.rst</span></code>): <code class="docutils literal notranslate"><span class="pre">seamm.catalog</span></code>, <code class="docutils literal notranslate"><span class="pre">seamm.builder</span></code>,
+<code class="docutils literal notranslate"><span class="pre">seamm.layout</span></code> and the <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> command; a built loop flowchart ran and
+opened unchanged in the editor. Found that <code class="docutils literal notranslate"><span class="pre">Flowchart.digest()</span></code> stops at the first
+loop, so the datastore can link a job to the wrong flowchart; left for D2 and the phase 3
+migration rather than fixed now.</p>
+<p><strong>Where the work happens (Paul, 2026-09-30):</strong> all of this campaign is developed and
+tested in the development installation, <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>, with <code class="docutils literal notranslate"><span class="pre">seamm</span></code> installed
+editable from the checkout into <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv</span></code>. No PRs or releases until the
+whole switch is ready, so no other installation changes before then.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase0.html">Phase 0 – Inventory and triage (2026-09-30)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#method">Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#extra-attributes-in-current-plug-ins-all-junk">Extra attributes in current plug-ins: all junk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#legacy-files-settings-stored-as-attributes">Legacy files: settings stored as attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#other-findings">Other findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#inventory">Inventory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase0.html#consequences-for-the-design">Consequences for the design</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase1.html">Phase 1 – Catalog and builder (2026-09-30)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase1.html#what-was-added">What was added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase1.html#checked-live">Checked live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase1.html#tested-in-seamm-dev-2026-09-30">Tested in ~/SEAMM_DEV (2026-09-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase1.html#findings">Findings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase3.html">Phase 3 – Converter and migration (2026-09-30, in progress)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#the-frozen-converter-seamm-convert-v2-py">The frozen converter (<code class="docutils literal notranslate"><span class="pre">seamm/convert_v2.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#checks-of-the-converter">Checks of the converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#step-1-format-3-0-by-default-seamm-7ca0572">Step 1: format 3.0 by default (seamm 7ca0572)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#step-2-migrating-an-installation-seamm-8a2be9d-3ce656c">Step 2: migrating an installation (seamm 8a2be9d, 3ce656c)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#the-1-225-jobs-without-directories">The 1,225 jobs without directories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase3.html#rebuilding-the-datastore-from-the-job-directories">Rebuilding the datastore from the job directories</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase4.html">Phase 4 – Editing from the command line, and a skill (2026-09-30)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase5.html">Phase 5 – Rules shared by the dialogs and the builder (2026-09-30, in progress)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#in-seamm-9ce27eb-d5be0d6">In seamm (9ce27eb, d5be0d6)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#orca-orca-step-97a07fe">ORCA (orca_step 97a07fe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#model-chemistry-model-chemistry-step-ec14597">Model Chemistry (model_chemistry_step ec14597)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#checked-in-seamm-dev">Checked in ~/SEAMM_DEV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#gaussian-psi4-mopac-and-lammps-2026-09-30">Gaussian, Psi4, MOPAC and LAMMPS (2026-09-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#run-time-bugs-fixed-2026-09-30">Run-time bugs fixed (2026-09-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#lammps-settings-hidden-but-used-at-run-time-2026-10-01">LAMMPS settings hidden but used at run time (2026-10-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase5.html#smaller-gaps-fixed-2026-10-01">Smaller gaps fixed (2026-10-01)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_phase6.html">Phase 6 – The MCP server (2026-10-01)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#tools">Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#design-points">Design points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#speed">Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#checked">Checked</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#incident-seamm-d-seammrc-wiped">Incident: ~/.seamm.d/seammrc wiped</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#job-tools-2026-10-01">Job tools (2026-10-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_phase6.html#next">Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="NOTES_switch.html">The switch – checklist (draft for Paul, 2026-10-01)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#decisions-paul-2026-10-01-the-recommendations">0. Decisions (Paul, 2026-10-01: the recommendations)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#before-any-release">1. Before any release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#releases-in-order">2. Releases, in order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#update-every-installation-servers-before-desktops">3. Update every installation (servers before desktops)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#switch-the-writer-to-3-0">4. Switch the writer to 3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#migrate-the-job-directories-and-datastores">5. Migrate the job directories and datastores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#other-flowcharts">6. Other flowcharts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#zenodo-and-tutorials">7. Zenodo and tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#remove-the-old-2-0-code-seamm-release-3">8. Remove the old 2.0 code (seamm release 3)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#documentation-and-housekeeping">9. Documentation and housekeeping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#rollback">Rollback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NOTES_switch.html#loose-ends-not-blocking">Loose ends (not blocking)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Link to this heading">#</a></h2>
+<p>Programmers and AI systems can create, read and edit SEAMM flowcharts without the
+graphical editor, with the same guarantees the editor gives: only real steps, only real
+parameters, only valid values, and a layout the editor opens cleanly.</p>
+<p>Along the way, the heavy, hard-to-read format 2.0 is replaced by a YAML format 3.0 that
+is readable and still complete enough to reproduce a calculation. Format 2.0 is then
+removed from SEAMM; a small frozen converter remains for old files.</p>
+</section>
+<section id="what-happens-today">
+<h2>What happens today<a class="headerlink" href="#what-happens-today" title="Link to this heading">#</a></h2>
+<p>Checked in the code and on this Mac on 2026-09-30.</p>
+<p><strong>Building works without Tk.</strong> <code class="docutils literal notranslate"><span class="pre">seamm_exec</span></code> loads and runs flowcharts with no Tk root
+(<code class="docutils literal notranslate"><span class="pre">seamm_exec/exec_flowchart.py</span></code>: <code class="docutils literal notranslate"><span class="pre">seamm.Flowchart(...)</span></code> then <code class="docutils literal notranslate"><span class="pre">flowchart.read()</span></code>).
+Step nodes can be created headlessly through <code class="docutils literal notranslate"><span class="pre">Flowchart.create_node(extension)</span></code> or the
+step’s factory; <code class="docutils literal notranslate"><span class="pre">node.parameters[key].value</span> <span class="pre">=</span> <span class="pre">...</span></code> works, and <code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code>
+serializes correctly. A few scripts and tests already do this for single nodes
+(<code class="docutils literal notranslate"><span class="pre">model_chemistry_step/tests/test_model_chemistries.py</span></code>; the BSSE validation scripts
+in <code class="docutils literal notranslate"><span class="pre">orca_step/docs/developer_guide/campaigns/2026-08-03/</span></code>), but nothing wires nodes and
+edges together and writes a flowchart. <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">seamm</span></code> imports <code class="docutils literal notranslate"><span class="pre">tkinter</span></code>, so tkinter
+must be installed, but no display is needed.</p>
+<p><strong>Nothing checks values when they are set.</strong> <code class="docutils literal notranslate"><span class="pre">Parameter.value</span></code> just stores what it is
+given (<code class="docutils literal notranslate"><span class="pre">parameters.py</span></code>); <code class="docutils literal notranslate"><span class="pre">enumeration</span></code> is used only for widgets and for formatting
+in <code class="docutils literal notranslate"><span class="pre">get()</span></code>. Only units are checked (the <code class="docutils literal notranslate"><span class="pre">units</span></code> setter checks dimensionality). The
+rules that keep invalid combinations out of a step (the “prevent, don’t catch” rule in
+<code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>) live in each plug-in’s <code class="docutils literal notranslate"><span class="pre">tk_*.reset_dialog</span></code>, which a script cannot use.
+The headless run-time checks are the only backstop.</p>
+<p><strong>Easy things to get wrong by hand:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Flowchart.add_edge</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">edge_type=None</span></code>; every real edge is
+<code class="docutils literal notranslate"><span class="pre">&quot;execution&quot;</span></code>.</p></li>
+<li><p>The headless <code class="docutils literal notranslate"><span class="pre">Node.default_edge_subtype()</span></code> returns <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">TkNode</span></code>’s returns
+<code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">Node.next()</span></code> follows only <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> edges.</p></li>
+<li><p>A loop has a fixed shape, which the GUI builds partly by hand (the user draws the
+return arrow). From <code class="docutils literal notranslate"><span class="pre">table_step/tests/flowcharts/test1.flow</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">-&gt;</span> <span class="pre">Join</span> <span class="pre">-(next)-&gt;</span> <span class="pre">Loop</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Loop</span> <span class="pre">-(loop,</span> <span class="pre">anchors</span> <span class="pre">e-&gt;w)-&gt;</span> <span class="pre">body1</span> <span class="pre">-&gt;</span> <span class="pre">...</span> <span class="pre">-&gt;</span> <span class="pre">bodyN</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bodyN</span> <span class="pre">-(next,</span> <span class="pre">anchors</span> <span class="pre">s-&gt;e,</span> <span class="pre">routed</span> <span class="pre">around</span> <span class="pre">the</span> <span class="pre">body)-&gt;</span> <span class="pre">Join</span></code> – the body returns
+to the Join, not to the Loop; <code class="docutils literal notranslate"><span class="pre">Loop.description_text</span></code> relies on this.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Loop</span> <span class="pre">-(exit,</span> <span class="pre">anchors</span> <span class="pre">s-&gt;n)-&gt;</span> <span class="pre">next</span> <span class="pre">step</span></code></p></li>
+</ul>
+<p>The only edge subtypes in use are <code class="docutils literal notranslate"><span class="pre">next</span></code>, <code class="docutils literal notranslate"><span class="pre">loop</span></code> and <code class="docutils literal notranslate"><span class="pre">exit</span></code>. There are no
+if/branch/switch steps; the only control-flow steps are Loop and the built-in
+Join/Split (<code class="docutils literal notranslate"><span class="pre">seamm/builtins.py</span></code>).</p>
+</li>
+<li><p>Parameter keys contain spaces and capitals (<code class="docutils literal notranslate"><span class="pre">&quot;Hirshfeld</span> <span class="pre">charges&quot;</span></code>).</p></li>
+<li><p>Extension names and titles differ (<code class="docutils literal notranslate"><span class="pre">FromSMILESStep</span></code> vs “from SMILES”).</p></li>
+<li><p>Sub-steps come from a per-plug-in namespace (<code class="docutils literal notranslate"><span class="pre">org.molssi.seamm.orca</span></code> etc.); a
+subflowchart plug-in builds its subflowchart in <code class="docutils literal notranslate"><span class="pre">__init__</span></code> (MOPAC only when
+<code class="docutils literal notranslate"><span class="pre">title</span> <span class="pre">==</span> <span class="pre">&quot;MOPAC&quot;</span></code>, and it needs a real <code class="docutils literal notranslate"><span class="pre">flowchart</span></code> argument).</p></li>
+</ul>
+<p><strong>GUI placement.</strong> Commit 5c01b94 (2026-09-29) lets the editor open files whose nodes
+have no position (<code class="docutils literal notranslate"><span class="pre">place_unpositioned</span></code>, <code class="docutils literal notranslate"><span class="pre">tk_flowchart.py</span></code>). It stacks unplaced
+nodes one row below their predecessor and knows nothing about loops: body and exit land
+in one column. Missing edge anchors default to <code class="docutils literal notranslate"><span class="pre">s</span></code>/<code class="docutils literal notranslate"><span class="pre">n</span></code>. The menu action
+<code class="docutils literal notranslate"><span class="pre">clean_layout()</span></code> does know loops (body one column right, upward edges routed around
+it) but is Tk code.</p>
+<p><strong>What format 2.0 contains.</strong> A header (<code class="docutils literal notranslate"><span class="pre">#!/usr/bin/env</span> <span class="pre">run_flowchart</span></code>,
+<code class="docutils literal notranslate"><span class="pre">!MolSSI</span> <span class="pre">flowchart</span> <span class="pre">2.0</span></code>), a <code class="docutils literal notranslate"><span class="pre">#metadata</span></code> JSON section and a <code class="docutils literal notranslate"><span class="pre">#flowchart</span></code> JSON
+section (<code class="docutils literal notranslate"><span class="pre">Flowchart.to_text</span></code>). <code class="docutils literal notranslate"><span class="pre">test.flow</span></code>, 6 steps, is 549 lines, almost all of it
+default values. Each node is <code class="docutils literal notranslate"><span class="pre">Node.to_dict()</span></code>: the node’s whole <code class="docutils literal notranslate"><span class="pre">__dict__</span></code> minus a
+short exclusion list, plus any attribute whose name contains “flowchart” as a nested
+flowchart. Parameters are encoded with their class and module
+(<code class="docutils literal notranslate"><span class="pre">seamm_util/seamm_json.py</span></code>) and decoded by importing that module and class, so every
+plug-in’s class and module names are part of the file format.</p>
+<p><strong>The digest defines what matters.</strong> <code class="docutils literal notranslate"><span class="pre">Node.digest()</span></code> hashes the parameter values
+(defaults included), the subflowchart, and in strict mode the plug-in version.
+Positions, UUIDs, module paths and the other attributes are outside it. The datastore’s
+<code class="docutils literal notranslate"><span class="pre">flowcharts</span></code> table stores <code class="docutils literal notranslate"><span class="pre">sha256</span></code>, a <strong>unique</strong> <code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code>, the parsed JSON
+(<code class="docutils literal notranslate"><span class="pre">json</span></code> column, i.e. the 2.0 structure), and the metadata
+(<code class="docutils literal notranslate"><span class="pre">seamm_datastore/database/models.py</span></code>).</p>
+<p><strong>Run-time state leaks into files.</strong> Of the 1,370 files named <code class="docutils literal notranslate"><span class="pre">*.flow</span></code> on this Mac,
+1,332 are flowcharts (1,330 format 2.0, 2 format 1.0); the other 38 are JavaScript
+type files under <code class="docutils literal notranslate"><span class="pre">seamm_webui/frontend/node_modules</span></code>. 1,217 of the flowcharts are in
+job directories (<code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/Jobs</span></code> 851, <code class="docutils literal notranslate"><span class="pre">~/SEAMM/Jobs</span></code> 256, <code class="docutils literal notranslate"><span class="pre">~/SEAMM/SV/Jobs</span></code>
+110), 27 in <code class="docutils literal notranslate"><span class="pre">~/SEAMM/flowcharts</span></code>, 27 in <code class="docutils literal notranslate"><span class="pre">Testing/</span></code>, the rest in package tests and
+docs. Attributes found outside the standard set (<code class="docutils literal notranslate"><span class="pre">_uuid</span></code>, <code class="docutils literal notranslate"><span class="pre">_title</span></code>, <code class="docutils literal notranslate"><span class="pre">extension</span></code>,
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>/<code class="docutils literal notranslate"><span class="pre">y</span></code>/<code class="docutils literal notranslate"><span class="pre">w</span></code>/<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">_tables</span></code>, <code class="docutils literal notranslate"><span class="pre">citation_level</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_method</span></code>):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Extra attributes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Table</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">calls</span></code> (2,241 nodes)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Loop</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">table_handle</span></code> (695)</p></td>
+</tr>
+<tr class="row-even"><td><p>Diffusivity, Thermal Conductivity</p></td>
+<td><p>the analysis arrays (<code class="docutils literal notranslate"><span class="pre">M</span></code>, <code class="docutils literal notranslate"><span class="pre">Jcf</span></code>, <code class="docutils literal notranslate"><span class="pre">GK_integral</span></code>, <code class="docutils literal notranslate"><span class="pre">msds</span></code>, …; 15 each)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Energy, Optimization, BandStructure, DOS, ChooseParameters (dftbplus_step;
+also FHI-aims sub-steps)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">results</span></code>, <code class="docutils literal notranslate"><span class="pre">mapping_to_primitive</span></code>, <code class="docutils literal notranslate"><span class="pre">mapping_from_primitive</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Reaction Path</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code> (43)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Energy, Optimization, Wavefunction Stability, Thermodynamics, Thermochemistry,
+Table</p></td>
+<td><p>a non-null <code class="docutils literal notranslate"><span class="pre">_method</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Node.from_dict()</span></code> writes all of these straight back into the node’s <code class="docutils literal notranslate"><span class="pre">__dict__</span></code> when
+a file is opened. Phase 0 (<code class="docutils literal notranslate"><span class="pre">NOTES_phase0.rst</span></code>) traced each one: none is a setting in
+a current plug-in.</p>
+<p><strong>Environment is not recorded.</strong> No code in <code class="docutils literal notranslate"><span class="pre">seamm</span></code>, <code class="docutils literal notranslate"><span class="pre">seamm_exec</span></code> or
+<code class="docutils literal notranslate"><span class="pre">seamm_jobserver</span></code> writes the job’s package versions (a <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span></code> equivalent).
+Only each node’s own <code class="docutils literal notranslate"><span class="pre">version</span></code> in the flowchart, and the citations, record versions.</p>
+<p><strong>Zenodo.</strong> 10 flowchart records (15 versions), all published by Paul between
+2022-08-18 and 2024-10-31, found by the keyword <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> that the Publish and
+Open dialogs use: three DFTB+ flowcharts, two MOPAC, SEAMM Tutorials 1, 3 and 5, fluid
+density with OPLSAA, and FHI-aims tutorial 1. Zenodo records cannot be changed; new
+versions can be published.</p>
+<p><strong>SEAMM has two users today</strong>, so every existing flowchart can realistically be found
+and converted.</p>
+</section>
+<section id="decided-2026-09-30-discussion">
+<h2>Decided (2026-09-30 discussion)<a class="headerlink" href="#decided-2026-09-30-discussion" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>YAML, at two levels.</strong> A <em>spec</em> holds only the choices that matter and is what
+people and AI write; a <em>resolved flowchart</em> holds every value and is what runs and is
+archived. The same split as <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and a lock file.</p></li>
+<li><p><strong>The resolved YAML replaces format 2.0 entirely</strong> as format 3.0. Format 2.0 is
+removed from SEAMM; a frozen converter turns old files into 3.0.</p></li>
+<li><p><strong>Conversion keeps what was recorded.</strong> A converted job flowchart keeps the versions
+and values it ran with; it is never “refreshed” with current plug-ins or defaults.</p></li>
+<li><p><strong>The spec is never executed.</strong> It always resolves to a 3.0 flowchart first (see Q3).</p></li>
+<li><p><strong>The code lives in</strong> <code class="docutils literal notranslate"><span class="pre">seamm</span></code> <strong>core</strong> (Q1): <code class="docutils literal notranslate"><span class="pre">seamm/catalog.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">seamm/builder.py</span></code>, <code class="docutils literal notranslate"><span class="pre">seamm/layout.py</span></code>, the 3.0 reader and writer, and a
+<code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> console script (<code class="docutils literal notranslate"><span class="pre">seamm/flowchart_cli.py</span></code>).</p></li>
+<li><p><strong>Unconnected steps are kept, outside the digest</strong> (Paul, 2026-09-30). Steps the
+editor shows but that are not connected to the flowchart (316 in 219 of 1,320 files)
+go in an <code class="docutils literal notranslate"><span class="pre">unconnected:</span></code> section of a 3.0 file, at each level; they are not part of
+<code class="docutils literal notranslate"><span class="pre">sha256</span></code> or <code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code>, and specs leave them out since they never run.</p></li>
+<li><p><strong>Format 3.0 keeps the</strong> <code class="docutils literal notranslate"><span class="pre">.flow</span></code> <strong>extension</strong> (Q4); readers detect the format from
+the content (<code class="docutils literal notranslate"><span class="pre">format:</span> <span class="pre">MolSSI</span> <span class="pre">flowchart</span> <span class="pre">3.0</span></code> vs the <code class="docutils literal notranslate"><span class="pre">!MolSSI</span> <span class="pre">flowchart</span> <span class="pre">2.0</span></code> line).</p></li>
+</ul>
+</section>
+<section id="design">
+<h2>Design<a class="headerlink" href="#design" title="Link to this heading">#</a></h2>
+<section id="d1-spec-and-resolved-flowchart">
+<h3>D1. Spec and resolved flowchart<a class="headerlink" href="#d1-spec-and-resolved-flowchart" title="Link to this heading">#</a></h3>
+<p>A spec:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Water optimization</span>
+<span class="nt">steps</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Parameters</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">variables</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">SMILES</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="nv">O</span><span class="p p-Indicator">}}}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Model Chemistry</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">model chemistry</span><span class="p">:</span><span class="w"> </span><span class="s">"ORCA:DFT@B3LYP/bse:def2-SVPD"</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from SMILES</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">smiles string</span><span class="p">:</span><span class="w"> </span><span class="nv">$SMILES</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ORCA</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Optimization</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Energy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">extra keywords</span><span class="p">:</span><span class="w"> </span><span class="nv">TightSCF</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Loop</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">For</span>
+<span class="w">      </span><span class="nt">variable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">i</span>
+<span class="w">      </span><span class="nt">start</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">end</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">body</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>A step is named by extension name, display name or title; all three resolve through
+the catalog (D5), with close-match suggestions on failure.</p></li>
+<li><p>Missing parameters mean “the installed plug-in’s default”. Resolving fills them in and
+can report which defaults were applied.</p></li>
+<li><p>Subflowchart steps take <code class="docutils literal notranslate"><span class="pre">steps:</span></code>; Loop takes <code class="docutils literal notranslate"><span class="pre">body:</span></code>. Join nodes, edge subtypes
+and anchors never appear.</p></li>
+</ul>
+<p>A resolved flowchart (format 3.0):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#!/usr/bin/env run_flowchart</span>
+<span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MolSSI flowchart 3.0</span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">,</span><span class="nt"> description</span><span class="p">:</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">,</span><span class="nt"> keywords</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">],</span><span class="nt"> creators</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">],</span><span class="nt"> grants</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]}</span>
+<span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">seamm</span><span class="p">:</span><span class="w"> </span><span class="nv">2026.9.29</span><span class="p p-Indicator">,</span><span class="nt"> orca_step</span><span class="p">:</span><span class="w"> </span><span class="nv">2026.6.28</span><span class="p p-Indicator">,</span><span class="nt"> from_smiles_step</span><span class="p">:</span><span class="w"> </span><span class="nv">2025.5.14</span><span class="p p-Indicator">}</span>
+<span class="nt">digest</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">sha256</span><span class="p">:</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">,</span><span class="nt"> sha256_strict</span><span class="p">:</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">}</span>
+<span class="nt">steps</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">"3"</span>
+<span class="w">    </span><span class="nt">step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ORCA</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">"3.1"</span>
+<span class="w">        </span><span class="nt">step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Energy</span>
+<span class="w">        </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DLPNO-CCSD(T)</span>
+<span class="w">          </span><span class="nt">basis</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">def2-TZVP</span>
+<span class="w">          </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">298.15</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">K</span><span class="p p-Indicator">]</span>
+<span class="w">          </span><span class="c1"># ...every parameter</span>
+<span class="nt">layout</span><span class="p">:</span><span class="w">            </span><span class="c1"># optional; GUI only</span>
+<span class="w">  </span><span class="s">"3"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">150</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">315</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The shebang line is a YAML comment, so the file stays executable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requires</span></code> replaces the per-node <code class="docutils literal notranslate"><span class="pre">version</span></code>: one entry per plug-in package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> is short and stable within the file; it replaces the 128-bit UUID. Execution
+order is list order; loop structure is nesting. No explicit edges.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code> holds positions only; the editor recomputes edge routing (D8). A file
+without it opens with the headless layout.</p></li>
+<li><p>Parameter values are typed by the catalog on reading (see D3), with units as
+<code class="docutils literal notranslate"><span class="pre">[value,</span> <span class="pre">units]</span></code>.</p></li>
+<li><p>Dropped entirely: <code class="docutils literal notranslate"><span class="pre">item</span></code>, <code class="docutils literal notranslate"><span class="pre">module</span></code>, <code class="docutils literal notranslate"><span class="pre">class</span></code>, <code class="docutils literal notranslate"><span class="pre">__class__</span></code>/<code class="docutils literal notranslate"><span class="pre">__module__</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_tables</span></code>, <code class="docutils literal notranslate"><span class="pre">citation_level</span></code>, UUIDs, edge coordinates, and all non-declared
+attributes (D4).</p></li>
+</ul>
+</section>
+<section id="d2-digest-for-format-3-0">
+<h3>D2. Digest for format 3.0<a class="headerlink" href="#d2-digest-for-format-3-0" title="Link to this heading">#</a></h3>
+<p>Phase 1 found that today’s <code class="docutils literal notranslate"><span class="pre">Flowchart.digest()</span></code> stops at the first loop (it follows
+only <code class="docutils literal notranslate"><span class="pre">next</span></code> edges), so it ignores loop bodies and everything after a loop. The new
+digest must walk the whole step tree. It is deliberately not fixed in 2.0: the datastore
+reads the digest from each file’s metadata, so changing it mid-stream would give
+unchanged flowcharts new rows. The phase 3 migration recomputes all digests at once.</p>
+<p>Redefine the digest from the resolved content rather than Python’s <code class="docutils literal notranslate"><span class="pre">str()</span></code> of a dict:
+SHA-256 of a canonical JSON serialization (sorted keys, no whitespace) of the step tree
+– step names, nesting, parameter values and units – plus, for <code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code>, the
+<code class="docutils literal notranslate"><span class="pre">requires</span></code> versions. Metadata and layout stay outside it, as today. The datastore’s
+<code class="docutils literal notranslate"><span class="pre">sha256</span></code>/<code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code> columns are recomputed during migration (D10).</p>
+</section>
+<section id="d3-reading-yaml-safely">
+<h3>D3. Reading YAML safely<a class="headerlink" href="#d3-reading-yaml-safely" title="Link to this heading">#</a></h3>
+<p>YAML 1.1 loaders (PyYAML’s default) read unquoted <code class="docutils literal notranslate"><span class="pre">yes</span></code>/<code class="docutils literal notranslate"><span class="pre">no</span></code>/<code class="docutils literal notranslate"><span class="pre">on</span></code>/<code class="docutils literal notranslate"><span class="pre">off</span></code> as
+booleans; SEAMM uses those strings everywhere. The reader coerces each value by the
+parameter’s <code class="docutils literal notranslate"><span class="pre">kind</span></code> from the catalog, and the writer quotes anything that would not
+round-trip. A YAML 1.2 loader (<code class="docutils literal notranslate"><span class="pre">ruamel.yaml</span></code>) avoids most of this but is not required
+if coercion is done.</p>
+</section>
+<section id="d4-serialize-parameters-only">
+<h3>D4. Serialize parameters only<a class="headerlink" href="#d4-serialize-parameters-only" title="Link to this heading">#</a></h3>
+<p>The 3.0 writer never walks <code class="docutils literal notranslate"><span class="pre">__dict__</span></code>. A step is its step name, its parameters, its
+sub-steps (for a subflowchart step) and, optionally, its position. Nothing else is
+written; <code class="docutils literal notranslate"><span class="pre">title</span></code> is always the class default and is dropped. Phase 0 confirmed that no
+current plug-in keeps settings outside <code class="docutils literal notranslate"><span class="pre">parameters</span></code>, so no per-step hooks are needed.</p>
+<p>Two GUI caches, previously restored from the file, must be rebuilt when a flowchart is
+loaded: <code class="docutils literal notranslate"><span class="pre">node.tables</span></code> (from the <code class="docutils literal notranslate"><span class="pre">table</span></code> entries of the <code class="docutils literal notranslate"><span class="pre">results</span></code> parameter, as
+<code class="docutils literal notranslate"><span class="pre">TkNode.setup_results</span></code> does; <code class="docutils literal notranslate"><span class="pre">Node.existing_tables()</span></code> feeds later steps’ table
+dropdowns) and each step’s <code class="docutils literal notranslate"><span class="pre">method</span></code> for the results tab (already recomputed by
+<code class="docutils literal notranslate"><span class="pre">reset_dialog</span></code> when the dialog opens).</p>
+</section>
+<section id="d5-catalog">
+<h3>D5. Catalog<a class="headerlink" href="#d5-catalog" title="Link to this heading">#</a></h3>
+<p>Built at run time from:</p>
+<ul class="simple">
+<li><p>the plug-in entry points (<code class="docutils literal notranslate"><span class="pre">org.molssi.seamm</span></code> and each <code class="docutils literal notranslate"><span class="pre">org.molssi.seamm.&lt;plugin&gt;</span></code>
+sub-namespace) and each step’s <code class="docutils literal notranslate"><span class="pre">my_description</span></code> (name, group, description);</p></li>
+<li><p>each node class’s <code class="docutils literal notranslate"><span class="pre">parameters</span></code> definition (kind, default, enumeration, units, help);</p></li>
+<li><p>the plug-in’s <code class="docutils literal notranslate"><span class="pre">metadata.py</span></code> where it has one (methods, basis sets, results).</p></li>
+</ul>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">steps</span></code> and <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">describe</span> <span class="pre">&quot;ORCA/Energy&quot;</span></code>,
+both with <code class="docutils literal notranslate"><span class="pre">--json</span></code>. It also supplies the kinds for D3 and the defaults for reducing a
+resolved flowchart to a spec.</p>
+</section>
+<section id="d6-python-builder-api">
+<h3>D6. Python builder API<a class="headerlink" href="#d6-python-builder-api" title="Link to this heading">#</a></h3>
+<p>A thin layer over real <code class="docutils literal notranslate"><span class="pre">Node</span></code> objects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">seamm.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowchartBuilder</span>
+
+<span class="n">fb</span> <span class="o">=</span> <span class="n">FlowchartBuilder</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Water optimization"</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Parameters"</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">"SMILES"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="s2">"O"</span><span class="p">,</span> <span class="s2">"help"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">}})</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Model Chemistry"</span><span class="p">,</span> <span class="n">model_chemistry</span><span class="o">=</span><span class="s2">"ORCA:DFT@B3LYP/bse:def2-SVPD"</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"from SMILES"</span><span class="p">,</span> <span class="n">smiles_string</span><span class="o">=</span><span class="s2">"$SMILES"</span><span class="p">)</span>
+<span class="n">orca</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"ORCA"</span><span class="p">)</span>
+<span class="n">orca</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Optimization"</span><span class="p">)</span>
+<span class="n">orca</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Energy"</span><span class="p">,</span> <span class="n">extra_keywords</span><span class="o">=</span><span class="s2">"TightSCF"</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">fb</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"For"</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s2">"i"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">body</span><span class="p">:</span>
+    <span class="n">body</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Energy"</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"water.flow"</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">smiles_string</span></code> maps to <code class="docutils literal notranslate"><span class="pre">&quot;smiles</span> <span class="pre">string&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">params={...}</span></code> also works.</p></li>
+<li><p>Values are checked as they are set: unknown key (with suggestions), value outside the
+enumeration unless it is a <code class="docutils literal notranslate"><span class="pre">$variable</span></code> or expression, wrong kind, incompatible
+units.</p></li>
+<li><p>The builder creates Join nodes, sets edge types and subtypes, and computes the layout.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlowchartBuilder.from_spec()</span></code> / <code class="docutils literal notranslate"><span class="pre">.to_spec()</span></code> and <code class="docutils literal notranslate"><span class="pre">.read()</span></code> connect it to D1.</p></li>
+</ul>
+</section>
+<section id="d7-cli">
+<h3>D7. CLI<a class="headerlink" href="#d7-cli" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">steps</span> <span class="p">[</span><span class="o">--</span><span class="n">json</span><span class="p">]</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">describe</span> <span class="o">&lt;</span><span class="n">step</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">--</span><span class="n">json</span><span class="p">]</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">build</span> <span class="n">spec</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">o</span> <span class="n">x</span><span class="o">.</span><span class="n">flow</span>        <span class="c1"># resolve a spec</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">show</span> <span class="n">x</span><span class="o">.</span><span class="n">flow</span>                      <span class="c1"># reduce to a spec</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="nb">set</span> <span class="n">x</span><span class="o">.</span><span class="n">flow</span> <span class="s2">"ORCA/Energy"</span> <span class="n">basis</span><span class="o">=</span><span class="n">def2</span><span class="o">-</span><span class="n">TZVP</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">insert</span><span class="o">|</span><span class="n">remove</span><span class="o">|</span><span class="n">move</span> <span class="n">x</span><span class="o">.</span><span class="n">flow</span> <span class="o">...</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">validate</span> <span class="n">x</span><span class="o">.</span><span class="n">flow</span>
+<span class="n">seamm</span><span class="o">-</span><span class="n">flowchart</span> <span class="n">convert</span> <span class="n">old</span><span class="o">.</span><span class="n">flow</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">new</span><span class="o">.</span><span class="n">flow</span><span class="p">]</span>   <span class="c1"># the frozen 2.0 converter (D10)</span>
+</pre></div>
+</div>
+<p>Steps are addressed by path of titles or ids (<code class="docutils literal notranslate"><span class="pre">ORCA/Energy</span></code>, <code class="docutils literal notranslate"><span class="pre">3.1</span></code>). Every command
+has <code class="docutils literal notranslate"><span class="pre">--json</span></code> so an AI can drive it through a shell.</p>
+</section>
+<section id="d8-shared-layout">
+<h3>D8. Shared layout<a class="headerlink" href="#d8-shared-layout" title="Link to this heading">#</a></h3>
+<p>Move the logic of <code class="docutils literal notranslate"><span class="pre">clean_layout()</span></code> into a headless function (grid 300 x 70, loop body
+one column right, exit below, return edge routed around the body back to the Join) that
+the builder, the 3.0 reader and the editor’s <code class="docutils literal notranslate"><span class="pre">clean_layout</span></code> / <code class="docutils literal notranslate"><span class="pre">place_unpositioned</span></code>
+all call. That also fixes the loop gap in <code class="docutils literal notranslate"><span class="pre">place_unpositioned</span></code>.</p>
+</section>
+<section id="d9-validation">
+<h3>D9. Validation<a class="headerlink" href="#d9-validation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Phase 1:</strong> per parameter (name, enumeration, kind, units) and per flowchart, e.g.
+<code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">model</span> <span class="pre">chemistry</span> <span class="pre">=</span> <span class="pre">yes</span></code> with no Model Chemistry step earlier in the flow
+(<code class="docutils literal notranslate"><span class="pre">Node.previous_nodes()</span></code> already supports this). The run-time checks in each step
+remain the backstop.</p></li>
+<li><p><strong>Phase 2 (Q2):</strong> headless rules in the parameter definitions – <code class="docutils literal notranslate"><span class="pre">visible_when</span></code> /
+<code class="docutils literal notranslate"><span class="pre">valid_when</span></code>, or a <code class="docutils literal notranslate"><span class="pre">Parameters.validate(P)</span></code> hook – used by both <code class="docutils literal notranslate"><span class="pre">reset_dialog</span></code>
+and the builder, so neither can build what the other forbids. The builder can then
+also warn about settings that have no effect (a <code class="docutils literal notranslate"><span class="pre">functional</span></code> when the method is not
+DFT). Adopted plug-in by plug-in, starting with ORCA and Model Chemistry.</p></li>
+</ul>
+</section>
+<section id="d10-retiring-format-2-0">
+<h3>D10. Retiring format 2.0<a class="headerlink" href="#d10-retiring-format-2-0" title="Link to this heading">#</a></h3>
+<p><strong>The frozen converter</strong> reads a 1.0 or 2.0 file as plain JSON and writes a 3.0 file.</p>
+<ul class="simple">
+<li><p>It imports no plug-in. Everything it needs is in the file: extension names, versions,
+every parameter value and its units, edges, subflowcharts, positions.</p></li>
+<li><p>It needs no snapshot of plug-in parameter kinds: it starts from typed JSON, and a
+YAML dumper quotes <code class="docutils literal notranslate"><span class="pre">yes</span></code>/<code class="docutils literal notranslate"><span class="pre">no</span></code> and the like (checked in phase 0). Its only
+plug-in-specific knowledge is one legacy table: lammps_step Minimization before
+2025.3.16, whose <code class="docutils literal notranslate"><span class="pre">convergence</span></code>, <code class="docutils literal notranslate"><span class="pre">etol</span></code>, <code class="docutils literal notranslate"><span class="pre">ftol</span></code>, <code class="docutils literal notranslate"><span class="pre">maxiters</span></code> and <code class="docutils literal notranslate"><span class="pre">maxevals</span></code>
+attributes become parameters. It never changes after release.</p></li>
+<li><p>It treats any edge with subtype <code class="docutils literal notranslate"><span class="pre">next</span></code> as an execution edge, whatever its
+<code class="docutils literal notranslate"><span class="pre">edge_type</span></code> (phase 0 found scripted flowcharts with <code class="docutils literal notranslate"><span class="pre">null</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code>).</p></li>
+<li><p>It turns edges into list order and nesting (Loop body, Join removed), UUIDs into short
+ids, per-node versions into <code class="docutils literal notranslate"><span class="pre">requires</span></code> (if two nodes of one package disagree, the
+newer is recorded and the disagreement reported).</p></li>
+<li><p>It copies structure, parameters and positions, drops everything else, and reports
+any non-empty dropped attribute per step.</p></li>
+<li><p>Migration converts by content: each distinct file text is converted once and the
+result reused (TinkerCliffs has about 53,000 job copies of 56 flowcharts).</p></li>
+<li><p>It lives permanently in a place that never changes (Q5), and the GUI, run_flowchart
+and the Dashboard call it automatically when they meet a 2.0 header. That is an
+import path only; no 2.0 code remains in <code class="docutils literal notranslate"><span class="pre">Flowchart</span></code>, <code class="docutils literal notranslate"><span class="pre">Node</span></code> or the plug-ins.</p></li>
+</ul>
+<p><strong>Migration targets:</strong></p>
+<ul class="simple">
+<li><p>Job directories on every machine: the 3.0 file sits beside the original, whose
+content stays untouched as the record: the original is renamed <code class="docutils literal notranslate"><span class="pre">flowchart.v2.flow</span></code>
+and the 3.0 file is written as <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> (Q7). This Mac has 1,217.
+The other machines are MolSSI10, paul.local, TinkerCliffs/ARC and ChemAI (ChemAI
+needs Paul’s explicit OK for each action).</p></li>
+<li><p>Each datastore’s <code class="docutils literal notranslate"><span class="pre">flowcharts</span></code> table: rewrite <code class="docutils literal notranslate"><span class="pre">json</span></code> to the 3.0 structure,
+recompute <code class="docutils literal notranslate"><span class="pre">sha256</span></code>/<code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code> (D2), and resolve any collisions the new digest
+creates (two old rows that differed only in leaked state now match).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~/SEAMM/flowcharts</span></code> (27), <code class="docutils literal notranslate"><span class="pre">Testing/</span></code> (27), the plug-ins’ <code class="docutils literal notranslate"><span class="pre">tests/</span></code> and docs
+flowcharts, and the two format-1.0 files.</p></li>
+<li><p>Zenodo: publish a new 3.0 version of each of the 10 records. The DOIs of the older 15
+versions keep serving 2.0 files forever, which is why the converter must stay
+available. Check the tutorials’ links: any that cite a version DOI rather than the
+concept DOI need updating.</p></li>
+<li><p>Downstream readers that look for the <code class="docutils literal notranslate"><span class="pre">!MolSSI</span> <span class="pre">flowchart</span></code> header line: the Dashboard
+(<code class="docutils literal notranslate"><span class="pre">seamm_dashboard/routes/jobs/views.py</span></code>), the webui, and the datastore’s
+<code class="docutils literal notranslate"><span class="pre">get_or_create_from_file</span></code>.</p></li>
+</ul>
+<p><strong>Verification:</strong> for every converted file, load the 3.0 file with the current
+plug-ins and compare each parameter value with the value recorded in the 2.0 file.
+Mismatches and drops go in a report; the digest is not used for this, since D2 changes
+its definition.</p>
+</section>
+<section id="d11-record-the-environment-in-each-job">
+<h3>D11. Record the environment in each job<a class="headerlink" href="#d11-record-the-environment-in-each-job" title="Link to this heading">#</a></h3>
+<p>A complete flowchart still does not reproduce a calculation under newer plug-in code.
+Each job directory should record the installed package versions (e.g.
+<code class="docutils literal notranslate"><span class="pre">environment.txt</span></code> from <code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code>) at start. Small, independent of the
+rest, and can go in any phase.</p>
+</section>
+<section id="d12-ai-access">
+<h3>D12. AI access<a class="headerlink" href="#d12-ai-access" title="Link to this heading">#</a></h3>
+<p>The CLI with <code class="docutils literal notranslate"><span class="pre">--json</span></code> is enough for Claude Code and any agent with a shell. A
+<code class="docutils literal notranslate"><span class="pre">build-seamm-flowchart</span></code> skill documents it. An MCP server exposing the same
+operations as tools is optional and last; it is worthwhile only for AI clients without
+a shell (a desktop or web chat, or an assistant inside the webui).</p>
+</section>
+</section>
+<section id="open-questions-paul-s">
+<h2>Open questions (Paul’s)<a class="headerlink" href="#open-questions-paul-s" title="Link to this heading">#</a></h2>
+<p>Q1. <strong>Location.</strong> <em>Decided 2026-09-30:</em> <code class="docutils literal notranslate"><span class="pre">seamm</span></code> core.</p>
+<dl class="simple">
+<dt>Q2. <em>Decided 2026-09-30: yes</em> (phase 5). <strong>Phase-2 validation.</strong> Worth it, given it</dt><dd><p>touches every plug-in’s parameter definitions over time?</p>
+</dd>
+<dt>Q3. <strong>Spec in jobs.</strong> Recommended: no. run_flowchart, the JobServer and the Dashboard</dt><dd><p>accept only resolved 3.0 (and 2.0 through the converter). A spec is always resolved
+first.</p>
+</dd>
+<dt>Q4. <strong>File extension for 3.0.</strong> <em>Decided 2026-09-30:</em> keep <code class="docutils literal notranslate"><span class="pre">.flow</span></code>, detect the</dt><dd><p>format from the content. File associations, the Open dialog’s filters, the
+Dashboard’s upload and <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> in job directories keep working.</p>
+</dd>
+<dt>Q5. <em>Decided 2026-09-30:</em> a frozen module in <code class="docutils literal notranslate"><span class="pre">seamm</span></code> (<code class="docutils literal notranslate"><span class="pre">seamm/convert_v2.py</span></code>), with</dt><dd><p>a test that forbids any import from SEAMM or plug-ins. <strong>Where the frozen converter
+lives.</strong> A module in <code class="docutils literal notranslate"><span class="pre">seamm</span></code> that is never edited, or
+a tiny separate package (e.g. <code class="docutils literal notranslate"><span class="pre">seamm_flowchart_v2</span></code>) pinned forever. The separate
+package is more clearly “frozen” and can be installed on its own to read an old
+Zenodo file.</p>
+</dd>
+<dt>Q6. <em>Decided 2026-09-30:</em> each job points at the row made from its own</dt><dd><p><code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> – rows that now match are merged, rows the loop bug merged are
+split – and rows left unused are deleted after a backup. <strong>Datastore digest
+collisions.</strong> When the new digest merges rows that differed only
+in leaked state, re-point their jobs to one row (recommended) or keep both rows with
+the strict digest cleared on the later one? The reverse also happens: rows that the
+loop bug merged must be split, each job pointing at a row made from its own
+<code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code>.</p>
+</dd>
+<dt>Q7. <strong>File names in converted job directories</strong> (follows from Q4).</dt><dd><p><em>Decided 2026-09-30: the recommendation.</em> Rename the original to <code class="docutils literal notranslate"><span class="pre">flowchart.v2.flow</span></code> (content unchanged) and write the 3.0 file as
+<code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code>, so everything that opens a job’s <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> gets 3.0.
+Alternative: leave <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> as 2.0 and write <code class="docutils literal notranslate"><span class="pre">flowchart.v3.flow</span></code>, relying
+on the converter’s import path whenever the standard name is read.</p>
+</dd>
+</dl>
+</section>
+<section id="phases">
+<h2>Phases<a class="headerlink" href="#phases" title="Link to this heading">#</a></h2>
+<p>Each phase is released before the next starts; shared libraries are released before
+the plug-ins that use them, with the minimum version pinned.</p>
+<p><strong>Phase 0 – Inventory and triage.</strong> <em>Done 2026-09-30</em> (<code class="docutils literal notranslate"><span class="pre">NOTES_phase0.rst</span></code>). Only
+parameters are settings; one legacy map for the converter; inventory of every machine’s
+datastore.</p>
+<p><strong>Phase 1 – Catalog and builder.</strong> <em>Done 2026-09-30</em> (<code class="docutils literal notranslate"><span class="pre">NOTES_phase1.rst</span></code>). D5, D6
+with per-parameter and flow-level validation (D9 phase 1), writing through today’s
+<code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code> (format 2.0). Tested by building <code class="docutils literal notranslate"><span class="pre">Testing/builder_loop.flow</span></code>,
+running it, and opening it in the editor; <code class="docutils literal notranslate"><span class="pre">test.flow</span></code>’s structure was rebuilt but not
+run (its ORCA DLPNO-CCSD(T) optimization is too expensive for a check).</p>
+<p><strong>Phase 2 – Format 3.0.</strong> D1-D4 and D8: the 3.0 reader and writer (parameters only,
+rebuilding <code class="docutils literal notranslate"><span class="pre">node.tables</span></code> on load), the new digest, spec resolution and reduction, the headless layout. Test:
+every flowchart in <code class="docutils literal notranslate"><span class="pre">Testing/</span></code> and the plug-ins’ <code class="docutils literal notranslate"><span class="pre">tests/</span></code> goes 3.0 → spec → 3.0 with
+identical content, and runs.</p>
+<p><strong>Phase 3 – Converter and migration.</strong> D10: the frozen converter; the 2.0 import path
+in the GUI, run_flowchart and the Dashboard; migrate this Mac (job directories,
+datastores, local flowcharts), then the other machines; publish the 10 Zenodo versions;
+update tutorial links; remove the 2.0 reader and writer from <code class="docutils literal notranslate"><span class="pre">Flowchart</span></code>/<code class="docutils literal notranslate"><span class="pre">Node</span></code>;
+change the default writer to 3.0. Test: value-by-value verification report with no
+unexplained mismatches.</p>
+<p><strong>Phase 4 – CLI editing.</strong> D7’s <code class="docutils literal notranslate"><span class="pre">set</span></code>/<code class="docutils literal notranslate"><span class="pre">insert</span></code>/<code class="docutils literal notranslate"><span class="pre">remove</span></code>/<code class="docutils literal notranslate"><span class="pre">move</span></code>/<code class="docutils literal notranslate"><span class="pre">validate</span></code>,
+and the <code class="docutils literal notranslate"><span class="pre">build-seamm-flowchart</span></code> skill (D12).</p>
+<p><strong>Phase 5 – Shared validation rules</strong> (if Q2 is yes), plug-in by plug-in.</p>
+<p><strong>Phase 6 – Optional MCP server.</strong></p>
+<p>D11 (environment record) can be done at any point.</p>
+</section>
+<section id="risks">
+<h2>Risks<a class="headerlink" href="#risks" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Leaked state that was really a setting.</strong> Phase 0 found only the lammps_step
+Minimization legacy case on this Mac; other machines’ files may hold more. Mitigation:
+the converter reports every non-empty dropped attribute, and the value-by-value
+check.</p></li>
+<li><p><strong>Digest change and the datastore.</strong> <code class="docutils literal notranslate"><span class="pre">sha256_strict</span></code> is unique; the migration must
+handle collisions (Q6) inside one transaction, after a backup.</p></li>
+<li><p><strong>Half-migrated machines.</strong> A 3.0 file reaching a machine whose SEAMM predates phase 3
+cannot be read. Mitigation: upgrade every machine’s SEAMM before writing 3.0 by
+default; keep writing 2.0 until then.</p></li>
+<li><p><strong>Plug-ins whose nodes need a real flowchart to construct</strong> (MOPAC reads
+<code class="docutils literal notranslate"><span class="pre">flowchart.root_directory</span></code>). The builder always passes one.</p></li>
+</ul>
+</section>
+<section id="key-files">
+<h2>Key files<a class="headerlink" href="#key-files" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm/seamm/{flowchart.py,</span> <span class="pre">node.py,</span> <span class="pre">graph.py,</span> <span class="pre">parameters.py,</span> <span class="pre">plugin_manager.py,</span>
+<span class="pre">builtins.py,</span> <span class="pre">join_node.py}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm/seamm/{tk_flowchart.py,</span> <span class="pre">tk_node.py,</span> <span class="pre">tk_edge.py}</span></code> – placement, layout, edges</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">loop_step/loop_step/{loop.py,</span> <span class="pre">tk_loop.py}</span></code> – loop edges</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orca_step/orca_step/{orca.py,</span> <span class="pre">tk_orca.py,</span> <span class="pre">metadata.py,</span> <span class="pre">energy_parameters.py}</span></code> – a
+step with a subflowchart</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm_util/seamm_util/seamm_json.py</span></code> – how parameters are encoded in 2.0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm_exec/seamm_exec/exec_flowchart.py</span></code> – headless loading and execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm_datastore/seamm_datastore/database/models.py</span></code> – the <code class="docutils literal notranslate"><span class="pre">flowcharts</span></code> table</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm_dashboard/seamm_dashboard/routes/jobs/views.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">seamm_webui/seamm_webui/util.py</span></code> – readers of the header</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_step/tests/flowcharts/test1.flow</span></code> – reference loop structure</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Campaigns</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="NOTES_phase0.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Phase 0 – Inventory and triage (2026-09-30)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#goal">Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-today">What happens today</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decided-2026-09-30-discussion">Decided (2026-09-30 discussion)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design">Design</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d1-spec-and-resolved-flowchart">D1. Spec and resolved flowchart</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d2-digest-for-format-3-0">D2. Digest for format 3.0</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d3-reading-yaml-safely">D3. Reading YAML safely</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d4-serialize-parameters-only">D4. Serialize parameters only</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d5-catalog">D5. Catalog</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d6-python-builder-api">D6. Python builder API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d7-cli">D7. CLI</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d8-shared-layout">D8. Shared layout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d9-validation">D9. Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d10-retiring-format-2-0">D10. Retiring format 2.0</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d11-record-the-environment-in-each-job">D11. Record the environment in each job</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d12-ai-access">D12. AI access</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-questions-paul-s">Open questions (Paul’s)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phases">Phases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#risks">Risks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-files">Key files</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/developer_guide/campaigns/2026-09-30/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

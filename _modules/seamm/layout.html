@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm.layout &#8212; SEAMM 2026.10.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/layout';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.10.1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/SEAMM Inverted 288x181.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">SEAMM Package</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm.layout</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for seamm.layout</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">"""Lay out a flowchart on the editor's grid without the graphical interface.</span>
+
+<span class="sd">This follows the editor's "clean layout" (``TkFlowchart.clean_layout``): steps go down</span>
+<span class="sd">one column, one grid row apart; the body of a loop goes one column to the right,</span>
+<span class="sd">starting level with the loop; the step after a loop continues below the body; and an</span>
+<span class="sd">edge that goes back up -- the return from the end of a loop body -- is routed down,</span>
+<span class="sd">right, up and back to its target so that it does not cross the body.</span>
+
+<span class="sd">Steps not connected to the flowchart are put in columns to the right of it.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">GRID_X</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">GRID_Y</span> <span class="o">=</span> <span class="mi">70</span>
+<span class="n">WIDTH</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="c1"># Where the anchor points are, as fractions of the width and height from the center,</span>
+<span class="c1"># as in seamm.TkNode.anchor_points.</span>
+<span class="n">_anchor_points</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"n"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="s2">"ne"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="s2">"e"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"se"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="s2">"s"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="s2">"sw"</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="s2">"w"</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"nw"</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="anchor_point">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.layout.anchor_point">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">anchor_point</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">anchor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The position of an anchor point of a node, as the editor computes it."""</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">_anchor_points</span><span class="p">[</span><span class="n">anchor</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">node</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">node</span><span class="o">.</span><span class="n">h</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="is_loop">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.layout.is_loop">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_loop</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether a node is a loop, i.e. has an outgoing 'loop' edge."""</span>
+    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"out"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">==</span> <span class="s2">"execution"</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"loop"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_structure</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Find which loops each node is in, as the editor does.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (dict, dict, [object])</span>
+<span class="sd">        node -&gt; tuple of the loops it is in (outermost first); loop -&gt; the nodes</span>
+<span class="sd">        directly in it, in order, where the keys None and ("unconnected", i) are the</span>
+<span class="sd">        flowchart itself and each chain of unconnected steps; and those roots in order.</span>
+<span class="sd">    """</span>
+    <span class="n">loops_of</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">in_loop</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">traverse</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">loops</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">loops_of</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">loops</span>
+        <span class="n">in_loop</span><span class="p">[</span><span class="n">loops</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">loops</span> <span class="k">else</span> <span class="n">root</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"out"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_loop</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+            <span class="n">in_loop</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">==</span> <span class="s2">"execution"</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"loop"</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">:</span>
+                        <span class="n">traverse</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="p">,</span> <span class="n">loops</span> <span class="o">+</span> <span class="p">(</span><span class="n">node</span><span class="p">,),</span> <span class="n">root</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_type</span> <span class="o">==</span> <span class="s2">"execution"</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"exit"</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">:</span>
+                        <span class="n">traverse</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="p">,</span> <span class="n">loops</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span> <span class="ow">and</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="s2">"next"</span><span class="p">,</span>
+                    <span class="s2">"exit"</span><span class="p">,</span>
+                <span class="p">):</span>
+                    <span class="n">traverse</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">node2</span><span class="p">,</span> <span class="n">loops</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+
+    <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="n">in_loop</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">traverse</span><span class="p">(</span><span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">),</span> <span class="p">(),</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Chains of unconnected steps</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">]</span>
+    <span class="k">while</span> <span class="n">remaining</span><span class="p">:</span>
+        <span class="n">heads</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">node</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">remaining</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">node1</span> <span class="ow">in</span> <span class="n">remaining</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"in"</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unconnected"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">))</span>
+        <span class="n">roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">in_loop</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">traverse</span><span class="p">(</span><span class="n">heads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">heads</span> <span class="k">else</span> <span class="n">remaining</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(),</span> <span class="n">root</span><span class="p">)</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">loops_of</span><span class="p">,</span> <span class="n">in_loop</span><span class="p">,</span> <span class="n">roots</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_nodes_in</span><span class="p">(</span><span class="n">in_loop</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""All the nodes in a loop, including those in loops inside it."""</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">in_loop</span><span class="p">[</span><span class="n">loop</span><span class="p">]:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">in_loop</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_nodes_in</span><span class="p">(</span><span class="n">in_loop</span><span class="p">,</span> <span class="n">node</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="route_edges">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.layout.route_edges">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">route_edges</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_x</span><span class="o">=</span><span class="n">GRID_X</span><span class="p">,</span> <span class="n">grid_y</span><span class="o">=</span><span class="n">GRID_Y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Anchor and route the edges of a flowchart whose nodes have positions.</span>
+
+<span class="sd">    An edge that goes up -- the return from the end of a loop body -- runs down to</span>
+<span class="sd">    below the body, right past it, up, and into its target from the right. For nodes</span>
+<span class="sd">    on the editor's grid this gives the same coordinates as its clean layout.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">    structure : tuple, optional</span>
+<span class="sd">        The result of _structure(), if already known.</span>
+<span class="sd">    grid_x, grid_y : int</span>
+<span class="sd">        The width of a column and the height of a row.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">structure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">_structure</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+    <span class="n">loops_of</span><span class="p">,</span> <span class="n">in_loop</span><span class="p">,</span> <span class="n">roots</span> <span class="o">=</span> <span class="n">structure</span>
+
+    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+        <span class="n">node1</span><span class="p">,</span> <span class="n">node2</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">node1</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">node2</span>
+        <span class="k">if</span> <span class="n">node1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span> <span class="ow">or</span> <span class="n">node2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">edge_subtype</span> <span class="o">==</span> <span class="s2">"loop"</span><span class="p">:</span>
+            <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span> <span class="o">=</span> <span class="s2">"e"</span><span class="p">,</span> <span class="s2">"w"</span>
+        <span class="k">elif</span> <span class="n">node2</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">node1</span><span class="o">.</span><span class="n">y</span><span class="p">:</span>
+            <span class="c1"># Going back up: the return from the end of a loop body</span>
+            <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span> <span class="o">=</span> <span class="s2">"s"</span><span class="p">,</span> <span class="s2">"e"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span> <span class="o">=</span> <span class="s2">"s"</span><span class="p">,</span> <span class="s2">"n"</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s2">"anchor1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">anchor1</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s2">"anchor2"</span><span class="p">]</span> <span class="o">=</span> <span class="n">anchor2</span>
+
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">anchor_point</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">anchor1</span><span class="p">)</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">anchor_point</span><span class="p">(</span><span class="n">node2</span><span class="p">,</span> <span class="n">anchor2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">y1</span> <span class="o">&lt;</span> <span class="n">y0</span><span class="p">:</span>
+            <span class="n">loops</span> <span class="o">=</span> <span class="n">loops_of</span><span class="p">[</span><span class="n">node1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">loops</span><span class="p">:</span>
+                <span class="n">inside</span> <span class="o">=</span> <span class="n">_nodes_in</span><span class="p">(</span><span class="n">in_loop</span><span class="p">,</span> <span class="n">loops</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">inside</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">loops_of</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">loops_of</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span>
+            <span class="n">xmax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">x</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">inside</span><span class="p">)</span> <span class="o">+</span> <span class="n">grid_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">ymax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">y</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">inside</span><span class="p">)</span> <span class="o">+</span> <span class="n">grid_y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">loops</span><span class="p">)</span>
+            <span class="n">edge</span><span class="p">[</span><span class="s2">"coords"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">edge</span><span class="p">[</span><span class="s2">"coords"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="layout">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.layout.layout">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">layout</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">grid_x</span><span class="o">=</span><span class="n">GRID_X</span><span class="p">,</span> <span class="n">grid_y</span><span class="o">=</span><span class="n">GRID_Y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">WIDTH</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">HEIGHT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Position the nodes of a flowchart and route its edges, recursively.</span>
+
+<span class="sd">    Sets ``x``, ``y``, ``w`` and ``h`` of every node, and ``anchor1``, ``anchor2`` and</span>
+<span class="sd">    ``coords`` of every edge. Subflowcharts (any node attribute named</span>
+<span class="sd">    ``subflowchart``) are laid out the same way.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The flowchart to lay out.</span>
+<span class="sd">    grid_x, grid_y : int</span>
+<span class="sd">        The width of a column and the height of a row.</span>
+<span class="sd">    w, h : int</span>
+<span class="sd">        The size of a node.</span>
+<span class="sd">    """</span>
+    <span class="n">structure</span> <span class="o">=</span> <span class="n">_structure</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+    <span class="n">loops_of</span><span class="p">,</span> <span class="n">in_loop</span><span class="p">,</span> <span class="n">roots</span> <span class="o">=</span> <span class="n">structure</span>
+
+    <span class="c1"># Place the nodes on the grid.</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># loop -&gt; the largest column and row used inside it</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">place</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">in_loop</span><span class="p">[</span><span class="n">loop</span><span class="p">]:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_x</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">y</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_y</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span>
+            <span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">extent</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span>
+            <span class="n">extent</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ymax</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">in_loop</span><span class="p">:</span>
+                <span class="n">extent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">place</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">extent</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">extent</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="n">loop</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+    <span class="n">column</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+        <span class="n">extent</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">place</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># The next chain of unconnected steps goes right of everything so far</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">extent</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">route_edges</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">structure</span><span class="p">,</span> <span class="n">grid_x</span><span class="o">=</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span><span class="o">=</span><span class="n">grid_y</span><span class="p">)</span>
+
+    <span class="c1"># And any subflowcharts</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">loops_of</span><span class="p">:</span>
+        <span class="n">subflowchart</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"subflowchart"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subflowchart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">,</span> <span class="s2">"graph"</span><span class="p">):</span>
+            <span class="n">layout</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">,</span> <span class="n">grid_x</span><span class="o">=</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span><span class="o">=</span><span class="n">grid_y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
