@@ -156,7 +156,7 @@ small test job and check it runs and its flowchart is recorded.
   crashed (no ``seamm_manager.policy``). Repaired with ``uv tool install --force
   seamm-manager`` (``env.sh``); the second ``update --all`` updated everything (no web
   interface, no services).
-- [ ] ChemAI -- **Paul's explicit OK for each action.** Survey (2026-10-01): only
+- [x] ChemAI -- **Paul's explicit OK for each action.** Survey (2026-10-01): only
   ``/home/seamm/SEAMM`` is an installation (``/home/seamm/SEAMM_DEV`` and
   ``/home/psaxe/SEAMM`` have no venv); disk 95% full (45 GB free); 112 stale ``started``
   rows. Six xnn D4 benchmark jobs (``~/xnn_d4_bench``, sbatch, conda ``seamm-lammps`` and
@@ -181,8 +181,9 @@ small test job and check it runs and its flowchart is recorded.
   (5) migrated at 22:14 (backup ``Jobs/seamm.db.bak-2026-10-01-221448-before-format3``;
   services stopped and restarted; all 3.0; 2,606 originals kept); (6) the benchmark setup
   checked (seamm-lammps unchanged since 2026-09-19, torch sees both A100s idle, xnns 0.4.0,
-  mdi, LAMMPS with MDI) and SEAMM job 5162 on the ``ChemAI`` queue finished. Next: (7)
-  release the held snapshot jobs (Paul's OK).
+  mdi, LAMMPS with MDI) and SEAMM job 5162 on the ``ChemAI`` queue finished; (7) the held
+  snapshot jobs released: 11749/11750 running (LAMMPS started, GPUs 58%), 11751/11752
+  pending for GPUs. The mlff session told. **ChemAI done; step 3 complete everywhere.**
 
 4. Switch the writer to 3.0
 ---------------------------
@@ -223,7 +224,8 @@ for undo), restart, open a few converted jobs in the web UI.
   The 105 "problems" are empty ``flowchart.flow`` files in GM jobs from 2025-12 that never
   ran (no ``job_data.json``); migrate skips them, unchanged. A converted job validates and
   shows with ARC's plug-ins. Moving ARC's jobs to ChemAI is a separate, later task (Paul).
-- [ ] ChemAI -- with Paul's OK.
+- [x] ChemAI (2026-10-01 22:14) -- see step 3: 2,606 job flowcharts, 44 splits, backup
+  ``Jobs/seamm.db.bak-2026-10-01-221448-before-format3``.
 
 (``~/SEAMM_DEV`` was migrated on 2026-09-30.)
 
