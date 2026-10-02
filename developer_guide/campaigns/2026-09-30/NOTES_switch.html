@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.2.1 documentation</title>
+    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.2.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=77b25824"></script>
+    <script src="../../../_static/documentation_options.js?v=404ad24e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Phase 6 – The MCP server (2026-10-01)" href="NOTES_phase6.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.1" />
+  <meta name="docsearch:version" content="2026.10.2.2" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -770,9 +770,27 @@ shows with ARC’s plug-ins. Moving ARC’s jobs to ChemAI is a separate, later 
 <section id="other-flowcharts">
 <h2>6. Other flowcharts<a class="headerlink" href="#other-flowcharts" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>[ ] <code class="docutils literal notranslate"><span class="pre">~/SEAMM/flowcharts</span></code> (27) and <code class="docutils literal notranslate"><span class="pre">Testing/</span></code> (27): <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">convert</span></code>.</p></li>
+<li><p>[x] <code class="docutils literal notranslate"><span class="pre">~/SEAMM/flowcharts</span></code> and <code class="docutils literal notranslate"><span class="pre">Testing/</span></code>, plus (Paul, 2026-10-02) Dropbox
+<code class="docutils literal notranslate"><span class="pre">Science/Flowcharts</span></code>, <code class="docutils literal notranslate"><span class="pre">Science/Thermochemistry/flowcharts</span></code>, <code class="docutils literal notranslate"><span class="pre">GM/flowcharts</span></code> and
+<code class="docutils literal notranslate"><span class="pre">GM/TrainingData</span></code>: 199 files, 173 converted in place, each original kept as
+<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;.v2.flow</span></code> with its mode (one Python session: convert, read back, compare the
+digest, then rename and write). <code class="docutils literal notranslate"><span class="pre">Testing/uvenv</span></code> (a venv), <code class="docutils literal notranslate"><span class="pre">Testing/tmp</span></code> and
+<code class="docutils literal notranslate"><span class="pre">*.flow~</span></code> were left out. The other <strong>26 were left in 2.0 because they cannot be read
+at all – the previous 2.0 reader fails on every one too</strong>, so it is not a converter
+regression: 13 use plug-ins that are no longer installed (PySCF, TorchANI, Training
+Set Analysis, Query, Initialization, Psi4 AcceleratedOptimization, LAMMPS
+ThermalConductivity) and 13 have parameters later removed from their plug-ins
+(<code class="docutils literal notranslate"><span class="pre">Parameters.update</span></code> has raised on unknown keys since 2019): <code class="docutils literal notranslate"><span class="pre">molecule</span> <span class="pre">source</span></code>,
+<code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">atom</span> <span class="pre">charges</span></code>, <code class="docutils literal notranslate"><span class="pre">operation</span></code>, <code class="docutils literal notranslate"><span class="pre">structure</span></code>, <code class="docutils literal notranslate"><span class="pre">elements</span></code>. List in the
+2026-10-02 session; <code class="docutils literal notranslate"><span class="pre">~/SEAMM/flowcharts</span></code> 5 (test, pyscf, Ar_npt, FluidDensity,
+tutorial 1), Science/Flowcharts 17, GM/flowcharts 2, GM/TrainingData 2.
+<code class="docutils literal notranslate"><span class="pre">Testing/test.flow</span></code> ran after conversion and failed in ORCA on the known duplicated
+<code class="docutils literal notranslate"><span class="pre">TightSCF</span></code> keyword – the 2.0 original fails identically, same <code class="docutils literal notranslate"><span class="pre">!</span></code> line.</p></li>
 <li><p>[ ] The plug-ins’ <code class="docutils literal notranslate"><span class="pre">tests/</span></code> and docs flowcharts: as each plug-in is next released.</p></li>
-<li><p>[ ] The two format-1.0 files.</p></li>
+<li><p>[x] The two format-1.0 files: <code class="docutils literal notranslate"><span class="pre">lammps_step/tests/data/Ar_xtal_energy.flow</span></code> converted
+(unused by the tests; lammps_step dev e1f8838, unpushed, goes with its next release);
+<code class="docutils literal notranslate"><span class="pre">seamm_dashboard/data/projects/MyProject/Job_000001/flowchart.flow</span></code> left, since
+seamm_dashboard is retired.</p></li>
 </ul>
 </section>
 <section id="zenodo-and-tutorials">
@@ -813,9 +831,14 @@ in the main documentation (molssi-seamm.github.io PR #60), linked from the seamm
 guide and the seamm_manager installation page.</p></li>
 <li><p>[x] User docs: format 3.0, specs, <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code>, the MCP server
 (<code class="docutils literal notranslate"><span class="pre">user_guide/flowcharts_without_the_editor.rst</span></code>).</p></li>
-<li><p>[ ] The build-seamm-flowchart skill: drop the “SEAMM_DEV only, no PRs” caveat; point
-the registered MCP server at <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> instead of <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>.</p></li>
-<li><p>[ ] Memory and the campaign status.</p></li>
+<li><p>[x] The build-seamm-flowchart skill: dropped the “SEAMM_DEV only, no PRs” caveat; the
+MCP server is registered with <code class="docutils literal notranslate"><span class="pre">~/SEAMM/venv/bin/seamm-flowchart</span> <span class="pre">mcp</span></code> (2026-10-02;
+<code class="docutils literal notranslate"><span class="pre">mcp==2.2.0</span></code> added to <code class="docutils literal notranslate"><span class="pre">~/SEAMM/venv</span></code>: 15 new packages, nothing upgraded or
+removed, <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">check</span></code> clean).</p></li>
+<li><p>[x] Clearer converter message: “dropped attributes X” is now “left out X, which is not
+a setting but a cache or run-time state (expected; nothing is lost)” (seamm dev,
+unreleased); the upgrade guide names both wordings (molssi-seamm.github.io dev).</p></li>
+<li><p>[x] Memory and the campaign status.</p></li>
 </ul>
 </section>
 <section id="rollback">

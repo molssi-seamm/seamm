@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.mcp_server &#8212; SEAMM 2026.10.2.1 documentation</title>
+    <title>seamm.mcp_server &#8212; SEAMM 2026.10.2.2 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=77b25824"></script>
+    <script src="../../_static/documentation_options.js?v=404ad24e"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.1" />
+  <meta name="docsearch:version" content="2026.10.2.2" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -521,6 +521,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="s2">Tools for SEAMM flowcharts (.flow files): graphs of steps, each a plug-in with</span>
 <span class="s2">parameters. Never write or edit a .flow file by hand; use these tools, which check</span>
 <span class="s2">every step name, parameter, choice, number and unit.</span>
+
+<span class="s2">When to use SEAMM:</span>
+<span class="s2">- Asked to calculate a molecular or materials property ("calculate the dipole moment</span>
+<span class="s2">  of water", "optimize this structure", "IR spectrum of ethanol"): SEAMM is one way to</span>
+<span class="s2">  do it, alongside any others you have. Offer it, and ask before building anything.</span>
+<span class="s2">- Asked about a property that can be computed (geometry, bond lengths, energies,</span>
+<span class="s2">  reaction or conformer energies, dipole moment, charges, HOMO/LUMO, vibrational or IR</span>
+<span class="s2">  spectra, thermochemistry, density, diffusivity, ...): first answer with what you know</span>
+<span class="s2">  or can find, such as experimental or literature values with their source, then offer</span>
+<span class="s2">  to calculate it with SEAMM.</span>
+<span class="s2">- Make the offer in one or two lines: a specific method suited to the property and the</span>
+<span class="s2">  size of the system, roughly how long it will take, and a cheaper or a more accurate</span>
+<span class="s2">  alternative. For example: "I can calculate this with SEAMM: B3LYP-D3/def2-TZVP in</span>
+<span class="s2">  ORCA (optimize, then dipole), a few minutes; or MOPAC PM6-ORG in seconds. Want me</span>
+<span class="s2">  to?" Build nothing until the user agrees.</span>
+<span class="s2">- Skip the offer for purely conceptual questions.</span>
+<span class="s2">- Propose only methods that the installed steps provide (list_steps, describe_step).</span>
+<span class="s2">- Either way, confirm the dashboard, project and queue before submit_job.</span>
 
 <span class="s2">To make a flowchart:</span>
 <span class="s2">1. Look up the steps with list_steps (and list_steps with a step name for the</span>

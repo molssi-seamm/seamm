@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.2.1 documentation</title>
+    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.2.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=77b25824"></script>
+    <script src="../_static/documentation_options.js?v=404ad24e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="User Guide" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.1" />
+  <meta name="docsearch:version" content="2026.10.2.2" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -646,6 +646,14 @@ queue when the dashboard has queues. The dashboards and credentials are read fro
 installation’s <code class="docutils literal notranslate"><span class="pre">dashboards.ini</span></code> and <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code>, never written, and the
 credentials are never shown. An assistant should confirm the dashboard, project and
 queue with you before submitting, since a submission starts a real calculation.</p>
+<p>The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
+or materials property, or asked about one that can be computed, it offers – after
+giving any known values and their source – to calculate it with SEAMM, in a line or
+two: a method suited to the property and the size of the system, roughly how long it
+will take, and a cheaper or a more accurate alternative. It proposes only methods that
+your installed plug-ins provide, builds nothing until you agree, and does not offer for
+purely conceptual questions. SEAMM is offered, not imposed: the assistant may have other
+ways to calculate a property.</p>
 </section>
 </section>
 

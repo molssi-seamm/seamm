@@ -159,3 +159,12 @@ queue when the dashboard has queues. The dashboards and credentials are read fro
 installation's ``dashboards.ini`` and ``~/.seamm.d/seammrc``, never written, and the
 credentials are never shown. An assistant should confirm the dashboard, project and
 queue with you before submitting, since a submission starts a real calculation.
+
+The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
+or materials property, or asked about one that can be computed, it offers -- after
+giving any known values and their source -- to calculate it with SEAMM, in a line or
+two: a method suited to the property and the size of the system, roughly how long it
+will take, and a cheaper or a more accurate alternative. It proposes only methods that
+your installed plug-ins provide, builds nothing until you agree, and does not offer for
+purely conceptual questions. SEAMM is offered, not imposed: the assistant may have other
+ways to calculate a property.

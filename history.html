@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.2.1 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.2.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=77b25824"></script>
+    <script src="_static/documentation_options.js?v=404ad24e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.1" />
+  <meta name="docsearch:version" content="2026.10.2.2" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.2.2 – The MCP server offers SEAMM for property calculations</dt><dd><ul class="simple">
+<li><p>The MCP server now tells AI assistants when to offer SEAMM. Asked to calculate a
+molecular or materials property, or asked about one that can be computed, the
+assistant gives any known values and their source, then offers in a line or two
+to calculate it with SEAMM: a method suited to the property and the system, the
+time it will take, and a cheaper or a more accurate alternative. It proposes only
+installed methods, builds nothing until you agree, and still confirms the
+dashboard, project and queue before submitting.</p></li>
+<li><p>Converting a format 2.0 flowchart, the message about attributes that are not
+settings (such as a cached VASP potential list) now says that leaving them out is
+expected and loses nothing, rather than “dropped attributes”.</p></li>
+</ul>
+</dd>
 <dt>2026.10.2.1 – Documentation: the upgrade guide for flowchart format 3.0</dt><dd><ul class="simple">
 <li><p>The user guide’s section on converting an installation’s flowcharts now points to
 the step-by-step guide in the main SEAMM documentation, <em>Upgrading to flowchart
