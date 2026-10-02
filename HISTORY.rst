@@ -1,6 +1,18 @@
 =======
 History
 =======
+2026.10.2.2 -- The MCP server offers SEAMM for property calculations
+    * The MCP server now tells AI assistants when to offer SEAMM. Asked to calculate a
+      molecular or materials property, or asked about one that can be computed, the
+      assistant gives any known values and their source, then offers in a line or two
+      to calculate it with SEAMM: a method suited to the property and the system, the
+      time it will take, and a cheaper or a more accurate alternative. It proposes only
+      installed methods, builds nothing until you agree, and still confirms the
+      dashboard, project and queue before submitting.
+    * Converting a format 2.0 flowchart, the message about attributes that are not
+      settings (such as a cached VASP potential list) now says that leaving them out is
+      expected and loses nothing, rather than "dropped attributes".
+
 2026.10.2.1 -- Documentation: the upgrade guide for flowchart format 3.0
     * The user guide's section on converting an installation's flowcharts now points to
       the step-by-step guide in the main SEAMM documentation, *Upgrading to flowchart
