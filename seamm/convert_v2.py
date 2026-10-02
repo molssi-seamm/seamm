@@ -336,8 +336,14 @@ def _step(graph, item, where, layout, positions, versions, report):
     ]
     if dropped:
         report.append(
-            f"{where} ({data['step']}): dropped attributes "
+            f"{where} ({data['step']}): left out "
             + ", ".join(sorted(dropped))
+            + (
+                ", which is not a setting"
+                if len(dropped) == 1
+                else ", which are not settings"
+            )
+            + " but a cache or run-time state (expected; nothing is lost)"
         )
     if node["attributes"].get("parameters") is None and any(
         not _empty(node["attributes"].get(k)) for k in dropped

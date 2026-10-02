@@ -241,9 +241,27 @@ for undo), restart, open a few converted jobs in the web UI.
 6. Other flowcharts
 -------------------
 
-- [ ] ``~/SEAMM/flowcharts`` (27) and ``Testing/`` (27): ``seamm-flowchart convert``.
+- [x] ``~/SEAMM/flowcharts`` and ``Testing/``, plus (Paul, 2026-10-02) Dropbox
+  ``Science/Flowcharts``, ``Science/Thermochemistry/flowcharts``, ``GM/flowcharts`` and
+  ``GM/TrainingData``: 199 files, 173 converted in place, each original kept as
+  ``<name>.v2.flow`` with its mode (one Python session: convert, read back, compare the
+  digest, then rename and write). ``Testing/uvenv`` (a venv), ``Testing/tmp`` and
+  ``*.flow~`` were left out. The other **26 were left in 2.0 because they cannot be read
+  at all -- the previous 2.0 reader fails on every one too**, so it is not a converter
+  regression: 13 use plug-ins that are no longer installed (PySCF, TorchANI, Training
+  Set Analysis, Query, Initialization, Psi4 AcceleratedOptimization, LAMMPS
+  ThermalConductivity) and 13 have parameters later removed from their plug-ins
+  (``Parameters.update`` has raised on unknown keys since 2019): ``molecule source``,
+  ``use atom charges``, ``operation``, ``structure``, ``elements``. List in the
+  2026-10-02 session; ``~/SEAMM/flowcharts`` 5 (test, pyscf, Ar_npt, FluidDensity,
+  tutorial 1), Science/Flowcharts 17, GM/flowcharts 2, GM/TrainingData 2.
+  ``Testing/test.flow`` ran after conversion and failed in ORCA on the known duplicated
+  ``TightSCF`` keyword -- the 2.0 original fails identically, same ``!`` line.
 - [ ] The plug-ins' ``tests/`` and docs flowcharts: as each plug-in is next released.
-- [ ] The two format-1.0 files.
+- [x] The two format-1.0 files: ``lammps_step/tests/data/Ar_xtal_energy.flow`` converted
+  (unused by the tests; lammps_step dev e1f8838, unpushed, goes with its next release);
+  ``seamm_dashboard/data/projects/MyProject/Job_000001/flowchart.flow`` left, since
+  seamm_dashboard is retired.
 
 7. Zenodo and tutorials
 -----------------------
@@ -281,9 +299,14 @@ for undo), restart, open a few converted jobs in the web UI.
   guide and the seamm_manager installation page.
 - [x] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server
   (``user_guide/flowcharts_without_the_editor.rst``).
-- [ ] The build-seamm-flowchart skill: drop the "SEAMM_DEV only, no PRs" caveat; point
-  the registered MCP server at ``~/SEAMM`` instead of ``~/SEAMM_DEV``.
-- [ ] Memory and the campaign status.
+- [x] The build-seamm-flowchart skill: dropped the "SEAMM_DEV only, no PRs" caveat; the
+  MCP server is registered with ``~/SEAMM/venv/bin/seamm-flowchart mcp`` (2026-10-02;
+  ``mcp==2.2.0`` added to ``~/SEAMM/venv``: 15 new packages, nothing upgraded or
+  removed, ``pip check`` clean).
+- [x] Clearer converter message: "dropped attributes X" is now "left out X, which is not
+  a setting but a cache or run-time state (expected; nothing is lost)" (seamm dev,
+  unreleased); the upgrade guide names both wordings (molssi-seamm.github.io dev).
+- [x] Memory and the campaign status.
 
 Rollback
 --------

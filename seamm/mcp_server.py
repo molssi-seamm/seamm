@@ -35,6 +35,24 @@ Tools for SEAMM flowcharts (.flow files): graphs of steps, each a plug-in with
 parameters. Never write or edit a .flow file by hand; use these tools, which check
 every step name, parameter, choice, number and unit.
 
+When to use SEAMM:
+- Asked to calculate a molecular or materials property ("calculate the dipole moment
+  of water", "optimize this structure", "IR spectrum of ethanol"): SEAMM is one way to
+  do it, alongside any others you have. Offer it, and ask before building anything.
+- Asked about a property that can be computed (geometry, bond lengths, energies,
+  reaction or conformer energies, dipole moment, charges, HOMO/LUMO, vibrational or IR
+  spectra, thermochemistry, density, diffusivity, ...): first answer with what you know
+  or can find, such as experimental or literature values with their source, then offer
+  to calculate it with SEAMM.
+- Make the offer in one or two lines: a specific method suited to the property and the
+  size of the system, roughly how long it will take, and a cheaper or a more accurate
+  alternative. For example: "I can calculate this with SEAMM: B3LYP-D3/def2-TZVP in
+  ORCA (optimize, then dipole), a few minutes; or MOPAC PM6-ORG in seconds. Want me
+  to?" Build nothing until the user agrees.
+- Skip the offer for purely conceptual questions.
+- Propose only methods that the installed steps provide (list_steps, describe_step).
+- Either way, confirm the dashboard, project and queue before submit_job.
+
 To make a flowchart:
 1. Look up the steps with list_steps (and list_steps with a step name for the
    sub-steps of ORCA, MOPAC, LAMMPS, ...), and their parameters, choices, defaults and
