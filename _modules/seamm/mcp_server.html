@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.mcp_server &#8212; SEAMM 2026.10.1 documentation</title>
+    <title>seamm.mcp_server &#8212; SEAMM 2026.10.2 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../_static/documentation_options.js?v=52372788"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1" />
+  <meta name="docsearch:version" content="2026.10.2" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -919,12 +919,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="sa">f</span><span class="s2">"There is no dashboard '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' in </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. The dashboards are: "</span>
             <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
         <span class="p">)</span>
+    <span class="c1"># Without a user and password the client connects without logging in, which is</span>
+    <span class="c1"># what a web UI running without logins (e.g. one on 127.0.0.1) expects; one that</span>
+    <span class="c1"># needs a login then refuses the requests, and says so.</span>
     <span class="n">user</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">_credentials</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"There is no user and password for the dashboard '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' in "</span>
-            <span class="sa">f</span><span class="s2">"~/.seamm.d/seammrc (a [Dashboard: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] section)."</span>
-        <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -971,7 +969,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_dashboards">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_dashboards</span><span class="p">(</span><span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""The dashboards that jobs can be submitted to, from the installation's</span>
-<span class="sd">    dashboards.ini, and whether there are credentials for each.</span>
+<span class="sd">    dashboards.ini, and whether there are credentials for each (a web UI running</span>
+<span class="sd">    without logins needs none).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        check: Also contact each dashboard for its status ("running", "down" or</span>
@@ -984,6 +983,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s2">"url"</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"url"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="c1"># Not needed for a web UI that runs without logins</span>
             <span class="s2">"credentials"</span><span class="p">:</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">check</span><span class="p">:</span>

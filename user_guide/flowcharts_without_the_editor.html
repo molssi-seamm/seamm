@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.1 documentation</title>
+    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../_static/documentation_options.js?v=52372788"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="User Guide" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1" />
+  <meta name="docsearch:version" content="2026.10.2" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -523,15 +523,13 @@ It holds the flowchart’s metadata, the versions of the plug-ins it was made wi
 digest that identifies its content, every parameter of every step, steps that are not
 connected (kept for the editor), and the layout. Format 2.0, the JSON format, is still
 read: it is converted to 3.0 as it is loaded, by a converter that never changes.</p>
-<p>Format 3.0 is introduced in two releases, so that every installation can read it before
-any writes it:</p>
-<ul class="simple">
-<li><p><strong>This release</strong> reads 3.0 and 2.0, and writes 2.0 by default from the editor. The
-<code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> command, the Python builder and the MCP server write 3.0.</p></li>
-<li><p><strong>The next release</strong> writes 3.0 by default.</p></li>
-</ul>
-<p>An installation can choose now by setting the environment variable
-<code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT</span></code> to <code class="docutils literal notranslate"><span class="pre">3.0</span></code> (or <code class="docutils literal notranslate"><span class="pre">2.0</span></code>).</p>
+<p>Format 3.0 was introduced in two releases, so that every installation could read it
+before any wrote it: SEAMM 2026.10.1 read 3.0 but still wrote 2.0 from the editor, and
+since 2026.10.2 everything writes 3.0. Setting the environment variable
+<code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT</span></code> to <code class="docutils literal notranslate"><span class="pre">2.0</span></code> writes the old format, for an installation that
+must still exchange flowcharts with one older than 2026.10.1.</p>
+<p>Jobs run between updating to 2026.10.1 and to 2026.10.2 still saved 2.0 flowcharts;
+<code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code> converts them (see below).</p>
 </section>
 <section id="the-seamm-flowchart-command">
 <h2>The seamm-flowchart command<a class="headerlink" href="#the-seamm-flowchart-command" title="Link to this heading">#</a></h2>

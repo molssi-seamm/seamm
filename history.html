@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.1 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=65cfade2"></script>
+    <script src="_static/documentation_options.js?v=52372788"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1" />
+  <meta name="docsearch:version" content="2026.10.2" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.2 – Flowchart format 3.0 is now written by default</dt><dd><ul class="simple">
+<li><p>The editor, job submission and everything else now write flowchart format 3.0 by
+default. 2026.10.1 still wrote 2.0 so that every installation could read 3.0
+first. <code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT=2.0</span></code> writes the old format if an installation must
+still exchange flowcharts with one older than 2026.10.1. Jobs saved in 2.0 since
+updating to 2026.10.1 are converted by <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code>.</p></li>
+<li><p>The MCP server’s job tools now use a dashboard without credentials, as SEAMM’s
+dashboard client does: a web interface running without logins (for example one
+listening only on 127.0.0.1) needs none, and refuses made-up ones.</p></li>
+</ul>
+</dd>
 <dt>2026.10.1 – Flowcharts without the editor, and flowchart format 3.0</dt><dd><ul class="simple">
 <li><p>Flowcharts can now be built, read, changed and checked without the graphical
 editor, with the same checks the editor makes: the <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> command

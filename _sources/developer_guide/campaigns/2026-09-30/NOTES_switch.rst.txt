@@ -34,7 +34,7 @@ but still writing 2.0, then -- once every machine has it -- writing 3.0.
 1. Before any release
 ---------------------
 
-- [ ] Full test suites of the 11 packages pass in ``~/SEAMM_DEV`` (done piecemeal; run
+- [x] Full test suites of the 11 packages pass in ``~/SEAMM_DEV`` (done piecemeal; run
   once more together).
 - [x] Fix ``Flowchart.get_nodes()`` stopping at the first loop where it matters for
   submission: ``Dashboard.submit`` uses it to find Parameters steps and the files to
@@ -67,7 +67,8 @@ Wave A -- libraries the servers need (independent of seamm):
 
 Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
-- [ ] **seamm** 2026.10.1 -- format 3.0 reader, spec, builder, layout, edit, the frozen
+- [x] **seamm** 2026.10.1 (released, on PyPI, checked in a clean PyPI-only environment:
+  writes 2.0 by default, reads both) -- format 3.0 reader, spec, builder, layout, edit, the frozen
   converter, ``seamm-flowchart`` (incl. ``migrate`` and ``mcp``), shared rules
   (``applies_when`` and friends), the SEAMMrc race fix, the bibliography cache,
   ``from_dict``, editable-install fixes, and the user guide page "Flowcharts without the
@@ -79,18 +80,36 @@ Wave B -- seamm, release 1 (reads 3.0, writes 2.0):
 
 Wave C -- services (pin seamm_datastore):
 
-- [ ] **seamm_manager** -- ``datastore rebuild``; editable-install paths;
-  ``flowcharts migrate``/``status`` and the update notice (2 commits).
-- [ ] **seamm_webui** -- rebuild a missing datastore from the job directories (1 commit).
+- [x] **seamm_manager** 2026.10.1 (released, on PyPI, checked from PyPI against ~/SEAMM) -- ``datastore rebuild``; editable-install paths;
+  ``flowcharts migrate``/``status`` and the update notice; Usage and Installation
+  updated. **PR #20 open, CI green.**
+- [x] **seamm_webui** **2026.10.1.1** released and on PyPI. 2026.10.1 was **not published**: its own Release.yaml (it adds the
+  frontend build) still used the conda env file the release removed. Fixed in PR #10
+  (CI green), to be released as **2026.10.1.1**. -- rebuild a missing datastore from the job directories;
+  pins ``seamm-datastore>=2026.10.1``; CI moved from conda to uv. **PR #9 open, CI
+  green.**
 
 Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 
-- [ ] **model_chemistry_step** (first: others consume Model Chemistry)
-- [ ] **orca_step** (2 commits)
-- [ ] **gaussian_step** (3)
-- [ ] **psi4_step** (3)
-- [ ] **mopac_step** (2)
-- [ ] **lammps_step** (4)
+All six opened 2026-10-01 as 2026.10.1, CI green, each pinning ``seamm>=2026.10.1``,
+with HISTORY, a "Settings that depend on each other" section in the user guide, and CI
+moved from conda to uv (no custom workflow used the env file). The uv move found three
+undeclared dependencies, now declared: ``seamm-exec`` (psi4_step, mopac_step) and
+``model-chemistry-step`` (lammps_step). The docs mock ``seamm_installer``, which the
+installers import and SEAMM's manager provides.
+
+- [x] **model_chemistry_step** 2026.10.1 -- released and on PyPI (PR #6)
+- [x] **orca_step** 2026.10.1 -- released and on PyPI (PR #34)
+- [x] **gaussian_step** 2026.10.1 -- released and on PyPI (PR #32)
+- [x] **psi4_step** 2026.10.1 -- released and on PyPI (PR #45)
+- [x] **mopac_step** 2026.10.1 -- released and on PyPI (PR #156)
+- [x] **lammps_step** 2026.10.1 -- released and on PyPI (PR #113)
+
+**The published package list** (seamm_packaging, run by hand on 2026-10-01 once all were
+on PyPI): Zenodo ``10.5281/zenodo.23088483``, seamm_packaging release 2026.10.1.1. The lock
+pins all ten main-environment packages at 2026.10.1; seamm-webui is a standalone package
+that the manager upgrades from PyPI into ``venv-webui`` (2026.10.1.1). So a plain
+``seamm-manager update --all`` now picks everything up, as it would after a nightly run.
 
 3. Update every installation (servers before desktops)
 ------------------------------------------------------
@@ -98,20 +117,82 @@ Wave D -- plug-ins (each pins ``seamm>=`` release 1):
 For each: ``seamm-manager update``, then ``seamm-manager services restart``; submit a
 small test job and check it runs and its flowchart is recorded.
 
-- [ ] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would (256 job flowcharts
-  in 2.0 found by ``seamm-manager flowcharts status``).
-- [ ] ``~/SEAMM_DEV`` -- replace the editable installs with the released versions; set
-  ``SEAMM_FLOWCHART_FORMAT=3.0`` there to keep writing 3.0 (it is already migrated).
-- [ ] paul.local.
-- [ ] MolSSI10.
-- [ ] TinkerCliffs/ARC (``/projects/seamm``; no services).
-- [ ] ChemAI -- **Paul's explicit OK for each action.**
+- [x] ``~/SEAMM`` on this Mac -- **first**, exactly as a user would (2026-10-01). Backup in
+  ``~/SEAMM_backups/2026-10-01-before-format3/`` (Jobs + venv freezes). The first plain
+  ``seamm-manager update --all`` updated the main environment and the JobServer but **not
+  the web interface** (``venv-webui`` was never updated by ``update``): fixed in
+  seamm_manager 2026.10.1.1 (PR #21), package list refreshed (Zenodo
+  ``10.5281/zenodo.23088748``), and a second plain ``update --all`` upgraded the manager
+  tool itself, then the web interface (seamm-webui 2026.10.1.1, datastore 2026.10.1) and
+  restarted it. Job 551 (SMILES=CCO, MOPAC PM7, -53.29 kcal/mol) finished.
+- [x] ``~/SEAMM_DEV`` (2026-10-01) -- backup ``~/SEAMM_backups/2026-10-01-SEAMM_DEV-before-release-update/``
+  (Jobs 43 GB clone; 2,099 jobs / 876 directories match); plain
+  ``~/SEAMM_DEV/venv/bin/seamm-manager update --all`` replaced the editable installs with
+  the releases, updated and restarted the web interface and the JobServer, and updated
+  the development tools. Still editable: seamm-packaging (not in the package list) and
+  seamm_bsse -- the lock's ``==2026.8.7.1`` is satisfied by the editable
+  ``2026.8.7.1+0.gd387828.dirty`` (its code is the release's). ``mcp`` kept; the MCP server
+  works over stdio; job 4000 finished. ``SEAMM_FLOWCHART_FORMAT`` not set: SEAMM_DEV writes
+  2.0 until release 2 like the others, and is migrated again then.
+- [x] paul.local (2026-10-01): ``~/SEAMM`` and ``~/SEAMM_DEV`` (no editable installs, no old
+  dashboard, nothing running), backed up in full to ``~/SEAMM_backups/2026-10-01-*-before-format3``.
+  One plain ``update --all`` each (the tool in ``~/.local/bin``, not on the non-interactive
+  ssh PATH; ``--root ~/SEAMM_DEV`` for the second): the tool upgraded itself from 2026.9.28.1
+  (local APFS, so no self-reinstall trouble), the main environment (also fhi-aims-step and
+  vasp-step, which had lagged), the web interfaces (updated and restarted), and the
+  databases, which had no version recorded (stamped d7d6859198e9, then updated).
+- [x] MolSSI10 (2026-10-01). Backup ``~/SEAMM_backups/2026-10-01-before-format3/`` (the
+  database and every job's ``flowchart.flow``/``job_data.json`` -- what the migration
+  touches -- and the venv freezes; ``Jobs`` is 125 GB on ext4, so no full copy). **The old
+  dashboard retired**: systemd user unit ``org.molssi.seamm.dashboard`` (conda ``seamm``
+  env, port 55055) stopped and disabled, unit file kept. One plain
+  ``seamm-manager update --all`` (login shell): the tool upgraded itself to 2026.10.1.1,
+  the main environment, the web interface (updated and restarted) and the JobServer.
+- [x] TinkerCliffs/ARC (2026-10-01; ``/projects/seamm``, no services). Backup
+  ``/projects/seamm/SEAMM_backups/2026-10-01-before-format3/`` (database + all 56,924 job
+  flowcharts and job_data.json, 357 MB). The first ``update --all`` hit the known GPFS
+  self-reinstall bug of the old tool (2026.9.29.1, before the 2026.9.29.2 fix): the tool
+  was half-deleted, fell back to the cached package list ("Everything is up to date") and
+  crashed (no ``seamm_manager.policy``). Repaired with ``uv tool install --force
+  seamm-manager`` (``env.sh``); the second ``update --all`` updated everything (no web
+  interface, no services).
+- [x] ChemAI -- **Paul's explicit OK for each action.** Survey (2026-10-01): only
+  ``/home/seamm/SEAMM`` is an installation (``/home/seamm/SEAMM_DEV`` and
+  ``/home/psaxe/SEAMM`` have no venv); disk 95% full (45 GB free); 112 stale ``started``
+  rows. Six xnn D4 benchmark jobs (``~/xnn_d4_bench``, sbatch, conda ``seamm-lammps`` and
+  ``~/SEAMM/bin/mdi_bind.sh``) were running or pending, which ``update --all``'s plug-in
+  installers could disturb, so **the update waits for them to finish** (Paul).
+  Done with Paul's OK: (1) the old dashboard retired -- systemd unit
+  ``org.molssi.seamm.dashboard`` (conda ``seamm``, port 55055) stopped and disabled;
+  (2) backup ``/home/seamm/SEAMM_backups/2026-10-01-before-format3/`` (database, all 2,606
+  job flowcharts + job_data.json, venv freezes; Paul runs no jobs until the update).
+  Timing (from the mlff session, 18:00 EDT): the snapshot jobs 11749-11752 are **held**
+  (``scontrol hold``, Paul's request); wait only for the density runs 11747/11748 (34.5 of
+  100 ps, about 21:05 EDT). Next, each with Paul's OK: (3) ``update --all``; (4) migrate
+  dry run; (5) migrate; (6) check a job can still start (seamm-lammps env, xnn, LAMMPS +
+  MDI, GPUs) and a SEAMM test job on the ``ChemAI`` queue; (7)
+  ``scontrol release 11749 11750 11751 11752`` so the snapshots and the queued density
+  ladder run overnight.
+  Done 2026-10-01, with Paul's OK after 11747/11748 completed (21:10, 21:15): (3)
+  ``update --all`` at 22:08 -- one pass, tool 2026.9.28.1 -> 2026.10.1.1, web UI updated and
+  restarted (https 55155 answers), JobServer restarted, ``mdi_bind.sh`` untouched; (4) dry
+  run: 2,477 + 129 job flowcharts, 44 splits, 107 re-pointed, no problems; the 35 VASP
+  "settings as attributes" notes are the ``potential_metadata`` cache (nothing lost).
+  (5) migrated at 22:14 (backup ``Jobs/seamm.db.bak-2026-10-01-221448-before-format3``;
+  services stopped and restarted; all 3.0; 2,606 originals kept); (6) the benchmark setup
+  checked (seamm-lammps unchanged since 2026-09-19, torch sees both A100s idle, xnns 0.4.0,
+  mdi, LAMMPS with MDI) and SEAMM job 5162 on the ``ChemAI`` queue finished; (7) the held
+  snapshot jobs released: 11749/11750 running (LAMMPS started, GPUs 58%), 11751/11752
+  pending for GPUs. The mlff session told. **ChemAI done; step 3 complete everywhere.**
 
 4. Switch the writer to 3.0
 ---------------------------
 
-- [ ] **seamm release 2**: ``Flowchart.write()``/``to_text()`` default to 3.0.
+- [ ] **seamm release 2** (2026.10.2): ``Flowchart.write()``/``to_text()`` default to 3.0;
+  also the MCP job tools accept dashboards without credentials. **PR #217 open.**
 - [ ] Update every installation again (as in step 3).
+- [ ] Run ``seamm-manager flowcharts migrate`` again on every migrated installation: jobs
+  run between its migration and release 2 still write 2.0 (``~/SEAMM`` job 551 on).
 
 5. Migrate the job directories and datastores
 ---------------------------------------------
@@ -120,11 +201,32 @@ Per installation: ``seamm-flowchart migrate --root ROOT`` (dry run), review the 
 stop the JobServer and web UI, ``--apply`` (backs up the datastore, writes a manifest
 for undo), restart, open a few converted jobs in the web UI.
 
-- [ ] ``~/SEAMM`` on this Mac (about 1,200 job directories).
-- [ ] paul.local.
-- [ ] MolSSI10.
-- [ ] TinkerCliffs/ARC (about 53,000 job copies of 56 flowcharts; converts by content).
-- [ ] ChemAI -- with Paul's OK.
+- [x] ``~/SEAMM`` on this Mac (2026-10-01): ``seamm-manager flowcharts migrate`` (dry run
+  reviewed: 228 + 28 job flowcharts, 8 rows split, no problems; ``tensor_labels`` dropped
+  from diffusivity steps is a constant, not a setting). Datastore backup
+  ``Jobs/seamm.db.bak-2026-10-01-142410-before-format3``, manifest
+  ``Jobs/format3-migration-2026-10-01-142410.json``; services stopped and restarted by the
+  command. ``status``: all 3.0. Found, unrelated: 28 Docker-era jobs (ids 1-52) record
+  ``/root/SEAMM/...`` paths, so the web UI cannot show their files (``datastore rebuild``
+  would record the real paths).
+- [x] paul.local (2026-10-01): ``~/SEAMM`` 2 job flowcharts and 1 row converted (backup
+  ``Jobs/seamm.db.bak-2026-10-01-165151-before-format3``), services restarted, web UI 200;
+  ``~/SEAMM_DEV`` has no jobs: nothing to convert.
+  Its web UIs listen only on 127.0.0.1 without logins; reached from this Mac through an
+  SSH tunnel (``ssh -f -N -L 55057:localhost:55055 -L 55058:localhost:55056 paul.local``),
+  job 3 (``~/SEAMM``) and job 1 (``~/SEAMM_DEV``, its first job) finished. That needed the MCP job tools to accept a dashboard without
+  credentials (seamm dev, for release 2).
+- [x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
+  LAMMPS Minimization attributes (14) and ``tensor_labels`` (7); applied (backup
+  ``Jobs/seamm.db.bak-2026-10-01-150006-before-format3``). Job 682 (queue ``molssi10``)
+  finished; ``submit_job`` without a queue was refused, listing the two queues.
+- [x] TinkerCliffs/ARC (2026-10-01): 52,736 + 4,083 job flowcharts converted, 46 rows
+  split, 1,037 jobs re-pointed; backup ``Jobs/seamm.db.bak-2026-10-01-153534-before-format3``.
+  The 105 "problems" are empty ``flowchart.flow`` files in GM jobs from 2025-12 that never
+  ran (no ``job_data.json``); migrate skips them, unchanged. A converted job validates and
+  shows with ARC's plug-ins. Moving ARC's jobs to ChemAI is a separate, later task (Paul).
+- [x] ChemAI (2026-10-01 22:14) -- see step 3: 2,606 job flowcharts, 44 splits, backup
+  ``Jobs/seamm.db.bak-2026-10-01-221448-before-format3``.
 
 (``~/SEAMM_DEV`` was migrated on 2026-09-30.)
 
@@ -191,4 +293,12 @@ Loose ends (not blocking)
   ``~/.seamm.d/seammrc``.
 - MOPAC's step ``__init__`` runs ``cpuinfo`` (a subprocess) for every MOPAC step.
 - ``ChemAI_WebUI`` and ``MacMini`` report errors from this Mac (not investigated).
+- The plug-ins' installers import ``seamm_installer`` (provided by seamm-manager) without
+  declaring it; fine in an installation, which always has the manager.
+- The converter's message "has no parameters but has settings as attributes (a legacy
+  file); the step's defaults will apply" is alarming where nothing is lost: on ChemAI it
+  is the top-level VASP step (35 old job flowcharts), which has no parameters at all, and
+  whose only attribute was ``potential_metadata`` -- a 751 KB cache of the POTCAR catalog,
+  not a setting. Say so in the message (e.g. name the attributes dropped, and say when the
+  step has no parameters to default) in a later seamm release.
 - An MCP endpoint in the web UI (Option 2) when someone beyond the two of us needs it.

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.1 documentation</title>
+    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.2 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=65cfade2"></script>
+    <script src="../../../_static/documentation_options.js?v=52372788"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Phase 6 – The MCP server (2026-10-01)" href="NOTES_phase6.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1" />
+  <meta name="docsearch:version" content="2026.10.2" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -565,7 +565,7 @@ user-facing upgrade command (step 9) is released before <code class="docutils li
 <section id="before-any-release">
 <h2>1. Before any release<a class="headerlink" href="#before-any-release" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>[ ] Full test suites of the 11 packages pass in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (done piecemeal; run
+<li><p>[x] Full test suites of the 11 packages pass in <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (done piecemeal; run
 once more together).</p></li>
 <li><p>[x] Fix <code class="docutils literal notranslate"><span class="pre">Flowchart.get_nodes()</span></code> stopping at the first loop where it matters for
 submission: <code class="docutils literal notranslate"><span class="pre">Dashboard.submit</span></code> uses it to find Parameters steps and the files to
@@ -597,7 +597,8 @@ a loop uploaded; CI moved from conda to uv. PR #18 merged; released and on PyPI.
 </ul>
 <p>Wave B – seamm, release 1 (reads 3.0, writes 2.0):</p>
 <ul class="simple">
-<li><p>[ ] <strong>seamm</strong> 2026.10.1 – format 3.0 reader, spec, builder, layout, edit, the frozen
+<li><p>[x] <strong>seamm</strong> 2026.10.1 (released, on PyPI, checked in a clean PyPI-only environment:
+writes 2.0 by default, reads both) – format 3.0 reader, spec, builder, layout, edit, the frozen
 converter, <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code> (incl. <code class="docutils literal notranslate"><span class="pre">migrate</span></code> and <code class="docutils literal notranslate"><span class="pre">mcp</span></code>), shared rules
 (<code class="docutils literal notranslate"><span class="pre">applies_when</span></code> and friends), the SEAMMrc race fix, the bibliography cache,
 <code class="docutils literal notranslate"><span class="pre">from_dict</span></code>, editable-install fixes, and the user guide page “Flowcharts without the
@@ -609,40 +610,118 @@ this must precede every plug-in below.</p></li>
 </ul>
 <p>Wave C – services (pin seamm_datastore):</p>
 <ul class="simple">
-<li><p>[ ] <strong>seamm_manager</strong> – <code class="docutils literal notranslate"><span class="pre">datastore</span> <span class="pre">rebuild</span></code>; editable-install paths;
-<code class="docutils literal notranslate"><span class="pre">flowcharts</span> <span class="pre">migrate</span></code>/<code class="docutils literal notranslate"><span class="pre">status</span></code> and the update notice (2 commits).</p></li>
-<li><p>[ ] <strong>seamm_webui</strong> – rebuild a missing datastore from the job directories (1 commit).</p></li>
+<li><p>[x] <strong>seamm_manager</strong> 2026.10.1 (released, on PyPI, checked from PyPI against ~/SEAMM) – <code class="docutils literal notranslate"><span class="pre">datastore</span> <span class="pre">rebuild</span></code>; editable-install paths;
+<code class="docutils literal notranslate"><span class="pre">flowcharts</span> <span class="pre">migrate</span></code>/<code class="docutils literal notranslate"><span class="pre">status</span></code> and the update notice; Usage and Installation
+updated. <strong>PR #20 open, CI green.</strong></p></li>
+<li><p>[x] <strong>seamm_webui</strong> <strong>2026.10.1.1</strong> released and on PyPI. 2026.10.1 was <strong>not published</strong>: its own Release.yaml (it adds the
+frontend build) still used the conda env file the release removed. Fixed in PR #10
+(CI green), to be released as <strong>2026.10.1.1</strong>. – rebuild a missing datastore from the job directories;
+pins <code class="docutils literal notranslate"><span class="pre">seamm-datastore&gt;=2026.10.1</span></code>; CI moved from conda to uv. <strong>PR #9 open, CI
+green.</strong></p></li>
 </ul>
 <p>Wave D – plug-ins (each pins <code class="docutils literal notranslate"><span class="pre">seamm&gt;=</span></code> release 1):</p>
+<p>All six opened 2026-10-01 as 2026.10.1, CI green, each pinning <code class="docutils literal notranslate"><span class="pre">seamm&gt;=2026.10.1</span></code>,
+with HISTORY, a “Settings that depend on each other” section in the user guide, and CI
+moved from conda to uv (no custom workflow used the env file). The uv move found three
+undeclared dependencies, now declared: <code class="docutils literal notranslate"><span class="pre">seamm-exec</span></code> (psi4_step, mopac_step) and
+<code class="docutils literal notranslate"><span class="pre">model-chemistry-step</span></code> (lammps_step). The docs mock <code class="docutils literal notranslate"><span class="pre">seamm_installer</span></code>, which the
+installers import and SEAMM’s manager provides.</p>
 <ul class="simple">
-<li><p>[ ] <strong>model_chemistry_step</strong> (first: others consume Model Chemistry)</p></li>
-<li><p>[ ] <strong>orca_step</strong> (2 commits)</p></li>
-<li><p>[ ] <strong>gaussian_step</strong> (3)</p></li>
-<li><p>[ ] <strong>psi4_step</strong> (3)</p></li>
-<li><p>[ ] <strong>mopac_step</strong> (2)</p></li>
-<li><p>[ ] <strong>lammps_step</strong> (4)</p></li>
+<li><p>[x] <strong>model_chemistry_step</strong> 2026.10.1 – released and on PyPI (PR #6)</p></li>
+<li><p>[x] <strong>orca_step</strong> 2026.10.1 – released and on PyPI (PR #34)</p></li>
+<li><p>[x] <strong>gaussian_step</strong> 2026.10.1 – released and on PyPI (PR #32)</p></li>
+<li><p>[x] <strong>psi4_step</strong> 2026.10.1 – released and on PyPI (PR #45)</p></li>
+<li><p>[x] <strong>mopac_step</strong> 2026.10.1 – released and on PyPI (PR #156)</p></li>
+<li><p>[x] <strong>lammps_step</strong> 2026.10.1 – released and on PyPI (PR #113)</p></li>
 </ul>
+<p><strong>The published package list</strong> (seamm_packaging, run by hand on 2026-10-01 once all were
+on PyPI): Zenodo <code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.23088483</span></code>, seamm_packaging release 2026.10.1.1. The lock
+pins all ten main-environment packages at 2026.10.1; seamm-webui is a standalone package
+that the manager upgrades from PyPI into <code class="docutils literal notranslate"><span class="pre">venv-webui</span></code> (2026.10.1.1). So a plain
+<code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">update</span> <span class="pre">--all</span></code> now picks everything up, as it would after a nightly run.</p>
 </section>
 <section id="update-every-installation-servers-before-desktops">
 <h2>3. Update every installation (servers before desktops)<a class="headerlink" href="#update-every-installation-servers-before-desktops" title="Link to this heading">#</a></h2>
 <p>For each: <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">update</span></code>, then <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">services</span> <span class="pre">restart</span></code>; submit a
 small test job and check it runs and its flowchart is recorded.</p>
 <ul class="simple">
-<li><p>[ ] <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> on this Mac – <strong>first</strong>, exactly as a user would (256 job flowcharts
-in 2.0 found by <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">status</span></code>).</p></li>
-<li><p>[ ] <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> – replace the editable installs with the released versions; set
-<code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT=3.0</span></code> there to keep writing 3.0 (it is already migrated).</p></li>
-<li><p>[ ] paul.local.</p></li>
-<li><p>[ ] MolSSI10.</p></li>
-<li><p>[ ] TinkerCliffs/ARC (<code class="docutils literal notranslate"><span class="pre">/projects/seamm</span></code>; no services).</p></li>
-<li><p>[ ] ChemAI – <strong>Paul’s explicit OK for each action.</strong></p></li>
+<li><p>[x] <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> on this Mac – <strong>first</strong>, exactly as a user would (2026-10-01). Backup in
+<code class="docutils literal notranslate"><span class="pre">~/SEAMM_backups/2026-10-01-before-format3/</span></code> (Jobs + venv freezes). The first plain
+<code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">update</span> <span class="pre">--all</span></code> updated the main environment and the JobServer but <strong>not
+the web interface</strong> (<code class="docutils literal notranslate"><span class="pre">venv-webui</span></code> was never updated by <code class="docutils literal notranslate"><span class="pre">update</span></code>): fixed in
+seamm_manager 2026.10.1.1 (PR #21), package list refreshed (Zenodo
+<code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.23088748</span></code>), and a second plain <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code> upgraded the manager
+tool itself, then the web interface (seamm-webui 2026.10.1.1, datastore 2026.10.1) and
+restarted it. Job 551 (SMILES=CCO, MOPAC PM7, -53.29 kcal/mol) finished.</p></li>
+<li><p>[x] <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (2026-10-01) – backup <code class="docutils literal notranslate"><span class="pre">~/SEAMM_backups/2026-10-01-SEAMM_DEV-before-release-update/</span></code>
+(Jobs 43 GB clone; 2,099 jobs / 876 directories match); plain
+<code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv/bin/seamm-manager</span> <span class="pre">update</span> <span class="pre">--all</span></code> replaced the editable installs with
+the releases, updated and restarted the web interface and the JobServer, and updated
+the development tools. Still editable: seamm-packaging (not in the package list) and
+seamm_bsse – the lock’s <code class="docutils literal notranslate"><span class="pre">==2026.8.7.1</span></code> is satisfied by the editable
+<code class="docutils literal notranslate"><span class="pre">2026.8.7.1+0.gd387828.dirty</span></code> (its code is the release’s). <code class="docutils literal notranslate"><span class="pre">mcp</span></code> kept; the MCP server
+works over stdio; job 4000 finished. <code class="docutils literal notranslate"><span class="pre">SEAMM_FLOWCHART_FORMAT</span></code> not set: SEAMM_DEV writes
+2.0 until release 2 like the others, and is migrated again then.</p></li>
+<li><p>[x] paul.local (2026-10-01): <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> and <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (no editable installs, no old
+dashboard, nothing running), backed up in full to <code class="docutils literal notranslate"><span class="pre">~/SEAMM_backups/2026-10-01-*-before-format3</span></code>.
+One plain <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code> each (the tool in <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>, not on the non-interactive
+ssh PATH; <code class="docutils literal notranslate"><span class="pre">--root</span> <span class="pre">~/SEAMM_DEV</span></code> for the second): the tool upgraded itself from 2026.9.28.1
+(local APFS, so no self-reinstall trouble), the main environment (also fhi-aims-step and
+vasp-step, which had lagged), the web interfaces (updated and restarted), and the
+databases, which had no version recorded (stamped d7d6859198e9, then updated).</p></li>
+<li><p>[x] MolSSI10 (2026-10-01). Backup <code class="docutils literal notranslate"><span class="pre">~/SEAMM_backups/2026-10-01-before-format3/</span></code> (the
+database and every job’s <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code>/<code class="docutils literal notranslate"><span class="pre">job_data.json</span></code> – what the migration
+touches – and the venv freezes; <code class="docutils literal notranslate"><span class="pre">Jobs</span></code> is 125 GB on ext4, so no full copy). <strong>The old
+dashboard retired</strong>: systemd user unit <code class="docutils literal notranslate"><span class="pre">org.molssi.seamm.dashboard</span></code> (conda <code class="docutils literal notranslate"><span class="pre">seamm</span></code>
+env, port 55055) stopped and disabled, unit file kept. One plain
+<code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">update</span> <span class="pre">--all</span></code> (login shell): the tool upgraded itself to 2026.10.1.1,
+the main environment, the web interface (updated and restarted) and the JobServer.</p></li>
+<li><p>[x] TinkerCliffs/ARC (2026-10-01; <code class="docutils literal notranslate"><span class="pre">/projects/seamm</span></code>, no services). Backup
+<code class="docutils literal notranslate"><span class="pre">/projects/seamm/SEAMM_backups/2026-10-01-before-format3/</span></code> (database + all 56,924 job
+flowcharts and job_data.json, 357 MB). The first <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code> hit the known GPFS
+self-reinstall bug of the old tool (2026.9.29.1, before the 2026.9.29.2 fix): the tool
+was half-deleted, fell back to the cached package list (“Everything is up to date”) and
+crashed (no <code class="docutils literal notranslate"><span class="pre">seamm_manager.policy</span></code>). Repaired with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">tool</span> <span class="pre">install</span> <span class="pre">--force</span>
+<span class="pre">seamm-manager</span></code> (<code class="docutils literal notranslate"><span class="pre">env.sh</span></code>); the second <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code> updated everything (no web
+interface, no services).</p></li>
+<li><p>[x] ChemAI – <strong>Paul’s explicit OK for each action.</strong> Survey (2026-10-01): only
+<code class="docutils literal notranslate"><span class="pre">/home/seamm/SEAMM</span></code> is an installation (<code class="docutils literal notranslate"><span class="pre">/home/seamm/SEAMM_DEV</span></code> and
+<code class="docutils literal notranslate"><span class="pre">/home/psaxe/SEAMM</span></code> have no venv); disk 95% full (45 GB free); 112 stale <code class="docutils literal notranslate"><span class="pre">started</span></code>
+rows. Six xnn D4 benchmark jobs (<code class="docutils literal notranslate"><span class="pre">~/xnn_d4_bench</span></code>, sbatch, conda <code class="docutils literal notranslate"><span class="pre">seamm-lammps</span></code> and
+<code class="docutils literal notranslate"><span class="pre">~/SEAMM/bin/mdi_bind.sh</span></code>) were running or pending, which <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code>’s plug-in
+installers could disturb, so <strong>the update waits for them to finish</strong> (Paul).
+Done with Paul’s OK: (1) the old dashboard retired – systemd unit
+<code class="docutils literal notranslate"><span class="pre">org.molssi.seamm.dashboard</span></code> (conda <code class="docutils literal notranslate"><span class="pre">seamm</span></code>, port 55055) stopped and disabled;
+(2) backup <code class="docutils literal notranslate"><span class="pre">/home/seamm/SEAMM_backups/2026-10-01-before-format3/</span></code> (database, all 2,606
+job flowcharts + job_data.json, venv freezes; Paul runs no jobs until the update).
+Timing (from the mlff session, 18:00 EDT): the snapshot jobs 11749-11752 are <strong>held</strong>
+(<code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">hold</span></code>, Paul’s request); wait only for the density runs 11747/11748 (34.5 of
+100 ps, about 21:05 EDT). Next, each with Paul’s OK: (3) <code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code>; (4) migrate
+dry run; (5) migrate; (6) check a job can still start (seamm-lammps env, xnn, LAMMPS +
+MDI, GPUs) and a SEAMM test job on the <code class="docutils literal notranslate"><span class="pre">ChemAI</span></code> queue; (7)
+<code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">release</span> <span class="pre">11749</span> <span class="pre">11750</span> <span class="pre">11751</span> <span class="pre">11752</span></code> so the snapshots and the queued density
+ladder run overnight.
+Done 2026-10-01, with Paul’s OK after 11747/11748 completed (21:10, 21:15): (3)
+<code class="docutils literal notranslate"><span class="pre">update</span> <span class="pre">--all</span></code> at 22:08 – one pass, tool 2026.9.28.1 -&gt; 2026.10.1.1, web UI updated and
+restarted (https 55155 answers), JobServer restarted, <code class="docutils literal notranslate"><span class="pre">mdi_bind.sh</span></code> untouched; (4) dry
+run: 2,477 + 129 job flowcharts, 44 splits, 107 re-pointed, no problems; the 35 VASP
+“settings as attributes” notes are the <code class="docutils literal notranslate"><span class="pre">potential_metadata</span></code> cache (nothing lost).
+(5) migrated at 22:14 (backup <code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-221448-before-format3</span></code>;
+services stopped and restarted; all 3.0; 2,606 originals kept); (6) the benchmark setup
+checked (seamm-lammps unchanged since 2026-09-19, torch sees both A100s idle, xnns 0.4.0,
+mdi, LAMMPS with MDI) and SEAMM job 5162 on the <code class="docutils literal notranslate"><span class="pre">ChemAI</span></code> queue finished; (7) the held
+snapshot jobs released: 11749/11750 running (LAMMPS started, GPUs 58%), 11751/11752
+pending for GPUs. The mlff session told. <strong>ChemAI done; step 3 complete everywhere.</strong></p></li>
 </ul>
 </section>
 <section id="switch-the-writer-to-3-0">
 <h2>4. Switch the writer to 3.0<a class="headerlink" href="#switch-the-writer-to-3-0" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>[ ] <strong>seamm release 2</strong>: <code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_text()</span></code> default to 3.0.</p></li>
+<li><p>[ ] <strong>seamm release 2</strong> (2026.10.2): <code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_text()</span></code> default to 3.0;
+also the MCP job tools accept dashboards without credentials. <strong>PR #217 open.</strong></p></li>
 <li><p>[ ] Update every installation again (as in step 3).</p></li>
+<li><p>[ ] Run <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code> again on every migrated installation: jobs
+run between its migration and release 2 still write 2.0 (<code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> job 551 on).</p></li>
 </ul>
 </section>
 <section id="migrate-the-job-directories-and-datastores">
@@ -651,11 +730,32 @@ in 2.0 found by <code class="docutils literal notranslate"><span class="pre">sea
 stop the JobServer and web UI, <code class="docutils literal notranslate"><span class="pre">--apply</span></code> (backs up the datastore, writes a manifest
 for undo), restart, open a few converted jobs in the web UI.</p>
 <ul class="simple">
-<li><p>[ ] <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> on this Mac (about 1,200 job directories).</p></li>
-<li><p>[ ] paul.local.</p></li>
-<li><p>[ ] MolSSI10.</p></li>
-<li><p>[ ] TinkerCliffs/ARC (about 53,000 job copies of 56 flowcharts; converts by content).</p></li>
-<li><p>[ ] ChemAI – with Paul’s OK.</p></li>
+<li><p>[x] <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> on this Mac (2026-10-01): <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code> (dry run
+reviewed: 228 + 28 job flowcharts, 8 rows split, no problems; <code class="docutils literal notranslate"><span class="pre">tensor_labels</span></code> dropped
+from diffusivity steps is a constant, not a setting). Datastore backup
+<code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-142410-before-format3</span></code>, manifest
+<code class="docutils literal notranslate"><span class="pre">Jobs/format3-migration-2026-10-01-142410.json</span></code>; services stopped and restarted by the
+command. <code class="docutils literal notranslate"><span class="pre">status</span></code>: all 3.0. Found, unrelated: 28 Docker-era jobs (ids 1-52) record
+<code class="docutils literal notranslate"><span class="pre">/root/SEAMM/...</span></code> paths, so the web UI cannot show their files (<code class="docutils literal notranslate"><span class="pre">datastore</span> <span class="pre">rebuild</span></code>
+would record the real paths).</p></li>
+<li><p>[x] paul.local (2026-10-01): <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> 2 job flowcharts and 1 row converted (backup
+<code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-165151-before-format3</span></code>), services restarted, web UI 200;
+<code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> has no jobs: nothing to convert.
+Its web UIs listen only on 127.0.0.1 without logins; reached from this Mac through an
+SSH tunnel (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-f</span> <span class="pre">-N</span> <span class="pre">-L</span> <span class="pre">55057:localhost:55055</span> <span class="pre">-L</span> <span class="pre">55058:localhost:55056</span> <span class="pre">paul.local</span></code>),
+job 3 (<code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code>) and job 1 (<code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>, its first job) finished. That needed the MCP job tools to accept a dashboard without
+credentials (seamm dev, for release 2).</p></li>
+<li><p>[x] MolSSI10 (2026-10-01): dry run 347 + 1 job flowcharts, 35 rows split, the known
+LAMMPS Minimization attributes (14) and <code class="docutils literal notranslate"><span class="pre">tensor_labels</span></code> (7); applied (backup
+<code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-150006-before-format3</span></code>). Job 682 (queue <code class="docutils literal notranslate"><span class="pre">molssi10</span></code>)
+finished; <code class="docutils literal notranslate"><span class="pre">submit_job</span></code> without a queue was refused, listing the two queues.</p></li>
+<li><p>[x] TinkerCliffs/ARC (2026-10-01): 52,736 + 4,083 job flowcharts converted, 46 rows
+split, 1,037 jobs re-pointed; backup <code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-153534-before-format3</span></code>.
+The 105 “problems” are empty <code class="docutils literal notranslate"><span class="pre">flowchart.flow</span></code> files in GM jobs from 2025-12 that never
+ran (no <code class="docutils literal notranslate"><span class="pre">job_data.json</span></code>); migrate skips them, unchanged. A converted job validates and
+shows with ARC’s plug-ins. Moving ARC’s jobs to ChemAI is a separate, later task (Paul).</p></li>
+<li><p>[x] ChemAI (2026-10-01 22:14) – see step 3: 2,606 job flowcharts, 44 splits, backup
+<code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-01-221448-before-format3</span></code>.</p></li>
 </ul>
 <p>(<code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> was migrated on 2026-09-30.)</p>
 </section>
@@ -727,6 +827,14 @@ read).</p></li>
 <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code>.</p></li>
 <li><p>MOPAC’s step <code class="docutils literal notranslate"><span class="pre">__init__</span></code> runs <code class="docutils literal notranslate"><span class="pre">cpuinfo</span></code> (a subprocess) for every MOPAC step.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ChemAI_WebUI</span></code> and <code class="docutils literal notranslate"><span class="pre">MacMini</span></code> report errors from this Mac (not investigated).</p></li>
+<li><p>The plug-ins’ installers import <code class="docutils literal notranslate"><span class="pre">seamm_installer</span></code> (provided by seamm-manager) without
+declaring it; fine in an installation, which always has the manager.</p></li>
+<li><p>The converter’s message “has no parameters but has settings as attributes (a legacy
+file); the step’s defaults will apply” is alarming where nothing is lost: on ChemAI it
+is the top-level VASP step (35 old job flowcharts), which has no parameters at all, and
+whose only attribute was <code class="docutils literal notranslate"><span class="pre">potential_metadata</span></code> – a 751 KB cache of the POTCAR catalog,
+not a setting. Say so in the message (e.g. name the attributes dropped, and say when the
+step has no parameters to default) in a later seamm release.</p></li>
 <li><p>An MCP endpoint in the web UI (Option 2) when someone beyond the two of us needs it.</p></li>
 </ul>
 </section>
