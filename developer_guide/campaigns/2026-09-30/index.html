@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0 &#8212; SEAMM 2026.10.2 documentation</title>
+    <title>2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0 &#8212; SEAMM 2026.10.2.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=52372788"></script>
+    <script src="../../../_static/documentation_options.js?v=77b25824"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Campaigns" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2" />
+  <meta name="docsearch:version" content="2026.10.2.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -530,12 +530,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   
   <section id="building-flowcharts-programmatically-and-flowchart-format-3-0">
 <h1>2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0<a class="headerlink" href="#building-flowcharts-programmatically-and-flowchart-format-3-0" title="Link to this heading">#</a></h1>
-<p>Status (2026-10-01): <strong>phases 0-2 and 4-6 done; phase 3 done in SEAMM_DEV only</strong> –
-SEAMM_DEV writes 3.0 and has been migrated (<code class="docutils literal notranslate"><span class="pre">NOTES_phase3.rst</span></code>); editing commands and the
-skill (<code class="docutils literal notranslate"><span class="pre">NOTES_phase4.rst</span></code>); shared rules in seamm and six plug-ins (<code class="docutils literal notranslate"><span class="pre">NOTES_phase5.rst</span></code>);
-a local MCP server with flowchart and job tools (<code class="docutils literal notranslate"><span class="pre">NOTES_phase6.rst</span></code>). What remains is the
-switch – releases, the other installations, Zenodo and removing the 2.0 code – in
-<code class="docutils literal notranslate"><span class="pre">NOTES_switch.rst</span></code>, awaiting Paul’s approval. Nothing pushed. Q1, Q4 and Q7 decided by Paul
+<p>Status (2026-10-02): <strong>phases 0-6 done; the switch through step 4 done</strong> – seamm
+2026.10.1 (reads 3.0) and 2026.10.2 (writes 3.0) are released with seamm_manager,
+seamm_datastore, seamm_dashboard_client, seamm_webui and six plug-ins, and every
+installation (~/SEAMM, ~/SEAMM_DEV, MolSSI10, ARC, paul.local, ChemAI) is updated and
+migrated. The user upgrade guide is in the main documentation (molssi-seamm.github.io
+PR #60). What remains – converting local flowcharts, Zenodo, removing the 2.0 code and
+housekeeping – is in <code class="docutils literal notranslate"><span class="pre">NOTES_switch.rst</span></code>. Q1, Q4 and Q7 decided by Paul
 (<code class="docutils literal notranslate"><span class="pre">seamm</span></code> core; keep <code class="docutils literal notranslate"><span class="pre">.flow</span></code>; rename originals in job directories). The decisions
 reached in discussion are recorded under <em>Decided</em>; the ones still open are under <em>Open
 questions</em> and are Paul’s.</p>
@@ -553,7 +554,8 @@ migration rather than fixed now.</p>
 <p><strong>Where the work happens (Paul, 2026-09-30):</strong> all of this campaign is developed and
 tested in the development installation, <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>, with <code class="docutils literal notranslate"><span class="pre">seamm</span></code> installed
 editable from the checkout into <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV/venv</span></code>. No PRs or releases until the
-whole switch is ready, so no other installation changes before then.</p>
+whole switch was ready, so no other installation changed before then. (The switch
+began on 2026-10-01; see <code class="docutils literal notranslate"><span class="pre">NOTES_switch.rst</span></code>.)</p>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>

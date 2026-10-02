@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.2 documentation</title>
+    <title>The switch – checklist (draft for Paul, 2026-10-01) &#8212; SEAMM 2026.10.2.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=52372788"></script>
+    <script src="../../../_static/documentation_options.js?v=77b25824"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Phase 6 – The MCP server (2026-10-01)" href="NOTES_phase6.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2" />
+  <meta name="docsearch:version" content="2026.10.2.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -717,11 +717,19 @@ pending for GPUs. The mlff session told. <strong>ChemAI done; step 3 complete ev
 <section id="switch-the-writer-to-3-0">
 <h2>4. Switch the writer to 3.0<a class="headerlink" href="#switch-the-writer-to-3-0" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>[ ] <strong>seamm release 2</strong> (2026.10.2): <code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_text()</span></code> default to 3.0;
-also the MCP job tools accept dashboards without credentials. <strong>PR #217 open.</strong></p></li>
-<li><p>[ ] Update every installation again (as in step 3).</p></li>
-<li><p>[ ] Run <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code> again on every migrated installation: jobs
-run between its migration and release 2 still write 2.0 (<code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> job 551 on).</p></li>
+<li><p>[x] <strong>seamm release 2</strong> (2026.10.2, released and on PyPI; writes 3.0 checked from PyPI): <code class="docutils literal notranslate"><span class="pre">Flowchart.write()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_text()</span></code> default to 3.0;
+also the MCP job tools accept dashboards without credentials (PR #217).</p></li>
+<li><p>[x] Update every installation again (as in step 3), and run <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span>
+<span class="pre">migrate</span></code> again to convert jobs saved in 2.0 in between. Package list: Zenodo
+<code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.23099647</span></code> (seamm 2026.10.2). Done 2026-10-02, each with a test job whose
+stored flowchart is 3.0: <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> (job 552), <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (job 4001, released
+packages only), MolSSI10 (683), paul.local <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> (4) and <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code> (2) through
+the tunnel, ARC (nothing to convert; writer 3.0), and ChemAI with Paul’s OK (queue
+empty; job 5162 converted; backup <code class="docutils literal notranslate"><span class="pre">Jobs/seamm.db.bak-2026-10-02-055126-before-format3</span></code>;
+job 5163 on the <code class="docutils literal notranslate"><span class="pre">ChemAI</span></code> queue stored 3.0; <code class="docutils literal notranslate"><span class="pre">mdi_bind.sh</span></code> and seamm-lammps untouched).
+<strong>Step 4 complete: every installation writes and holds format 3.0.</strong>
+Note: the web UI’s environment is not locked, so every <code class="docutils literal notranslate"><span class="pre">update</span></code> upgrades its other
+dependencies and restarts it, even when seamm-webui itself is unchanged.</p></li>
 </ul>
 </section>
 <section id="migrate-the-job-directories-and-datastores">
@@ -795,13 +803,16 @@ the services and says where the backup is. Released with seamm_manager before ex
 users are told to upgrade.</p></li>
 <li><p>[x] <strong>``seamm-manager update`` notices format 2.0 job directories</strong> and prints a short
 notice pointing at that command (report only; it never migrates by itself).</p></li>
-<li><p>[ ] <strong>External upgrade instructions</strong> (docs): back up the whole <code class="docutils literal notranslate"><span class="pre">Jobs</span></code> directory,
+<li><p>[x] <strong>External upgrade instructions</strong> (docs): back up the whole <code class="docutils literal notranslate"><span class="pre">Jobs</span></code> directory,
 <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">update</span></code>, then <code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">flowcharts</span> <span class="pre">migrate</span></code>. Warn that moving
 the database aside and restarting the web UI is <em>not</em> an upgrade: the rebuilt database
 keeps no accounts and converts nothing (<code class="docutils literal notranslate"><span class="pre">seamm-manager</span> <span class="pre">datastore</span> <span class="pre">rebuild</span></code> keeps the
 accounts, but also converts nothing). An installation must have seamm release 1 before
-it receives any 3.0 flowchart.</p></li>
-<li><p>[ ] User docs: format 3.0, specs, <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code>, the MCP server.</p></li>
+it receives any 3.0 flowchart. Done 2026-10-02: <em>Upgrading to flowchart format 3.0</em>
+in the main documentation (molssi-seamm.github.io PR #60), linked from the seamm user
+guide and the seamm_manager installation page.</p></li>
+<li><p>[x] User docs: format 3.0, specs, <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span></code>, the MCP server
+(<code class="docutils literal notranslate"><span class="pre">user_guide/flowcharts_without_the_editor.rst</span></code>).</p></li>
 <li><p>[ ] The build-seamm-flowchart skill: drop the “SEAMM_DEV only, no PRs” caveat; point
 the registered MCP server at <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> instead of <code class="docutils literal notranslate"><span class="pre">~/SEAMM_DEV</span></code>.</p></li>
 <li><p>[ ] Memory and the campaign status.</p></li>

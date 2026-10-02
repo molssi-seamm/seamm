@@ -1,12 +1,13 @@
 2026-09-30 -- Building flowcharts programmatically, and flowchart format 3.0
 ============================================================================
 
-Status (2026-10-01): **phases 0-2 and 4-6 done; phase 3 done in SEAMM_DEV only** --
-SEAMM_DEV writes 3.0 and has been migrated (``NOTES_phase3.rst``); editing commands and the
-skill (``NOTES_phase4.rst``); shared rules in seamm and six plug-ins (``NOTES_phase5.rst``);
-a local MCP server with flowchart and job tools (``NOTES_phase6.rst``). What remains is the
-switch -- releases, the other installations, Zenodo and removing the 2.0 code -- in
-``NOTES_switch.rst``, awaiting Paul's approval. Nothing pushed. Q1, Q4 and Q7 decided by Paul
+Status (2026-10-02): **phases 0-6 done; the switch through step 4 done** -- seamm
+2026.10.1 (reads 3.0) and 2026.10.2 (writes 3.0) are released with seamm_manager,
+seamm_datastore, seamm_dashboard_client, seamm_webui and six plug-ins, and every
+installation (~/SEAMM, ~/SEAMM_DEV, MolSSI10, ARC, paul.local, ChemAI) is updated and
+migrated. The user upgrade guide is in the main documentation (molssi-seamm.github.io
+PR #60). What remains -- converting local flowcharts, Zenodo, removing the 2.0 code and
+housekeeping -- is in ``NOTES_switch.rst``. Q1, Q4 and Q7 decided by Paul
 (``seamm`` core; keep ``.flow``; rename originals in job directories). The decisions
 reached in discussion are recorded under *Decided*; the ones still open are under *Open
 questions* and are Paul's.
@@ -27,7 +28,8 @@ migration rather than fixed now.
 **Where the work happens (Paul, 2026-09-30):** all of this campaign is developed and
 tested in the development installation, ``~/SEAMM_DEV``, with ``seamm`` installed
 editable from the checkout into ``~/SEAMM_DEV/venv``. No PRs or releases until the
-whole switch is ready, so no other installation changes before then.
+whole switch was ready, so no other installation changed before then. (The switch
+began on 2026-10-01; see ``NOTES_switch.rst``.)
 
 Contents:
 
