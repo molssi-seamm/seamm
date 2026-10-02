@@ -19,15 +19,14 @@ digest that identifies its content, every parameter of every step, steps that ar
 connected (kept for the editor), and the layout. Format 2.0, the JSON format, is still
 read: it is converted to 3.0 as it is loaded, by a converter that never changes.
 
-Format 3.0 is introduced in two releases, so that every installation can read it before
-any writes it:
+Format 3.0 was introduced in two releases, so that every installation could read it
+before any wrote it: SEAMM 2026.10.1 read 3.0 but still wrote 2.0 from the editor, and
+since 2026.10.2 everything writes 3.0. Setting the environment variable
+``SEAMM_FLOWCHART_FORMAT`` to ``2.0`` writes the old format, for an installation that
+must still exchange flowcharts with one older than 2026.10.1.
 
-- **This release** reads 3.0 and 2.0, and writes 2.0 by default from the editor. The
-  ``seamm-flowchart`` command, the Python builder and the MCP server write 3.0.
-- **The next release** writes 3.0 by default.
-
-An installation can choose now by setting the environment variable
-``SEAMM_FLOWCHART_FORMAT`` to ``3.0`` (or ``2.0``).
+Jobs run between updating to 2026.10.1 and to 2026.10.2 still saved 2.0 flowcharts;
+``seamm-manager flowcharts migrate`` converts them (see below).
 
 The seamm-flowchart command
 ===========================

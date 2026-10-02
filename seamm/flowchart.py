@@ -23,11 +23,12 @@ import seamm_util
 
 logger = logging.getLogger(__name__)
 
-# The format Flowchart.write() and to_text() use when none is given. Format 3.0 is
-# introduced in two releases: the first reads 3.0 but still writes 2.0, so that every
-# machine can read 3.0 before any writes it; the second writes 3.0. An installation can
-# choose its own with the environment variable SEAMM_FLOWCHART_FORMAT ("2.0" or "3.0").
-DEFAULT_FORMAT = "2.0"
+# The format Flowchart.write() and to_text() use when none is given. Format 3.0 was
+# introduced in two releases: 2026.10.1 read 3.0 but still wrote 2.0, so that every
+# machine could read 3.0 before any wrote it; since 2026.10.2 3.0 is written. An
+# installation can choose with the environment variable SEAMM_FLOWCHART_FORMAT ("2.0" or
+# "3.0").
+DEFAULT_FORMAT = "3.0"
 
 
 def default_format():
