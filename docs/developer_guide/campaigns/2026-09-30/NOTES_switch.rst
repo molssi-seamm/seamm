@@ -188,8 +188,8 @@ small test job and check it runs and its flowchart is recorded.
 4. Switch the writer to 3.0
 ---------------------------
 
-- [ ] **seamm release 2** (2026.10.2): ``Flowchart.write()``/``to_text()`` default to 3.0;
-  also the MCP job tools accept dashboards without credentials. **PR #217 open.**
+- [x] **seamm release 2** (2026.10.2, released and on PyPI; writes 3.0 checked from PyPI): ``Flowchart.write()``/``to_text()`` default to 3.0;
+  also the MCP job tools accept dashboards without credentials (PR #217).
 - [ ] Update every installation again (as in step 3).
 - [ ] Run ``seamm-manager flowcharts migrate`` again on every migrated installation: jobs
   run between its migration and release 2 still write 2.0 (``~/SEAMM`` job 551 on).
