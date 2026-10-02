@@ -282,4 +282,10 @@ Loose ends (not blocking)
 - ``ChemAI_WebUI`` and ``MacMini`` report errors from this Mac (not investigated).
 - The plug-ins' installers import ``seamm_installer`` (provided by seamm-manager) without
   declaring it; fine in an installation, which always has the manager.
+- The converter's message "has no parameters but has settings as attributes (a legacy
+  file); the step's defaults will apply" is alarming where nothing is lost: on ChemAI it
+  is the top-level VASP step (35 old job flowcharts), which has no parameters at all, and
+  whose only attribute was ``potential_metadata`` -- a 751 KB cache of the POTCAR catalog,
+  not a setting. Say so in the message (e.g. name the attributes dropped, and say when the
+  step has no parameters to default) in a later seamm release.
 - An MCP endpoint in the web UI (Option 2) when someone beyond the two of us needs it.
