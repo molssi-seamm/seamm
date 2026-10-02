@@ -173,6 +173,11 @@ small test job and check it runs and its flowchart is recorded.
   MDI, GPUs) and a SEAMM test job on the ``ChemAI`` queue; (7)
   ``scontrol release 11749 11750 11751 11752`` so the snapshots and the queued density
   ladder run overnight.
+  Done 2026-10-01, with Paul's OK after 11747/11748 completed (21:10, 21:15): (3)
+  ``update --all`` at 22:08 -- one pass, tool 2026.9.28.1 -> 2026.10.1.1, web UI updated and
+  restarted (https 55155 answers), JobServer restarted, ``mdi_bind.sh`` untouched; (4) dry
+  run: 2,477 + 129 job flowcharts, 44 splits, 107 re-pointed, no problems; the 35 VASP
+  "settings as attributes" notes are the ``potential_metadata`` cache (nothing lost).
 
 4. Switch the writer to 3.0
 ---------------------------
