@@ -188,11 +188,19 @@ small test job and check it runs and its flowchart is recorded.
 4. Switch the writer to 3.0
 ---------------------------
 
-- [ ] **seamm release 2** (2026.10.2): ``Flowchart.write()``/``to_text()`` default to 3.0;
-  also the MCP job tools accept dashboards without credentials. **PR #217 open.**
-- [ ] Update every installation again (as in step 3).
-- [ ] Run ``seamm-manager flowcharts migrate`` again on every migrated installation: jobs
-  run between its migration and release 2 still write 2.0 (``~/SEAMM`` job 551 on).
+- [x] **seamm release 2** (2026.10.2, released and on PyPI; writes 3.0 checked from PyPI): ``Flowchart.write()``/``to_text()`` default to 3.0;
+  also the MCP job tools accept dashboards without credentials (PR #217).
+- [x] Update every installation again (as in step 3), and run ``seamm-manager flowcharts
+  migrate`` again to convert jobs saved in 2.0 in between. Package list: Zenodo
+  ``10.5281/zenodo.23099647`` (seamm 2026.10.2). Done 2026-10-02, each with a test job whose
+  stored flowchart is 3.0: ``~/SEAMM`` (job 552), ``~/SEAMM_DEV`` (job 4001, released
+  packages only), MolSSI10 (683), paul.local ``~/SEAMM`` (4) and ``~/SEAMM_DEV`` (2) through
+  the tunnel, ARC (nothing to convert; writer 3.0), and ChemAI with Paul's OK (queue
+  empty; job 5162 converted; backup ``Jobs/seamm.db.bak-2026-10-02-055126-before-format3``;
+  job 5163 on the ``ChemAI`` queue stored 3.0; ``mdi_bind.sh`` and seamm-lammps untouched).
+  **Step 4 complete: every installation writes and holds format 3.0.**
+  Note: the web UI's environment is not locked, so every ``update`` upgrades its other
+  dependencies and restarts it, even when seamm-webui itself is unchanged.
 
 5. Migrate the job directories and datastores
 ---------------------------------------------
@@ -263,13 +271,16 @@ for undo), restart, open a few converted jobs in the web UI.
   users are told to upgrade.
 - [x] **``seamm-manager update`` notices format 2.0 job directories** and prints a short
   notice pointing at that command (report only; it never migrates by itself).
-- [ ] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
+- [x] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
   ``seamm-manager update``, then ``seamm-manager flowcharts migrate``. Warn that moving
   the database aside and restarting the web UI is *not* an upgrade: the rebuilt database
   keeps no accounts and converts nothing (``seamm-manager datastore rebuild`` keeps the
   accounts, but also converts nothing). An installation must have seamm release 1 before
-  it receives any 3.0 flowchart.
-- [ ] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server.
+  it receives any 3.0 flowchart. Done 2026-10-02: *Upgrading to flowchart format 3.0*
+  in the main documentation (molssi-seamm.github.io PR #60), linked from the seamm user
+  guide and the seamm_manager installation page.
+- [x] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server
+  (``user_guide/flowcharts_without_the_editor.rst``).
 - [ ] The build-seamm-flowchart skill: drop the "SEAMM_DEV only, no PRs" caveat; point
   the registered MCP server at ``~/SEAMM`` instead of ``~/SEAMM_DEV``.
 - [ ] Memory and the campaign status.
