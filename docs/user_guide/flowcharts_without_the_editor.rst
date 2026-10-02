@@ -136,6 +136,10 @@ datastore, and restarts the services. Back up the ``Jobs`` directory first. Movi
 datastore aside and letting the web UI rebuild it is *not* a conversion: the rebuilt
 datastore keeps no accounts and converts nothing.
 
+The step-by-step guide to upgrading an installation, including what the messages
+mean, how to undo the conversion and how to convert your own flowcharts, is
+`Upgrading to flowchart format 3.0 <https://molssi-seamm.github.io/getting_started/installation/upgrading_format3.html>`_ in the main SEAMM documentation.
+
 AI assistants: the MCP server
 =============================
 

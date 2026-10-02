@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.2.1 -- Documentation: the upgrade guide for flowchart format 3.0
+    * The user guide's section on converting an installation's flowcharts now points to
+      the step-by-step guide in the main SEAMM documentation, *Upgrading to flowchart
+      format 3.0*: updating, converting the jobs, the messages you may see, undoing the
+      conversion, converting your own flowcharts, and the order to update several
+      machines.
+    * The developer notes for the format 3.0 campaign record its current status.
+
 2026.10.2 -- Flowchart format 3.0 is now written by default
     * The editor, job submission and everything else now write flowchart format 3.0 by
       default. 2026.10.1 still wrote 2.0 so that every installation could read 3.0

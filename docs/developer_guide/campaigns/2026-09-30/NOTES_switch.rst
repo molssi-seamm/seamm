@@ -271,13 +271,16 @@ for undo), restart, open a few converted jobs in the web UI.
   users are told to upgrade.
 - [x] **``seamm-manager update`` notices format 2.0 job directories** and prints a short
   notice pointing at that command (report only; it never migrates by itself).
-- [ ] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
+- [x] **External upgrade instructions** (docs): back up the whole ``Jobs`` directory,
   ``seamm-manager update``, then ``seamm-manager flowcharts migrate``. Warn that moving
   the database aside and restarting the web UI is *not* an upgrade: the rebuilt database
   keeps no accounts and converts nothing (``seamm-manager datastore rebuild`` keeps the
   accounts, but also converts nothing). An installation must have seamm release 1 before
-  it receives any 3.0 flowchart.
-- [ ] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server.
+  it receives any 3.0 flowchart. Done 2026-10-02: *Upgrading to flowchart format 3.0*
+  in the main documentation (molssi-seamm.github.io PR #60), linked from the seamm user
+  guide and the seamm_manager installation page.
+- [x] User docs: format 3.0, specs, ``seamm-flowchart``, the MCP server
+  (``user_guide/flowcharts_without_the_editor.rst``).
 - [ ] The build-seamm-flowchart skill: drop the "SEAMM_DEV only, no PRs" caveat; point
   the registered MCP server at ``~/SEAMM`` instead of ``~/SEAMM_DEV``.
 - [ ] Memory and the campaign status.
