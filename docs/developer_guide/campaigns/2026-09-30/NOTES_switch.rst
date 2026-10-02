@@ -178,6 +178,11 @@ small test job and check it runs and its flowchart is recorded.
   restarted (https 55155 answers), JobServer restarted, ``mdi_bind.sh`` untouched; (4) dry
   run: 2,477 + 129 job flowcharts, 44 splits, 107 re-pointed, no problems; the 35 VASP
   "settings as attributes" notes are the ``potential_metadata`` cache (nothing lost).
+  (5) migrated at 22:14 (backup ``Jobs/seamm.db.bak-2026-10-01-221448-before-format3``;
+  services stopped and restarted; all 3.0; 2,606 originals kept); (6) the benchmark setup
+  checked (seamm-lammps unchanged since 2026-09-19, torch sees both A100s idle, xnns 0.4.0,
+  mdi, LAMMPS with MDI) and SEAMM job 5162 on the ``ChemAI`` queue finished. Next: (7)
+  release the held snapshot jobs (Paul's OK).
 
 4. Switch the writer to 3.0
 ---------------------------
