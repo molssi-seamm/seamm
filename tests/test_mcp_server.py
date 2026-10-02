@@ -357,9 +357,9 @@ def test_file_lists():
     assert [f["path"] for f in mcp_server._file_list(old)] == ["job.out", "1/step.out"]
 
 
-def test_dashboards_need_credentials(tmp_path, monkeypatch):
+def test_dashboards_and_credentials(tmp_path, monkeypatch):
     """The dashboards come from dashboards.ini and the credentials from seammrc,
-    which are only read."""
+    which are only read; a dashboard without credentials is used without a login."""
     import seamm_util
 
     ini = tmp_path / "dashboards.ini"
@@ -374,10 +374,9 @@ def test_dashboards_need_credentials(tmp_path, monkeypatch):
         {"name": "one", "url": "http://x:1", "credentials": True},
         {"name": "two", "url": "http://y:2", "credentials": False},
     ]
-    with pytest.raises(
-        ValueError, match="no user and password for the dashboard 'two'"
-    ):
-        mcp_server._dashboard("two")
+    # No credentials: connect without logging in (a web UI running without logins)
+    two = mcp_server._dashboard("two")
+    assert two.url == "http://y:2" and two.username is None and two.password is None
     with pytest.raises(ValueError, match="no dashboard 'three'"):
         mcp_server._dashboard("three")
     assert mcp_server._dashboard("one").url == "http://x:1"

@@ -1,6 +1,16 @@
 =======
 History
 =======
+2026.10.2 -- Flowchart format 3.0 is now written by default
+    * The editor, job submission and everything else now write flowchart format 3.0 by
+      default. 2026.10.1 still wrote 2.0 so that every installation could read 3.0
+      first. ``SEAMM_FLOWCHART_FORMAT=2.0`` writes the old format if an installation must
+      still exchange flowcharts with one older than 2026.10.1. Jobs saved in 2.0 since
+      updating to 2026.10.1 are converted by ``seamm-manager flowcharts migrate``.
+    * The MCP server's job tools now use a dashboard without credentials, as SEAMM's
+      dashboard client does: a web interface running without logins (for example one
+      listening only on 127.0.0.1) needs none, and refuses made-up ones.
+
 2026.10.1 -- Flowcharts without the editor, and flowchart format 3.0
     * Flowcharts can now be built, read, changed and checked without the graphical
       editor, with the same checks the editor makes: the ``seamm-flowchart`` command
