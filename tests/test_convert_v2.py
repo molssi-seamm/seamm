@@ -52,7 +52,7 @@ def test_junk_attributes_dropped_and_reported():
     data["nodes"][2]["attributes"]["table"] = None  # empty: not worth reporting
     converted, report = convert_v2.convert_data(rebuild(data))
     assert "calls" not in json.dumps(converted["steps"])
-    assert len(report) == 1 and "dropped attributes calls" in report[0]
+    assert len(report) == 1 and "left out calls, which is not a setting" in report[0]
 
 
 def test_legacy_lammps_minimization():
