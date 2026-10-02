@@ -34,7 +34,7 @@ but still writing 2.0, then -- once every machine has it -- writing 3.0.
 1. Before any release
 ---------------------
 
-- [ ] Full test suites of the 11 packages pass in ``~/SEAMM_DEV`` (done piecemeal; run
+- [x] Full test suites of the 11 packages pass in ``~/SEAMM_DEV`` (done piecemeal; run
   once more together).
 - [x] Fix ``Flowchart.get_nodes()`` stopping at the first loop where it matters for
   submission: ``Dashboard.submit`` uses it to find Parameters steps and the files to
@@ -188,7 +188,8 @@ small test job and check it runs and its flowchart is recorded.
 4. Switch the writer to 3.0
 ---------------------------
 
-- [ ] **seamm release 2**: ``Flowchart.write()``/``to_text()`` default to 3.0.
+- [ ] **seamm release 2** (2026.10.2): ``Flowchart.write()``/``to_text()`` default to 3.0;
+  also the MCP job tools accept dashboards without credentials. **PR #217 open.**
 - [ ] Update every installation again (as in step 3).
 - [ ] Run ``seamm-manager flowcharts migrate`` again on every migrated installation: jobs
   run between its migration and release 2 still write 2.0 (``~/SEAMM`` job 551 on).
