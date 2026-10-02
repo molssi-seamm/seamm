@@ -190,12 +190,15 @@ small test job and check it runs and its flowchart is recorded.
 
 - [x] **seamm release 2** (2026.10.2, released and on PyPI; writes 3.0 checked from PyPI): ``Flowchart.write()``/``to_text()`` default to 3.0;
   also the MCP job tools accept dashboards without credentials (PR #217).
-- [ ] Update every installation again (as in step 3), and run ``seamm-manager flowcharts
+- [x] Update every installation again (as in step 3), and run ``seamm-manager flowcharts
   migrate`` again to convert jobs saved in 2.0 in between. Package list: Zenodo
   ``10.5281/zenodo.23099647`` (seamm 2026.10.2). Done 2026-10-02, each with a test job whose
   stored flowchart is 3.0: ``~/SEAMM`` (job 552), ``~/SEAMM_DEV`` (job 4001, released
   packages only), MolSSI10 (683), paul.local ``~/SEAMM`` (4) and ``~/SEAMM_DEV`` (2) through
-  the tunnel, ARC (nothing to convert; writer 3.0). **ChemAI waits for Paul's OK.**
+  the tunnel, ARC (nothing to convert; writer 3.0), and ChemAI with Paul's OK (queue
+  empty; job 5162 converted; backup ``Jobs/seamm.db.bak-2026-10-02-055126-before-format3``;
+  job 5163 on the ``ChemAI`` queue stored 3.0; ``mdi_bind.sh`` and seamm-lammps untouched).
+  **Step 4 complete: every installation writes and holds format 3.0.**
   Note: the web UI's environment is not locked, so every ``update`` upgrades its other
   dependencies and restarts it, even when seamm-webui itself is unchanged.
 
