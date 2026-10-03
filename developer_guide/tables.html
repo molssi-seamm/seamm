@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Contributing &#8212; SEAMM 2026.10.3 documentation</title>
+    <title>Tables in a plug-in &#8212; SEAMM 2026.10.3 documentation</title>
   
   
   
@@ -54,13 +54,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/contributing';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/tables';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
 
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Campaigns" href="campaigns/index.html" />
-    <link rel="prev" title="Tables in a plug-in" href="tables.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Selecting structures in a plug-in" href="structure_selection.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2026.10.3" />
@@ -451,8 +451,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_selection.html">Selecting structures in a plug-in</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tables.html">Tables in a plug-in</a></li>
-<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Contributing</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Tables in a plug-in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="campaigns/index.html">Campaigns</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="campaigns/2026-09-30/index.html">2026-09-30 – Building flowcharts programmatically, and flowchart format 3.0</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="campaigns/2026-09-30/NOTES_phase0.html">Phase 0 – Inventory and triage (2026-09-30)</a></li>
@@ -509,7 +509,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Documentation</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Contributing</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Tables in a plug-in</span></li>
   </ul>
 </nav>
 </div>
@@ -526,111 +526,69 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h1>
-<p>Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given.</p>
-<p>You can contribute in many ways:</p>
-<section id="types-of-contributions">
-<h2>Types of Contributions<a class="headerlink" href="#types-of-contributions" title="Link to this heading">#</a></h2>
-<section id="report-bugs">
-<h3>Report Bugs<a class="headerlink" href="#report-bugs" title="Link to this heading">#</a></h3>
-<p>Report bugs at <a class="github reference external" href="https://github.com/molssi-seamm/seamm/issues">molssi-seamm/seamm#issues</a>.</p>
-<p>If you are reporting a bug, please include:</p>
-<ul class="simple">
-<li><p>Your operating system name and version.</p></li>
-<li><p>Any details about your local setup that might be helpful in troubleshooting.</p></li>
-<li><p>Detailed steps to reproduce the bug.</p></li>
-</ul>
+  <section id="tables-in-a-plug-in">
+<h1>Tables in a plug-in<a class="headerlink" href="#tables-in-a-plug-in" title="Link to this heading">#</a></h1>
+<p>A flowchart’s tables – made by the Table step, or by a step storing its results
+into a table – are kept in the job’s database, <code class="docutils literal notranslate"><span class="pre">seamm.db</span></code>, beside the
+structures (since seamm 2026.10.3; before that they were pandas DataFrames in
+memory). A table is a flowchart variable whose value is a <code class="xref py py-class docutils literal notranslate"><span class="pre">seamm.Table</span></code>,
+a handle on the data in the database.</p>
+<section id="writing-results">
+<h2>Writing results<a class="headerlink" href="#writing-results" title="Link to this heading">#</a></h2>
+<p>Most plug-ins never touch a table directly: <code class="docutils literal notranslate"><span class="pre">Node.store_results()</span></code> writes the
+results the user asked for into the tables they named, creating the table and
+its columns as needed. The column’s type and default come from the result’s
+metadata (<code class="docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="docutils literal notranslate"><span class="pre">integer</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">string</span></code>; non-scalar results are
+<code class="docutils literal notranslate"><span class="pre">json</span></code>). The value goes into the table’s <em>current row</em>; if the current row is
+past the end of the table, the write appends a row, whose other columns get
+their defaults.</p>
 </section>
-<section id="fix-bugs">
-<h3>Fix Bugs<a class="headerlink" href="#fix-bugs" title="Link to this heading">#</a></h3>
-<p>Look through the GitHub issues for bugs. Anything tagged with “bug”
-and “help wanted” is open to whoever wants to implement it.</p>
+<section id="working-with-a-table">
+<h2>Working with a table<a class="headerlink" href="#working-with-a-table" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">self.get_table(name)</span></code> returns the table, creating it if needed
+(<code class="docutils literal notranslate"><span class="pre">create=False</span></code> raises instead). Its methods:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">columns</span></code>, <code class="docutils literal notranslate"><span class="pre">n_rows</span></code>, <code class="docutils literal notranslate"><span class="pre">index_column</span></code>, <code class="docutils literal notranslate"><span class="pre">column_type(column)</span></code></dt><dd><p>The column names in order, the number of rows, the column identifying rows (or
+<code class="docutils literal notranslate"><span class="pre">None</span></code>), and a column’s declared type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">add_column(name,</span> <span class="pre">type,</span> <span class="pre">default)</span></code></dt><dd><p>Adds a column, filling existing rows with the default; does nothing if the
+column exists.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">append_row(**values)</span></code>, <code class="docutils literal notranslate"><span class="pre">append_rows([dict,</span> <span class="pre">...])</span></code></dt><dd><p>Append rows; missing columns get their defaults; the last row appended becomes
+the current row.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">current_row</span></code>, <code class="docutils literal notranslate"><span class="pre">locate(key=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">locate(position=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">next_row()</span></code></dt><dd><p>The current row, a row by its index-column value or 0-based position, and moving
+to the next row (past the last row, the next write appends one).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">set_cell(column,</span> <span class="pre">value,</span> <span class="pre">row=None)</span></code>, <code class="docutils literal notranslate"><span class="pre">get_cell(column,</span> <span class="pre">row=None)</span></code>, <code class="docutils literal notranslate"><span class="pre">get_row(row=None)</span></code></dt><dd><p>Values in a row, by default the current one.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rows(where=None)</span></code></dt><dd><p>Iterate over <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">values)</span></code>; <code class="docutils literal notranslate"><span class="pre">where</span></code> is <code class="docutils literal notranslate"><span class="pre">(column,</span> <span class="pre">operator,</span> <span class="pre">value[,</span>
+<span class="pre">value2])</span></code> with the Loop step’s operators (<code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">between</span></code>,
+<code class="docutils literal notranslate"><span class="pre">contains</span></code>, <code class="docutils literal notranslate"><span class="pre">is</span> <span class="pre">empty</span></code>, …).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">to_dataframe()</span></code>, <code class="docutils literal notranslate"><span class="pre">export(filename)</span></code>, <code class="docutils literal notranslate"><span class="pre">Table.read(...)</span></code></dt><dd><p>A pandas copy for printing, plotting or analysis (changes to it are not
+saved), writing csv/json/xlsx/txt, and reading a file into a new table.</p>
+</dd>
+</dl>
+<p>Rows are identified internally; flowcharts see a row as its index-column value,
+or its position when the table has no index column.</p>
 </section>
-<section id="implement-features">
-<h3>Implement Features<a class="headerlink" href="#implement-features" title="Link to this heading">#</a></h3>
-<p>Look through the GitHub issues for features. Anything tagged with “enhancement”
-and “help wanted” is open to whoever wants to implement it.</p>
+<section id="code-written-for-the-in-memory-tables">
+<h2>Code written for the in-memory tables<a class="headerlink" href="#code-written-for-the-in-memory-tables" title="Link to this heading">#</a></h2>
+<p>The handle still answers the old dictionary keys. <code class="docutils literal notranslate"><span class="pre">table[&quot;table&quot;]</span></code> returns a
+<em>copy</em> of the table as a DataFrame and logs a warning: changes to it are not
+saved. Assigning a DataFrame to <code class="docutils literal notranslate"><span class="pre">table[&quot;table&quot;]</span></code> replaces the table’s contents.
+<code class="docutils literal notranslate"><span class="pre">&quot;current</span> <span class="pre">index&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;index</span> <span class="pre">column&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;defaults&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;filename&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&quot;loop</span> <span class="pre">index&quot;</span></code> work as before. A plug-in that creates its own
+<code class="docutils literal notranslate"><span class="pre">{&quot;type&quot;:</span> <span class="pre">&quot;pandas&quot;,</span> <span class="pre">...}</span></code> table cannot work with this seamm; the Table, Loop,
+Properties and Geometry Analysis steps were converted, and seamm refuses, before
+the flowchart runs, older versions of them.</p>
 </section>
-<section id="write-documentation">
-<h3>Write Documentation<a class="headerlink" href="#write-documentation" title="Link to this heading">#</a></h3>
-<p>MolSSI Workflow could always use more documentation, whether as part of the
-official MolSSI Workflow docs, in docstrings, or even on the web in blog posts,
-articles, and such.</p>
-</section>
-<section id="submit-feedback">
-<h3>Submit Feedback<a class="headerlink" href="#submit-feedback" title="Link to this heading">#</a></h3>
-<p>The best way to send feedback is to file an issue at <a class="github reference external" href="https://github.com/molssi-seamm/seamm/issues">molssi-seamm/seamm#issues</a>.</p>
-<p>If you are proposing a feature:</p>
-<ul class="simple">
-<li><p>Explain in detail how it would work.</p></li>
-<li><p>Keep the scope as narrow as possible, to make it easier to implement.</p></li>
-<li><p>Remember that this is a volunteer-driven project, and that contributions
-are welcome :)</p></li>
-</ul>
-</section>
-</section>
-<section id="get-started">
-<h2>Get Started!<a class="headerlink" href="#get-started" title="Link to this heading">#</a></h2>
-<p>Ready to contribute? Here’s how to set up <cite>seamm</cite> for local development.</p>
-<ol class="arabic">
-<li><p>Fork the <cite>seamm</cite> repo on GitHub.</p></li>
-<li><p>Clone your fork locally:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your_name_here/seamm.git
-</pre></div>
-</div>
-</li>
-<li><p>Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkvirtualenv<span class="w"> </span>seamm
-$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>seamm/
-$<span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>develop
-</pre></div>
-</div>
-</li>
-<li><p>Create a branch for local development:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>name-of-your-bugfix-or-feature<span class="w"> </span>develop
-</pre></div>
-</div>
-<p>Now you can make your changes locally.</p>
-</li>
-<li><p>When you’re done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flake8<span class="w"> </span>seamm<span class="w"> </span>tests
-$<span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>or<span class="w"> </span>py.test
-$<span class="w"> </span>tox
-</pre></div>
-</div>
-<p>To get flake8 and tox, just pip install them into your virtualenv.</p>
-</li>
-<li><p>Commit your changes and push your branch to GitHub:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>.
-$<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Your detailed description of your changes."</span>
-$<span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>name-of-your-bugfix-or-feature
-</pre></div>
-</div>
-</li>
-<li><p>Submit a pull request through the GitHub website.</p></li>
-</ol>
-</section>
-<section id="pull-request-guidelines">
-<h2>Pull Request Guidelines<a class="headerlink" href="#pull-request-guidelines" title="Link to this heading">#</a></h2>
-<p>Before you submit a pull request, check that it meets these guidelines:</p>
-<ol class="arabic simple">
-<li><p>The pull request should include tests.</p></li>
-<li><p>If the pull request adds functionality, the docs should be updated. Put
-your new functionality into a function with a docstring, and add the
-feature to the list in README.rst.</p></li>
-<li><p>The pull request should work for Python 2.6, 2.7, 3.3, 3.4 and 3.5, and for PyPy. Check
-<a class="reference external" href="https://travis-ci.org/molssi-seamm/seamm/pull_requests">https://travis-ci.org/molssi-seamm/seamm/pull_requests</a>
-and make sure that the tests pass for all supported Python versions.</p></li>
-</ol>
-</section>
-<section id="tips">
-<h2>Tips<a class="headerlink" href="#tips" title="Link to this heading">#</a></h2>
-<p>To run a subset of tests:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>py.test<span class="w"> </span>tests.test_seamm
-</pre></div>
-</div>
+<section id="committing">
+<h2>Committing<a class="headerlink" href="#committing" title="Link to this heading">#</a></h2>
+<p>The job database is committed after each step (<code class="docutils literal notranslate"><span class="pre">seamm.step_completed()</span></code>,
+called by the flowchart evaluator and the Loop step). A database opened
+read-only can be read, but writing a table raises <code class="docutils literal notranslate"><span class="pre">PermissionError</span></code>.</p>
 </section>
 </section>
 
@@ -645,20 +603,20 @@ and make sure that the tests pass for all supported Python versions.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="tables.html"
+       href="structure_selection.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Tables in a plug-in</p>
+        <p class="prev-next-title">Selecting structures in a plug-in</p>
       </div>
     </a>
     <a class="right-next"
-       href="campaigns/index.html"
+       href="contributing.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Campaigns</p>
+        <p class="prev-next-title">Contributing</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -681,24 +639,17 @@ and make sure that the tests pass for all supported Python versions.</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-contributions">Types of Contributions</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#report-bugs">Report Bugs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fix-bugs">Fix Bugs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-features">Implement Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#write-documentation">Write Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#submit-feedback">Submit Feedback</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-started">Get Started!</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-guidelines">Pull Request Guidelines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tips">Tips</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-results">Writing results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#working-with-a-table">Working with a table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-written-for-the-in-memory-tables">Code written for the in-memory tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#committing">Committing</a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/developer_guide/contributing.rst.txt">
+    <a href="../_sources/developer_guide/tables.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

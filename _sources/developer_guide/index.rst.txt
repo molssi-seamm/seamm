@@ -9,5 +9,6 @@ Contents:
    installation
    usage
    structure_selection
+   tables
    contributing
    campaigns/index

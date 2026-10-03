@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.2.2 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.3 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=404ad24e"></script>
+    <script src="_static/documentation_options.js?v=f64fa391"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.2" />
+  <meta name="docsearch:version" content="2026.10.3" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.3 – Tables are stored in the job’s database</dt><dd><ul class="simple">
+<li><p>Flowchart tables – made by the Table step or by steps storing results in a
+table – are now kept in the job’s <code class="docutils literal notranslate"><span class="pre">seamm.db</span></code> instead of only in memory, so a
+job’s tables are saved with it even if it never writes them to a file. This is
+the groundwork for restarting flowcharts and running loops in parallel.</p></li>
+<li><p>A new row gets its columns’ defaults rather than NaN, so integer and boolean
+columns keep their types.</p></li>
+<li><p>Steps that handle tables directly must be new enough for this: table_step,
+loop_step, properties_step and geometry_analysis_step 2026.10.3 or later. Older
+versions are refused before the flowchart starts, with a message saying what to
+update. Plug-ins that only store results in tables need no change.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">--read-only</span></code>, tables can be read, looped over and saved to files, but a
+flowchart that writes a table stops with a clear message.</p></li>
+<li><p>The job database is committed after every step.</p></li>
+<li><p>Bugfix: older flowcharts whose steps say a structure should “be put in a new
+configuration” (and similar old wording) failed in every step that used it; the
+old wording is now understood (#221).</p></li>
+<li><p>Bugfix: a system name taken from a file parameter (a path) crashed the step
+describing it (#220).</p></li>
+<li><p>For plug-in developers: <code class="docutils literal notranslate"><span class="pre">seamm.Table</span></code> and “Tables in a plug-in” in the
+developer guide.</p></li>
+</ul>
+</dd>
 <dt>2026.10.2.2 – The MCP server offers SEAMM for property calculations</dt><dd><ul class="simple">
 <li><p>The MCP server now tells AI assistants when to offer SEAMM. Asked to calculate a
 molecular or materials property, or asked about one that can be computed, the

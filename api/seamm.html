@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.2.2 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.3 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=404ad24e"></script>
+    <script src="../_static/documentation_options.js?v=f64fa391"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.2.2" />
+  <meta name="docsearch:version" content="2026.10.3" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1159,6 +1159,24 @@ treat that as the single choice rather than a sequence of letters.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-seamm.checkpoint">
+<span id="seamm-checkpoint-module"></span><h2>seamm.checkpoint module<a class="headerlink" href="#module-seamm.checkpoint" title="Link to this heading">#</a></h2>
+<p>What happens between the steps of a running flowchart.</p>
+<p>The flowchart evaluator and the Loop step (which runs its body itself) both call
+<a class="reference internal" href="#seamm.checkpoint.step_completed" title="seamm.checkpoint.step_completed"><code class="xref py py-func docutils literal notranslate"><span class="pre">step_completed()</span></code></a> after each step, so that there is one place for it.
+Today it commits the job database; flowchart checkpointing will add to it.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.step_completed">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">step_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#step_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.step_completed" title="Link to this definition">#</a></dt>
+<dd><p>Record that a step has finished: commit the job database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>seamm.Node</em>) – The step that finished (unused for now).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3014,7 +3032,9 @@ the subsequent ones.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.get_table">
 <span class="sig-name descname"><span class="pre">get_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tablename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.get_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.get_table" title="Link to this definition">#</a></dt>
-<dd><p>Get the named table, creating if necessary</p>
+<dd><p>Get the named table (a seamm.Table), creating it if necessary.</p>
+<p>A table already in the job’s database but not yet a variable (e.g. in a
+database given with –database) is used as it is.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4139,6 +4159,255 @@ create that handler.</p>
 <dd><p>The semantic version of this module.</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-seamm.table">
+<span id="seamm-table-module"></span><h2>seamm.table module<a class="headerlink" href="#module-seamm.table" title="Link to this heading">#</a></h2>
+<p>Flowchart tables, stored in the job’s database.</p>
+<p>A table is a flowchart variable whose value is a <a class="reference internal" href="#seamm.table.Table" title="seamm.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>. The data live in
+the job’s <code class="docutils literal notranslate"><span class="pre">seamm.db</span></code> (see <code class="docutils literal notranslate"><span class="pre">molsystem.user_tables</span></code>); this object is a handle
+on them with the operations the steps need: columns, appending rows, the current
+row, cells, iterating rows, and exporting to files.</p>
+<p>Rows are identified internally; flowcharts see the index column’s value, or the
+0-based position of the row when there is no index column.</p>
+<p>For code written for the earlier in-memory tables, the handle also answers the
+old dictionary keys: <code class="docutils literal notranslate"><span class="pre">&quot;table&quot;</span></code> gives a fresh DataFrame copy (changes to it are
+not saved), <code class="docutils literal notranslate"><span class="pre">&quot;current</span> <span class="pre">index&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;index</span> <span class="pre">column&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;defaults&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;filename&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;loop</span> <span class="pre">index&quot;</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.table.Table">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A flowchart table, stored in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system_db</strong> (<em>molsystem.SystemDB</em>) – The job’s database.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The table’s name.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.add_column">
+<span class="sig-name descname"><span class="pre">add_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coltype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'string'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.add_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.add_column" title="Link to this definition">#</a></dt>
+<dd><p>Add a column, filling any existing rows with its default.</p>
+<p>Does nothing if the column exists. Returns whether it was added.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.append_row">
+<span class="sig-name descname"><span class="pre">append_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.append_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.append_row" title="Link to this definition">#</a></dt>
+<dd><p>Append a row and make it the current row. Missing columns get defaults.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.append_rows">
+<span class="sig-name descname"><span class="pre">append_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.append_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.append_rows" title="Link to this definition">#</a></dt>
+<dd><p>Append rows (dicts) and make the last one the current row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.column_type">
+<span class="sig-name descname"><span class="pre">column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.column_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.column_type" title="Link to this definition">#</a></dt>
+<dd><p>The declared type of a column: boolean, integer, float, string or json.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.columns">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">columns</span></span><a class="headerlink" href="#seamm.table.Table.columns" title="Link to this definition">#</a></dt>
+<dd><p>The column names, in order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.convert">
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.convert" title="Link to this definition">#</a></dt>
+<dd><p>Convert a value (e.g. text from a dialog) to a column’s type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.create">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.create" title="Link to this definition">#</a></dt>
+<dd><p>Create a table, replacing any existing one of that name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>columns</strong> (<em>[</em><em>(</em><a class="reference internal" href="#seamm.table.Table.name" title="seamm.table.Table.name"><em>name</em></a><em>, </em><em>type</em><em>, </em><a class="reference internal" href="#seamm.parameters.Parameter.default" title="seamm.parameters.Parameter.default"><em>default</em></a><em>)</em><em>]</em>) – <code class="docutils literal notranslate"><span class="pre">type</span></code> is boolean, integer, float, string or json; a default of None
+means the type’s default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.current_row">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current_row</span></span><a class="headerlink" href="#seamm.table.Table.current_row" title="Link to this definition">#</a></dt>
+<dd><p>The current row, or None if the next write appends a row.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.defaults">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">defaults</span></span><a class="headerlink" href="#seamm.table.Table.defaults" title="Link to this definition">#</a></dt>
+<dd><p>The default value of each column.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.export" title="Link to this definition">#</a></dt>
+<dd><p>Write the table to a file and remember the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_type</strong> (<em>str</em>) – One of .csv, .json, .xlsx or .txt; by default the file’s extension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.filename">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#seamm.table.Table.filename" title="Link to this definition">#</a></dt>
+<dd><p>The file the table was read from or last saved to, or None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.from_dataframe">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.from_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>Create a table from a DataFrame, replacing any existing one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.get_cell">
+<span class="sig-name descname"><span class="pre">get_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.get_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.get_cell" title="Link to this definition">#</a></dt>
+<dd><p>Get a value, by default from the current row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.get_row">
+<span class="sig-name descname"><span class="pre">get_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.get_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.get_row" title="Link to this definition">#</a></dt>
+<dd><p>The values in a row, by default the current row, as a dict.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.index_column">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">index_column</span></span><a class="headerlink" href="#seamm.table.Table.index_column" title="Link to this definition">#</a></dt>
+<dd><p>The column whose values identify the rows, or None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.label" title="Link to this definition">#</a></dt>
+<dd><p>How flowcharts see a row: its index-column value, or its position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.locate">
+<span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.locate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.locate" title="Link to this definition">#</a></dt>
+<dd><p>The row with the given index-column value or 0-based position.</p>
+<p>Raises KeyError if there is no such row.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.n_rows">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_rows</span></span><a class="headerlink" href="#seamm.table.Table.n_rows" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#seamm.table.Table.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.next_row">
+<span class="sig-name descname"><span class="pre">next_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.next_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.next_row" title="Link to this definition">#</a></dt>
+<dd><p>Move to the next row: past the last row, the next write appends one.</p>
+<p>Already past the last row, this does nothing, so “go to the next row” works
+at either end of a loop body that writes one row per iteration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.read">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.read" title="Link to this definition">#</a></dt>
+<dd><p>Create a table from a file, replacing any existing one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_type</strong> (<em>str</em>) – One of .csv, .json, .xlsx or .txt; by default the file’s extension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.table.Table.read_only">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read_only</span></span><a class="headerlink" href="#seamm.table.Table.read_only" title="Link to this definition">#</a></dt>
+<dd><p>Whether the table is in a read-only database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.rows">
+<span class="sig-name descname"><span class="pre">rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.rows" title="Link to this definition">#</a></dt>
+<dd><p>Iterate over (row, values) in order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>where</strong> (<em>(</em><em>column</em><em>, </em><em>operator</em><em>, </em><a class="reference internal" href="#seamm.parameters.Parameter.value" title="seamm.parameters.Parameter.value"><em>value</em></a><em>[</em><em>, </em><em>value2</em><em>]</em><em>)</em>) – Optional selection with one of <code class="docutils literal notranslate"><span class="pre">operators</span></code>. <code class="docutils literal notranslate"><span class="pre">value</span></code> is converted
+to the column’s type. <code class="docutils literal notranslate"><span class="pre">between</span></code> uses <code class="docutils literal notranslate"><span class="pre">value2</span></code> too.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.set_cell">
+<span class="sig-name descname"><span class="pre">set_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.set_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.set_cell" title="Link to this definition">#</a></dt>
+<dd><p>Set a value, by default in the current row.</p>
+<p>When the current row is past the last row, this appends the row, filling
+the other columns with their defaults, and makes it the current row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>A copy of the table as a pandas DataFrame. Changes to it are not saved.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.table.Table.to_string">
+<span class="sig-name descname"><span class="pre">to_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#Table.to_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.Table.to_string" title="Link to this definition">#</a></dt>
+<dd><p>The table as text, as the Table step prints it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.table.check_table_plugins">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">check_table_plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#check_table_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.check_table_plugins" title="Link to this definition">#</a></dt>
+<dd><p>Check, before running, that the flowchart’s table plug-ins are new enough.</p>
+<p>Returns a list of messages, empty if all is well.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm.table.file_types">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">file_types</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('.csv',</span> <span class="pre">'.json',</span> <span class="pre">'.xlsx',</span> <span class="pre">'.txt')</span></span><a class="headerlink" href="#seamm.table.file_types" title="Link to this definition">#</a></dt>
+<dd><p>The file types tables can be read from and written to.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.table.is_legacy_table">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">is_legacy_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#is_legacy_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.is_legacy_table" title="Link to this definition">#</a></dt>
+<dd><p>Whether a variable holds a table from before tables were in the database.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.table.legacy_table_error">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">legacy_table_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/table.html#legacy_table_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.table.legacy_table_error" title="Link to this definition">#</a></dt>
+<dd><p>The error for a table made by a plug-in older than tables in the database.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm.table.operators">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">operators</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('==',</span> <span class="pre">'!=',</span> <span class="pre">'&gt;',</span> <span class="pre">'&gt;=',</span> <span class="pre">'&lt;',</span> <span class="pre">'&lt;=',</span> <span class="pre">'between',</span> <span class="pre">'contains',</span> <span class="pre">'does</span> <span class="pre">not</span> <span class="pre">contain',</span> <span class="pre">'contains</span> <span class="pre">regexp',</span> <span class="pre">'does</span> <span class="pre">not</span> <span class="pre">contain</span> <span class="pre">regexp',</span> <span class="pre">'is</span> <span class="pre">empty',</span> <span class="pre">'is</span> <span class="pre">not</span> <span class="pre">empty')</span></span><a class="headerlink" href="#seamm.table.operators" title="Link to this definition">#</a></dt>
+<dd><p>The comparisons available when selecting rows.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm.table.table_plugins">
+<span class="sig-prename descclassname"><span class="pre">seamm.table.</span></span><span class="sig-name descname"><span class="pre">table_plugins</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'geometry_analysis_step':</span> <span class="pre">'2026.10.3',</span> <span class="pre">'loop_step':</span> <span class="pre">'2026.10.3',</span> <span class="pre">'properties_step':</span> <span class="pre">'2026.10.3',</span> <span class="pre">'table_step':</span> <span class="pre">'2026.10.3'}</span></span><a class="headerlink" href="#seamm.table.table_plugins" title="Link to this definition">#</a></dt>
+<dd><p>The plug-ins that handle tables directly, and the first version of each that
+uses tables in the database. Older ones cannot run with this seamm.</p>
 </dd></dl>
 
 </section>
@@ -5947,6 +6216,10 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.catalog.suggestions"><code class="docutils literal notranslate"><span class="pre">suggestions()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.checkpoint">seamm.checkpoint module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.step_completed"><code class="docutils literal notranslate"><span class="pre">step_completed()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.convert_v2">seamm.convert_v2 module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.convert_v2.ConversionError"><code class="docutils literal notranslate"><span class="pre">ConversionError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.convert_v2.convert"><code class="docutils literal notranslate"><span class="pre">convert()</span></code></a></li>
@@ -6331,6 +6604,44 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.start_node.StartNode.version"><code class="docutils literal notranslate"><span class="pre">StartNode.version</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.table">seamm.table module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.add_column"><code class="docutils literal notranslate"><span class="pre">Table.add_column()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.append_row"><code class="docutils literal notranslate"><span class="pre">Table.append_row()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.append_rows"><code class="docutils literal notranslate"><span class="pre">Table.append_rows()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.column_type"><code class="docutils literal notranslate"><span class="pre">Table.column_type()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.columns"><code class="docutils literal notranslate"><span class="pre">Table.columns</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.convert"><code class="docutils literal notranslate"><span class="pre">Table.convert()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.create"><code class="docutils literal notranslate"><span class="pre">Table.create()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.current_row"><code class="docutils literal notranslate"><span class="pre">Table.current_row</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.defaults"><code class="docutils literal notranslate"><span class="pre">Table.defaults</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.export"><code class="docutils literal notranslate"><span class="pre">Table.export()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.filename"><code class="docutils literal notranslate"><span class="pre">Table.filename</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.from_dataframe"><code class="docutils literal notranslate"><span class="pre">Table.from_dataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.get_cell"><code class="docutils literal notranslate"><span class="pre">Table.get_cell()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.get_row"><code class="docutils literal notranslate"><span class="pre">Table.get_row()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.index_column"><code class="docutils literal notranslate"><span class="pre">Table.index_column</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.label"><code class="docutils literal notranslate"><span class="pre">Table.label()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.locate"><code class="docutils literal notranslate"><span class="pre">Table.locate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.n_rows"><code class="docutils literal notranslate"><span class="pre">Table.n_rows</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.name"><code class="docutils literal notranslate"><span class="pre">Table.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.next_row"><code class="docutils literal notranslate"><span class="pre">Table.next_row()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.read"><code class="docutils literal notranslate"><span class="pre">Table.read()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.read_only"><code class="docutils literal notranslate"><span class="pre">Table.read_only</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.rows"><code class="docutils literal notranslate"><span class="pre">Table.rows()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.set_cell"><code class="docutils literal notranslate"><span class="pre">Table.set_cell()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Table.to_dataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.Table.to_string"><code class="docutils literal notranslate"><span class="pre">Table.to_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.check_table_plugins"><code class="docutils literal notranslate"><span class="pre">check_table_plugins()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.file_types"><code class="docutils literal notranslate"><span class="pre">file_types</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.is_legacy_table"><code class="docutils literal notranslate"><span class="pre">is_legacy_table()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.legacy_table_error"><code class="docutils literal notranslate"><span class="pre">legacy_table_error()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.operators"><code class="docutils literal notranslate"><span class="pre">operators</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.table.table_plugins"><code class="docutils literal notranslate"><span class="pre">table_plugins</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_edge">seamm.tk_edge module</a><ul class="pst-show_toc_level nav section-nav flex-column">

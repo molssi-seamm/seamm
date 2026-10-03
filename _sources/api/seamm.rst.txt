@@ -28,6 +28,14 @@ seamm.catalog module
    :show-inheritance:
    :undoc-members:
 
+seamm.checkpoint module
+-----------------------
+
+.. automodule:: seamm.checkpoint
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm.convert\_v2 module
 ------------------------
 
@@ -184,6 +192,14 @@ seamm.start\_node module
 ------------------------
 
 .. automodule:: seamm.start_node
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.table module
+------------------
+
+.. automodule:: seamm.table
    :members:
    :show-inheritance:
    :undoc-members:
