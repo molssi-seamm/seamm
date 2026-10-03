@@ -4,6 +4,7 @@ humanize
 jinja2
 molsystem>=2026.10.3
 numpy
+openpyxl
 packaging
 pandas
 pillow
