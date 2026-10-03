@@ -550,6 +550,21 @@ class Parameter(collections.abc.MutableMapping):
         logger.debug("\nParameter instance:\n{}".format(pprint.pformat(self._data)))
 
 
+#: Values that older flowcharts hold for parameters whose choices have since
+#: been renamed: {parameter: {old value: new value}}.
+_legacy_values = {
+    "structure handling": {
+        "overwrite the current configuration": "Overwrite the current configuration",
+        "be put in a new configuration": "Create a new configuration",
+        "be put in a new system": "Create a new system and configuration",
+        "be put in a new system and configuration": (
+            "Create a new system and configuration"
+        ),
+        "be discarded": "Discard the structure",
+    },
+}
+
+
 class Parameters(collections.abc.MutableMapping):
     """A dict-like container for parameters"""
 
@@ -676,6 +691,26 @@ class Parameters(collections.abc.MutableMapping):
     def update(self, data):
         for key in data:
             self[key].update(data[key])
+        self._translate_legacy_values()
+
+    def _translate_legacy_values(self):
+        """Translate values saved under spellings that are no longer choices.
+
+        Only when the parameter's choices hold the new spelling and not the old
+        one, so plug-ins that still use the old spellings are left alone.
+        """
+        for key, translations in _legacy_values.items():
+            if key not in self:
+                continue
+            parameter = self[key]
+            value = parameter.value
+            if not isinstance(value, str) or value not in translations:
+                continue
+            enumeration = parameter.enumeration or ()
+            new = translations[value]
+            if new in enumeration and value not in enumeration:
+                logger.info(f"Translated the old value '{value}' of '{key}' to '{new}'")
+                parameter.value = new
 
     def values_to_dict(self):
         """Return a dict of the raw values of the parameters

@@ -412,6 +412,8 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
 
 
 def safe_format(__s, *args, **kwargs):
+    # The text may be e.g. a Path, from a file parameter (seamm#220).
+    __s = str(__s)
     while True:
         try:
             return __s.format(*args, **kwargs)

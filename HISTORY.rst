@@ -1,6 +1,28 @@
 =======
 History
 =======
+2026.10.3 -- Tables are stored in the job's database
+    * Flowchart tables -- made by the Table step or by steps storing results in a
+      table -- are now kept in the job's ``seamm.db`` instead of only in memory, so a
+      job's tables are saved with it even if it never writes them to a file. This is
+      the groundwork for restarting flowcharts and running loops in parallel.
+    * A new row gets its columns' defaults rather than NaN, so integer and boolean
+      columns keep their types.
+    * Steps that handle tables directly must be new enough for this: table_step,
+      loop_step, properties_step and geometry_analysis_step 2026.10.3 or later. Older
+      versions are refused before the flowchart starts, with a message saying what to
+      update. Plug-ins that only store results in tables need no change.
+    * With ``--read-only``, tables can be read, looped over and saved to files, but a
+      flowchart that writes a table stops with a clear message.
+    * The job database is committed after every step.
+    * Bugfix: older flowcharts whose steps say a structure should "be put in a new
+      configuration" (and similar old wording) failed in every step that used it; the
+      old wording is now understood (#221).
+    * Bugfix: a system name taken from a file parameter (a path) crashed the step
+      describing it (#220).
+    * For plug-in developers: ``seamm.Table`` and "Tables in a plug-in" in the
+      developer guide.
+
 2026.10.2.2 -- The MCP server offers SEAMM for property calculations
     * The MCP server now tells AI assistants when to offer SEAMM. Asked to calculate a
       molecular or materials property, or asked about one that can be computed, the
