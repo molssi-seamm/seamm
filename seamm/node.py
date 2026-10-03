@@ -22,7 +22,6 @@ import string
 import traceback
 
 import numpy as np
-import pandas
 import uuid
 
 from molsystem import spin_states
@@ -832,25 +831,29 @@ class Node(collections.abc.Hashable):
         )
 
     def get_table(self, tablename, create=True):
-        """Get the named table, creating if necessary"""
-        if not self.variable_exists(tablename):
-            # Create the table if allowed to.
-            if not create:
-                raise RuntimeError(f"Table {tablename} does not exist.")
-            table = pandas.DataFrame()
-            self.set_variable(
-                tablename,
-                {
-                    "type": "pandas",
-                    "table": table,
-                    "defaults": {},
-                    "loop index": False,
-                    "current index": 0,
-                    "index column": None,
-                },
+        """Get the named table (a seamm.Table), creating it if necessary.
+
+        A table already in the job's database but not yet a variable (e.g. in a
+        database given with --database) is used as it is.
+        """
+        if self.variable_exists(tablename):
+            table = self.get_variable(tablename)
+            if isinstance(table, seamm.Table):
+                return table
+            if seamm.table.is_legacy_table(table):
+                raise seamm.table.legacy_table_error(tablename)
+            raise RuntimeError(
+                f"Variable '{tablename}' is not a table: {type(table).__name__}"
             )
-        table_handle = self.get_variable(tablename)
-        return table_handle["table"]
+        system_db = self.get_variable("_system_db")
+        if tablename in system_db.user_tables:
+            table = seamm.Table(system_db, tablename)
+        elif create:
+            table = seamm.Table.create(system_db, tablename)
+        else:
+            raise RuntimeError(f"Table '{tablename}' does not exist.")
+        self.set_variable(tablename, table)
+        return table
 
     def glob_data_files(self, pattern):
         """Using the data_path, glob for files.
@@ -1463,29 +1466,7 @@ class Node(collections.abc.Hashable):
                 column = self.get_value(
                     value["column"].replace("{model}", str(self.model))
                 )
-                # Does the table exist?
-                if not self.variable_exists(tablename):
-                    # Create the table if allowed to.
-                    if create_tables:
-                        table = pandas.DataFrame()
-                        self.set_variable(
-                            tablename,
-                            {
-                                "type": "pandas",
-                                "table": table,
-                                "defaults": {},
-                                "loop index": False,
-                                "current index": 0,
-                                "index column": None,
-                            },
-                        )
-                    else:
-                        raise RuntimeError(
-                            "Table '{}' does not exist.".format(tablename)
-                        )
-
-                table_handle = self.get_variable(tablename)
-                table = table_handle["table"]
+                table = self.get_table(tablename, create=create_tables)
 
                 # create the column as needed handling "key"ed columns
                 # Special case: if there is only one key, the value can be put
@@ -1510,25 +1491,11 @@ class Node(collections.abc.Hashable):
                                     units = results[key]["units"]
                                 keyed_column += f" ({units})"
                         if keyed_column not in table.columns:
-                            if result_metadata["dimensionality"] == "scalar":
-                                kind = result_metadata["type"]
-                                if kind == "boolean":
-                                    default = False
-                                elif kind == "integer":
-                                    default = 0
-                                elif kind == "float":
-                                    default = np.nan
-                                else:
-                                    default = ""
-                            else:
-                                kind = "json"
-                                default = ""
-
-                            table_handle["defaults"][keyed_column] = default
-                            table[keyed_column] = default
+                            table.add_column(
+                                keyed_column, *_column_type(result_metadata)
+                            )
 
                         # Convert the value to the requested units and put in table.
-                        row_index = table_handle["current index"]
                         if "units" in results[key]:
                             units = results[key]["units"]
                             if "units" in result_metadata:
@@ -1536,21 +1503,21 @@ class Node(collections.abc.Hashable):
                                 if units != current_units:
                                     if result_metadata["dimensionality"] == "scalar":
                                         tmp = Q_(value, current_units)
-                                        table.at[row_index, keyed_column] = tmp.m_as(
-                                            units
-                                        )
+                                        table.set_cell(keyed_column, tmp.m_as(units))
                                     else:
                                         factor = Q_(1, current_units).m_as(units)
                                         tmp = scale(value, factor)
-                                        table.at[row_index, keyed_column] = json.dumps(
-                                            tmp, separators=(",", ":")
+                                        table.set_cell(
+                                            keyed_column,
+                                            json.dumps(tmp, separators=(",", ":")),
                                         )
                                 else:
                                     if result_metadata["dimensionality"] == "scalar":
-                                        table.at[row_index, keyed_column] = value
+                                        table.set_cell(keyed_column, value)
                                     else:
-                                        table.at[row_index, keyed_column] = json.dumps(
-                                            value, separators=(",", ":")
+                                        table.set_cell(
+                                            keyed_column,
+                                            json.dumps(value, separators=(",", ":")),
                                         )
                             else:
                                 raise RuntimeError(
@@ -1558,10 +1525,11 @@ class Node(collections.abc.Hashable):
                                 )
                         else:
                             if result_metadata["dimensionality"] == "scalar":
-                                table.at[row_index, keyed_column] = value
+                                table.set_cell(keyed_column, value)
                             else:
-                                table.at[row_index, keyed_column] = json.dumps(
-                                    value, separators=(",", ":")
+                                table.set_cell(
+                                    keyed_column,
+                                    json.dumps(value, separators=(",", ":")),
                                 )
                 else:
                     if column not in table.columns:
@@ -1571,25 +1539,9 @@ class Node(collections.abc.Hashable):
                                 units = results[key]["units"]
                             column += f" ({units})"
                     if column not in table.columns:
-                        if result_metadata["dimensionality"] == "scalar":
-                            kind = result_metadata["type"]
-                            if kind == "boolean":
-                                default = False
-                            elif kind == "integer":
-                                default = 0
-                            elif kind == "float":
-                                default = np.nan
-                            else:
-                                default = ""
-                        else:
-                            kind = "json"
-                            default = ""
-
-                        table_handle["defaults"][column] = default
-                        table[column] = default
+                        table.add_column(column, *_column_type(result_metadata))
 
                     # Convert the value to the requested units and put in table.
-                    row_index = table_handle["current index"]
                     if "units" in results[key]:
                         units = results[key]["units"]
                         if "units" in result_metadata:
@@ -1598,37 +1550,39 @@ class Node(collections.abc.Hashable):
                                 if result_metadata["dimensionality"] == "scalar":
                                     tmp = Q_(data[key], current_units)
                                     if units in def_fmt:
-                                        table.at[row_index, column] = round(
-                                            tmp.m_as(units), def_fmt[units]
+                                        table.set_cell(
+                                            column,
+                                            round(tmp.m_as(units), def_fmt[units]),
                                         )
                                     else:
-                                        table.at[row_index, column] = tmp.m_as(units)
+                                        table.set_cell(column, tmp.m_as(units))
                                 else:
                                     factor = Q_(1, current_units).m_as(units)
                                     tmp = scale(data[key], factor)
-                                    table.at[row_index, column] = json.dumps(
-                                        tmp, separators=(",", ":")
+                                    table.set_cell(
+                                        column, json.dumps(tmp, separators=(",", ":"))
                                     )
                             else:
                                 if result_metadata["dimensionality"] == "scalar":
                                     if units in def_fmt:
-                                        table.at[row_index, column] = round(
-                                            data[key], def_fmt[units]
+                                        table.set_cell(
+                                            column, round(data[key], def_fmt[units])
                                         )
                                     else:
-                                        table.at[row_index, column] = data[key]
+                                        table.set_cell(column, data[key])
                                 else:
-                                    table.at[row_index, column] = json.dumps(
-                                        data[key], separators=(",", ":")
+                                    table.set_cell(
+                                        column,
+                                        json.dumps(data[key], separators=(",", ":")),
                                     )
                         else:
                             raise RuntimeError("Problem with units handling results!")
                     else:
                         if result_metadata["dimensionality"] == "scalar":
-                            table.at[row_index, column] = data[key]
+                            table.set_cell(column, data[key])
                         else:
-                            table.at[row_index, column] = json.dumps(
-                                data[key], separators=(",", ":")
+                            table.set_cell(
+                                column, json.dumps(data[key], separators=(",", ":"))
                             )
 
         # Save the data as JSON
@@ -1740,3 +1694,17 @@ class Node(collections.abc.Hashable):
             )
 
         return result
+
+
+def _column_type(result_metadata):
+    """The table column type and default for a result, from its metadata."""
+    if result_metadata["dimensionality"] == "scalar":
+        kind = result_metadata["type"]
+        if kind == "boolean":
+            return "boolean", False
+        if kind == "integer":
+            return "integer", 0
+        if kind == "float":
+            return "float", np.nan
+        return "string", ""
+    return "json", ""
