@@ -70,6 +70,9 @@ class Table:
     def __init__(self, system_db, name):
         self._system_db = system_db
         self._name = name
+        # Navigation state (current row, loop flag, file) kept here when the
+        # database is read-only, so that reading a table still works.
+        self._local = {}
         if name not in system_db.user_tables:
             raise KeyError(f"There is no table '{name}'.")
 
@@ -113,7 +116,11 @@ class Table:
         if file_type == ".csv":
             df = pandas.read_csv(filename, index_col=False)
         elif file_type == ".json":
-            df = pandas.read_json(filename)
+            # export() writes orient="table", which keeps the index and types.
+            try:
+                df = pandas.read_json(filename, orient="table")
+            except Exception:
+                df = pandas.read_json(filename)
         elif file_type == ".xlsx":
             df = pandas.read_excel(filename, index_col=False)
         elif file_type == ".txt":
@@ -123,6 +130,9 @@ class Table:
                 f"Cannot read tables from files of type '{file_type}' ('{filename}'). "
                 f"Known types: {', '.join(file_types)}"
             )
+        if df.index.name is not None:
+            # e.g. a JSON file written with its index
+            df = df.reset_index()
         if index_column is not None and index_column not in df.columns:
             columns = ", ".join(str(c) for c in df.columns)
             raise ValueError(
@@ -169,11 +179,38 @@ class Table:
     @property
     def filename(self):
         """The file the table was read from or last saved to, or None."""
-        return self._table.metadata.get("filename")
+        return self._get_state("filename")
 
     @filename.setter
     def filename(self, value):
-        self._table.set_metadata("filename", None if value is None else str(value))
+        self._set_state("filename", None if value is None else str(value))
+
+    @property
+    def read_only(self):
+        """Whether the table is in a read-only database."""
+        return self._system_db.user_tables.read_only
+
+    def _get_state(self, key):
+        """Navigation state: the current row, the loop flag or the file."""
+        if key in self._local:
+            return self._local[key]
+        if key == "current_row":
+            return self._table.current_row
+        return self._table.metadata.get(key)
+
+    def _set_state(self, key, value):
+        if key == "current_row":
+            table = self._table
+            if value is not None and not table.has_row(value):
+                raise KeyError(f"Table '{self._name}' has no row with id {value}.")
+            if self.read_only:
+                self._local[key] = value
+            else:
+                table.current_row = value
+        elif self.read_only:
+            self._local[key] = value
+        else:
+            self._table.set_metadata(key, value)
 
     def column_type(self, column):
         """The declared type of a column: boolean, integer, float, string or json."""
@@ -198,11 +235,11 @@ class Table:
     @property
     def current_row(self):
         """The current row, or None if the next write appends a row."""
-        return self._table.current_row
+        return self._get_state("current_row")
 
     @current_row.setter
     def current_row(self, row):
-        self._table.current_row = row
+        self._set_state("current_row", row)
 
     def locate(self, key=None, position=None):
         """The row with the given index-column value or 0-based position.
@@ -244,10 +281,9 @@ class Table:
         Already past the last row, this does nothing, so "go to the next row" works
         at either end of a loop body that writes one row per iteration.
         """
-        table = self._table
-        current = table.current_row
+        current = self.current_row
         if current is not None:
-            table.current_row = table.next_rowid(current)
+            self.current_row = self._table.next_rowid(current)
 
     def set_cell(self, column, value, row=None):
         """Set a value, by default in the current row.
@@ -257,7 +293,7 @@ class Table:
         """
         table = self._table
         if row is None:
-            row = table.current_row
+            row = self.current_row
             if row is None:
                 table.append_row(**{column: value})
                 return
@@ -267,7 +303,7 @@ class Table:
         """Get a value, by default from the current row."""
         table = self._table
         if row is None:
-            row = table.current_row
+            row = self.current_row
             if row is None:
                 raise IndexError(
                     f"Table '{self._name}' has no current row: it is past the last "
@@ -402,7 +438,7 @@ class Table:
                 raise KeyError("filename")
             return filename
         if key == "loop index":
-            return self._table.metadata.get("loop index", False)
+            return bool(self._get_state("loop index"))
         raise KeyError(key)
 
     def __setitem__(self, key, value):
@@ -416,17 +452,23 @@ class Table:
         elif key == "filename":
             self.filename = value
         elif key == "loop index":
-            self._table.set_metadata("loop index", bool(value) or None)
+            self._set_state("loop index", bool(value) or None)
         elif key == "table" and isinstance(value, pandas.DataFrame):
-            # Replace the contents, keeping the name, index column and file.
+            # Replace the contents, keeping the name, index column, file and the
+            # declared types and defaults of the columns that remain.
             index = self.index_column
-            metadata = self._table.metadata
-            Table.from_dataframe(
-                self._system_db,
+            df = value
+            if df.index.name is not None:
+                df = df.reset_index()
+            if index is not None and index not in df.columns:
+                index = None
+            self._system_db.user_tables.from_dataframe(
                 self._name,
-                value,
+                df,
                 index_column=index,
-                metadata=metadata,
+                metadata=self._table.metadata,
+                replace=True,
+                definitions=self._table.column_definitions,
             )
             self.current_row = (
                 self._table.rowid_at(self.n_rows - 1) if self.n_rows > 0 else None
@@ -437,6 +479,14 @@ class Table:
 
 def _test(row_value, op, value, value2=None):
     """Whether a value passes one of the row-selection tests."""
+    if op == "is empty":
+        return row_value is None or row_value == "" or _isnan(row_value)
+    if op == "is not empty":
+        return not (row_value is None or row_value == "" or _isnan(row_value))
+    if row_value is None or _isnan(row_value):
+        # A missing value fails every test except the negative ones, as NaN did
+        # for the comparisons.
+        return op == "!=" or op.startswith("does not")
     if op == "==":
         return row_value == value
     if op == "!=":

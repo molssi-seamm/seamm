@@ -17,6 +17,7 @@ from seamm.variables import Variables  # noqa: F401
 from seamm.variables import flowchart_variables  # noqa: F401
 import seamm.table  # noqa: F401
 from seamm.table import Table  # noqa: F401
+from seamm.checkpoint import step_completed  # noqa: F401
 from seamm.plugin_manager import PluginManager  # noqa: F401
 from seamm.flowchart import Flowchart  # noqa: F401
 from seamm.tk_flowchart import TkFlowchart  # noqa: F401

@@ -306,3 +306,88 @@ def test_check_table_plugins(monkeypatch):
         _Plugin, "version", property(lambda self: "2026.9.30+3.g1234abc.dirty")
     )
     assert seamm.table.check_table_plugins(flowchart) == []
+
+
+def test_read_only_navigation(tmp_path):
+    """In a read-only database, tables can be navigated, looped over and saved."""
+    path = tmp_path / "seamm.db"
+    db = molsystem.SystemDB(filename=str(path))
+    table = seamm.Table.create(db, "T", columns=[("x", "integer", None)])
+    table.append_rows([{"x": 1}, {"x": 2}])
+    db.db.commit()
+    db.close()
+
+    db = molsystem.SystemDB(filename=f"file:{path}?mode=ro")
+    table = seamm.Table(db, "T")
+    assert table.read_only
+    table["loop index"] = True
+    assert table["loop index"] is True
+    seen = []
+    for row, values in table.rows():
+        table.current_row = row
+        seen.append(table.get_cell("x"))
+    assert seen == [1, 2]
+    table.next_row()
+    assert table.current_row is None
+    out = tmp_path / "t.csv"
+    table.export(str(out))
+    assert out.read_text() == "x\n1\n2\n"
+    assert table.filename == str(out)
+    with pytest.raises(PermissionError, match="read-only"):
+        table.set_cell("x", 3, row=table.locate(position=0))
+    db.close()
+
+
+def test_missing_values_in_selection(system_db):
+    """Missing values fail the tests instead of raising, as NaN did."""
+    table = seamm.Table.create(
+        system_db, "T", columns=[("n", "integer", None), ("s", "string", None)]
+    )
+    table.append_rows([{"n": 1, "s": "ab"}, {"n": 2, "s": "cd"}])
+    table.set_cell("n", None, row=table.locate(position=0))
+    table.set_cell("s", None, row=table.locate(position=0))
+
+    def count(where):
+        return len(list(table.rows(where=where)))
+
+    assert count(("n", ">", "0")) == 1
+    assert count(("n", "between", "0", "5")) == 1
+    assert count(("s", "contains", "c")) == 1
+    assert count(("s", "does not contain", "c")) == 1
+    assert count(("n", "!=", "2")) == 1
+    assert count(("s", "is empty", "")) == 1
+
+
+def test_replace_keeps_declared_types(system_db):
+    table = seamm.Table.create(
+        system_db,
+        "T",
+        columns=[("name", "string", None), ("j", "json", None)],
+        index_column="name",
+    )
+    df = pandas.DataFrame({"name": ["a"], "j": ["[1]"], "x": [1.5]})
+    table["table"] = df
+    assert table.column_type("j") == "json"
+    assert table.column_type("x") == "float"
+    assert table.index_column == "name"
+
+
+def test_json_round_trip(system_db, tmp_path):
+    table = seamm.Table.create(
+        system_db,
+        "T",
+        columns=[("name", "string", None), ("x", "float", None)],
+        index_column="name",
+    )
+    table.append_rows([{"name": "a", "x": 1.5}, {"name": "b", "x": 2.5}])
+    path = tmp_path / "t.json"
+    table.export(str(path))
+    copy = seamm.Table.read(system_db, "U", str(path), index_column="name")
+    assert copy.to_dataframe().equals(table.to_dataframe())
+
+
+def test_step_completed_commits(system_db):
+    seamm.Table.create(system_db, "T", columns=[("x", "integer", None)]).append_row(x=1)
+    assert system_db.db.in_transaction
+    seamm.step_completed()
+    assert not system_db.db.in_transaction
