@@ -2,7 +2,7 @@ bibtexparser<2
 fasteners
 humanize
 jinja2
-molsystem
+molsystem>=2026.10.3
 numpy
 packaging
 pandas

@@ -537,10 +537,10 @@ def legacy_table_error(name):
 #: The plug-ins that handle tables directly, and the first version of each that
 #: uses tables in the database. Older ones cannot run with this seamm.
 table_plugins = {
-    "table_step": "2026.10.4",
-    "loop_step": "2026.10.4",
-    "properties_step": "2026.10.4",
-    "geometry_analysis_step": "2026.10.4",
+    "table_step": "2026.10.3",
+    "loop_step": "2026.10.3",
+    "properties_step": "2026.10.3",
+    "geometry_analysis_step": "2026.10.3",
 }
 
 
