@@ -367,6 +367,20 @@ def _id(node):
     return None if node is None else [str(x) for x in node._id]
 
 
+def find_node(flowchart, node_id):
+    """The node of the flowchart with the given id (a list of strings), or None.
+
+    Searches the whole graph rather than following the steps, which cannot get
+    past a Loop. Ids are unique once the flowchart's ids are set, and a Loop sets
+    the ids of its body for each iteration.
+    """
+    target = [str(x) for x in node_id]
+    for node in flowchart:
+        if node._id is not None and _id(node) == target:
+            return node
+    return None
+
+
 def _package_versions(flowchart):
     """The versions of seamm and of the packages of the flowchart's steps."""
     packages = {"seamm", "molsystem", "seamm_exec", "seamm_util"}
@@ -430,7 +444,7 @@ class Checkpointer:
             self.frames = [{"node": _id(first_node)}]
             return first_node
         target = self.resume["position"][0]["node"]
-        node = self._find(first_node, target, stop=None)
+        node = find_node(self.flowchart, target)
         if node is None:
             raise CheckpointError(
                 f"Cannot find step {'.'.join(target)} to resume at in the flowchart."
@@ -439,18 +453,6 @@ class Checkpointer:
         if "loop" not in self.resume["position"][0]:
             self.resume = None
         return node
-
-    @staticmethod
-    def _find(start, target, stop):
-        """Follow 'next' from start to the node whose id is target."""
-        node = start
-        seen = set()
-        while node is not None and node is not stop and id(node) not in seen:
-            seen.add(id(node))
-            if _id(node) == list(target):
-                return node
-            node = node.next()
-        return None
 
     def restore_variables(self, variables):
         """Put the checkpointed variables into the flowchart's variables."""
@@ -544,6 +546,9 @@ class Checkpointer:
         self.frames[level]["loop"] = state
         del self.frames[level + 1 :]
         self.frames.append({"node": _id(first_node)})
+        # Written now, so the iteration's set-up (its directory name, current
+        # row, ...) is on record before its body runs.
+        self.write()
 
     def iteration_failed(self, loop, node):
         """A Loop caught an error in its body and continues: keep the writes."""
