@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; SEAMM 2026.10.3 documentation</title>
+    <title>Index &#8212; SEAMM 2026.10.4 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=f64fa391"></script>
+    <script src="_static/documentation_options.js?v=3dc6335c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.4" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -616,6 +616,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.spec.changed_parameters">changed_parameters() (in module seamm.spec)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.changed_versions">changed_versions() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.tk_node.TkNode.check_anchor_points">check_anchor_points() (seamm.tk_node.TkNode method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_job_handler.TkJobHandler.check_status_cb">check_status_cb() (seamm.tk_job_handler.TkJobHandler method)</a>
@@ -623,6 +625,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="api/seamm.html#seamm.table.check_table_plugins">check_table_plugins() (in module seamm.table)</a>
 </li>
       <li><a href="api/seamm.html#seamm.builder.check_value">check_value() (in module seamm.builder)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.node.Node.checkpoint_variable">checkpoint_variable() (seamm.node.Node method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer">Checkpointer (class in seamm.checkpoint)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.CheckpointError">CheckpointError</a>
 </li>
       <li><a href="api/seamm.html#seamm.parameters.Parameters.choices">choices() (seamm.parameters.Parameters method)</a>
 </li>
@@ -784,6 +792,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.debug_print">debug_print() (seamm.parameters.Parameter method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.decode_value">decode_value() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.default">default (seamm.parameters.Parameter property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.node.Node.default_edge_subtype">default_edge_subtype() (seamm.node.Node method)</a>
@@ -814,6 +824,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul></li>
       <li><a href="api/seamm.html#seamm.parameters.Parameters.describe_condition">describe_condition() (seamm.parameters.Parameters method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.describe_position">describe_position() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.mcp_server.describe_step">describe_step() (in module seamm.mcp_server)</a>
 </li>
       <li><a href="api/seamm.html#seamm.node.Node.description">description (seamm.node.Node property)</a>
@@ -822,14 +834,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#seamm.parameters.Parameter.description">(seamm.parameters.Parameter property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.builtins.JoinStep.description">description() (seamm.builtins.JoinStep method)</a>
 
       <ul>
         <li><a href="api/seamm.html#seamm.builtins.SplitStep.description">(seamm.builtins.SplitStep method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.join_node.Join.description_text">description_text() (seamm.join_node.Join method)</a>
 
       <ul>
@@ -855,6 +867,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="api/seamm.html#seamm.tk_open.TkOpen.directory_cb">directory_cb() (seamm.tk_open.TkOpen method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_job_handler.TkJobHandler.display_dashboards">display_dashboards() (seamm.tk_job_handler.TkJobHandler method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.document">document() (seamm.checkpoint.Checkpointer method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.double_click">double_click() (seamm.tk_flowchart.TkFlowchart method)</a>
 
@@ -924,9 +938,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul></li>
       <li><a href="api/seamm.html#seamm.tk_job_handler.TkJobHandler.edit_cb">edit_cb() (seamm.tk_job_handler.TkJobHandler method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.edit.EditError">EditError</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/seamm.html#seamm.edit.EditError">EditError</a>
+      <li><a href="api/seamm.html#seamm.checkpoint.encode_value">encode_value() (in module seamm.checkpoint)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.end_move">end_move() (seamm.tk_flowchart.TkFlowchart method)</a>
 
@@ -934,6 +950,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#seamm.tk_node.TkNode.end_move">(seamm.tk_node.TkNode method)</a>
 </li>
       </ul></li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.enter_iteration">enter_iteration() (seamm.checkpoint.Checkpointer method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.enumeration">enumeration (seamm.parameters.Parameter property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.catalog.enumeration_of">enumeration_of() (in module seamm.catalog)</a>
@@ -976,6 +994,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.find_items">find_items() (seamm.tk_flowchart.TkFlowchart method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.find_node">find_node() (in module seamm.checkpoint)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.finish">finish() (seamm.checkpoint.Checkpointer method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.tk_job_handler.TkJobHandler.fit_dialog">fit_dialog() (seamm.tk_job_handler.TkJobHandler method)</a>
 
       <ul>
@@ -992,6 +1014,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/seamm.html#seamm.checkpoint.flowchart_fingerprint">flowchart_fingerprint() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.flowchart_search">flowchart_search() (seamm.tk_flowchart.TkFlowchart method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.mcp_server.flowchart_tree">flowchart_tree() (in module seamm.mcp_server)</a>
@@ -1052,6 +1076,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul></li>
       <li><a href="api/seamm.html#seamm.table.Table.get_cell">get_cell() (seamm.table.Table method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.get_checkpointer">get_checkpointer() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_configuration">get_configuration() (seamm.dashboard_handler.DashboardHandler method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.dashboard_handler.DashboardHandler.get_credentials">get_credentials() (seamm.dashboard_handler.DashboardHandler method)</a>
@@ -1074,10 +1100,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.table.Table.get_row">get_row() (seamm.table.Table method)</a>
 </li>
-      <li><a href="api/seamm.html#seamm.node.Node.get_system_configuration">get_system_configuration() (seamm.node.Node method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/seamm.html#seamm.node.Node.get_system_configuration">get_system_configuration() (seamm.node.Node method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.node.Node.get_table">get_table() (seamm.node.Node method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.get_tags">get_tags() (seamm.tk_flowchart.TkFlowchart method)</a>
@@ -1192,10 +1218,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.mcp_server.insert_step">insert_step() (in module seamm.mcp_server)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.flowchart.Flowchart.is_development">is_development (seamm.flowchart.Flowchart property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.is_expr">is_expr (seamm.parameters.Parameter property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.node.Node.is_expr">is_expr() (seamm.node.Node static method)</a>
@@ -1221,6 +1247,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="api/seamm.html#seamm.format3.Item">Item (class in seamm.format3)</a>
 </li>
       <li><a href="api/seamm.html#seamm.seammrc.SEAMMrc.items">items() (seamm.seammrc.SEAMMrc method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.iteration_failed">iteration_failed() (seamm.checkpoint.Checkpointer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1280,6 +1308,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.tk_node.TkNode.layout_structure_selection">layout_structure_selection() (seamm.tk_node.TkNode method)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.leave_loop">leave_loop() (seamm.checkpoint.Checkpointer method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.table.legacy_table_error">legacy_table_error() (in module seamm.table)</a>
 </li>
       <li><a href="api/seamm.html#seamm.mcp_server.list_dashboards">list_dashboards() (in module seamm.mcp_server)</a>
@@ -1316,6 +1346,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#seamm.builder.Step.loop">(seamm.builder.Step method)</a>
 </li>
       </ul></li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.loop_resume">loop_resume() (seamm.checkpoint.Checkpointer method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1331,6 +1363,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.master">master (seamm.tk_flowchart.TkFlowchart property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.flowchart_cli.mcp_command">mcp_command() (in module seamm.flowchart_cli)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Unrestorable.message">message (seamm.checkpoint.Unrestorable property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.builder.FlowchartBuilder.metadata">metadata (seamm.builder.FlowchartBuilder property)</a>
 
@@ -1519,6 +1553,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/seamm.html#seamm.checkpoint.package_versions">package_versions() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter">Parameter (class in seamm.parameters)</a>
 </li>
       <li><a href="api/seamm.html#seamm.catalog.parameter_info">parameter_info() (in module seamm.catalog)</a>
@@ -1545,10 +1581,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.plugin_manager.PluginManager.plugins">plugins() (seamm.plugin_manager.PluginManager method)</a>
 </li>
-      <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.pop">pop() (seamm.tk_flowchart.TkFlowchart method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.pop">pop() (seamm.tk_flowchart.TkFlowchart method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.pop_and_discard">pop_and_discard() (seamm.tk_flowchart.TkFlowchart method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.preferences">preferences() (seamm.tk_flowchart.TkFlowchart method)</a>
@@ -1605,6 +1641,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#seamm.table.Table.read">(seamm.table.Table class method)</a>
 </li>
       </ul></li>
+      <li><a href="api/seamm.html#seamm.checkpoint.read_checkpoint">read_checkpoint() (in module seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.mcp_server.read_job_file">read_job_file() (in module seamm.mcp_server)</a>
 </li>
       <li><a href="api/seamm.html#seamm.table.Table.read_only">read_only (seamm.table.Table property)</a>
@@ -1649,10 +1687,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.reset">reset() (seamm.parameters.Parameter method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.tk_job_handler.TkJobHandler.reset_description">reset_description() (seamm.tk_job_handler.TkJobHandler method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.tk_node.TkNode.reset_dialog">reset_dialog() (seamm.tk_node.TkNode method)</a>
 
       <ul>
@@ -1678,6 +1716,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="api/seamm.html#seamm.catalog.Catalog.resolve">resolve() (seamm.catalog.Catalog method)</a>
 </li>
       <li><a href="api/seamm.html#seamm.format3.restore_tables">restore_tables() (in module seamm.format3)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.node.Node.restore_variable">restore_variable() (seamm.node.Node method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.restore_variables">restore_variables() (seamm.checkpoint.Checkpointer method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.resumable">resumable() (in module seamm.checkpoint)</a>
 </li>
       <li><a href="api/seamm.html#seamm.tk_flowchart.TkFlowchart.right_click">right_click() (seamm.tk_flowchart.TkFlowchart method)</a>
 
@@ -1940,8 +1984,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#module-seamm.tk_node">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     seamm.tk_open
 
@@ -1949,6 +1991,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><a href="api/seamm.html#module-seamm.tk_open">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     seamm.tk_publish
 
@@ -2008,6 +2052,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       </ul></li>
       <li><a href="api/seamm.html#seamm.table.Table.set_cell">set_cell() (seamm.table.Table method)</a>
+</li>
+      <li><a href="api/seamm.html#seamm.checkpoint.set_checkpointer">set_checkpointer() (in module seamm.checkpoint)</a>
 </li>
       <li><a href="api/seamm.html#seamm.flowchart_cli.set_command">set_command() (in module seamm.flowchart_cli)</a>
 </li>
@@ -2071,12 +2117,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.builtins.SplitStep">SplitStep (class in seamm.builtins)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.start">start() (seamm.checkpoint.Checkpointer method)</a>
+</li>
       <li><a href="api/seamm.html#seamm.start_node.StartNode">StartNode (class in seamm.start_node)</a>
 </li>
       <li><a href="api/seamm.html#seamm.builder.Step">Step (class in seamm.builder)</a>
 </li>
       <li><a href="api/seamm.html#seamm.checkpoint.step_completed">step_completed() (in module seamm.checkpoint)</a>
+
+      <ul>
+        <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.step_completed">(seamm.checkpoint.Checkpointer method)</a>
 </li>
+      </ul></li>
       <li><a href="api/seamm.html#seamm.node.Node.step_type">step_type (seamm.node.Node property)</a>
 </li>
       <li><a href="api/seamm.html#seamm.catalog.StepNotFoundError">StepNotFoundError</a>
@@ -2225,6 +2277,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul></li>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.units">units (seamm.parameters.Parameter property)</a>
 </li>
+      <li><a href="api/seamm.html#seamm.checkpoint.Unrestorable">Unrestorable (class in seamm.checkpoint)</a>
+</li>
       <li><a href="api/seamm.html#seamm.dashboard_handler.DashboardHandler.update">update() (seamm.dashboard_handler.DashboardHandler method)</a>
 
       <ul>
@@ -2305,13 +2359,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
       <li><a href="api/seamm.html#seamm.node.Node.wd">wd (seamm.node.Node property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.parameters.Parameter.widget">widget() (seamm.parameters.Parameter method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/seamm.html#seamm.builder.FlowchartBuilder.write">write() (seamm.builder.FlowchartBuilder method)</a>
 
       <ul>
+        <li><a href="api/seamm.html#seamm.checkpoint.Checkpointer.write">(seamm.checkpoint.Checkpointer method)</a>
+</li>
         <li><a href="api/seamm.html#seamm.flowchart.Flowchart.write">(seamm.flowchart.Flowchart method)</a>
 </li>
       </ul></li>

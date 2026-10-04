@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.3 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.4 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=f64fa391"></script>
+    <script src="_static/documentation_options.js?v=3dc6335c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.4" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.4 – Checkpoints, so a stopped flowchart can be resumed</dt><dd><ul class="simple">
+<li><p>A flowchart run in its own directory keeps a checkpoint in its database: after
+each step the step’s writes are committed together with where the flowchart has
+got to (including each Loop’s position) and its variables. A job that was
+killed, ran out of walltime or lost its machine can then be resumed with
+<code class="docutils literal notranslate"><span class="pre">run_flowchart</span> <span class="pre">--resume</span></code> (seamm_exec 2026.10.4.1) at the first step or loop
+iteration it had not finished; a step stopped part way runs again, reusing its
+finished calculations. See seamm_exec’s documentation, “Resuming a job”.</p></li>
+<li><p>A step that keeps other objects in variables can save and remake them across a
+resume (<code class="docutils literal notranslate"><span class="pre">Node.checkpoint_variable</span></code>/<code class="docutils literal notranslate"><span class="pre">restore_variable</span></code>); a variable nothing
+can remake stops a step that uses it after a resume, with a message saying so.</p></li>
+<li><p>Requires molsystem 2026.10.4.</p></li>
+</ul>
+</dd>
 <dt>2026.10.3 – Tables are stored in the job’s database</dt><dd><ul class="simple">
 <li><p>Flowchart tables – made by the Table step or by steps storing results in a
 table – are now kept in the job’s <code class="docutils literal notranslate"><span class="pre">seamm.db</span></code> instead of only in memory, so a

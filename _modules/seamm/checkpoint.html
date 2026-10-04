@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.checkpoint &#8212; SEAMM 2026.10.3 documentation</title>
+    <title>seamm.checkpoint &#8212; SEAMM 2026.10.4 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=f64fa391"></script>
+    <script src="../../_static/documentation_options.js?v=3dc6335c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.4" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -487,29 +487,971 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <h1>Source code for seamm.checkpoint</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">"""What happens between the steps of a running flowchart.</span>
+<span class="sd">"""What happens between the steps of a running flowchart: the checkpoint.</span>
 
 <span class="sd">The flowchart evaluator and the Loop step (which runs its body itself) both call</span>
-<span class="sd">:func:`step_completed` after each step, so that there is one place for it.</span>
-<span class="sd">Today it commits the job database; flowchart checkpointing will add to it.</span>
+<span class="sd">:func:`step_completed` after each step. With a :class:`Checkpointer` installed (by</span>
+<span class="sd">the evaluator, for a job database in the job's directory), that commits the</span>
+<span class="sd">step's database writes -- the job database defers molsystem's own commits while</span>
+<span class="sd">a step runs, so a step is one transaction -- and in the same transaction records</span>
+<span class="sd">where the flowchart has got to, so that a rerun with ``--resume`` can continue</span>
+<span class="sd">from there. Without one it just commits, as before.</span>
+
+<span class="sd">The checkpoint is one JSON document in a one-row ``_checkpoint`` table of the</span>
+<span class="sd">job database, mirrored to ``checkpoint.json`` in the job directory for people.</span>
+<span class="sd">Decisions are only ever taken from the database copy. See the phase 5 notes in</span>
+<span class="sd">seamm_exec's developer guide (campaigns/2026-10-02/NOTES_phase5.rst).</span>
 <span class="sd">"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.metadata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PurePath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">seamm</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">FORMAT</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">TABLE</span> <span class="o">=</span> <span class="s2">"_checkpoint"</span>
+<span class="n">VARIABLES_TABLE</span> <span class="o">=</span> <span class="s2">"_checkpoint_variables"</span>
+<span class="c1"># Variables longer than this (as JSON) are only summarized in checkpoint.json</span>
+<span class="n">MIRROR_LIMIT</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="c1"># Variables the evaluator makes itself, never saved or restored.</span>
+<span class="n">EVALUATOR_VARIABLES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"printer"</span><span class="p">,</span>
+    <span class="s2">"_system_db"</span><span class="p">,</span>
+    <span class="s2">"__builtins__"</span><span class="p">,</span>
+    <span class="s2">"_start_time"</span><span class="p">,</span>
+    <span class="s2">"_job_id"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_checkpointer</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="CheckpointError">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.CheckpointError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CheckpointError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A checkpoint cannot be written, read or used."""</span></div>
+
+
+
+<div class="viewcode-block" id="get_checkpointer">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.get_checkpointer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_checkpointer</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The checkpointer of the running flowchart, or None."""</span>
+    <span class="k">return</span> <span class="n">_checkpointer</span></div>
+
+
+
+<div class="viewcode-block" id="set_checkpointer">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.set_checkpointer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_checkpointer</span><span class="p">(</span><span class="n">checkpointer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Install (or, with None, remove) the checkpointer of the running flowchart."""</span>
+    <span class="k">global</span> <span class="n">_checkpointer</span>
+    <span class="n">_checkpointer</span> <span class="o">=</span> <span class="n">checkpointer</span></div>
+
 
 
 <div class="viewcode-block" id="step_completed">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.step_completed">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">step_completed</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Record that a step has finished: commit the job database.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step_completed</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">next_node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Record that a step has finished: commit, and checkpoint if enabled.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    node : seamm.Node</span>
-<span class="sd">        The step that finished (unused for now).</span>
+<span class="sd">        The step that finished.</span>
+<span class="sd">    next_node : seamm.Node or None</span>
+<span class="sd">        The step that runs next: None at the end of the flowchart; the Loop</span>
+<span class="sd">        itself at the end of an iteration of its body.</span>
 <span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">_checkpointer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_checkpointer</span><span class="o">.</span><span class="n">step_completed</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">)</span>
+        <span class="k">return</span>
     <span class="n">variables</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span>
     <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">variables</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">"_system_db"</span><span class="p">):</span>
         <span class="n">variables</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">"_system_db"</span><span class="p">)</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Variables</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_NotEncodable</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="Unrestorable">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Unrestorable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Unrestorable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Stands in for a variable that could not be restored on resume.</span>
+
+<span class="sd">    Using it in almost any way raises a CheckpointError that says what it was,</span>
+<span class="sd">    so a step that needs it fails clearly; a flowchart whose later steps never</span>
+<span class="sd">    touch it resumes normally.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">type_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">origin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">" set by step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_origin</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"The variable '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' (a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}{</span><span class="n">where</span><span class="si">}</span><span class="s2">) could not be "</span>
+            <span class="s2">"saved in the checkpoint, so it is not available after the job "</span>
+            <span class="s2">"resumed. Rerun the job without --resume to run it from the top."</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">attribute</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;variable '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' not restored from the checkpoint&gt;"</span>
+
+    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
+
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="fm">__iter__</span> <span class="o">=</span> <span class="fm">__len__</span> <span class="o">=</span> <span class="fm">__bool__</span> <span class="o">=</span> <span class="fm">__getitem__</span> <span class="o">=</span> <span class="fm">__setitem__</span> <span class="o">=</span> <span class="n">_fail</span>
+    <span class="fm">__contains__</span> <span class="o">=</span> <span class="fm">__add__</span> <span class="o">=</span> <span class="fm">__radd__</span> <span class="o">=</span> <span class="fm">__sub__</span> <span class="o">=</span> <span class="fm">__rsub__</span> <span class="o">=</span> <span class="fm">__mul__</span> <span class="o">=</span> <span class="n">_fail</span>
+    <span class="fm">__rmul__</span> <span class="o">=</span> <span class="fm">__truediv__</span> <span class="o">=</span> <span class="fm">__rtruediv__</span> <span class="o">=</span> <span class="fm">__floordiv__</span> <span class="o">=</span> <span class="fm">__mod__</span> <span class="o">=</span> <span class="n">_fail</span>
+    <span class="fm">__pow__</span> <span class="o">=</span> <span class="fm">__neg__</span> <span class="o">=</span> <span class="fm">__abs__</span> <span class="o">=</span> <span class="fm">__float__</span> <span class="o">=</span> <span class="fm">__int__</span> <span class="o">=</span> <span class="fm">__index__</span> <span class="o">=</span> <span class="n">_fail</span>
+    <span class="fm">__lt__</span> <span class="o">=</span> <span class="fm">__le__</span> <span class="o">=</span> <span class="fm">__gt__</span> <span class="o">=</span> <span class="fm">__ge__</span> <span class="o">=</span> <span class="fm">__format__</span> <span class="o">=</span> <span class="n">__fspath__</span> <span class="o">=</span> <span class="n">_fail</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fail</span><span class="p">()</span>
+
+    <span class="fm">__hash__</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__hash__</span></div>
+
+
+
+<div class="viewcode-block" id="encode_value">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.encode_value">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">encode_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Encode a value as JSON-compatible data, or raise _NotEncodable."""</span>
+    <span class="c1"># Exact types: numpy's float64 is a float, and must keep its type.</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>  <span class="c1"># json writes NaN/Infinity for floats, and reads them back</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"tuple"</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">:</span> <span class="p">[</span><span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"set"</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">:</span> <span class="p">[</span><span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"__seamm__"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"dict"</span><span class="p">,</span>
+            <span class="s2">"items"</span><span class="p">:</span> <span class="p">[[</span><span class="n">encode_value</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
+        <span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">PurePath</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"path"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"datetime"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"date"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Table</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"table"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+
+    <span class="n">module</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="o">==</span> <span class="s2">"numpy"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"ndarray"</span><span class="p">,</span>
+                    <span class="s2">"dtype"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+                    <span class="s2">"shape"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                    <span class="s2">"data"</span><span class="p">:</span> <span class="p">[</span><span class="n">encode_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()],</span>
+                <span class="p">}</span>
+            <span class="c1"># The bytes, base64: exact, and far faster than a list of numbers</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"ndarray"</span><span class="p">,</span>
+                <span class="s2">"dtype"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">str</span><span class="p">,</span>
+                <span class="s2">"shape"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                <span class="s2">"base64"</span><span class="p">:</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"npscalar"</span><span class="p">,</span>
+                <span class="s2">"dtype"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">str</span><span class="p">,</span>
+                <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+            <span class="p">}</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="o">==</span> <span class="s2">"pint"</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"magnitude"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"units"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"quantity"</span><span class="p">,</span>
+            <span class="s2">"magnitude"</span><span class="p">:</span> <span class="n">encode_value</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">magnitude</span><span class="p">),</span>
+            <span class="s2">"units"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="o">==</span> <span class="s2">"pandas"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"dataframe"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">"split"</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"__seamm__"</span><span class="p">:</span> <span class="s2">"series"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">"split"</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+        <span class="c1"># Other subclasses (enums, ...) as the plain value.</span>
+        <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">kind</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">_NotEncodable</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="decode_value">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.decode_value">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">decode_value</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">system_db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The inverse of encode_value."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"__seamm__"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"tuple"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"items"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"set"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"items"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"dict"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">_hashable</span><span class="p">(</span><span class="n">decode_value</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)):</span> <span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"items"</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"path"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"datetime"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"date"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"table"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">seamm</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">system_db</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"ndarray"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"object"</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">decode_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">system_db</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">values</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">"base64"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">raw</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"base64"</span><span class="p">])</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">]))</span>
+                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"data"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">"shape"</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"npscalar"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">])</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"quantity"</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q_</span>
+
+        <span class="k">return</span> <span class="n">Q_</span><span class="p">(</span><span class="n">decode_value</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"magnitude"</span><span class="p">],</span> <span class="n">system_db</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s2">"units"</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"dataframe"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]),</span> <span class="n">orient</span><span class="o">=</span><span class="s2">"split"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"series"</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span>
+            <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]),</span> <span class="n">orient</span><span class="o">=</span><span class="s2">"split"</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">"series"</span>
+        <span class="p">)</span>
+    <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown kind of value '</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">' in the checkpoint."</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_array_fingerprint</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A cheap fingerprint of a numeric numpy array, or None for anything else."""</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"numpy"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"ndarray:</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">str</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">digest</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_hashable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_hashable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Reading</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="read_checkpoint">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.read_checkpoint">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_checkpoint</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The checkpoint stored in a job database, or None.</span>
+
+<span class="sd">    Opens the database read-only, so it can be used on a database another</span>
+<span class="sd">    process has open.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str or pathlib.Path</span>
+<span class="sd">        The job database, normally ``&lt;job&gt;/seamm.db``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict or None</span>
+<span class="sd">        The checkpoint document, or None if the database has none (including a</span>
+<span class="sd">        database from before checkpoints existed, or no database at all).</span>
+<span class="sd">    """</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s2">"file:</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">?mode=ro"</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SELECT document FROM </span><span class="si">{</span><span class="n">TABLE</span><span class="si">}</span><span class="s2"> WHERE id = 1"</span><span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"variables"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"restorable"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"unrestorable"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SELECT name, kind, data FROM </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">section</span> <span class="o">=</span> <span class="s2">"variables"</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"value"</span> <span class="k">else</span> <span class="n">kind</span>
+            <span class="n">document</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">document</span></div>
+
+
+
+<div class="viewcode-block" id="changed_versions">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.changed_versions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">changed_versions</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The packages whose versions differ from those the checkpoint recorded.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [(str, str, str)]</span>
+<span class="sd">        (package, version in the checkpoint, version now), sorted.</span>
+<span class="sd">    """</span>
+    <span class="n">then</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"versions"</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">package_versions</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">then</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">),</span> <span class="n">now</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">then</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">then</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">)</span> <span class="o">!=</span> <span class="n">now</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="describe_position">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.describe_position">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">describe_position</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A short description of where a checkpoint is, for people."""</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"position"</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node"</span><span class="p">)</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"loop"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"step </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s1">'node'</span><span class="p">])</span><span class="si">}</span><span class="s2">, iteration </span><span class="si">{</span><span class="n">loop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'count'</span><span class="p">)</span><span class="si">}</span><span class="s2"> of "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">loop</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'length'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"step </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"the end of the flowchart"</span>
+    <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="resumable">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.resumable">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resumable</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">digest</span><span class="p">,</span> <span class="n">command_line</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether a checkpoint can be resumed by this flowchart and command line.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (bool, str)</span>
+<span class="sd">        Whether, and if not, why not.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">checkpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"there is no checkpoint"</span>
+    <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"format"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">FORMAT</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"the checkpoint has format </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'format'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"state"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"finished"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the previous run finished"</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"resumable"</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">"why not resumable"</span><span class="p">,</span> <span class="s2">"the checkpoint is marked not resumable"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"flowchart_fingerprint"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">digest</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the flowchart has changed since the checkpoint was written"</span>
+    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"command_line"</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_line</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the command line differs from the one checkpointed"</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"position"</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the checkpoint does not say where to continue"</span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">""</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Writing</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="flowchart_fingerprint">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.flowchart_fingerprint">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A hash of every step's parameters and of how the steps are connected.</span>
+
+<span class="sd">    What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it</span>
+<span class="sd">    covers the whole graph (the digest follows the steps and stops at the first</span>
+<span class="sd">    Loop) and leaves out the versions of the plug-ins, which may change between a</span>
+<span class="sd">    run and its resume. Steps are identified by their ids from the flowchart's</span>
+<span class="sd">    numbering (``set_ids``), not their uuids, which are new each time the</span>
+<span class="sd">    flowchart is read.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"-"</span>
+
+    <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span>
+    <span class="p">)</span>
+    <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">node1</span><span class="p">),</span> <span class="n">name</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">node2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">edge_type</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">edge_subtype</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_id</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="find_node">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.find_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_node</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The node of the flowchart with the given id (a list of strings), or None.</span>
+
+<span class="sd">    Searches the whole graph rather than following the steps, which cannot get</span>
+<span class="sd">    past a Loop. Ids are unique once the flowchart's ids are set, and a Loop sets</span>
+<span class="sd">    the ids of its body for each iteration.</span>
+<span class="sd">    """</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node_id</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">node</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="package_versions">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.package_versions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">package_versions</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The versions of seamm and of the packages of the flowchart's steps."""</span>
+    <span class="n">packages</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"seamm"</span><span class="p">,</span> <span class="s2">"molsystem"</span><span class="p">,</span> <span class="s2">"seamm_exec"</span><span class="p">,</span> <span class="s2">"seamm_util"</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span><span class="p">:</span>
+        <span class="n">packages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">versions</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">packages</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">package</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">versions</span><span class="p">[</span><span class="n">package</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">:</span>
+                <span class="k">continue</span>
+    <span class="k">return</span> <span class="n">versions</span></div>
+
+
+
+<div class="viewcode-block" id="Checkpointer">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Checkpointer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Writes the checkpoint of a running flowchart, and guides a resume.</span>
+
+<span class="sd">    The position is a stack of frames, outermost first. Each frame names the</span>
+<span class="sd">    node to run next at its level (None after the last one); a frame whose node</span>
+<span class="sd">    is a Loop that is part way through also holds the Loop's own state under</span>
+<span class="sd">    ``loop`` and is followed by the frame of the loop's body.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    system_db : molsystem.SystemDB</span>
+<span class="sd">        The job database, opened with ``deferred_commit=True``.</span>
+<span class="sd">    root : str or pathlib.Path</span>
+<span class="sd">        The job directory, for the ``checkpoint.json`` mirror.</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The flowchart being run.</span>
+<span class="sd">    command_line : [str]</span>
+<span class="sd">        The command-line arguments of the run.</span>
+<span class="sd">    resume : dict</span>
+<span class="sd">        The checkpoint being resumed from, or None for a run from the top.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_db</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">flowchart</span><span class="p">,</span> <span class="n">command_line</span><span class="o">=</span><span class="p">(),</span> <span class="n">resume</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span> <span class="o">=</span> <span class="n">system_db</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span> <span class="o">=</span> <span class="n">flowchart</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="c1"># A step's uuid differs each time the flowchart is read, so variables'</span>
+        <span class="c1"># origins are saved as the steps' ids from the flowchart's numbering,</span>
+        <span class="c1"># which is the same in every run (before any Loop renumbers its body).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">uuid</span><span class="p">):</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_by_static_id</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">)):</span> <span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">versions</span> <span class="o">=</span> <span class="n">package_versions</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"node"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">why_not</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resumed_from</span> <span class="o">=</span> <span class="n">resume</span>  <span class="c1"># the whole document, kept</span>
+        <span class="c1"># The same through resumes; new for a run from the top. Steps can use it</span>
+        <span class="c1"># to tell their own earlier attempts from another run's (Write Structure).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">resume</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"run_id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="o">=</span> <span class="n">resume</span>  <span class="c1"># the position still to be resumed into</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resume_depth</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># What is in the variables table: name -&gt; (kind, fingerprint, text)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">resume</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">resume</span><span class="p">[</span><span class="s2">"position"</span><span class="p">]]</span>
+
+    <span class="c1"># Where to start -------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Checkpointer.start">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The node the evaluator starts at: the first, or where to resume."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"node"</span><span class="p">:</span> <span class="n">_id</span><span class="p">(</span><span class="n">first_node</span><span class="p">)}]</span>
+            <span class="k">return</span> <span class="n">first_node</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">[</span><span class="s2">"position"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"node"</span><span class="p">]</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">find_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Cannot find step </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="si">}</span><span class="s2"> to resume at in the flowchart."</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"node"</span><span class="p">:</span> <span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">)}]</span>
+        <span class="k">if</span> <span class="s2">"loop"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">[</span><span class="s2">"position"</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">node</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.restore_variables">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.restore_variables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Put the checkpointed variables into the flowchart's variables."""</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumed_from</span>
+        <span class="k">if</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"variables"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_value</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not restore variable '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unrestorable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">saved</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"restorable"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_by_static_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">saved</span><span class="p">[</span><span class="s2">"origin"</span><span class="p">])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">restore_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">saved</span><span class="p">[</span><span class="s2">"data"</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not restore variable '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">Unrestorable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">,</span> <span class="s2">"?"</span><span class="p">),</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"step"</span><span class="p">))</span>
+            <span class="n">variables</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unrestorable"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">variables</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unrestorable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s2">"type"</span><span class="p">],</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"step"</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">static_id</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"origins"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_by_static_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">static_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">_origins</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">system_id</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"system_id"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">system_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">system_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">system_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">system_id</span></div>
+
+
+    <span class="c1"># Loops ----------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The level of the frame whose next node is ``node``, or None."""</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node"</span><span class="p">)</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">level</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Checkpointer.loop_resume">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.loop_resume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loop_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""If resuming into this Loop, its saved state and where its body resumes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (dict, [str] or None) or None</span>
+<span class="sd">            The Loop's state, and the id of the body node to start at (None if the</span>
+<span class="sd">            saved iteration had finished), or None if not resuming into this Loop.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">[</span><span class="s2">"position"</span><span class="p">]</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resume_depth</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">position</span><span class="p">)</span> <span class="ow">or</span> <span class="n">position</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">_id</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">"loop"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resume_depth</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">inner</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="s2">"node"</span><span class="p">]</span> <span class="k">if</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">position</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">position</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"loop"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">position</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="c1"># Nothing deeper to resume into.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"failed"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">here</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">here</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">here</span><span class="p">][</span><span class="s2">"failed"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="s2">"loop"</span><span class="p">],</span> <span class="n">inner</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.enter_iteration">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.enter_iteration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enter_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">first_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""A Loop starts (or resumes) an iteration of its body.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        loop : seamm.Node</span>
+<span class="sd">            The Loop.</span>
+<span class="sd">        state : dict</span>
+<span class="sd">            The Loop's state, JSON-compatible, enough to set up this iteration</span>
+<span class="sd">            again; it should include ``count`` and ``length`` for messages.</span>
+<span class="sd">        first_node : seamm.Node</span>
+<span class="sd">            The body node that runs first in this iteration.</span>
+<span class="sd">        """</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_not_resumable</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"the Loop </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">loop</span><span class="p">))</span><span class="si">}</span><span class="s2"> is not in the position"</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="s2">"loop"</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"node"</span><span class="p">:</span> <span class="n">_id</span><span class="p">(</span><span class="n">first_node</span><span class="p">)})</span>
+        <span class="c1"># Written now, so the iteration's set-up (its directory name, current</span>
+        <span class="c1"># row, ...) is on record before its body runs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.iteration_failed">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.iteration_failed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iteration_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""A Loop caught an error in its body and continues: keep the writes."""</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"loop"</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">failed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"failed"</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">failed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"count"</span><span class="p">))</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="s2">"loop"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.leave_loop">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.leave_loop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">leave_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""A Loop has finished all its iterations (or broken out)."""</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"loop"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"failed"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span></div>
+
+
+    <span class="c1"># Steps ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Checkpointer.step_completed">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.step_completed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""A step finished: move the position on, then commit and checkpoint."""</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">level</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># A step this checkpointer was not told about, e.g. the body of a</span>
+            <span class="c1"># Loop from a loop_step that predates checkpoints.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_not_resumable</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"step </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'?'</span><span class="si">}</span><span class="s2"> ran "</span>
+                <span class="s2">"outside the checkpointed position (a plug-in too old to "</span>
+                <span class="s2">"checkpoint?)"</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="n">next_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">next_node</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node"</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="c1"># The end of an iteration of a Loop's body.</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">:]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"loop"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s2">"loop"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="s2">"node"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_id</span><span class="p">(</span><span class="n">next_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_not_resumable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">why</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This job will not be resumable: </span><span class="si">{</span><span class="n">why</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">why_not</span> <span class="o">=</span> <span class="n">why</span>
+
+    <span class="c1"># The document ----------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_variable_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Each variable as (kind, fingerprint, text, value-or-None).</span>
+
+<span class="sd">        The fingerprint says whether a variable changed since it was last</span>
+<span class="sd">        written; a numpy array is fingerprinted by a hash of its bytes, so an</span>
+<span class="sd">        unchanged large array is neither encoded nor written again.</span>
+<span class="sd">        """</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">seamm</span><span class="o">.</span><span class="n">flowchart_variables</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">origins</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="s2">"_origins"</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">EVALUATOR_VARIABLES</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Unrestorable</span><span class="p">):</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">_type</span><span class="p">,</span> <span class="s2">"step"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">_origin</span><span class="p">}</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                <span class="n">rows</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unrestorable"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">_array_fingerprint</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fingerprint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">previous</span> <span class="o">=</span> <span class="n">written</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">previous</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">fingerprint</span><span class="p">:</span>
+                    <span class="n">rows</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">previous</span>
+                    <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">encode_value</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">rows</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="n">fingerprint</span> <span class="ow">or</span> <span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">_NotEncodable</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+                <span class="c1"># e.g. numpy's datetime64, whose .item() is not JSON</span>
+                <span class="k">pass</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">origins</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">saved</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">origin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_by_static_id</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span><span class="p">[</span><span class="n">origin</span><span class="p">]]</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">saved</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">checkpoint_variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not checkpoint '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">saved</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">"origin"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span><span class="p">[</span><span class="n">origin</span><span class="p">],</span>
+                    <span class="s2">"data"</span><span class="p">:</span> <span class="n">saved</span><span class="p">,</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="n">type_name</span><span class="p">,</span>
+                    <span class="s2">"step"</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                <span class="n">rows</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"restorable"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Including the modules and functions a Custom step leaves.</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="n">type_name</span><span class="p">,</span> <span class="s2">"step"</span><span class="p">:</span> <span class="n">step</span><span class="p">}</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                <span class="n">rows</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"unrestorable"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">origins</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">origins</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_ids</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">origins</span>
+
+<div class="viewcode-block" id="Checkpointer.document">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.document">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">"running"</span><span class="p">,</span> <span class="n">origins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The checkpoint, without the variables, as a JSON-compatible dict."""</span>
+        <span class="k">if</span> <span class="n">origins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">origins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_rows</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">system_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="p">,</span> <span class="s2">"_current_system_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"format"</span><span class="p">:</span> <span class="n">FORMAT</span><span class="p">,</span>
+            <span class="s2">"state"</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
+            <span class="s2">"resumable"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span><span class="p">,</span>
+            <span class="s2">"flowchart_fingerprint"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="p">,</span>
+            <span class="s2">"command_line"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span><span class="p">,</span>
+            <span class="s2">"versions"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">versions</span><span class="p">,</span>
+            <span class="s2">"written"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">"position"</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">),</span>
+            <span class="s2">"run_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">,</span>
+            <span class="s2">"system_id"</span><span class="p">:</span> <span class="n">system_id</span><span class="p">,</span>
+            <span class="s2">"origins"</span><span class="p">:</span> <span class="n">origins</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"why not resumable"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">why_not</span>
+        <span class="k">return</span> <span class="n">document</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.write">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">"running"</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Write the checkpoint and commit, then mirror it to checkpoint.json.</span>
+
+<span class="sd">        The variables are written too, only those that changed, unless a</span>
+<span class="sd">        document is given (after an error: the variables in the database are</span>
+<span class="sd">        already those of that document).</span>
+<span class="sd">        """</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">db</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"CREATE TABLE IF NOT EXISTS </span><span class="si">{</span><span class="n">TABLE</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="s2">"(id INTEGER PRIMARY KEY CHECK (id = 1), document TEXT NOT NULL)"</span>
+        <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"CREATE TABLE IF NOT EXISTS </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="s2">"(name TEXT PRIMARY KEY, kind TEXT NOT NULL, data TEXT NOT NULL)"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rows</span><span class="p">,</span> <span class="n">origins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_rows</span><span class="p">()</span>
+            <span class="n">document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">origins</span><span class="o">=</span><span class="n">origins</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DELETE FROM </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_written</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DELETE FROM </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2"> WHERE name = ?"</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,))</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_written</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="n">row</span><span class="p">:</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"INSERT OR REPLACE INTO </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2"> (name, kind, data)"</span>
+                        <span class="s2">" VALUES (?, ?, ?)"</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                    <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pending</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pending</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span> <span class="o">=</span> <span class="n">document</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"INSERT OR REPLACE INTO </span><span class="si">{</span><span class="n">TABLE</span><span class="si">}</span><span class="s2"> (id, document) VALUES (1, ?)"</span><span class="p">,</span> <span class="p">(</span><span class="n">text</span><span class="p">,)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">commit_transaction</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pending</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mirror</span><span class="p">(</span><span class="n">document</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mirror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""checkpoint.json, for people: the document and the variables, with</span>
+<span class="sd">        large values only summarized."""</span>
+        <span class="n">mirror</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"variables"</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">"restorable"</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">"unrestorable"</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">section</span> <span class="o">=</span> <span class="s2">"variables"</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"value"</span> <span class="k">else</span> <span class="n">kind</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MIRROR_LIMIT</span><span class="p">:</span>
+                <span class="n">sections</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2"> characters; in seamm.db&gt;"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sections</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">mirror</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"checkpoint.json"</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"checkpoint.json.tmp"</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mirror</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not write checkpoint.json: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Checkpointer.finish">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.finish">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The end of the run: 'finished', or 'error' after rolling back.</span>
+
+<span class="sd">        For an error, the step that raised is abandoned (its writes are rolled</span>
+<span class="sd">        back), so the database matches the checkpoint and a resume re-runs it.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s2">"finished"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">rollback_transaction</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumed_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># A resume that failed before writing anything: the database is</span>
+            <span class="c1"># still at the checkpoint it resumed from, so keep that position (a</span>
+            <span class="c1"># Loop's frame in it, above all), only marked as an error.</span>
+            <span class="n">document</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resumed_from</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"variables"</span><span class="p">,</span> <span class="s2">"restorable"</span><span class="p">,</span> <span class="s2">"unrestorable"</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"state"</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"written"</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="n">document</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The database is back at the last checkpoint, so is everything else:</span>
+            <span class="c1"># not the variables as the failing step left them.</span>
+            <span class="n">document</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"written"</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="n">document</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

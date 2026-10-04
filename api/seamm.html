@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.3 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.4 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=f64fa391"></script>
+    <script src="../_static/documentation_options.js?v=3dc6335c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.4" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1166,17 +1166,262 @@ treat that as the single choice rather than a sequence of letters.</p>
 </section>
 <section id="module-seamm.checkpoint">
 <span id="seamm-checkpoint-module"></span><h2>seamm.checkpoint module<a class="headerlink" href="#module-seamm.checkpoint" title="Link to this heading">#</a></h2>
-<p>What happens between the steps of a running flowchart.</p>
+<p>What happens between the steps of a running flowchart: the checkpoint.</p>
 <p>The flowchart evaluator and the Loop step (which runs its body itself) both call
-<a class="reference internal" href="#seamm.checkpoint.step_completed" title="seamm.checkpoint.step_completed"><code class="xref py py-func docutils literal notranslate"><span class="pre">step_completed()</span></code></a> after each step, so that there is one place for it.
-Today it commits the job database; flowchart checkpointing will add to it.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="seamm.checkpoint.step_completed">
-<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">step_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#step_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.step_completed" title="Link to this definition">#</a></dt>
-<dd><p>Record that a step has finished: commit the job database.</p>
+<a class="reference internal" href="#seamm.checkpoint.step_completed" title="seamm.checkpoint.step_completed"><code class="xref py py-func docutils literal notranslate"><span class="pre">step_completed()</span></code></a> after each step. With a <a class="reference internal" href="#seamm.checkpoint.Checkpointer" title="seamm.checkpoint.Checkpointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Checkpointer</span></code></a> installed (by
+the evaluator, for a job database in the job’s directory), that commits the
+step’s database writes – the job database defers molsystem’s own commits while
+a step runs, so a step is one transaction – and in the same transaction records
+where the flowchart has got to, so that a rerun with <code class="docutils literal notranslate"><span class="pre">--resume</span></code> can continue
+from there. Without one it just commits, as before.</p>
+<p>The checkpoint is one JSON document in a one-row <code class="docutils literal notranslate"><span class="pre">_checkpoint</span></code> table of the
+job database, mirrored to <code class="docutils literal notranslate"><span class="pre">checkpoint.json</span></code> in the job directory for people.
+Decisions are only ever taken from the database copy. See the phase 5 notes in
+seamm_exec’s developer guide (campaigns/2026-10-02/NOTES_phase5.rst).</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="seamm.checkpoint.CheckpointError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">CheckpointError</span></span><a class="reference internal" href="../_modules/seamm/checkpoint.html#CheckpointError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.CheckpointError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+<p>A checkpoint cannot be written, read or used.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">Checkpointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Writes the checkpoint of a running flowchart, and guides a resume.</p>
+<p>The position is a stack of frames, outermost first. Each frame names the
+node to run next at its level (None after the last one); a frame whose node
+is a Loop that is part way through also holds the Loop’s own state under
+<code class="docutils literal notranslate"><span class="pre">loop</span></code> and is followed by the frame of the loop’s body.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>node</strong> (<em>seamm.Node</em>) – The step that finished (unused for now).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>system_db</strong> (<em>molsystem.SystemDB</em>) – The job database, opened with <code class="docutils literal notranslate"><span class="pre">deferred_commit=True</span></code>.</p></li>
+<li><p><strong>root</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – The job directory, for the <code class="docutils literal notranslate"><span class="pre">checkpoint.json</span></code> mirror.</p></li>
+<li><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>) – The flowchart being run.</p></li>
+<li><p><strong>command_line</strong> (<em>[</em><em>str</em><em>]</em>) – The command-line arguments of the run.</p></li>
+<li><p><strong>resume</strong> (<em>dict</em>) – The checkpoint being resumed from, or None for a run from the top.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.document">
+<span class="sig-name descname"><span class="pre">document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'running'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.document" title="Link to this definition">#</a></dt>
+<dd><p>The checkpoint, without the variables, as a JSON-compatible dict.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.enter_iteration">
+<span class="sig-name descname"><span class="pre">enter_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.enter_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.enter_iteration" title="Link to this definition">#</a></dt>
+<dd><p>A Loop starts (or resumes) an iteration of its body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loop</strong> (<em>seamm.Node</em>) – The Loop.</p></li>
+<li><p><strong>state</strong> (<em>dict</em>) – The Loop’s state, JSON-compatible, enough to set up this iteration
+again; it should include <code class="docutils literal notranslate"><span class="pre">count</span></code> and <code class="docutils literal notranslate"><span class="pre">length</span></code> for messages.</p></li>
+<li><p><strong>first_node</strong> (<em>seamm.Node</em>) – The body node that runs first in this iteration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.finish">
+<span class="sig-name descname"><span class="pre">finish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.finish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.finish" title="Link to this definition">#</a></dt>
+<dd><p>The end of the run: ‘finished’, or ‘error’ after rolling back.</p>
+<p>For an error, the step that raised is abandoned (its writes are rolled
+back), so the database matches the checkpoint and a resume re-runs it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.iteration_failed">
+<span class="sig-name descname"><span class="pre">iteration_failed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.iteration_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.iteration_failed" title="Link to this definition">#</a></dt>
+<dd><p>A Loop caught an error in its body and continues: keep the writes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.leave_loop">
+<span class="sig-name descname"><span class="pre">leave_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.leave_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.leave_loop" title="Link to this definition">#</a></dt>
+<dd><p>A Loop has finished all its iterations (or broken out).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.loop_resume">
+<span class="sig-name descname"><span class="pre">loop_resume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.loop_resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.loop_resume" title="Link to this definition">#</a></dt>
+<dd><p>If resuming into this Loop, its saved state and where its body resumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Loop’s state, and the id of the body node to start at (None if the
+saved iteration had finished), or None if not resuming into this Loop.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(dict, [str] or None) or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.restore_variables">
+<span class="sig-name descname"><span class="pre">restore_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.restore_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.restore_variables" title="Link to this definition">#</a></dt>
+<dd><p>Put the checkpointed variables into the flowchart’s variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.start" title="Link to this definition">#</a></dt>
+<dd><p>The node the evaluator starts at: the first, or where to resume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.step_completed">
+<span class="sig-name descname"><span class="pre">step_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.step_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.step_completed" title="Link to this definition">#</a></dt>
+<dd><p>A step finished: move the position on, then commit and checkpoint.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.checkpoint.Checkpointer.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'running'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Checkpointer.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Checkpointer.write" title="Link to this definition">#</a></dt>
+<dd><p>Write the checkpoint and commit, then mirror it to checkpoint.json.</p>
+<p>The variables are written too, only those that changed, unless a
+document is given (after an error: the variables in the database are
+already those of that document).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.checkpoint.Unrestorable">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">Unrestorable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#Unrestorable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.Unrestorable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stands in for a variable that could not be restored on resume.</p>
+<p>Using it in almost any way raises a CheckpointError that says what it was,
+so a step that needs it fails clearly; a flowchart whose later steps never
+touch it resumes normally.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.checkpoint.Unrestorable.message">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#seamm.checkpoint.Unrestorable.message" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.changed_versions">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">changed_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#changed_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.changed_versions" title="Link to this definition">#</a></dt>
+<dd><p>The packages whose versions differ from those the checkpoint recorded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(package, version in the checkpoint, version now), sorted.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>[(str, str, str)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.decode_value">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">decode_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#decode_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.decode_value" title="Link to this definition">#</a></dt>
+<dd><p>The inverse of encode_value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.describe_position">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">describe_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#describe_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.describe_position" title="Link to this definition">#</a></dt>
+<dd><p>A short description of where a checkpoint is, for people.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.encode_value">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">encode_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#encode_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.encode_value" title="Link to this definition">#</a></dt>
+<dd><p>Encode a value as JSON-compatible data, or raise _NotEncodable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.find_node">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">find_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#find_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.find_node" title="Link to this definition">#</a></dt>
+<dd><p>The node of the flowchart with the given id (a list of strings), or None.</p>
+<p>Searches the whole graph rather than following the steps, which cannot get
+past a Loop. Ids are unique once the flowchart’s ids are set, and a Loop sets
+the ids of its body for each iteration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.flowchart_fingerprint">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">flowchart_fingerprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#flowchart_fingerprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.flowchart_fingerprint" title="Link to this definition">#</a></dt>
+<dd><p>A hash of every step’s parameters and of how the steps are connected.</p>
+<p>What a checkpoint must match to be resumed. Unlike <code class="docutils literal notranslate"><span class="pre">Flowchart.digest</span></code> it
+covers the whole graph (the digest follows the steps and stops at the first
+Loop) and leaves out the versions of the plug-ins, which may change between a
+run and its resume. Steps are identified by their ids from the flowchart’s
+numbering (<code class="docutils literal notranslate"><span class="pre">set_ids</span></code>), not their uuids, which are new each time the
+flowchart is read.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.get_checkpointer">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">get_checkpointer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#get_checkpointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.get_checkpointer" title="Link to this definition">#</a></dt>
+<dd><p>The checkpointer of the running flowchart, or None.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.package_versions">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">package_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#package_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.package_versions" title="Link to this definition">#</a></dt>
+<dd><p>The versions of seamm and of the packages of the flowchart’s steps.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.read_checkpoint">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">read_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#read_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.read_checkpoint" title="Link to this definition">#</a></dt>
+<dd><p>The checkpoint stored in a job database, or None.</p>
+<p>Opens the database read-only, so it can be used on a database another
+process has open.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – The job database, normally <code class="docutils literal notranslate"><span class="pre">&lt;job&gt;/seamm.db</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The checkpoint document, or None if the database has none (including a
+database from before checkpoints existed, or no database at all).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.resumable">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">resumable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#resumable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.resumable" title="Link to this definition">#</a></dt>
+<dd><p>Whether a checkpoint can be resumed by this flowchart and command line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether, and if not, why not.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(bool, str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.set_checkpointer">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">set_checkpointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpointer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#set_checkpointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.set_checkpointer" title="Link to this definition">#</a></dt>
+<dd><p>Install (or, with None, remove) the checkpointer of the running flowchart.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.step_completed">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">step_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#step_completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.step_completed" title="Link to this definition">#</a></dt>
+<dd><p>Record that a step has finished: commit, and checkpoint if enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>seamm.Node</em>) – The step that finished.</p></li>
+<li><p><strong>next_node</strong> (<em>seamm.Node</em><em> or </em><em>None</em>) – The step that runs next: None at the end of the flowchart; the Loop
+itself at the end of an iteration of its body.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2772,6 +3017,27 @@ results.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.checkpoint_variable">
+<span class="sig-name descname"><span class="pre">checkpoint_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.checkpoint_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.checkpoint_variable" title="Link to this definition">#</a></dt>
+<dd><p>Save a variable this step set that is not plain data, for a resume.</p>
+<p>The checkpoint stores numbers, strings, lists, dicts, numpy arrays,
+quantities, paths, tables and the like itself. For any other object this
+step put in a variable, return JSON-compatible data from which
+<a class="reference internal" href="#seamm.node.Node.restore_variable" title="seamm.node.Node.restore_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore_variable()</span></code></a> can remake it, or None if it cannot be saved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the variable.</p></li>
+<li><p><strong>value</strong> (<em>object</em>) – Its value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON-compatible data or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.close_printing">
 <span class="sig-name descname"><span class="pre">close_printing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.close_printing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.close_printing" title="Link to this definition">#</a></dt>
 <dd><p>Close the handlers for printing, so that buffers are
@@ -3237,6 +3503,26 @@ start node.</p>
 <dt class="sig sig-object py" id="seamm.node.Node.reset_id">
 <span class="sig-name descname"><span class="pre">reset_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.reset_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.reset_id" title="Link to this definition">#</a></dt>
 <dd><p>Reset the id for node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.restore_variable">
+<span class="sig-name descname"><span class="pre">restore_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.restore_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.restore_variable" title="Link to this definition">#</a></dt>
+<dd><p>Remake a variable from what <a class="reference internal" href="#seamm.node.Node.checkpoint_variable" title="seamm.node.Node.checkpoint_variable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkpoint_variable()</span></code></a> saved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the variable.</p></li>
+<li><p><strong>data</strong> (<em>JSON-compatible data</em>) – What checkpoint_variable returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value, or None if it cannot be remade.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object or None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -6048,7 +6334,7 @@ $&lt;name&gt;</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.variables.Variables.set_variable">
-<span class="sig-name descname"><span class="pre">set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/variables.html#Variables.set_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.variables.Variables.set_variable" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/variables.html#Variables.set_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.variables.Variables.set_variable" title="Link to this definition">#</a></dt>
 <dd><p>Set the value of the variable. The variable may be a simple string
 or start with a $ and optionally have braces around it, i.e.</p>
 <blockquote>
@@ -6059,6 +6345,8 @@ $&lt;name&gt;</p>
 <blockquote>
 <div><p>${&lt;name&gt;}</p>
 </div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">origin</span></code> is the uuid of the step setting it, which the checkpoint uses
+to ask that step to save and restore a value that is not plain data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -6217,6 +6505,35 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.checkpoint">seamm.checkpoint module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.CheckpointError"><code class="docutils literal notranslate"><span class="pre">CheckpointError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer"><code class="docutils literal notranslate"><span class="pre">Checkpointer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.document"><code class="docutils literal notranslate"><span class="pre">Checkpointer.document()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.enter_iteration"><code class="docutils literal notranslate"><span class="pre">Checkpointer.enter_iteration()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.finish"><code class="docutils literal notranslate"><span class="pre">Checkpointer.finish()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.iteration_failed"><code class="docutils literal notranslate"><span class="pre">Checkpointer.iteration_failed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.leave_loop"><code class="docutils literal notranslate"><span class="pre">Checkpointer.leave_loop()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.loop_resume"><code class="docutils literal notranslate"><span class="pre">Checkpointer.loop_resume()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.restore_variables"><code class="docutils literal notranslate"><span class="pre">Checkpointer.restore_variables()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.start"><code class="docutils literal notranslate"><span class="pre">Checkpointer.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.step_completed"><code class="docutils literal notranslate"><span class="pre">Checkpointer.step_completed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Checkpointer.write"><code class="docutils literal notranslate"><span class="pre">Checkpointer.write()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Unrestorable"><code class="docutils literal notranslate"><span class="pre">Unrestorable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.Unrestorable.message"><code class="docutils literal notranslate"><span class="pre">Unrestorable.message</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.changed_versions"><code class="docutils literal notranslate"><span class="pre">changed_versions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.decode_value"><code class="docutils literal notranslate"><span class="pre">decode_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.describe_position"><code class="docutils literal notranslate"><span class="pre">describe_position()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.encode_value"><code class="docutils literal notranslate"><span class="pre">encode_value()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.find_node"><code class="docutils literal notranslate"><span class="pre">find_node()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.flowchart_fingerprint"><code class="docutils literal notranslate"><span class="pre">flowchart_fingerprint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.get_checkpointer"><code class="docutils literal notranslate"><span class="pre">get_checkpointer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.package_versions"><code class="docutils literal notranslate"><span class="pre">package_versions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.read_checkpoint"><code class="docutils literal notranslate"><span class="pre">read_checkpoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.resumable"><code class="docutils literal notranslate"><span class="pre">resumable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.set_checkpointer"><code class="docutils literal notranslate"><span class="pre">set_checkpointer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.step_completed"><code class="docutils literal notranslate"><span class="pre">step_completed()</span></code></a></li>
 </ul>
 </li>
@@ -6420,6 +6737,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.all_options"><code class="docutils literal notranslate"><span class="pre">Node.all_options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.analyze"><code class="docutils literal notranslate"><span class="pre">Node.analyze()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.calculation"><code class="docutils literal notranslate"><span class="pre">Node.calculation</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.checkpoint_variable"><code class="docutils literal notranslate"><span class="pre">Node.checkpoint_variable()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.close_printing"><code class="docutils literal notranslate"><span class="pre">Node.close_printing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.connections"><code class="docutils literal notranslate"><span class="pre">Node.connections()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.create_figure"><code class="docutils literal notranslate"><span class="pre">Node.create_figure()</span></code></a></li>
@@ -6462,6 +6780,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.references"><code class="docutils literal notranslate"><span class="pre">Node.references</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.remove_edge"><code class="docutils literal notranslate"><span class="pre">Node.remove_edge()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.reset_id"><code class="docutils literal notranslate"><span class="pre">Node.reset_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.restore_variable"><code class="docutils literal notranslate"><span class="pre">Node.restore_variable()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.run"><code class="docutils literal notranslate"><span class="pre">Node.run()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.select_configurations"><code class="docutils literal notranslate"><span class="pre">Node.select_configurations()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.set_gui_data"><code class="docutils literal notranslate"><span class="pre">Node.set_gui_data()</span></code></a></li>
