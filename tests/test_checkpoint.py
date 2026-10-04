@@ -440,3 +440,25 @@ def test_ndarray_round_trip_is_exact():
     value = np.array([0.1, 1 / 3, np.pi, -0.0, np.nan, 1e-300])
     result = decode_value(json.loads(json.dumps(encode_value(value))))
     assert result.tobytes() == value.tobytes()
+
+
+def test_a_variable_json_cannot_hold_is_unrestorable(job):
+    """encode_value accepts it but json.dumps fails (numpy datetime64)."""
+    root, db = job
+    flowchart, nodes = make_flowchart(Step(title="A"))
+    seamm.flowchart_variables.set_variable("when", np.datetime64("2026-10-04"))
+    evaluate(flowchart, db, root)
+    checkpoint = read_checkpoint(root / "seamm.db")
+    assert checkpoint["state"] == "finished"
+    assert "when" in checkpoint["unrestorable"]
+
+
+def test_run_id_kept_through_a_resume(job):
+    root, db = job
+    flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B", fail=True))
+    with pytest.raises(RuntimeError):
+        evaluate(flowchart, db, root)
+    first = read_checkpoint(root / "seamm.db")["run_id"]
+    flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B"))
+    evaluate(flowchart, db, root, resume=read_checkpoint(root / "seamm.db"))
+    assert read_checkpoint(root / "seamm.db")["run_id"] == first

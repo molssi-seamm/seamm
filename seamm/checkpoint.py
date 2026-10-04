@@ -17,6 +17,7 @@ seamm_exec's developer guide (campaigns/2026-10-02/NOTES_phase5.rst).
 """
 
 import base64
+import copy
 import datetime
 import hashlib
 import importlib.metadata
@@ -25,6 +26,7 @@ import logging
 import os
 from pathlib import Path, PurePath
 import sqlite3
+import uuid
 
 import seamm
 
@@ -521,6 +523,9 @@ class Checkpointer:
         self.resumable = True
         self.why_not = ""
         self.resumed_from = resume  # the whole document, kept
+        # The same through resumes; new for a run from the top. Steps can use it
+        # to tell their own earlier attempts from another run's (Write Structure).
+        self.run_id = (resume or {}).get("run_id") or uuid.uuid4().hex
         self.resume = resume  # the position still to be resumed into
         self._resume_depth = 0
         self._last_document = None
@@ -730,7 +735,8 @@ class Checkpointer:
                 text = json.dumps(encode_value(value))
                 rows[name] = ("value", fingerprint or text, text)
                 continue
-            except _NotEncodable:
+            except (_NotEncodable, TypeError, ValueError, OverflowError):
+                # e.g. numpy's datetime64, whose .item() is not JSON
                 pass
             type_name = type(value).__name__
             origin = origins.get(name)
@@ -777,7 +783,8 @@ class Checkpointer:
             "command_line": self.command_line,
             "versions": self.versions,
             "written": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "position": self.frames,
+            "position": copy.deepcopy(self.frames),
+            "run_id": self.run_id,
             "system_id": system_id,
             "origins": origins,
         }
@@ -860,7 +867,21 @@ class Checkpointer:
             self.write(state)
             return
         self.system_db.rollback_transaction()
-        if self._last_document is None:
+        if self._last_document is None and self.resumed_from is not None:
+            # A resume that failed before writing anything: the database is
+            # still at the checkpoint it resumed from, so keep that position (a
+            # Loop's frame in it, above all), only marked as an error.
+            document = {
+                k: v
+                for k, v in copy.deepcopy(self.resumed_from).items()
+                if k not in ("variables", "restorable", "unrestorable")
+            }
+            document["state"] = state
+            document["written"] = datetime.datetime.now(
+                datetime.timezone.utc
+            ).isoformat()
+            self.write(state, document=document)
+        elif self._last_document is None:
             self.write(state)
         else:
             # The database is back at the last checkpoint, so is everything else:
