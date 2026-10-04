@@ -180,6 +180,17 @@ class Flowchart(object):
         self._job_directory = value
 
     @property
+    def job_read_directories(self):
+        """Where an iteration of a parallel loop reads the job-level files it has
+        not written: the enclosing iterations' job directories, innermost first,
+        then the job's. Empty for a job's own evaluator."""
+        return getattr(self, "_job_read_directories", None) or []
+
+    @job_read_directories.setter
+    def job_read_directories(self, value):
+        self._job_read_directories = list(value or [])
+
+    @property
     def output(self):
         """Where to print output:
         files:  to files in subdirectories

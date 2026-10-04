@@ -355,20 +355,32 @@ class Node(collections.abc.Hashable):
         """Return the path to the job's top-level directory: where ``job:NAME``
         and ``/NAME`` paths go (its own directory for an iteration of a parallel
         loop, see ``Flowchart.job_directory``)."""
-        return Path(self.flowchart.job_directory)
+        flowchart = self.flowchart
+        return Path(
+            getattr(flowchart, "job_directory", None) or flowchart.root_directory
+        )
 
     def job_file(self, name):
         """The path of a job-level file to read, ``name`` relative to the job.
 
         In the job's own directory (:attr:`job_path`); for an iteration of a
         parallel loop, which writes its job-level files apart, a file it has not
-        written itself is read from the job's directory, where its inputs are.
+        written itself is read from the iteration it is part of (a parallel loop
+        nested in an iteration), and so on up to the job's directory, where its
+        inputs are (``Flowchart.job_read_directories``). Note that it is the file
+        as it is now, not as it was when the loop started.
         """
         path = self.job_path / name
-        if not path.exists():
-            parent = Path(self.flowchart.root_directory) / name
-            if parent.exists():
-                return parent
+        if path.exists():
+            return path
+        flowchart = self.flowchart
+        directories = getattr(flowchart, "job_read_directories", None) or [
+            flowchart.root_directory
+        ]
+        for directory in directories:
+            other = Path(directory) / name
+            if other.exists():
+                return other
         return path
 
     @property
