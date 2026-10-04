@@ -19,6 +19,7 @@ from seamm.checkpoint import (
     CheckpointError,
     Unrestorable,
     decode_value,
+    flowchart_fingerprint,
     encode_value,
     read_checkpoint,
     resumable,
@@ -223,7 +224,7 @@ def test_finished_run(job):
     assert systems(root / "seamm.db") == ["A", "B"]
     mirror = json.loads((root / "checkpoint.json").read_text())
     assert mirror["state"] == "finished"
-    ok, why = resumable(checkpoint, flowchart.digest(strict=True), [])
+    ok, why = resumable(checkpoint, flowchart_fingerprint(flowchart), [])
     assert not ok and "finished" in why
 
 
@@ -241,7 +242,7 @@ def test_error_rolls_back_the_failing_step(job):
     assert systems(root / "seamm.db") == ["A"]
     assert "ran_A" in checkpoint["variables"]
     assert "ran_B" not in checkpoint["variables"]
-    ok, why = resumable(checkpoint, flowchart.digest(strict=True), [])
+    ok, why = resumable(checkpoint, flowchart_fingerprint(flowchart), [])
     assert ok, why
 
 
@@ -302,7 +303,7 @@ def test_resumable_reasons(job):
     with pytest.raises(RuntimeError):
         evaluate(flowchart, db, root, command_line=["--n", "3"])
     checkpoint = read_checkpoint(root / "seamm.db")
-    digest = flowchart.digest(strict=True)
+    digest = flowchart_fingerprint(flowchart)
     assert resumable(checkpoint, digest, ["--n", "3"])[0]
     ok, why = resumable(checkpoint, digest, ["--n", "4"])
     assert not ok and "command line" in why
@@ -360,7 +361,7 @@ def test_step_outside_the_position_is_not_resumable(job):
     seamm.step_completed(nodes[1], None)  # not the node the position expects
     checkpoint = read_checkpoint(root / "seamm.db")
     assert checkpoint["resumable"] is False
-    ok, why = resumable(checkpoint, flowchart.digest(strict=True), [])
+    ok, why = resumable(checkpoint, flowchart_fingerprint(flowchart), [])
     assert not ok and "too old" in why
 
 
@@ -376,3 +377,18 @@ def test_current_system_restored(job):
     checkpointer = Checkpointer(db, root, flowchart, (), resume=checkpoint)
     checkpointer.restore_variables(seamm.Variables())
     assert db.system.name == "B"
+
+
+def test_fingerprint_covers_loop_bodies_not_versions():
+    """Unlike Flowchart.digest, which stops at a Loop and includes versions."""
+    flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B"))
+    before = flowchart_fingerprint(flowchart)
+    Step.version = "2099.1.1"
+    try:
+        assert flowchart_fingerprint(flowchart) == before
+    finally:
+        Step.version = "2026.10.4"
+    extra = Step(flowchart, title="C")
+    flowchart.add_node(extra)
+    flowchart.add_edge(nodes[1], extra, edge_type="execution")
+    assert flowchart_fingerprint(flowchart) != before

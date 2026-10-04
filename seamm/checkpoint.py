@@ -17,6 +17,7 @@ seamm_exec's developer guide (campaigns/2026-10-02/NOTES_phase5.rst).
 """
 
 import datetime
+import hashlib
 import importlib.metadata
 import json
 import logging
@@ -366,7 +367,7 @@ def resumable(checkpoint, digest, command_line):
         return False, checkpoint.get(
             "why not resumable", "the checkpoint is marked not resumable"
         )
-    if checkpoint.get("flowchart_digest_strict") != digest:
+    if checkpoint.get("flowchart_fingerprint") != digest:
         return False, "the flowchart has changed since the checkpoint was written"
     if list(checkpoint.get("command_line", [])) != list(command_line):
         return False, "the command line differs from the one checkpointed"
@@ -378,6 +379,26 @@ def resumable(checkpoint, digest, command_line):
 # --------------------------------------------------------------------------
 # Writing
 # --------------------------------------------------------------------------
+
+
+def flowchart_fingerprint(flowchart):
+    """A hash of every step's parameters and of how the steps are connected.
+
+    What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it
+    covers the whole graph (the digest follows the steps and stops at the first
+    Loop) and leaves out the versions of the plug-ins, which may change between a
+    run and its resume.
+    """
+    hasher = hashlib.sha256()
+    for node in sorted(flowchart, key=lambda n: str(n.uuid)):
+        hasher.update(f"{node.uuid}:{type(node).__name__}:".encode())
+        hasher.update(node.digest(strict=False).encode())
+    edges = sorted(
+        (str(e.node1.uuid), str(e.node2.uuid), str(e.edge_type), str(e.edge_subtype))
+        for e in flowchart.edges()
+    )
+    hasher.update(json.dumps(edges).encode())
+    return hasher.hexdigest()
 
 
 def _id(node):
@@ -441,7 +462,7 @@ class Checkpointer:
         self.root = Path(root)
         self.flowchart = flowchart
         self.command_line = list(command_line)
-        self.digest = flowchart.digest(strict=True)
+        self.digest = flowchart_fingerprint(flowchart)
         self.versions = package_versions(flowchart)
         self.frames = [{"node": None}]
         self.resumable = True
@@ -671,7 +692,7 @@ class Checkpointer:
             "format": FORMAT,
             "state": state,
             "resumable": self.resumable,
-            "flowchart_digest_strict": self.digest,
+            "flowchart_fingerprint": self.digest,
             "command_line": self.command_line,
             "versions": self.versions,
             "written": datetime.datetime.now(datetime.timezone.utc).isoformat(),
