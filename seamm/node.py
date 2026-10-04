@@ -357,6 +357,20 @@ class Node(collections.abc.Hashable):
         loop, see ``Flowchart.job_directory``)."""
         return Path(self.flowchart.job_directory)
 
+    def job_file(self, name):
+        """The path of a job-level file to read, ``name`` relative to the job.
+
+        In the job's own directory (:attr:`job_path`); for an iteration of a
+        parallel loop, which writes its job-level files apart, a file it has not
+        written itself is read from the job's directory, where its inputs are.
+        """
+        path = self.job_path / name
+        if not path.exists():
+            parent = Path(self.flowchart.root_directory) / name
+            if parent.exists():
+                return parent
+        return path
+
     @property
     def metadata(self):
         """Metadata describing aspects of the calculation.
@@ -427,7 +441,7 @@ class Node(collections.abc.Hashable):
     def references(self):
         """The reference handler for citations."""
         if self._references is None:
-            filename = os.path.join(self.flowchart.root_directory, "references.db")
+            filename = os.path.join(self.flowchart.job_directory, "references.db")
             self._references = reference_handler.Reference_Handler(filename)
 
         return self._references
@@ -621,6 +635,8 @@ class Node(collections.abc.Hashable):
             if parsed is not None:
                 job_no, tail = parsed
                 if job_no is None:
+                    if read_only:
+                        return self.job_file(tail)
                     return self.job_path / tail
                 if not read_only:
                     raise ValueError(

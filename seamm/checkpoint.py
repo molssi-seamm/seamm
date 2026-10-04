@@ -59,12 +59,14 @@ class IterationDone(BaseException):
 
     A BaseException so that no Loop or step catches it on the way out: the
     evaluator stops, successfully, wherever the iteration's loop is nested.
-    ``broke`` is True if the iteration ended with a break.
+    ``broke`` is True if the iteration ended with a break, ``skipped`` if it was
+    skipped (its directory is not wanted).
     """
 
-    def __init__(self, broke=False):
+    def __init__(self, broke=False, skipped=False):
         super().__init__("the iteration is done")
         self.broke = broke
+        self.skipped = skipped
 
 
 def get_checkpointer():
@@ -542,6 +544,9 @@ class Checkpointer:
         self.resume = resume  # the position still to be resumed into
         self._resume_depth = 0
         self._last_document = None
+        # For the evaluator of one iteration of a parallel loop, how the
+        # iteration ended ({"done", "break", "skip"}), kept in the final checkpoint
+        self.iteration = None
         # What is in the variables table: name -> (kind, fingerprint, text)
         self._written = None
         if resume is not None:
@@ -709,6 +714,24 @@ class Checkpointer:
             db.close()
         return document
 
+    def parallel_loop(self, loop, state):
+        """A parallel Loop's progress: its frame's state, with no body position.
+
+        Committed with the database, so whatever the Loop merged in the same
+        transaction is on record with it.
+        """
+        level = self._level(loop)
+        if level is None:
+            self._not_resumable(
+                f"the Loop {'.'.join(_id(loop))} is not in the position"
+            )
+            self.system_db.commit_transaction()
+            return
+        self.frames[level]["loop"] = state
+        self.frames[level].pop("failed", None)
+        del self.frames[level + 1 :]
+        self.write()
+
     def iteration_failed(self, loop, node):
         """A Loop caught an error in its body and continues: keep the writes."""
         level = self._level(loop)
@@ -849,6 +872,8 @@ class Checkpointer:
         }
         if not self.resumable:
             document["why not resumable"] = self.why_not
+        if self.iteration is not None:
+            document["iteration"] = self.iteration
         return document
 
     def write(self, state="running", document=None):
