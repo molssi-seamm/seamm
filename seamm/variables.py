@@ -18,6 +18,8 @@ flowchart_variables = None
 class Variables(collections.abc.MutableMapping):
     def __init__(self, **kwargs):
         self._data = dict(**kwargs)
+        # The uuid of the step that set each variable, for the checkpoint.
+        self._origins = {}
 
     def __getitem__(self, key):
         """Allow [] access to the dictionary!"""
@@ -30,6 +32,7 @@ class Variables(collections.abc.MutableMapping):
     def __delitem__(self, key):
         """Allow deletion of keys"""
         del self._data[key]
+        self._origins.pop(key, None)
 
     def __iter__(self):
         """Allow iteration over the object"""
@@ -73,7 +76,7 @@ class Variables(collections.abc.MutableMapping):
         else:
             return string
 
-    def set_variable(self, variable, value):
+    def set_variable(self, variable, value, origin=None):
         """Set the value of the variable. The variable may be a simple string
         or start with a $ and optionally have braces around it, i.e.
 
@@ -84,10 +87,16 @@ class Variables(collections.abc.MutableMapping):
 
             ${<name>}
 
+        ``origin`` is the uuid of the step setting it, which the checkpoint uses
+        to ask that step to save and restore a value that is not plain data.
         """
 
         name = self.variable(variable)
         self._data[name] = value
+        if origin is None:
+            self._origins.pop(name, None)
+        else:
+            self._origins[name] = str(origin)
 
     def get_variable(self, variable):
         """Get the value of the variable. The variable may be a simple string
@@ -105,7 +114,10 @@ class Variables(collections.abc.MutableMapping):
         name = self.variable(variable)
         if name not in self._data:
             raise RuntimeError("Workspace variable '{}' does not exist.".format(name))
-        return self._data[name]
+        value = self._data[name]
+        if isinstance(value, seamm.checkpoint.Unrestorable):
+            value._fail()
+        return value
 
     def exists(self, variable):
         """Return whether a variable exists. The variable may be specified
@@ -140,6 +152,7 @@ class Variables(collections.abc.MutableMapping):
         name = self.variable(variable)
         if name in self._data:
             del self._data[name]
+        self._origins.pop(name, None)
 
     def variable(self, string):
         """Return the name of a variable. The variable may be specified

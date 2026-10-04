@@ -1224,7 +1224,45 @@ class Node(collections.abc.Hashable):
         variable maybe a plain string, or be $<name> or ${<name>}
         """
 
-        seamm.flowchart_variables.set_variable(variable, value)
+        seamm.flowchart_variables.set_variable(variable, value, origin=self.uuid)
+
+    def checkpoint_variable(self, name, value):
+        """Save a variable this step set that is not plain data, for a resume.
+
+        The checkpoint stores numbers, strings, lists, dicts, numpy arrays,
+        quantities, paths, tables and the like itself. For any other object this
+        step put in a variable, return JSON-compatible data from which
+        :meth:`restore_variable` can remake it, or None if it cannot be saved.
+
+        Parameters
+        ----------
+        name : str
+            The name of the variable.
+        value : object
+            Its value.
+
+        Returns
+        -------
+        JSON-compatible data or None
+        """
+        return None
+
+    def restore_variable(self, name, data):
+        """Remake a variable from what :meth:`checkpoint_variable` saved.
+
+        Parameters
+        ----------
+        name : str
+            The name of the variable.
+        data : JSON-compatible data
+            What checkpoint_variable returned.
+
+        Returns
+        -------
+        object or None
+            The value, or None if it cannot be remade.
+        """
+        return None
 
     def variable_exists(self, variable):
         """Return whether a varable exists in the workspace"""
