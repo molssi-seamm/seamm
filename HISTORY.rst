@@ -1,6 +1,19 @@
 =======
 History
 =======
+2026.10.4 -- Checkpoints, so a stopped flowchart can be resumed
+    * A flowchart run in its own directory keeps a checkpoint in its database: after
+      each step the step's writes are committed together with where the flowchart has
+      got to (including each Loop's position) and its variables. A job that was
+      killed, ran out of walltime or lost its machine can then be resumed with
+      ``run_flowchart --resume`` (seamm_exec 2026.10.4.1) at the first step or loop
+      iteration it had not finished; a step stopped part way runs again, reusing its
+      finished calculations. See seamm_exec's documentation, "Resuming a job".
+    * A step that keeps other objects in variables can save and remake them across a
+      resume (``Node.checkpoint_variable``/``restore_variable``); a variable nothing
+      can remake stops a step that uses it after a resume, with a message saying so.
+    * Requires molsystem 2026.10.4.
+
 2026.10.3 -- Tables are stored in the job's database
     * Flowchart tables -- made by the Table step or by steps storing results in a
       table -- are now kept in the job's ``seamm.db`` instead of only in memory, so a
