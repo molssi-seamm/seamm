@@ -421,14 +421,22 @@ def flowchart_fingerprint(flowchart):
     What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it
     covers the whole graph (the digest follows the steps and stops at the first
     Loop) and leaves out the versions of the plug-ins, which may change between a
-    run and its resume.
+    run and its resume. Steps are identified by their ids from the flowchart's
+    numbering (``set_ids``), not their uuids, which are new each time the
+    flowchart is read.
     """
+
+    def name(node):
+        return ".".join(_id(node)) if node._id is not None else "-"
+
     hasher = hashlib.sha256()
-    for node in sorted(flowchart, key=lambda n: str(n.uuid)):
-        hasher.update(f"{node.uuid}:{type(node).__name__}:".encode())
-        hasher.update(node.digest(strict=False).encode())
+    nodes = sorted(
+        (name(node), type(node).__name__, node.digest(strict=False))
+        for node in flowchart
+    )
+    hasher.update(json.dumps(nodes).encode())
     edges = sorted(
-        (str(e.node1.uuid), str(e.node2.uuid), str(e.edge_type), str(e.edge_subtype))
+        (name(e.node1), name(e.node2), str(e.edge_type), str(e.edge_subtype))
         for e in flowchart.edges()
     )
     hasher.update(json.dumps(edges).encode())

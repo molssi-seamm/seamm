@@ -253,9 +253,10 @@ def test_resume_reruns_only_the_failed_step(job):
     with pytest.raises(RuntimeError):
         evaluate(flowchart, db, root)
 
-    # Fix the problem and resume.
-    b.fail = False
+    # Fix the problem and resume, with the flowchart read again (new uuids).
+    flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B"), Step(title="C"))
     checkpoint = read_checkpoint(root / "seamm.db")
+    assert resumable(checkpoint, flowchart_fingerprint(flowchart), [])[0]
     seamm.flowchart_variables = seamm.Variables()
     seamm.flowchart_variables.set_variable("_system_db", db)
     evaluate(flowchart, db, root, resume=checkpoint)
@@ -392,9 +393,13 @@ def test_fingerprint_covers_loop_bodies_not_versions():
         assert flowchart_fingerprint(flowchart) == before
     finally:
         Step.version = "2026.10.4"
+    # The same flowchart read again: same steps, new uuids
+    again, _ = make_flowchart(Step(title="A"), Step(title="B"))
+    assert flowchart_fingerprint(again) == before
     extra = Step(flowchart, title="C")
     flowchart.add_node(extra)
     flowchart.add_edge(nodes[1], extra, edge_type="execution")
+    flowchart.set_ids()
     assert flowchart_fingerprint(flowchart) != before
 
 
