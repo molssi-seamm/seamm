@@ -313,6 +313,23 @@ def read_checkpoint(path):
     return json.loads(row[0])
 
 
+def changed_versions(checkpoint, flowchart):
+    """The packages whose versions differ from those the checkpoint recorded.
+
+    Returns
+    -------
+    [(str, str, str)]
+        (package, version in the checkpoint, version now), sorted.
+    """
+    then = checkpoint.get("versions", {})
+    now = package_versions(flowchart)
+    return [
+        (package, then.get(package, "-"), now.get(package, "-"))
+        for package in sorted(set(then) | set(now))
+        if then.get(package) != now.get(package)
+    ]
+
+
 def describe_position(checkpoint):
     """A short description of where a checkpoint is, for people."""
     text = []
@@ -381,7 +398,7 @@ def find_node(flowchart, node_id):
     return None
 
 
-def _package_versions(flowchart):
+def package_versions(flowchart):
     """The versions of seamm and of the packages of the flowchart's steps."""
     packages = {"seamm", "molsystem", "seamm_exec", "seamm_util"}
     for node in flowchart:
@@ -425,7 +442,7 @@ class Checkpointer:
         self.flowchart = flowchart
         self.command_line = list(command_line)
         self.digest = flowchart.digest(strict=True)
-        self.versions = _package_versions(flowchart)
+        self.versions = package_versions(flowchart)
         self.frames = [{"node": None}]
         self.resumable = True
         self.why_not = ""
