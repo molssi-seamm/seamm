@@ -20,6 +20,7 @@ from seamm.table import Table  # noqa: F401
 from seamm.checkpoint import step_completed  # noqa: F401
 from seamm.checkpoint import Checkpointer, CheckpointError  # noqa: F401
 from seamm.checkpoint import read_checkpoint  # noqa: F401
+from seamm.checkpoint import IterationDone  # noqa: F401
 from seamm.plugin_manager import PluginManager  # noqa: F401
 from seamm.flowchart import Flowchart  # noqa: F401
 from seamm.tk_flowchart import TkFlowchart  # noqa: F401

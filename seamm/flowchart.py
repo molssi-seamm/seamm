@@ -164,6 +164,22 @@ class Flowchart(object):
         self._root_directory = value
 
     @property
+    def job_directory(self):
+        """The job's own directory: its output, database and job-level files.
+
+        The same as :attr:`root_directory`, where the steps' directories are,
+        except for the evaluator of one iteration of a parallel loop, whose step
+        directories are in the job's tree but whose own files are kept apart.
+        """
+        if getattr(self, "_job_directory", None) is None:
+            return self.root_directory
+        return self._job_directory
+
+    @job_directory.setter
+    def job_directory(self, value):
+        self._job_directory = value
+
+    @property
     def output(self):
         """Where to print output:
         files:  to files in subdirectories

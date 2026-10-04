@@ -462,3 +462,75 @@ def test_run_id_kept_through_a_resume(job):
     flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B"))
     evaluate(flowchart, db, root, resume=read_checkpoint(root / "seamm.db"))
     assert read_checkpoint(root / "seamm.db")["run_id"] == first
+
+
+# --------------------------------------------------------------------------
+# Phase 6: the evaluator of one iteration of a parallel loop
+# --------------------------------------------------------------------------
+
+
+def test_job_directory_defaults_to_the_root(tmp_path):
+    flowchart, nodes = make_flowchart(Step(title="A"))
+    flowchart.root_directory = str(tmp_path)
+    assert flowchart.job_directory == str(tmp_path)
+    assert nodes[0].job_path == tmp_path
+    flowchart.job_directory = str(tmp_path / "loop" / "iter_0001" / "_evaluator")
+    assert nodes[0].job_path == tmp_path / "loop" / "iter_0001" / "_evaluator"
+    assert flowchart.root_directory == str(tmp_path)
+
+
+def test_iteration_done_is_not_an_exception():
+    """No Loop or step catches it on its way out of the evaluator."""
+    with pytest.raises(seamm.IterationDone) as info:
+        try:
+            raise seamm.IterationDone(broke=True)
+        except Exception:  # pragma: no cover - must not happen
+            pytest.fail("IterationDone was caught as an Exception")
+    assert info.value.broke
+
+
+def test_write_child(job):
+    """The child's checkpoint resumes the iteration's body, and only it."""
+    root, db = job
+    loop, first, last = Step(title="Loop"), Step(title="A"), Step(title="B")
+    flowchart, nodes = make_flowchart(loop, first, last)
+    checkpointer = Checkpointer(db, root, flowchart, ["job.flow", "x"])
+    seamm.checkpoint.set_checkpointer(checkpointer)
+    checkpointer.start(flowchart.get_node("1"))
+    # As if the first step were a Loop and the next the first node of its body
+    checkpointer.frames = [{"node": ["1"], "failed": [1]}]
+    state = {"count": 3, "length": 5, "row": 2}
+    checkpointer.enter_iteration(loop, state, first)
+    seamm.flowchart_variables.set_variable("_row", 2)
+    db.commit_transaction()
+
+    child = root / "child.db"
+    child.write_bytes((root / "seamm.db").read_bytes())
+    document = checkpointer.write_child(child, loop, state, first)
+
+    saved = read_checkpoint(child)
+    # read_checkpoint adds the variables from their table
+    assert {k: saved[k] for k in document} == json.loads(json.dumps(document))
+    assert saved["position"] == [
+        {"node": ["1"], "loop": dict(state, only=True, done=False)},
+        {"node": ["2"]},
+    ]
+    assert saved["run_id"] != checkpointer.run_id
+    assert saved["state"] == "running"
+    assert saved["variables"]["_row"] == 2
+    ok, why = resumable(saved, flowchart_fingerprint(flowchart), ["job.flow", "x"])
+    assert ok, why
+    # The parent's own checkpoint is untouched
+    parent = read_checkpoint(root / "seamm.db")
+    assert "only" not in parent["position"][0]["loop"]
+    assert parent["run_id"] == checkpointer.run_id
+
+
+def test_write_child_needs_the_loop_in_the_position(job):
+    root, db = job
+    loop, first = Step(title="Loop"), Step(title="A")
+    flowchart, nodes = make_flowchart(loop, first)
+    checkpointer = Checkpointer(db, root, flowchart)
+    checkpointer.start(flowchart.get_node("1"))
+    with pytest.raises(CheckpointError, match="not in the position"):
+        checkpointer.write_child(root / "child.db", loop, {}, first)

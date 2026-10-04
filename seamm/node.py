@@ -352,8 +352,10 @@ class Node(collections.abc.Hashable):
 
     @property
     def job_path(self):
-        """Return the path to the job's top-level directory"""
-        return Path(self.flowchart.root_directory)
+        """Return the path to the job's top-level directory: where ``job:NAME``
+        and ``/NAME`` paths go (its own directory for an iteration of a parallel
+        loop, see ``Flowchart.job_directory``)."""
+        return Path(self.flowchart.job_directory)
 
     @property
     def metadata(self):
@@ -672,7 +674,7 @@ class Node(collections.abc.Hashable):
         this job's own root directory). Raises ValueError if that layout
         cannot be found, or if the job cannot be found or is ambiguous.
         """
-        jobs_root = self.job_path.parent.parent.parent
+        jobs_root = Path(self.flowchart.root_directory).parent.parent.parent
         if jobs_root.name != "Jobs":
             raise ValueError(
                 f"Could not find the 'Jobs' root above this job ('{jobs_root}' "
