@@ -351,7 +351,8 @@ def test_unrestorable_variable(job):
     with pytest.raises(CheckpointError, match="helper"):
         seamm.flowchart_variables.get_variable("helper")
     # ... and it stays unrestorable in the next checkpoint
-    assert "helper" in checkpointer.document()["unrestorable"]
+    checkpointer.write()
+    assert "helper" in read_checkpoint(root / "seamm.db")["unrestorable"]
 
 
 def test_step_outside_the_position_is_not_resumable(job):
@@ -395,3 +396,42 @@ def test_fingerprint_covers_loop_bodies_not_versions():
     flowchart.add_node(extra)
     flowchart.add_edge(nodes[1], extra, edge_type="execution")
     assert flowchart_fingerprint(flowchart) != before
+
+
+def test_unchanged_large_array_is_not_rewritten(job):
+    """A large numpy variable is written once, then only when it changes."""
+    root, db = job
+    flowchart, nodes = make_flowchart(Step(title="A"))
+    checkpointer = Checkpointer(db, root, flowchart)
+    seamm.checkpoint.set_checkpointer(checkpointer)
+    checkpointer.start(flowchart.get_node("1"))
+    big = np.random.default_rng(1).random(125000)
+    seamm.flowchart_variables.set_variable("big", big)
+
+    writes = []
+    original = seamm.checkpoint.encode_value
+
+    def counting(value):
+        if isinstance(value, np.ndarray):
+            writes.append(1)
+        return original(value)
+
+    seamm.checkpoint.encode_value = counting
+    try:
+        checkpointer.write()
+        checkpointer.write()
+        big[0] = 42.0  # changed in place
+        checkpointer.write()
+    finally:
+        seamm.checkpoint.encode_value = original
+    assert len(writes) == 2
+    restored = read_checkpoint(root / "seamm.db")["variables"]["big"]
+    assert (decode_value(restored) == big).all()
+    mirror = json.loads((root / "checkpoint.json").read_text())
+    assert mirror["variables"]["big"].endswith("characters; in seamm.db>")
+
+
+def test_ndarray_round_trip_is_exact():
+    value = np.array([0.1, 1 / 3, np.pi, -0.0, np.nan, 1e-300])
+    result = decode_value(json.loads(json.dumps(encode_value(value))))
+    assert result.tobytes() == value.tobytes()

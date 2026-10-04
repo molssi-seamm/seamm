@@ -16,6 +16,7 @@ Decisions are only ever taken from the database copy. See the phase 5 notes in
 seamm_exec's developer guide (campaigns/2026-10-02/NOTES_phase5.rst).
 """
 
+import base64
 import datetime
 import hashlib
 import importlib.metadata
@@ -31,6 +32,9 @@ logger = logging.getLogger(__name__)
 
 FORMAT = 1
 TABLE = "_checkpoint"
+VARIABLES_TABLE = "_checkpoint_variables"
+# Variables longer than this (as JSON) are only summarized in checkpoint.json
+MIRROR_LIMIT = 2000
 
 # Variables the evaluator makes itself, never saved or restored.
 EVALUATOR_VARIABLES = (
@@ -173,11 +177,14 @@ def encode_value(value):
                     "shape": list(value.shape),
                     "data": [encode_value(v) for v in value.ravel().tolist()],
                 }
+            # The bytes, base64: exact, and far faster than a list of numbers
             return {
                 "__seamm__": "ndarray",
                 "dtype": value.dtype.str,
                 "shape": list(value.shape),
-                "data": value.ravel().tolist(),
+                "base64": base64.b64encode(
+                    np.ascontiguousarray(value).tobytes()
+                ).decode("ascii"),
             }
         if isinstance(value, np.generic):
             return {
@@ -240,6 +247,13 @@ def decode_value(data, system_db=None):
             result = np.empty(len(values), dtype=object)
             result[:] = values
             return result.reshape(data["shape"])
+        if "base64" in data:
+            raw = base64.b64decode(data["base64"])
+            return (
+                np.frombuffer(raw, dtype=np.dtype(data["dtype"]))
+                .reshape(data["shape"])
+                .copy()
+            )
         return np.array(data["data"], dtype=np.dtype(data["dtype"])).reshape(
             data["shape"]
         )
@@ -264,6 +278,18 @@ def decode_value(data, system_db=None):
             io.StringIO(data["value"]), orient="split", typ="series"
         )
     raise CheckpointError(f"Unknown kind of value '{kind}' in the checkpoint.")
+
+
+def _array_fingerprint(value):
+    """A cheap fingerprint of a numeric numpy array, or None for anything else."""
+    if type(value).__module__.split(".")[0] != "numpy":
+        return None
+    import numpy as np
+
+    if not isinstance(value, np.ndarray) or value.dtype == object:
+        return None
+    digest = hashlib.sha1(np.ascontiguousarray(value).tobytes()).hexdigest()
+    return f"ndarray:{value.dtype.str}:{value.shape}:{digest}"
 
 
 def _hashable(value):
@@ -305,13 +331,21 @@ def read_checkpoint(path):
         return None
     try:
         row = db.execute(f"SELECT document FROM {TABLE} WHERE id = 1").fetchone()
+        if row is None:
+            return None
+        document = json.loads(row[0])
+        document["variables"] = {}
+        document["restorable"] = {}
+        document["unrestorable"] = {}
+        rows = db.execute(f"SELECT name, kind, data FROM {VARIABLES_TABLE}")
+        for name, kind, data in rows:
+            section = "variables" if kind == "value" else kind
+            document[section][name] = json.loads(data)
     except sqlite3.Error:
         return None
     finally:
         db.close()
-    if row is None:
-        return None
-    return json.loads(row[0])
+    return document
 
 
 def changed_versions(checkpoint, flowchart):
@@ -482,6 +516,8 @@ class Checkpointer:
         self.resume = resume  # the position still to be resumed into
         self._resume_depth = 0
         self._last_document = None
+        # What is in the variables table: name -> (kind, fingerprint, text)
+        self._written = None
         if resume is not None:
             self.frames = [dict(frame) for frame in resume["position"]]
 
@@ -655,51 +691,75 @@ class Checkpointer:
 
     # The document ----------------------------------------------------------
 
-    def document(self, state="running"):
-        """The checkpoint as a JSON-compatible dictionary."""
-        variables = seamm.flowchart_variables
-        encoded = {}
-        restorable = {}
-        unrestorable = {}
-        origins = {}
-        if variables is not None:
-            origins = dict(getattr(variables, "_origins", {}))
-            for name, value in variables._data.items():
-                if name in EVALUATOR_VARIABLES or isinstance(value, Unrestorable):
-                    if isinstance(value, Unrestorable):
-                        unrestorable[name] = {
-                            "type": value._type,
-                            "step": value._origin,
-                        }
-                    continue
-                try:
-                    encoded[name] = encode_value(value)
-                    continue
-                except _NotEncodable:
-                    pass
-                type_name = type(value).__name__
-                origin = origins.get(name)
-                step = None
-                saved = None
-                if origin is not None and origin in self._static_ids:
-                    node = self._nodes_by_static_id[self._static_ids[origin]]
-                    if node is not None:
-                        step = ".".join(_id(node) or [])
-                        try:
-                            saved = node.checkpoint_variable(name, value)
-                        except Exception as e:
-                            logger.warning(f"Could not checkpoint '{name}': {e}")
-                if saved is not None:
-                    restorable[name] = {
-                        "origin": self._static_ids[origin],
-                        "data": saved,
-                        "type": type_name,
-                        "step": step,
-                    }
-                else:
-                    # Including the modules and functions a Custom step leaves.
-                    unrestorable[name] = {"type": type_name, "step": step}
+    def _variable_rows(self):
+        """Each variable as (kind, fingerprint, text, value-or-None).
 
+        The fingerprint says whether a variable changed since it was last
+        written; a numpy array is fingerprinted by a hash of its bytes, so an
+        unchanged large array is neither encoded nor written again.
+        """
+        variables = seamm.flowchart_variables
+        rows = {}
+        if variables is None:
+            return rows, {}
+        origins = dict(getattr(variables, "_origins", {}))
+        written = self._written or {}
+        for name, value in variables._data.items():
+            if name in EVALUATOR_VARIABLES:
+                continue
+            if isinstance(value, Unrestorable):
+                entry = {"type": value._type, "step": value._origin}
+                text = json.dumps(entry)
+                rows[name] = ("unrestorable", text, text)
+                continue
+            fingerprint = _array_fingerprint(value)
+            if fingerprint is not None:
+                previous = written.get(name)
+                if previous is not None and previous[1] == fingerprint:
+                    rows[name] = previous
+                    continue
+            try:
+                text = json.dumps(encode_value(value))
+                rows[name] = ("value", fingerprint or text, text)
+                continue
+            except _NotEncodable:
+                pass
+            type_name = type(value).__name__
+            origin = origins.get(name)
+            step = None
+            saved = None
+            if origin is not None and origin in self._static_ids:
+                node = self._nodes_by_static_id[self._static_ids[origin]]
+                step = ".".join(_id(node) or [])
+                try:
+                    saved = node.checkpoint_variable(name, value)
+                except Exception as e:
+                    logger.warning(f"Could not checkpoint '{name}': {e}")
+            if saved is not None:
+                entry = {
+                    "origin": self._static_ids[origin],
+                    "data": saved,
+                    "type": type_name,
+                    "step": step,
+                }
+                text = json.dumps(entry)
+                rows[name] = ("restorable", text, text)
+            else:
+                # Including the modules and functions a Custom step leaves.
+                entry = {"type": type_name, "step": step}
+                text = json.dumps(entry)
+                rows[name] = ("unrestorable", text, text)
+        origins = {
+            name: self._static_ids[uuid]
+            for name, uuid in origins.items()
+            if uuid in self._static_ids
+        }
+        return rows, origins
+
+    def document(self, state="running", origins=None):
+        """The checkpoint, without the variables, as a JSON-compatible dict."""
+        if origins is None:
+            origins = self._variable_rows()[1]
         system_id = getattr(self.system_db, "_current_system_id", None)
         document = {
             "format": FORMAT,
@@ -711,39 +771,73 @@ class Checkpointer:
             "written": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "position": self.frames,
             "system_id": system_id,
-            "variables": encoded,
-            "restorable": restorable,
-            "unrestorable": unrestorable,
-            "origins": {
-                name: self._static_ids[uuid]
-                for name, uuid in origins.items()
-                if uuid in self._static_ids
-            },
+            "origins": origins,
         }
         if not self.resumable:
             document["why not resumable"] = self.why_not
         return document
 
     def write(self, state="running", document=None):
-        """Write the checkpoint and commit, then mirror it to checkpoint.json."""
-        if document is None:
-            document = self.document(state)
-        self._last_document = document
-        text = json.dumps(document, indent=1)
+        """Write the checkpoint and commit, then mirror it to checkpoint.json.
+
+        The variables are written too, only those that changed, unless a
+        document is given (after an error: the variables in the database are
+        already those of that document).
+        """
         db = self.system_db.db
         db.execute(
             f"CREATE TABLE IF NOT EXISTS {TABLE} "
             "(id INTEGER PRIMARY KEY CHECK (id = 1), document TEXT NOT NULL)"
         )
         db.execute(
+            f"CREATE TABLE IF NOT EXISTS {VARIABLES_TABLE} "
+            "(name TEXT PRIMARY KEY, kind TEXT NOT NULL, data TEXT NOT NULL)"
+        )
+        if document is None:
+            rows, origins = self._variable_rows()
+            document = self.document(state, origins=origins)
+            if self._written is None:
+                db.execute(f"DELETE FROM {VARIABLES_TABLE}")
+                self._written = {}
+            for name in set(self._written) - set(rows):
+                db.execute(f"DELETE FROM {VARIABLES_TABLE} WHERE name = ?", (name,))
+            for name, row in rows.items():
+                if self._written.get(name) != row:
+                    db.execute(
+                        f"INSERT OR REPLACE INTO {VARIABLES_TABLE} (name, kind, data)"
+                        " VALUES (?, ?, ?)",
+                        (name, row[0], row[2]),
+                    )
+            self._pending = rows
+        else:
+            self._pending = None
+        self._last_document = document
+        text = json.dumps(document, indent=1)
+        db.execute(
             f"INSERT OR REPLACE INTO {TABLE} (id, document) VALUES (1, ?)", (text,)
         )
         self.system_db.commit_transaction()
+        if self._pending is not None:
+            self._written = self._pending
+        self._mirror(document)
+
+    def _mirror(self, document):
+        """checkpoint.json, for people: the document and the variables, with
+        large values only summarized."""
+        mirror = dict(document)
+        sections = {"variables": {}, "restorable": {}, "unrestorable": {}}
+        for name, (kind, _, text) in (self._written or {}).items():
+            section = "variables" if kind == "value" else kind
+            if len(text) > MIRROR_LIMIT:
+                sections[section][name] = f"<{len(text)} characters; in seamm.db>"
+            else:
+                sections[section][name] = json.loads(text)
+        mirror.update(sections)
         try:
-            mirror = self.root / "checkpoint.json"
+            path = self.root / "checkpoint.json"
             tmp = self.root / "checkpoint.json.tmp"
-            tmp.write_text(text + "\n")
-            os.replace(tmp, mirror)
+            tmp.write_text(json.dumps(mirror, indent=1) + "\n")
+            os.replace(tmp, path)
         except OSError as e:
             logger.warning(f"Could not write checkpoint.json: {e}")
 
