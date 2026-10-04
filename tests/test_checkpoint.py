@@ -322,10 +322,13 @@ def test_variables_that_need_their_step(job):
     checkpoint = read_checkpoint(root / "seamm.db")
     assert "thing" in checkpoint["restorable"]
 
+    # A resume reads the flowchart again: same steps, new uuids.
+    flowchart, nodes = make_flowchart(MakesThing(title="M"), Step(title="B", fail=True))
     seamm.flowchart_variables = seamm.Variables()
     seamm.flowchart_variables.set_variable("_system_db", db)
     checkpointer = Checkpointer(db, root, flowchart, (), resume=checkpoint)
     checkpointer.restore_variables(seamm.flowchart_variables)
+    assert seamm.flowchart_variables._origins["thing"] == str(nodes[0].uuid)
     thing = seamm.flowchart_variables.get_variable("thing")
     assert isinstance(thing, Thing) and thing.filename == "ff.frc"
     assert (seamm.flowchart_variables.get_variable("array") == np.ones(3)).all()

@@ -463,6 +463,17 @@ class Checkpointer:
         self.flowchart = flowchart
         self.command_line = list(command_line)
         self.digest = flowchart_fingerprint(flowchart)
+        # A step's uuid differs each time the flowchart is read, so variables'
+        # origins are saved as the steps' ids from the flowchart's numbering,
+        # which is the same in every run (before any Loop renumbers its body).
+        self._static_ids = {
+            str(node.uuid): ".".join(_id(node))
+            for node in flowchart
+            if node._id is not None
+        }
+        self._nodes_by_static_id = {
+            ".".join(_id(node)): node for node in flowchart if node._id is not None
+        }
         self.versions = package_versions(flowchart)
         self.frames = [{"node": None}]
         self.resumable = True
@@ -504,7 +515,7 @@ class Checkpointer:
                 logger.warning(f"Could not restore variable '{name}': {e}")
                 variables._data[name] = Unrestorable(name, "value", None)
         for name, saved in document.get("restorable", {}).items():
-            node = self.flowchart.get_node(saved["origin"])
+            node = self._nodes_by_static_id.get(saved["origin"])
             value = None
             if node is not None:
                 try:
@@ -517,8 +528,10 @@ class Checkpointer:
             variables._data[name] = value
         for name, info in document.get("unrestorable", {}).items():
             variables._data[name] = Unrestorable(name, info["type"], info.get("step"))
-        origins = document.get("origins", {})
-        variables._origins.update({k: v for k, v in origins.items()})
+        for name, static_id in document.get("origins", {}).items():
+            node = self._nodes_by_static_id.get(static_id)
+            if node is not None:
+                variables._origins[name] = str(node.uuid)
         system_id = document.get("system_id")
         if system_id is not None and system_id in self.system_db.system_ids:
             self.system_db.system = system_id
@@ -668,8 +681,8 @@ class Checkpointer:
                 origin = origins.get(name)
                 step = None
                 saved = None
-                if origin is not None:
-                    node = self.flowchart.get_node(origin)
+                if origin is not None and origin in self._static_ids:
+                    node = self._nodes_by_static_id[self._static_ids[origin]]
                     if node is not None:
                         step = ".".join(_id(node) or [])
                         try:
@@ -678,7 +691,7 @@ class Checkpointer:
                             logger.warning(f"Could not checkpoint '{name}': {e}")
                 if saved is not None:
                     restorable[name] = {
-                        "origin": origin,
+                        "origin": self._static_ids[origin],
                         "data": saved,
                         "type": type_name,
                         "step": step,
@@ -701,7 +714,11 @@ class Checkpointer:
             "variables": encoded,
             "restorable": restorable,
             "unrestorable": unrestorable,
-            "origins": origins,
+            "origins": {
+                name: self._static_ids[uuid]
+                for name, uuid in origins.items()
+                if uuid in self._static_ids
+            },
         }
         if not self.resumable:
             document["why not resumable"] = self.why_not
