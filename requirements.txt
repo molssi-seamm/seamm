@@ -2,7 +2,7 @@ bibtexparser<2
 fasteners
 humanize
 jinja2
-molsystem>=2026.10.3
+molsystem>=2026.10.4
 numpy
 openpyxl
 packaging
