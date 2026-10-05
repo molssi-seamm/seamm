@@ -5,6 +5,8 @@
 import logging
 from pathlib import Path
 
+import types
+
 import pytest
 
 import seamm
@@ -53,10 +55,18 @@ class _FakeNode:
 
     _parse_job_reference = staticmethod(seamm.Node._parse_job_reference)
     _other_job_path = seamm.Node._other_job_path
+    job_file = seamm.Node.job_file
 
-    def __init__(self, wd, job_path):
+    def __init__(self, wd, job_path, root=None):
+        """``root``: the step directories' root, when not the job's directory
+        (an iteration of a parallel loop)."""
         self.wd = wd
         self.job_path = job_path
+        self.flowchart = types.SimpleNamespace(
+            root_directory=str(job_path if root is None else root),
+            job_directory=str(job_path),
+            job_read_directories=[],
+        )
 
 
 # ---------------------------------------------------------------------
@@ -308,3 +318,43 @@ def test_store_results_still_converts_units():
     )
 
     assert properties.values["temperature#LAMMPS#oplsaa+"] == pytest.approx(25.0)
+
+
+def test_job_file_falls_back_to_the_jobs_directory(tmp_path):
+    """An iteration of a parallel loop reads the job's files it has not written."""
+    evaluator = tmp_path / "3" / "iter_1" / "_evaluator"
+    evaluator.mkdir(parents=True)
+    (tmp_path / "input.sdf").write_text("job")
+    node = _FakeNode(
+        wd=tmp_path / "3" / "iter_1" / "1", job_path=evaluator, root=tmp_path
+    )
+    assert seamm.Node.file_path(node, "job:input.sdf", read_only=True) == (
+        tmp_path / "input.sdf"
+    )
+    # Writing goes to the iteration's own directory
+    assert seamm.Node.file_path(node, "job:input.sdf") == evaluator / "input.sdf"
+    # Once it has its own, it reads that
+    (evaluator / "input.sdf").write_text("mine")
+    assert seamm.Node.file_path(node, "job:input.sdf", read_only=True) == (
+        evaluator / "input.sdf"
+    )
+
+
+def test_job_file_nested_iterations(tmp_path):
+    """An iteration of a loop nested in an iteration reads its parent's files."""
+    outer = tmp_path / "3" / "iter_1" / "_evaluator"
+    inner = tmp_path / "3" / "iter_1" / "2" / "iter_1" / "_evaluator"
+    inner.mkdir(parents=True)
+    outer.mkdir(parents=True, exist_ok=True)
+    (outer / "made.sdf").write_text("outer")
+    (tmp_path / "made.sdf").write_text("job")
+    node = _FakeNode(wd=inner.parent / "1", job_path=inner, root=tmp_path)
+    node.flowchart.job_read_directories = [str(outer), str(tmp_path)]
+    assert node.job_file("made.sdf") == outer / "made.sdf"
+
+
+def test_job_path_of_a_flowchart_without_job_directory(tmp_path):
+    """Older flowchart objects (and test fakes) have only root_directory."""
+    node = _FakeNode(wd=tmp_path / "1", job_path=tmp_path)
+    node.flowchart = types.SimpleNamespace(root_directory=str(tmp_path))
+    assert seamm.Node.job_path.fget(node) == tmp_path

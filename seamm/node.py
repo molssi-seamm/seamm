@@ -352,8 +352,36 @@ class Node(collections.abc.Hashable):
 
     @property
     def job_path(self):
-        """Return the path to the job's top-level directory"""
-        return Path(self.flowchart.root_directory)
+        """Return the path to the job's top-level directory: where ``job:NAME``
+        and ``/NAME`` paths go (its own directory for an iteration of a parallel
+        loop, see ``Flowchart.job_directory``)."""
+        flowchart = self.flowchart
+        return Path(
+            getattr(flowchart, "job_directory", None) or flowchart.root_directory
+        )
+
+    def job_file(self, name):
+        """The path of a job-level file to read, ``name`` relative to the job.
+
+        In the job's own directory (:attr:`job_path`); for an iteration of a
+        parallel loop, which writes its job-level files apart, a file it has not
+        written itself is read from the iteration it is part of (a parallel loop
+        nested in an iteration), and so on up to the job's directory, where its
+        inputs are (``Flowchart.job_read_directories``). Note that it is the file
+        as it is now, not as it was when the loop started.
+        """
+        path = self.job_path / name
+        if path.exists():
+            return path
+        flowchart = self.flowchart
+        directories = getattr(flowchart, "job_read_directories", None) or [
+            flowchart.root_directory
+        ]
+        for directory in directories:
+            other = Path(directory) / name
+            if other.exists():
+                return other
+        return path
 
     @property
     def metadata(self):
@@ -425,7 +453,7 @@ class Node(collections.abc.Hashable):
     def references(self):
         """The reference handler for citations."""
         if self._references is None:
-            filename = os.path.join(self.flowchart.root_directory, "references.db")
+            filename = os.path.join(self.flowchart.job_directory, "references.db")
             self._references = reference_handler.Reference_Handler(filename)
 
         return self._references
@@ -619,6 +647,8 @@ class Node(collections.abc.Hashable):
             if parsed is not None:
                 job_no, tail = parsed
                 if job_no is None:
+                    if read_only:
+                        return self.job_file(tail)
                     return self.job_path / tail
                 if not read_only:
                     raise ValueError(
@@ -672,7 +702,7 @@ class Node(collections.abc.Hashable):
         this job's own root directory). Raises ValueError if that layout
         cannot be found, or if the job cannot be found or is ambiguous.
         """
-        jobs_root = self.job_path.parent.parent.parent
+        jobs_root = Path(self.flowchart.root_directory).parent.parent.parent
         if jobs_root.name != "Jobs":
             raise ValueError(
                 f"Could not find the 'Jobs' root above this job ('{jobs_root}' "

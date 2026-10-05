@@ -54,6 +54,21 @@ class CheckpointError(RuntimeError):
     """A checkpoint cannot be written, read or used."""
 
 
+class IterationDone(BaseException):
+    """The evaluator of one parallel loop iteration has finished it.
+
+    A BaseException so that no Loop or step catches it on the way out: the
+    evaluator stops, successfully, wherever the iteration's loop is nested.
+    ``broke`` is True if the iteration ended with a break, ``skipped`` if it was
+    skipped (its directory is not wanted).
+    """
+
+    def __init__(self, broke=False, skipped=False):
+        super().__init__("the iteration is done")
+        self.broke = broke
+        self.skipped = skipped
+
+
 def get_checkpointer():
     """The checkpointer of the running flowchart, or None."""
     return _checkpointer
@@ -529,6 +544,9 @@ class Checkpointer:
         self.resume = resume  # the position still to be resumed into
         self._resume_depth = 0
         self._last_document = None
+        # For the evaluator of one iteration of a parallel loop, how the
+        # iteration ended ({"done", "break", "skip"}), kept in the final checkpoint
+        self.iteration = None
         # What is in the variables table: name -> (kind, fingerprint, text)
         self._written = None
         if resume is not None:
@@ -648,6 +666,70 @@ class Checkpointer:
         self.frames.append({"node": _id(first_node)})
         # Written now, so the iteration's set-up (its directory name, current
         # row, ...) is on record before its body runs.
+        self.write()
+
+    def write_child(self, path, loop, state, first_node):
+        """Write the checkpoint that makes an evaluator run one iteration.
+
+        ``path`` is the iteration's snapshot of the job database. The checkpoint
+        is this job's position down to ``loop``, with the loop's frame at the
+        iteration ``state`` and marked to run only it, then the body's first
+        node; the variables are this evaluator's now, after the iteration's set
+        up; the run id is new, so the iteration's records are its own.
+        """
+        level = self._level(loop)
+        if level is None:
+            raise CheckpointError(
+                f"The Loop {'.'.join(_id(loop))} is not in the position"
+            )
+        frames = copy.deepcopy(self.frames[: level + 1])
+        frames[level]["loop"] = dict(state, only=True, done=False)
+        frames[level].pop("failed", None)
+        frames.append({"node": _id(first_node)})
+        rows, origins = self._variable_rows()
+        document = self.document("running", origins=origins)
+        document["position"] = frames
+        document["run_id"] = uuid.uuid4().hex
+        db = sqlite3.connect(str(path))
+        try:
+            db.execute(
+                f"CREATE TABLE IF NOT EXISTS {TABLE} "
+                "(id INTEGER PRIMARY KEY CHECK (id = 1), document TEXT NOT NULL)"
+            )
+            db.execute(
+                f"CREATE TABLE IF NOT EXISTS {VARIABLES_TABLE} "
+                "(name TEXT PRIMARY KEY, kind TEXT NOT NULL, data TEXT NOT NULL)"
+            )
+            db.execute(f"DELETE FROM {VARIABLES_TABLE}")
+            db.executemany(
+                f"INSERT INTO {VARIABLES_TABLE} (name, kind, data) VALUES (?, ?, ?)",
+                [(name, row[0], row[2]) for name, row in rows.items()],
+            )
+            db.execute(
+                f"INSERT OR REPLACE INTO {TABLE} (id, document) VALUES (1, ?)",
+                (json.dumps(document, indent=1),),
+            )
+            db.commit()
+        finally:
+            db.close()
+        return document
+
+    def parallel_loop(self, loop, state):
+        """A parallel Loop's progress: its frame's state, with no body position.
+
+        Committed with the database, so whatever the Loop merged in the same
+        transaction is on record with it.
+        """
+        level = self._level(loop)
+        if level is None:
+            self._not_resumable(
+                f"the Loop {'.'.join(_id(loop))} is not in the position"
+            )
+            self.system_db.commit_transaction()
+            return
+        self.frames[level]["loop"] = state
+        self.frames[level].pop("failed", None)
+        del self.frames[level + 1 :]
         self.write()
 
     def iteration_failed(self, loop, node):
@@ -790,6 +872,8 @@ class Checkpointer:
         }
         if not self.resumable:
             document["why not resumable"] = self.why_not
+        if self.iteration is not None:
+            document["iteration"] = self.iteration
         return document
 
     def write(self, state="running", document=None):
