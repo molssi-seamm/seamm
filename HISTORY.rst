@@ -1,6 +1,17 @@
 =======
 History
 =======
+2026.10.5 -- Support for running a loop's iterations in parallel
+    * A flowchart has a ``job_directory`` beside its ``root_directory``. They are the
+      same for a job; the evaluator of one iteration of a parallel loop (loop_step
+      2026.10.5) keeps its own files there, apart from the job's step directories.
+      ``Node.job_path`` (``/name`` and ``job:`` paths) follows it, and the new
+      ``Node.job_file`` reads a job-level file the iteration has not written from
+      the enclosing iterations and then the job, as the file is at that moment.
+      Citations are kept in the job directory.
+    * The checkpoint that runs one iteration of a parallel loop
+      (``Checkpointer.write_child``), a parallel loop's progress
+      (``Checkpointer.parallel_loop``) and ``seamm.IterationDone``.
 2026.10.4 -- Checkpoints, so a stopped flowchart can be resumed
     * A flowchart run in its own directory keeps a checkpoint in its database: after
       each step the step's writes are committed together with where the flowchart has
