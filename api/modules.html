@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm &#8212; SEAMM 2026.10.4 documentation</title>
+    <title>seamm &#8212; SEAMM 2026.10.5 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=3dc6335c"></script>
+    <script src="../_static/documentation_options.js?v=99beb745"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="API Documentation" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.4" />
+  <meta name="docsearch:version" content="2026.10.5" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -600,12 +600,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.iteration_failed"><code class="docutils literal notranslate"><span class="pre">Checkpointer.iteration_failed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.leave_loop"><code class="docutils literal notranslate"><span class="pre">Checkpointer.leave_loop()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.loop_resume"><code class="docutils literal notranslate"><span class="pre">Checkpointer.loop_resume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.parallel_loop"><code class="docutils literal notranslate"><span class="pre">Checkpointer.parallel_loop()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.restore_variables"><code class="docutils literal notranslate"><span class="pre">Checkpointer.restore_variables()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.start"><code class="docutils literal notranslate"><span class="pre">Checkpointer.start()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.step_completed"><code class="docutils literal notranslate"><span class="pre">Checkpointer.step_completed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.write"><code class="docutils literal notranslate"><span class="pre">Checkpointer.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Checkpointer.write_child"><code class="docutils literal notranslate"><span class="pre">Checkpointer.write_child()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.checkpoint.IterationDone"><code class="docutils literal notranslate"><span class="pre">IterationDone</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.checkpoint.Unrestorable"><code class="docutils literal notranslate"><span class="pre">Unrestorable</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.checkpoint.Unrestorable.message"><code class="docutils literal notranslate"><span class="pre">Unrestorable.message</span></code></a></li>
 </ul>
@@ -681,6 +684,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.graphics"><code class="docutils literal notranslate"><span class="pre">Flowchart.graphics</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.in_jobserver"><code class="docutils literal notranslate"><span class="pre">Flowchart.in_jobserver</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.is_development"><code class="docutils literal notranslate"><span class="pre">Flowchart.is_development</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.job_directory"><code class="docutils literal notranslate"><span class="pre">Flowchart.job_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.job_read_directories"><code class="docutils literal notranslate"><span class="pre">Flowchart.job_read_directories</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.last_node"><code class="docutils literal notranslate"><span class="pre">Flowchart.last_node()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.list_nodes"><code class="docutils literal notranslate"><span class="pre">Flowchart.list_nodes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.flowchart.Flowchart.output"><code class="docutils literal notranslate"><span class="pre">Flowchart.output</span></code></a></li>
@@ -854,6 +859,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.in_jobserver"><code class="docutils literal notranslate"><span class="pre">Node.in_jobserver</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.indent"><code class="docutils literal notranslate"><span class="pre">Node.indent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.is_expr"><code class="docutils literal notranslate"><span class="pre">Node.is_expr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.job_file"><code class="docutils literal notranslate"><span class="pre">Node.job_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.job_output"><code class="docutils literal notranslate"><span class="pre">Node.job_output()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.job_path"><code class="docutils literal notranslate"><span class="pre">Node.job_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.node.Node.list_data_files"><code class="docutils literal notranslate"><span class="pre">Node.list_data_files()</span></code></a></li>

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.checkpoint &#8212; SEAMM 2026.10.4 documentation</title>
+    <title>seamm.checkpoint &#8212; SEAMM 2026.10.5 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=3dc6335c"></script>
+    <script src="../../_static/documentation_options.js?v=99beb745"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.4" />
+  <meta name="docsearch:version" content="2026.10.5" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -541,6 +541,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.CheckpointError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckpointError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A checkpoint cannot be written, read or used."""</span></div>
+
+
+
+<div class="viewcode-block" id="IterationDone">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.IterationDone">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IterationDone</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The evaluator of one parallel loop iteration has finished it.</span>
+
+<span class="sd">    A BaseException so that no Loop or step catches it on the way out: the</span>
+<span class="sd">    evaluator stops, successfully, wherever the iteration's loop is nested.</span>
+<span class="sd">    ``broke`` is True if the iteration ended with a break, ``skipped`` if it was</span>
+<span class="sd">    skipped (its directory is not wanted).</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broke</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skipped</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">"the iteration is done"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broke</span> <span class="o">=</span> <span class="n">broke</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skipped</span> <span class="o">=</span> <span class="n">skipped</span></div>
 
 
 
@@ -1060,6 +1078,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="o">.</span><span class="n">resume</span> <span class="o">=</span> <span class="n">resume</span>  <span class="c1"># the position still to be resumed into</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resume_depth</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_document</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># For the evaluator of one iteration of a parallel loop, how the</span>
+        <span class="c1"># iteration ended ({"done", "break", "skip"}), kept in the final checkpoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># What is in the variables table: name -&gt; (kind, fingerprint, text)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_written</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">resume</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1190,6 +1211,76 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"node"</span><span class="p">:</span> <span class="n">_id</span><span class="p">(</span><span class="n">first_node</span><span class="p">)})</span>
         <span class="c1"># Written now, so the iteration's set-up (its directory name, current</span>
         <span class="c1"># row, ...) is on record before its body runs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.write_child">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.write_child">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">first_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Write the checkpoint that makes an evaluator run one iteration.</span>
+
+<span class="sd">        ``path`` is the iteration's snapshot of the job database. The checkpoint</span>
+<span class="sd">        is this job's position down to ``loop``, with the loop's frame at the</span>
+<span class="sd">        iteration ``state`` and marked to run only it, then the body's first</span>
+<span class="sd">        node; the variables are this evaluator's now, after the iteration's set</span>
+<span class="sd">        up; the run id is new, so the iteration's records are its own.</span>
+<span class="sd">        """</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"The Loop </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">loop</span><span class="p">))</span><span class="si">}</span><span class="s2"> is not in the position"</span>
+            <span class="p">)</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[:</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="s2">"loop"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"failed"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"node"</span><span class="p">:</span> <span class="n">_id</span><span class="p">(</span><span class="n">first_node</span><span class="p">)})</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">origins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable_rows</span><span class="p">()</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="s2">"running"</span><span class="p">,</span> <span class="n">origins</span><span class="o">=</span><span class="n">origins</span><span class="p">)</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"position"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="n">document</span><span class="p">[</span><span class="s2">"run_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"CREATE TABLE IF NOT EXISTS </span><span class="si">{</span><span class="n">TABLE</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="s2">"(id INTEGER PRIMARY KEY CHECK (id = 1), document TEXT NOT NULL)"</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"CREATE TABLE IF NOT EXISTS </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="s2">"(name TEXT PRIMARY KEY, kind TEXT NOT NULL, data TEXT NOT NULL)"</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DELETE FROM </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"INSERT INTO </span><span class="si">{</span><span class="n">VARIABLES_TABLE</span><span class="si">}</span><span class="s2"> (name, kind, data) VALUES (?, ?, ?)"</span><span class="p">,</span>
+                <span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"INSERT OR REPLACE INTO </span><span class="si">{</span><span class="n">TABLE</span><span class="si">}</span><span class="s2"> (id, document) VALUES (1, ?)"</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">),),</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">document</span></div>
+
+
+<div class="viewcode-block" id="Checkpointer.parallel_loop">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.Checkpointer.parallel_loop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parallel_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""A parallel Loop's progress: its frame's state, with no body position.</span>
+
+<span class="sd">        Committed with the database, so whatever the Loop merged in the same</span>
+<span class="sd">        transaction is on record with it.</span>
+<span class="sd">        """</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_not_resumable</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"the Loop </span><span class="si">{</span><span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">loop</span><span class="p">))</span><span class="si">}</span><span class="s2"> is not in the position"</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system_db</span><span class="o">.</span><span class="n">commit_transaction</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">][</span><span class="s2">"loop"</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"failed"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
 
 
@@ -1344,6 +1435,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="p">}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">resumable</span><span class="p">:</span>
             <span class="n">document</span><span class="p">[</span><span class="s2">"why not resumable"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">why_not</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s2">"iteration"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span>
         <span class="k">return</span> <span class="n">document</span></div>
 
 

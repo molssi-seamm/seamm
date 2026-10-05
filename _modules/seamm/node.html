@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.10.4 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.10.5 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=3dc6335c"></script>
+    <script src="../../_static/documentation_options.js?v=99beb745"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.4" />
+  <meta name="docsearch:version" content="2026.10.5" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -844,8 +844,39 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">job_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Return the path to the job's top-level directory"""</span>
-        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Return the path to the job's top-level directory: where ``job:NAME``</span>
+<span class="sd">        and ``/NAME`` paths go (its own directory for an iteration of a parallel</span>
+<span class="sd">        loop, see ``Flowchart.job_directory``)."""</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="s2">"job_directory"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Node.job_file">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.job_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">job_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The path of a job-level file to read, ``name`` relative to the job.</span>
+
+<span class="sd">        In the job's own directory (:attr:`job_path`); for an iteration of a</span>
+<span class="sd">        parallel loop, which writes its job-level files apart, a file it has not</span>
+<span class="sd">        written itself is read from the iteration it is part of (a parallel loop</span>
+<span class="sd">        nested in an iteration), and so on up to the job's directory, where its</span>
+<span class="sd">        inputs are (``Flowchart.job_read_directories``). Note that it is the file</span>
+<span class="sd">        as it is now, not as it was when the loop started.</span>
+<span class="sd">        """</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">path</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span>
+        <span class="n">directories</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="s2">"job_read_directories"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[</span>
+            <span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">directories</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="o">/</span> <span class="n">name</span>
+            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span>
+        <span class="k">return</span> <span class="n">path</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -917,7 +948,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">def</span><span class="w"> </span><span class="nf">references</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""The reference handler for citations."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span><span class="p">,</span> <span class="s2">"references.db"</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s2">"references.db"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="n">reference_handler</span><span class="o">.</span><span class="n">Reference_Handler</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span>
@@ -1128,6 +1159,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="k">if</span> <span class="n">parsed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">job_no</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">parsed</span>
                 <span class="k">if</span> <span class="n">job_no</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">read_only</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_file</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span> <span class="o">/</span> <span class="n">tail</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">read_only</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1182,7 +1215,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">        this job's own root directory). Raises ValueError if that layout</span>
 <span class="sd">        cannot be found, or if the job cannot be found or is ambiguous.</span>
 <span class="sd">        """</span>
-        <span class="n">jobs_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">jobs_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowchart</span><span class="o">.</span><span class="n">root_directory</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">if</span> <span class="n">jobs_root</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">"Jobs"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"Could not find the 'Jobs' root above this job ('</span><span class="si">{</span><span class="n">jobs_root</span><span class="si">}</span><span class="s2">' "</span>
