@@ -48,6 +48,7 @@ import pprint  # nopep8
 import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
+import tkinter.messagebox as tk_messagebox
 import tkinter.ttk as ttk
 
 from PIL import ImageTk, Image
@@ -1272,6 +1273,20 @@ class TkFlowchart(object):
 
         # Ensure that the flowchart is up-to-date
         flowchart = self.update_flowchart()
+
+        # Check the flowchart as a whole before submitting: the job would stop
+        # at the start anyway
+        from seamm.builder import validate
+
+        problems = validate(flowchart)
+        if len(problems) > 0:
+            tk_messagebox.showerror(
+                title="The flowchart has problems",
+                message="The job was not submitted, because:\n\n"
+                + "\n\n".join(problems),
+                parent=self.toplevel,
+            )
+            return
 
         # Do the graphical "stuff"
         self._job_handler.submit_with_dialog(flowchart=flowchart)
