@@ -572,6 +572,45 @@ def test_model_chemistry_present(builder):
     assert builder.validate() == []
 
 
+def _nodes(builder):
+    """The nodes of the built flowchart in order, without the start node."""
+    from seamm.builder import _main_line
+
+    return _main_line(builder.flowchart)[1:]
+
+
+def test_check_flowchart_hook(builder):
+    """A step's check_flowchart is given the steps before it, and its problems
+    are reported."""
+    builder.add("Model Chemistry")
+    builder.add("Calculation")
+    builder.add("Calculation")
+    first, second, third = _nodes(builder)
+    seen = {}
+
+    def check(preceding):
+        seen["preceding"] = [n.title for n in preceding]
+        return ["the MD before it does not sample the heat flux"]
+
+    third.check_flowchart = check
+    problems = builder.validate()
+    assert problems == ["the MD before it does not sample the heat flux"]
+    assert seen["preceding"][-2:] == [first.title, second.title]
+    with pytest.raises(FlowchartBuildError, match="has problems"):
+        builder.to_text()
+
+
+def test_check_flowchart_hook_that_fails_is_ignored(builder):
+    builder.add("Calculation")
+    (node,) = _nodes(builder)
+
+    def check(preceding):
+        raise ValueError("a bug in the step")
+
+    node.check_flowchart = check
+    assert builder.validate() == []
+
+
 # -----------------------------------------------------------------------------
 # Layout and output
 # -----------------------------------------------------------------------------
