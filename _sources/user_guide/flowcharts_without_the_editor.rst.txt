@@ -118,6 +118,20 @@ the same rules, so a setting with no effect is refused, with the reason (for exa
 refused too. Set the controlling parameters in the same command. ``describe`` shows when
 each parameter applies, and ``validate`` reports combinations that cannot work.
 
+Checking the flowchart as a whole
+=================================
+
+Beyond each value, ``validate`` checks the flowchart as a whole:
+
+* a step that uses the model chemistry must come after a Model Chemistry step;
+* a step can check itself against the steps before it. Analysis steps such as
+  Diffusivity and Thermal Conductivity use this to check that the MD before them will
+  sample what they need, for example the heat flux every two steps.
+
+The same check runs when the editor submits a job, which shows the problems and does
+not submit it, and when a job starts (``run_flowchart``), which then stops before
+running any step. A problem is thus found before the MD runs rather than after it.
+
 Converting an installation's flowcharts
 =======================================
 
