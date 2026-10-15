@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.15 -- Checking a flowchart as a whole before it runs
+    * ``seamm.builder.validate`` asks each step that has a ``check_flowchart`` method to
+      check itself against the steps that run before it. Analysis steps use this to
+      check that the MD before them samples what they need.
+    * The editor checks the flowchart before submitting a job, shows any problems,
+      and does not submit it.
+    * Removed the last of the Docker support, which was not used.
+
 2026.10.5 -- Support for running a loop's iterations in parallel
     * A flowchart has a ``job_directory`` beside its ``root_directory``. They are the
       same for a job; the evaluator of one iteration of a parallel loop (loop_step

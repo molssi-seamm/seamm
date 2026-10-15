@@ -628,6 +628,11 @@ def validate(flowchart):
     parameter is "yes") comes after a Model Chemistry step; for a sub-step, that the
     Model Chemistry step comes before the step holding it.
 
+    Then each step that has a ``check_flowchart(preceding)`` method is asked to check
+    itself against the steps that run before it, in execution order, and returns a
+    list of problems. Analysis steps use it to check that the MD before them will
+    sample what they need, so that a job stops before the MD rather than after it.
+
     Parameters
     ----------
     flowchart : seamm.Flowchart
@@ -647,6 +652,8 @@ def validate(flowchart):
         value = P["use model chemistry"].value
         return not is_expression(value) and normalize(value) in ("yes", "true")
 
+    preceding = []
+
     def check(flowchart, have_model_chemistry, where):
         for node in _main_line(flowchart):
             if node.extension == "Model Chemistry":
@@ -657,6 +664,16 @@ def validate(flowchart):
                     "Chemistry step comes before it. Add one, or set 'use model "
                     "chemistry' to 'no' and choose the method explicitly."
                 )
+            hook = getattr(node, "check_flowchart", None)
+            if callable(hook):
+                try:
+                    problems.extend(hook(list(preceding)))
+                except Exception as e:
+                    logger.warning(
+                        f"check_flowchart of '{where}{node.title}' failed: {e}",
+                        exc_info=True,
+                    )
+            preceding.append(node)
             subflowchart = getattr(node, "subflowchart", None)
             if isinstance(subflowchart, seamm.Flowchart):
                 check(subflowchart, have_model_chemistry, f"{where}{node.title}/")

@@ -44,9 +44,8 @@ class SEAMMrc(Singleton):
         if path.exists():
             config.read(path)
         else:
-            # Initially used ~/.seammrc but this doesn't play well with Docker
-            # containers, so moved to ~/seamm.d/seammrc Check for the old file and move
-            # to new
+            # Initially used ~/.seammrc, later moved to ~/.seamm.d/seammrc. Check for
+            # the old file and move it to the new location.
             tmp = Path("~/.seammrc").expanduser()
             path.parent.mkdir(parents=True, exist_ok=True)
             if tmp.exists():
