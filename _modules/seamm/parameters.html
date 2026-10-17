@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2026.10.17 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2026.10.17.1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=fed69469"></script>
+    <script src="../../_static/documentation_options.js?v=62bfd45e"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.17" />
+  <meta name="docsearch:version" content="2026.10.17.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1229,10 +1229,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 
+    <span class="c1">#: Parameters the step had once and has dropped: an older flowchart that</span>
+    <span class="c1">#: stores them can still be read, and they are ignored. Any other unknown</span>
+    <span class="c1">#: parameter is an error. A plug-in's Parameters class sets this.</span>
+    <span class="n">retired</span> <span class="o">=</span> <span class="p">()</span>
+
 <div class="viewcode-block" id="Parameters.update">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.parameters.Parameters.update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">retired</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ignoring '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">', which is no longer a parameter."</span><span class="p">)</span>
+                <span class="k">continue</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_translate_legacy_values</span><span class="p">()</span></div>
 

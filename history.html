@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.17 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.17.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=fed69469"></script>
+    <script src="_static/documentation_options.js?v=62bfd45e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.17" />
+  <meta name="docsearch:version" content="2026.10.17.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.17.1 – Reading flowcharts with parameters a plug-in has retired</dt><dd><ul class="simple">
+<li><p>A plug-in can list the parameters it has dropped (<code class="docutils literal notranslate"><span class="pre">retired</span></code> in its Parameters
+class). An older flowchart that stores them can still be read and checked, and
+they are ignored; any other unknown parameter is still an error. The MD analysis
+steps use this for the parameters of the MD they no longer run themselves.</p></li>
+</ul>
+</dd>
 <dt>2026.10.17 – Fixes for the problems found when checking a flowchart</dt><dd><ul class="simple">
 <li><p>The checks of a flowchart can now give warnings, which do not stop a job, as
 well as errors, and can offer fixes: changes to the parameters of steps. When

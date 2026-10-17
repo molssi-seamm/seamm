@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.17 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.17.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=fed69469"></script>
+    <script src="../_static/documentation_options.js?v=62bfd45e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.17" />
+  <meta name="docsearch:version" content="2026.10.17.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -4124,6 +4124,19 @@ choices has one of them. Override to add checks.</p>
 <dd><p>Convenience function to reset the widgets to the current value.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seamm.parameters.Parameters.retired">
+<span class="sig-name descname"><span class="pre">retired</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span><a class="headerlink" href="#seamm.parameters.Parameters.retired" title="Link to this definition">#</a></dt>
+<dd><p>an older flowchart that
+stores them can still be read, and they are ignored. Any other unknown
+parameter is an error. A plug-in’s Parameters class sets this.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Parameters the step had once and has dropped</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="seamm.parameters.Parameters.set_from_widgets">
 <span class="sig-name descname"><span class="pre">set_from_widgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/parameters.html#Parameters.set_from_widgets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.parameters.Parameters.set_from_widgets" title="Link to this definition">#</a></dt>
@@ -7152,6 +7165,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.not_applicable_reason"><code class="docutils literal notranslate"><span class="pre">Parameters.not_applicable_reason()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.problems"><code class="docutils literal notranslate"><span class="pre">Parameters.problems()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.reset_widgets"><code class="docutils literal notranslate"><span class="pre">Parameters.reset_widgets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.retired"><code class="docutils literal notranslate"><span class="pre">Parameters.retired</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.set_from_widgets"><code class="docutils literal notranslate"><span class="pre">Parameters.set_from_widgets()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.to_dict"><code class="docutils literal notranslate"><span class="pre">Parameters.to_dict()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.parameters.Parameters.update"><code class="docutils literal notranslate"><span class="pre">Parameters.update()</span></code></a></li>
