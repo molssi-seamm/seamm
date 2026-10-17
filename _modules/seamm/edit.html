@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.edit &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm.edit &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../../_static/documentation_options.js?v=fed69469"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -919,15 +919,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="validate">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.edit.validate">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Check a flowchart: its structure and every stored value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">    warnings : bool</span>
+<span class="sd">        Include the warnings, which do not stop a job; by default only errors.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    [str]</span>
-<span class="sd">        A description of each problem; empty if none.</span>
+<span class="sd">        A description of each problem; empty if none. A check that gives its</span>
+<span class="sd">        severity or fixes returns a :class:`seamm.Problem`.</span>
 <span class="sd">    """</span>
-    <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_validate_flowchart</span><span class="p">(</span><span class="n">flowchart</span><span class="p">))</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_validate_flowchart</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="n">warnings</span><span class="p">))</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">_data</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">walk</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
@@ -970,6 +977,91 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="n">walk</span><span class="p">(</span><span class="n">_Level</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"steps"</span><span class="p">],</span> <span class="n">Catalog</span><span class="p">(</span><span class="n">flowchart</span><span class="p">),</span> <span class="s2">""</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">problems</span></div>
+
+
+
+<div class="viewcode-block" id="describe_problems">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.edit.describe_problems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">describe_problems</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">problems</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Problems as data: their text, severity and fixes.</span>
+
+<span class="sd">    Each fix is given as the parameters to set in which steps, by the steps'</span>
+<span class="sd">    addresses, so that :func:`set_parameters` (or the ``set_parameters`` tool)</span>
+<span class="sd">    applies it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The flowchart that was checked.</span>
+<span class="sd">    problems : [str]</span>
+<span class="sd">        The problems, from :func:`validate`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [dict]</span>
+<span class="sd">        ``{"problem": str, "severity": "error" or "warning", "fixes": [{"label":</span>
+<span class="sd">        str, "set": [{"step": address, "parameter": name, "value": value}]}]}``,</span>
+<span class="sd">        with ``"units"`` too where a fix gives them.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">fixes</span><span class="p">,</span> <span class="n">severity</span>
+
+    <span class="n">addresses</span> <span class="o">=</span> <span class="n">format3</span><span class="o">.</span><span class="n">addresses</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">problem</span> <span class="ow">in</span> <span class="n">problems</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"problem"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">problem</span><span class="p">),</span> <span class="s2">"severity"</span><span class="p">:</span> <span class="n">severity</span><span class="p">(</span><span class="n">problem</span><span class="p">),</span> <span class="s2">"fixes"</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">fix</span> <span class="ow">in</span> <span class="n">fixes</span><span class="p">(</span><span class="n">problem</span><span class="p">):</span>
+            <span class="n">edits</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">edits</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">"step"</span><span class="p">:</span> <span class="n">addresses</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">edit</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">edit</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="p">),</span>
+                    <span class="s2">"parameter"</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span>
+                    <span class="s2">"value"</span><span class="p">:</span> <span class="n">edit</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="n">edit</span><span class="o">.</span><span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">units</span>
+                <span class="n">edits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">item</span><span class="p">[</span><span class="s2">"fixes"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"label"</span><span class="p">:</span> <span class="n">fix</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="s2">"set"</span><span class="p">:</span> <span class="n">edits</span><span class="p">})</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="fix">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.edit.fix">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fix</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">choice</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rounds</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Apply the fixes the checks offer, one at a time, checking again after each.</span>
+
+<span class="sd">    Fixes can overlap -- two analysis steps needing the same MD sampled at</span>
+<span class="sd">    different intervals each offer to set it -- so each fix is applied to the</span>
+<span class="sd">    flowchart as the earlier ones left it: a problem already solved offers nothing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flowchart : seamm.Flowchart</span>
+<span class="sd">        The flowchart to change.</span>
+<span class="sd">    choice : int</span>
+<span class="sd">        Which of a problem's fixes to apply, the first by default.</span>
+<span class="sd">    rounds : int</span>
+<span class="sd">        At most this many fixes, in case fixes undo each other.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ([str], [str])</span>
+<span class="sd">        The labels of the fixes applied, and the problems that remain (errors and</span>
+<span class="sd">        warnings).</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">fixes</span>
+
+    <span class="n">applied</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">problems</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rounds</span><span class="p">):</span>
+        <span class="n">todo</span> <span class="o">=</span> <span class="p">[</span><span class="n">fixes</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="n">choice</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fixes</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">choice</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">todo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">todo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+        <span class="n">applied</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">todo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">applied</span><span class="p">,</span> <span class="n">problems</span></div>
 
 </pre></div>
 

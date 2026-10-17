@@ -156,6 +156,14 @@ seamm.plugin\_manager module
    :show-inheritance:
    :undoc-members:
 
+seamm.problems module
+---------------------
+
+.. automodule:: seamm.problems
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm.seammrc module
 --------------------
 
@@ -248,6 +256,14 @@ seamm.tk\_open module
 ---------------------
 
 .. automodule:: seamm.tk_open
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm.tk\_problems module
+-------------------------
+
+.. automodule:: seamm.tk_problems
    :members:
    :show-inheritance:
    :undoc-members:

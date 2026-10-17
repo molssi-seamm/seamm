@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../_static/documentation_options.js?v=fed69469"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -810,7 +810,7 @@ Names are matched ignoring case, spaces, underscores and hyphens.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.builder.validate">
-<span class="sig-prename descclassname"><span class="pre">seamm.builder.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builder.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builder.validate" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.builder.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/builder.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.builder.validate" title="Link to this definition">#</a></dt>
 <dd><p>Check a flowchart as a whole, beyond the individual parameter values.</p>
 <p>Checks that a step using the model chemistry (its “use model chemistry”
 parameter is “yes”) comes after a Model Chemistry step; for a sub-step, that the
@@ -819,12 +819,19 @@ Model Chemistry step comes before the step holding it.</p>
 itself against the steps that run before it, in execution order, and returns a
 list of problems. Analysis steps use it to check that the MD before them will
 sample what they need, so that a job stops before the MD rather than after it.</p>
+<p>A check may return warnings as well as errors, and fixes for them (see
+<a class="reference internal" href="#module-seamm.problems" title="seamm.problems"><code class="xref py py-mod docutils literal notranslate"><span class="pre">seamm.problems</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>) – The main flowchart.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>) – The main flowchart.</p></li>
+<li><p><strong>warnings</strong> (<em>bool</em>) – Include the warnings. By default only the errors, which stop a job, are
+returned.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A description of each problem found; empty if none.</p>
+<dd class="field-even"><p>A description of each problem found, as a <code class="xref py py-class docutils literal notranslate"><span class="pre">seamm.Problem</span></code> where the
+check gives its severity or fixes; empty if none.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>[str]</p>
@@ -1686,6 +1693,56 @@ digest and layout are up to date:</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="seamm.edit.describe_problems">
+<span class="sig-prename descclassname"><span class="pre">seamm.edit.</span></span><span class="sig-name descname"><span class="pre">describe_problems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">problems</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/edit.html#describe_problems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.edit.describe_problems" title="Link to this definition">#</a></dt>
+<dd><p>Problems as data: their text, severity and fixes.</p>
+<p>Each fix is given as the parameters to set in which steps, by the steps’
+addresses, so that <a class="reference internal" href="#seamm.edit.set_parameters" title="seamm.edit.set_parameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_parameters()</span></code></a> (or the <code class="docutils literal notranslate"><span class="pre">set_parameters</span></code> tool)
+applies it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>) – The flowchart that was checked.</p></li>
+<li><p><strong>problems</strong> (<em>[</em><em>str</em><em>]</em>) – The problems, from <a class="reference internal" href="#seamm.edit.validate" title="seamm.edit.validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate()</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{&quot;problem&quot;:</span> <span class="pre">str,</span> <span class="pre">&quot;severity&quot;:</span> <span class="pre">&quot;error&quot;</span> <span class="pre">or</span> <span class="pre">&quot;warning&quot;,</span> <span class="pre">&quot;fixes&quot;:</span> <span class="pre">[{&quot;label&quot;:</span>
+<span class="pre">str,</span> <span class="pre">&quot;set&quot;:</span> <span class="pre">[{&quot;step&quot;:</span> <span class="pre">address,</span> <span class="pre">&quot;parameter&quot;:</span> <span class="pre">name,</span> <span class="pre">&quot;value&quot;:</span> <span class="pre">value}]}]}</span></code>,
+with <code class="docutils literal notranslate"><span class="pre">&quot;units&quot;</span></code> too where a fix gives them.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.edit.fix">
+<span class="sig-prename descclassname"><span class="pre">seamm.edit.</span></span><span class="sig-name descname"><span class="pre">fix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">choice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/edit.html#fix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.edit.fix" title="Link to this definition">#</a></dt>
+<dd><p>Apply the fixes the checks offer, one at a time, checking again after each.</p>
+<p>Fixes can overlap – two analysis steps needing the same MD sampled at
+different intervals each offer to set it – so each fix is applied to the
+flowchart as the earlier ones left it: a problem already solved offers nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>) – The flowchart to change.</p></li>
+<li><p><strong>choice</strong> (<em>int</em>) – Which of a problem’s fixes to apply, the first by default.</p></li>
+<li><p><strong>rounds</strong> (<em>int</em>) – At most this many fixes, in case fixes undo each other.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The labels of the fixes applied, and the problems that remain (errors and
+warnings).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>([str], [str])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="seamm.edit.insert">
 <span class="sig-prename descclassname"><span class="pre">seamm.edit.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">into</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/edit.html#insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.edit.insert" title="Link to this definition">#</a></dt>
 <dd><p>Insert a new step.</p>
@@ -1765,14 +1822,21 @@ of a step’s sub-steps.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.edit.validate">
-<span class="sig-prename descclassname"><span class="pre">seamm.edit.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/edit.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.edit.validate" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.edit.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/edit.html#validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.edit.validate" title="Link to this definition">#</a></dt>
 <dd><p>Check a flowchart: its structure and every stored value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A description of each problem; empty if none.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>)</p></li>
+<li><p><strong>warnings</strong> (<em>bool</em>) – Include the warnings, which do not stop a job; by default only errors.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>[str]</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A description of each problem; empty if none. A check that gives its
+severity or fixes returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">seamm.Problem</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1911,7 +1975,9 @@ needed. Default: ‘Tk’</p>
 <dd><p>its output, database and job-level files.</p>
 <p>The same as <a class="reference internal" href="#seamm.flowchart.Flowchart.root_directory" title="seamm.flowchart.Flowchart.root_directory"><code class="xref py py-attr docutils literal notranslate"><span class="pre">root_directory</span></code></a>, where the steps’ directories are,
 except for the evaluator of one iteration of a parallel loop, whose step
-directories are in the job’s tree but whose own files are kept apart.</p>
+directories are in the job’s tree but whose own files are kept apart. A
+step’s sub-flowchart is in the same job as the step, so unless it is given
+one it has the job directory of the step’s flowchart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The job’s own directory</p>
@@ -2173,7 +2239,7 @@ representing the flowchart; format 3.0 is YAML (see seamm.format3).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.flowchart_cli.validate_command">
 <span class="sig-prename descclassname"><span class="pre">seamm.flowchart_cli.</span></span><span class="sig-name descname"><span class="pre">validate_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/flowchart_cli.html#validate_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.flowchart_cli.validate_command" title="Link to this definition">#</a></dt>
-<dd><p>Check a flowchart.</p>
+<dd><p>Check a flowchart, and with –fix apply the fixes the checks offer.</p>
 </dd></dl>
 
 </section>
@@ -2250,6 +2316,24 @@ the values of many parameters, so they must stay strings.</p>
 <span class="sig-name descname"><span class="pre">yaml_implicit_resolvers</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'':</span> <span class="pre">[('tag:yaml.org,2002:null',</span> <span class="pre">re.compile('^(?:</span> <span class="pre">~\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|null|Null|NULL\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">)$',</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'!':</span> <span class="pre">[('tag:yaml.org,2002:yaml',</span> <span class="pre">re.compile('^(?:!|&amp;|\\*)$'))],</span> <span class="pre">'&amp;':</span> <span class="pre">[('tag:yaml.org,2002:yaml',</span> <span class="pre">re.compile('^(?:!|&amp;|\\*)$'))],</span> <span class="pre">'*':</span> <span class="pre">[('tag:yaml.org,2002:yaml',</span> <span class="pre">re.compile('^(?:!|&amp;|\\*)$'))],</span> <span class="pre">'+':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'-':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'.':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'0':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'1':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'2':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'3':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'4':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'5':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'6':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'7':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'8':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'9':</span> <span class="pre">[('tag:yaml.org,2002:float',</span> <span class="pre">re.compile('^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|\\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">,</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:int',</span> <span class="pre">re.compile('^(?:[-+]?0b[0-1_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0[0-7_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?(?:0|[1-9][0-9_]*)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?0x[0-9a-fA-F_]+\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9]),</span> <span class="pre">re.VERBOSE)),</span> <span class="pre">('tag:yaml.org,2002:timestamp',</span> <span class="pre">re.compile('^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|[0-9][0-9][0-9][0-9]</span> <span class="pre">-[0-9][0-9]?</span> <span class="pre">-[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?:[Tt]|[</span> <span class="pre">\\t]+)[0-9][0-9]?\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">:[0-9][0-9],</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'&lt;':</span> <span class="pre">[('tag:yaml.org,2002:merge',</span> <span class="pre">re.compile('^(?:&lt;&lt;)$'))],</span> <span class="pre">'=':</span> <span class="pre">[('tag:yaml.org,2002:value',</span> <span class="pre">re.compile('^(?:=)$'))],</span> <span class="pre">'F':</span> <span class="pre">[('tag:yaml.org,2002:bool',</span> <span class="pre">re.compile('^(?:true|True|TRUE|false|False|FALSE)$'))],</span> <span class="pre">'N':</span> <span class="pre">[('tag:yaml.org,2002:null',</span> <span class="pre">re.compile('^(?:</span> <span class="pre">~\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|null|Null|NULL\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">)$',</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'O':</span> <span class="pre">[],</span> <span class="pre">'T':</span> <span class="pre">[('tag:yaml.org,2002:bool',</span> <span class="pre">re.compile('^(?:true|True|TRUE|false|False|FALSE)$'))],</span> <span class="pre">'Y':</span> <span class="pre">[],</span> <span class="pre">'f':</span> <span class="pre">[('tag:yaml.org,2002:bool',</span> <span class="pre">re.compile('^(?:true|True|TRUE|false|False|FALSE)$'))],</span> <span class="pre">'n':</span> <span class="pre">[('tag:yaml.org,2002:null',</span> <span class="pre">re.compile('^(?:</span> <span class="pre">~\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|null|Null|NULL\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">)$',</span> <span class="pre">re.VERBOSE))],</span> <span class="pre">'o':</span> <span class="pre">[],</span> <span class="pre">'t':</span> <span class="pre">[('tag:yaml.org,2002:bool',</span> <span class="pre">re.compile('^(?:true|True|TRUE|false|False|FALSE)$'))],</span> <span class="pre">'y':</span> <span class="pre">[],</span> <span class="pre">'~':</span> <span class="pre">[('tag:yaml.org,2002:null',</span> <span class="pre">re.compile('^(?:</span> <span class="pre">~\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|null|Null|NULL\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">)$',</span> <span class="pre">re.VERBOSE))]}</span></span><a class="headerlink" href="#seamm.format3.Loader.yaml_implicit_resolvers" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.format3.addresses">
+<span class="sig-prename descclassname"><span class="pre">seamm.format3.</span></span><span class="sig-name descname"><span class="pre">addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/format3.html#addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.format3.addresses" title="Link to this definition">#</a></dt>
+<dd><p>The address of each step, as the edit tools give it (“3”, “3.2”, …).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flowchart</strong> (<em>seamm.Flowchart</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>{seamm.Node</strong> – The steps, including those in loop bodies and sub-flowcharts, and their
+addresses; steps not connected to the flowchart are left out.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str}</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -2902,7 +2986,11 @@ the plug-ins no longer accept and settings that cannot work together.</p>
 <dd class="field-odd"><p><strong>path</strong> – The flowchart (.flow).</p>
 </dd>
 </dl>
-<p>Returns whether it is valid, and a description of each problem.</p>
+<p>Returns whether it is valid; each problem, which stops a job; each warning,
+which does not; and the fixes the checks offer, each a list of parameters to
+set in steps by their address – apply one with set_parameters, after asking
+the user which when there is more than one, then validate again: fixes can
+overlap, and one may solve another problem too.</p>
 </dd></dl>
 
 </section>
@@ -4111,6 +4199,79 @@ and expressions in parameters.</p>
 <span class="sig-name descname"><span class="pre">plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/plugin_manager.html#PluginManager.plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.plugin_manager.PluginManager.plugins" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-seamm.problems">
+<span id="seamm-problems-module"></span><h2>seamm.problems module<a class="headerlink" href="#module-seamm.problems" title="Link to this heading">#</a></h2>
+<p>Problems found when checking a flowchart, and the fixes for them.</p>
+<p>A problem is the text describing it – a <code class="docutils literal notranslate"><span class="pre">str</span></code>, so code that only reports
+problems needs nothing more – with its severity and, where the check knows it,
+how to fix it: changes to the parameters of steps. Errors stop a job from being
+submitted or run; warnings are reported but do not.</p>
+<p>A fix is data, not code: the editor offers a button for it, <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span>
+<span class="pre">validate</span> <span class="pre">--fix</span></code> applies it, and the MCP tools return it as the step’s address,
+the parameter and its value, which <code class="docutils literal notranslate"><span class="pre">set_parameters</span></code> applies.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm.problems.ERROR">
+<span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">ERROR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'error'</span></span><a class="headerlink" href="#seamm.problems.ERROR" title="Link to this definition">#</a></dt>
+<dd><p>The severities of a problem</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.problems.Edit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">Edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Edit" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Setting one parameter of one step.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.problems.Edit.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Edit.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Edit.apply" title="Link to this definition">#</a></dt>
+<dd><p>Set the parameter of the step.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.problems.Fix">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">Fix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Fix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Fix" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>One way of fixing a problem: a label for it and the edits it makes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.problems.Fix.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Fix.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Fix.apply" title="Link to this definition">#</a></dt>
+<dd><p>Make the edits.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.problems.Problem">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">Problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">severity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Problem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Problem" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<p>A problem with a flowchart: its description, severity and fixes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.problems.Problem.prefixed">
+<span class="sig-name descname"><span class="pre">prefixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#Problem.prefixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.Problem.prefixed" title="Link to this definition">#</a></dt>
+<dd><p>The same problem, its description after <code class="docutils literal notranslate"><span class="pre">prefix</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.problems.fixes">
+<span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">fixes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#fixes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.fixes" title="Link to this definition">#</a></dt>
+<dd><p>The fixes of a problem; a plain string has none.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.problems.is_error">
+<span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">is_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#is_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.is_error" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.problems.severity">
+<span class="sig-prename descclassname"><span class="pre">seamm.problems.</span></span><span class="sig-name descname"><span class="pre">severity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/problems.html#severity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.problems.severity" title="Link to this definition">#</a></dt>
+<dd><p>The severity of a problem; a plain string is an error.</p>
 </dd></dl>
 
 </section>
@@ -6169,6 +6330,68 @@ flowcharts</p>
 </dd></dl>
 
 </section>
+<section id="module-seamm.tk_problems">
+<span id="seamm-tk-problems-module"></span><h2>seamm.tk_problems module<a class="headerlink" href="#module-seamm.tk_problems" title="Link to this heading">#</a></h2>
+<p>The editor’s dialog for the problems found when checking a flowchart.</p>
+<p>Each problem is listed with a button for each fix its check offers; a fix changes
+the parameters of the steps and the flowchart is checked again. Errors stop the
+job from being submitted; with only warnings left it can be submitted anyway.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.tk_problems.</span></span><span class="sig-name descname"><span class="pre">ProblemsDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">problems</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revalidate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>List the problems with their fixes; return whether to submit the job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<em>tkinter widget</em>) – The editor’s window.</p></li>
+<li><p><strong>problems</strong> (<em>[</em><em>str</em><em>]</em>) – The problems, from <code class="docutils literal notranslate"><span class="pre">seamm.builder.validate(...,</span> <span class="pre">warnings=True)</span></code>.</p></li>
+<li><p><strong>revalidate</strong> (<em>callable</em>) – Checks the flowchart again after a fix and returns its problems.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.apply" title="Link to this definition">#</a></dt>
+<dd><p>Make a fix’s changes and check the flowchart again.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.cancel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.errors">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">errors</span></span><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.errors" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.layout">
+<span class="sig-name descname"><span class="pre">layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog.layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.layout" title="Link to this definition">#</a></dt>
+<dd><p>Lay out the problems, their fixes and the buttons.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.show" title="Link to this definition">#</a></dt>
+<dd><p>Wait for the user; return True to submit the job.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.tk_problems.ProblemsDialog.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/tk_problems.html#ProblemsDialog.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.tk_problems.ProblemsDialog.submit" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm.tk_problems.WRAP">
+<span class="sig-prename descclassname"><span class="pre">seamm.tk_problems.</span></span><span class="sig-name descname"><span class="pre">WRAP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">600</span></span><a class="headerlink" href="#seamm.tk_problems.WRAP" title="Link to this definition">#</a></dt>
+<dd><p>The width of the problems’ text, in pixels</p>
+</dd></dl>
+
+</section>
 <section id="module-seamm.tk_publish">
 <span id="seamm-tk-publish-module"></span><h2>seamm.tk_publish module<a class="headerlink" href="#module-seamm.tk_publish" title="Link to this heading">#</a></h2>
 <p>The GUI for publishing – flowcharts for the moment.</p>
@@ -6644,6 +6867,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.data">seamm.data module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.edit">seamm.edit module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.EditError"><code class="docutils literal notranslate"><span class="pre">EditError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.describe_problems"><code class="docutils literal notranslate"><span class="pre">describe_problems()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.fix"><code class="docutils literal notranslate"><span class="pre">fix()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.insert"><code class="docutils literal notranslate"><span class="pre">insert()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.locate"><code class="docutils literal notranslate"><span class="pre">locate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.edit.move"><code class="docutils literal notranslate"><span class="pre">move()</span></code></a></li>
@@ -6726,6 +6951,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.Loader.yaml_implicit_resolvers"><code class="docutils literal notranslate"><span class="pre">Loader.yaml_implicit_resolvers</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.addresses"><code class="docutils literal notranslate"><span class="pre">addresses()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.apply_parameters"><code class="docutils literal notranslate"><span class="pre">apply_parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.digest"><code class="docutils literal notranslate"><span class="pre">digest()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.dump_yaml"><code class="docutils literal notranslate"><span class="pre">dump_yaml()</span></code></a></li>
@@ -6944,6 +7170,25 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.plugin_manager.PluginManager.plugins"><code class="docutils literal notranslate"><span class="pre">PluginManager.plugins()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.problems">seamm.problems module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.ERROR"><code class="docutils literal notranslate"><span class="pre">ERROR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Edit"><code class="docutils literal notranslate"><span class="pre">Edit</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Edit.apply"><code class="docutils literal notranslate"><span class="pre">Edit.apply()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Fix"><code class="docutils literal notranslate"><span class="pre">Fix</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Fix.apply"><code class="docutils literal notranslate"><span class="pre">Fix.apply()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Problem"><code class="docutils literal notranslate"><span class="pre">Problem</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.Problem.prefixed"><code class="docutils literal notranslate"><span class="pre">Problem.prefixed()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.fixes"><code class="docutils literal notranslate"><span class="pre">fixes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.is_error"><code class="docutils literal notranslate"><span class="pre">is_error()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.problems.severity"><code class="docutils literal notranslate"><span class="pre">severity()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.seammrc">seamm.seammrc module</a><ul class="pst-show_toc_level nav section-nav flex-column">
@@ -7242,6 +7487,19 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_open.TkOpen.zenodo_callback"><code class="docutils literal notranslate"><span class="pre">TkOpen.zenodo_callback()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_problems">seamm.tk_problems module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.apply"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.apply()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.cancel"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.cancel()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.errors"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.errors</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.layout"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.layout()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.show"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.show()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.ProblemsDialog.submit"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.submit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.tk_problems.WRAP"><code class="docutils literal notranslate"><span class="pre">WRAP</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.tk_publish">seamm.tk_publish module</a><ul class="pst-show_toc_level nav section-nav flex-column">

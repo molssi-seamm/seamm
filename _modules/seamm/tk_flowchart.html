@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.tk_flowchart &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm.tk_flowchart &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../../_static/documentation_options.js?v=fed69469"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -536,7 +536,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tkinter.filedialog</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk_filedialog</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter.messagebox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk_messagebox</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tkinter.ttk</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ttk</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageTk</span><span class="p">,</span> <span class="n">Image</span>
@@ -1917,18 +1916,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">()</span>
 
         <span class="c1"># Check the flowchart as a whole before submitting: the job would stop</span>
-        <span class="c1"># at the start anyway</span>
+        <span class="c1"># at the start anyway. Errors stop it here; warnings may be overridden; and</span>
+        <span class="c1"># the fixes the checks offer can be applied with a button.</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">seamm.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">seamm.tk_problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProblemsDialog</span>
 
-        <span class="n">problems</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">tk_messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span>
-                <span class="n">title</span><span class="o">=</span><span class="s2">"The flowchart has problems"</span><span class="p">,</span>
-                <span class="n">message</span><span class="o">=</span><span class="s2">"The job was not submitted, because:</span><span class="se">\n\n</span><span class="s2">"</span>
-                <span class="o">+</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">problems</span><span class="p">),</span>
-                <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toplevel</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">return</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">revalidate</span><span class="p">():</span>
+                <span class="c1"># A fix changed the steps' parameters, which the flowchart shares</span>
+                <span class="k">return</span> <span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">(),</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">ProblemsDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toplevel</span><span class="p">,</span> <span class="n">problems</span><span class="p">,</span> <span class="n">revalidate</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dialog</span><span class="o">.</span><span class="n">show</span><span class="p">():</span>
+                <span class="k">return</span>
+            <span class="n">flowchart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_flowchart</span><span class="p">()</span>
 
         <span class="c1"># Do the graphical "stuff"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_job_handler</span><span class="o">.</span><span class="n">submit_with_dialog</span><span class="p">(</span><span class="n">flowchart</span><span class="o">=</span><span class="n">flowchart</span><span class="p">)</span></div>

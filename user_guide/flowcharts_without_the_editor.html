@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../_static/documentation_options.js?v=fed69469"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -546,7 +546,7 @@ seamm-flowchart set my.flow ORCA/Energy basis=def2-TZVP
 seamm-flowchart insert my.flow Energy method=MP2 --after ORCA/Optimization
 seamm-flowchart remove my.flow 3.2
 seamm-flowchart move my.flow 4 --before 2
-seamm-flowchart validate my.flow
+seamm-flowchart validate my.flow [--fix]          # see Checking a flowchart
 seamm-flowchart convert old.flow -o new.flow    # e.g. 2.0 to 3.0
 seamm-flowchart migrate --root ~/SEAMM          # see below
 seamm-flowchart mcp                             # the MCP server, see below
@@ -557,6 +557,50 @@ given. Values are <code class="docutils literal notranslate"><span class="pre">n
 <code class="docutils literal notranslate"><span class="pre">{energy:</span> <span class="pre">{table:</span> <span class="pre">table1,</span> <span class="pre">column:</span> <span class="pre">E}}</span></code> work; quote names with spaces or use
 underscores. A step is addressed by position (<code class="docutils literal notranslate"><span class="pre">3</span></code>, <code class="docutils literal notranslate"><span class="pre">3.2</span></code> for the second step inside
 step 3), by name (<code class="docutils literal notranslate"><span class="pre">ORCA/Energy</span></code>), or both (<code class="docutils literal notranslate"><span class="pre">3/Energy</span></code>).</p>
+<section id="checking-a-flowchart">
+<h3>Checking a flowchart<a class="headerlink" href="#checking-a-flowchart" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">validate</span></code> checks a flowchart’s structure and every value, and asks
+the steps to check themselves against the steps before them: an analysis step, for
+example, checks that the MD before it samples what it needs. It reports two kinds of
+problem:</p>
+<ul class="simple">
+<li><p><strong>Errors</strong> stop a job: it is not submitted, and <code class="docutils literal notranslate"><span class="pre">run_flowchart</span></code> stops before any
+step runs.</p></li>
+<li><p><strong>Warnings</strong> do not. A parallel Loop warns about a step in its body that writes its
+structure over the configuration all the iterations share, since that usually
+stops the job when the iterations are merged.</p></li>
+</ul>
+<p>Where a check knows how to fix a problem, it gives the fix as parameters to set, and
+<code class="docutils literal notranslate"><span class="pre">validate</span></code> prints each as the <code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">set</span></code> commands that make it.
+<code class="docutils literal notranslate"><span class="pre">--fix</span></code> applies the first fix offered for each problem and writes the flowchart back
+(or to <code class="docutils literal notranslate"><span class="pre">-o</span></code>). It applies one fix at a time and checks again after each, since fixes
+can overlap: here both analysis steps need the same MD, sampled at least every 0.5 ps
+and every 1 ps, and the first fix meets both needs:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ seamm-flowchart validate nacl.flow
+'Dielectric Constant': all/position is not sampled in LAMMPS / NVT dynamics, but is
+needed for the dipole.
+    Fix -- Turn on sampling of all/position every 500 fs in NVT dynamics:
+        seamm-flowchart set nacl.flow 3.1.4 'atomic positions=by time interval'
+        seamm-flowchart set nacl.flow 3.1.4 'atomic positions rate=500 fs'
+'Ionic Conductivity': all/position is not sampled in LAMMPS / NVT dynamics, but is
+needed for the displacement of the ions.
+    Fix -- Turn on sampling of all/position every 1000 fs in NVT dynamics:
+        seamm-flowchart set nacl.flow 3.1.4 'atomic positions=by time interval'
+        seamm-flowchart set nacl.flow 3.1.4 'atomic positions rate=1000 fs'
+
+'--fix' applies the first fix of each, checking again after each fix.
+$ seamm-flowchart validate --fix nacl.flow
+Fixed: Turn on sampling of all/position every 500 fs in NVT dynamics
+No problems found.
+</pre></div>
+</div>
+<p>The editor runs the same checks when you submit a job. It lists the problems with a
+button for each fix; errors must be fixed before the job can be submitted, while with
+only warnings left it can be submitted anyway. The MCP tool <code class="docutils literal notranslate"><span class="pre">validate_flowchart</span></code>
+returns the errors, the warnings and the fixes, each as the step’s address, the
+parameter and its value, which <code class="docutils literal notranslate"><span class="pre">set_parameters</span></code> applies; check again after
+applying one.</p>
+</section>
 <section id="specs">
 <h3>Specs<a class="headerlink" href="#specs" title="Link to this heading">#</a></h3>
 <p>A <em>spec</em> is a short YAML description of a flowchart that gives only what differs from
@@ -720,6 +764,7 @@ ways to calculate a property.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flowchart-format-3-0">Flowchart format 3.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-seamm-flowchart-command">The seamm-flowchart command</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-a-flowchart">Checking a flowchart</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specs">Specs</a></li>
 </ul>
 </li>

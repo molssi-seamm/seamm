@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.mcp_server &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm.mcp_server &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../../_static/documentation_options.js?v=fed69469"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -759,17 +759,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    Args:</span>
 <span class="sd">        path: The flowchart (.flow).</span>
 
-<span class="sd">    Returns whether it is valid, and a description of each problem.</span>
+<span class="sd">    Returns whether it is valid; each problem, which stops a job; each warning,</span>
+<span class="sd">    which does not; and the fixes the checks offer, each a list of parameters to</span>
+<span class="sd">    set in steps by their address -- apply one with set_parameters, after asking</span>
+<span class="sd">    the user which when there is more than one, then validate again: fixes can</span>
+<span class="sd">    overlap, and one may solve another problem too.</span>
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_error</span>
 
     <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">flowchart</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">"valid"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)]}</span>
-        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">"valid"</span><span class="p">:</span> <span class="ow">not</span> <span class="n">problems</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="n">problems</span><span class="p">}</span></div>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"valid"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)],</span> <span class="s2">"warnings"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"fixes"</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="n">is_error</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"valid"</span><span class="p">:</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">,</span>
+            <span class="s2">"problems"</span><span class="p">:</span> <span class="n">errors</span><span class="p">,</span>
+            <span class="s2">"warnings"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_error</span><span class="p">(</span><span class="n">p</span><span class="p">)],</span>
+            <span class="s2">"fixes"</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">edit</span><span class="o">.</span><span class="n">describe_problems</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"fixes"</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">}</span></div>
 
 
 

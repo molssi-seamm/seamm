@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.builder &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm.builder &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../../_static/documentation_options.js?v=fed69469"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1159,7 +1159,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="validate">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.builder.validate">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Check a flowchart as a whole, beyond the individual parameter values.</span>
 
 <span class="sd">    Checks that a step using the model chemistry (its "use model chemistry"</span>
@@ -1171,16 +1171,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    list of problems. Analysis steps use it to check that the MD before them will</span>
 <span class="sd">    sample what they need, so that a job stops before the MD rather than after it.</span>
 
+<span class="sd">    A check may return warnings as well as errors, and fixes for them (see</span>
+<span class="sd">    :mod:`seamm.problems`).</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    flowchart : seamm.Flowchart</span>
 <span class="sd">        The main flowchart.</span>
+<span class="sd">    warnings : bool</span>
+<span class="sd">        Include the warnings. By default only the errors, which stop a job, are</span>
+<span class="sd">        returned.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    [str]</span>
-<span class="sd">        A description of each problem found; empty if none.</span>
+<span class="sd">        A description of each problem found, as a :class:`seamm.Problem` where the</span>
+<span class="sd">        check gives its severity or fixes; empty if none.</span>
 <span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_error</span>
+
     <span class="n">problems</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">uses_model_chemistry</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
@@ -1218,7 +1227,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">return</span> <span class="n">have_model_chemistry</span>
 
     <span class="n">check</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">problems</span></div>
+    <span class="k">if</span> <span class="n">warnings</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">problems</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="n">is_error</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span></div>
 
 </pre></div>
 

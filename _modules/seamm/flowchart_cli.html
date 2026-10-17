@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.flowchart_cli &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm.flowchart_cli &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../../_static/documentation_options.js?v=fed69469"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -829,22 +829,65 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="viewcode-block" id="validate_command">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.flowchart_cli.validate_command">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_command</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Check a flowchart."""</span>
+<span class="w">    </span><span class="sd">"""Check a flowchart, and with --fix apply the fixes the checks offer."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_error</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">flowchart</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">flowchart</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">problems</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Could not read the flowchart: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+        <span class="n">flowchart</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">applied</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">fix</span> <span class="ow">and</span> <span class="n">flowchart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">applied</span><span class="p">,</span> <span class="n">problems</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">applied</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">flowchart</span>
+            <span class="n">_write_output</span><span class="p">(</span><span class="n">flowchart</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">format</span><span class="p">),</span> <span class="n">output</span><span class="p">)</span>
+
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="n">is_error</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">"valid"</span><span class="p">:</span> <span class="ow">not</span> <span class="n">problems</span><span class="p">,</span> <span class="s2">"problems"</span><span class="p">:</span> <span class="n">problems</span><span class="p">},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="n">problems</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">problems</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
+        <span class="n">described</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">describe_problems</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">flowchart</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"valid"</span><span class="p">:</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">,</span>
+                    <span class="s2">"problems"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">],</span>
+                    <span class="s2">"warnings"</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_error</span><span class="p">(</span><span class="n">p</span><span class="p">)],</span>
+                    <span class="s2">"fixes"</span><span class="p">:</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">described</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">"fixes"</span><span class="p">]],</span>
+                    <span class="s2">"applied"</span><span class="p">:</span> <span class="n">applied</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">errors</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">applied</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Fixed: </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">described</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">describe_problems</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">problems</span><span class="p">)</span> <span class="k">if</span> <span class="n">flowchart</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">described</span><span class="p">:</span>
+        <span class="n">described</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"problem"</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span> <span class="s2">"severity"</span><span class="p">:</span> <span class="s2">"error"</span><span class="p">,</span> <span class="s2">"fixes"</span><span class="p">:</span> <span class="p">[]}</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">problems</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">described</span><span class="p">:</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">"severity"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"error"</span> <span class="k">else</span> <span class="s2">"Warning: "</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">"problem"</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">fix</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">"fixes"</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Fix -- </span><span class="si">{</span><span class="n">fix</span><span class="p">[</span><span class="s1">'label'</span><span class="p">]</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">edit_</span> <span class="ow">in</span> <span class="n">fix</span><span class="p">[</span><span class="s2">"set"</span><span class="p">]:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">edit_</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">"units"</span> <span class="ow">in</span> <span class="n">edit_</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">edit_</span><span class="p">[</span><span class="s1">'units'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"        seamm-flowchart set </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">flowchart</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">edit_</span><span class="p">[</span><span class="s1">'step'</span><span class="p">]</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">edit_</span><span class="p">[</span><span class="s1">'parameter'</span><span class="p">]</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">'"</span>
+                <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">problems</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"No problems found."</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">problems</span> <span class="k">else</span> <span class="mi">0</span></div>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"fixes"</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">described</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">'--fix' applies the first fix of each, checking again after each fix."</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">errors</span> <span class="k">else</span> <span class="mi">0</span></div>
 
 
 
@@ -974,6 +1017,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="p">)</span>
     <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"flowchart"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"The flowchart, or - for standard input"</span><span class="p">)</span>
     <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--json"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Output JSON"</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--fix"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Apply the first fix offered for each problem and write the flowchart"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"-o"</span><span class="p">,</span> <span class="s2">"--output"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Write the fixed flowchart here instead"</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--format"</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"3.0"</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s2">"3.0"</span><span class="p">,</span> <span class="s2">"2.0"</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"The format of the fixed flowchart (default 3.0)"</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">p</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">validate_command</span><span class="p">)</span>
 
     <span class="n">p</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>

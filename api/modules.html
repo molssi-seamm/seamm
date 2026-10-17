@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>seamm &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="../_static/documentation_options.js?v=fed69469"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -656,6 +656,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.data">seamm.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.edit">seamm.edit module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.EditError"><code class="docutils literal notranslate"><span class="pre">EditError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.describe_problems"><code class="docutils literal notranslate"><span class="pre">describe_problems()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.fix"><code class="docutils literal notranslate"><span class="pre">fix()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.insert"><code class="docutils literal notranslate"><span class="pre">insert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.locate"><code class="docutils literal notranslate"><span class="pre">locate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.edit.move"><code class="docutils literal notranslate"><span class="pre">move()</span></code></a></li>
@@ -738,6 +740,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.format3.Loader.yaml_implicit_resolvers"><code class="docutils literal notranslate"><span class="pre">Loader.yaml_implicit_resolvers</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.format3.addresses"><code class="docutils literal notranslate"><span class="pre">addresses()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.format3.apply_parameters"><code class="docutils literal notranslate"><span class="pre">apply_parameters()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.format3.digest"><code class="docutils literal notranslate"><span class="pre">digest()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.format3.dump_yaml"><code class="docutils literal notranslate"><span class="pre">dump_yaml()</span></code></a></li>
@@ -956,6 +959,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.plugin_manager.PluginManager.plugins"><code class="docutils literal notranslate"><span class="pre">PluginManager.plugins()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.problems">seamm.problems module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.ERROR"><code class="docutils literal notranslate"><span class="pre">ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.Edit"><code class="docutils literal notranslate"><span class="pre">Edit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.problems.Edit.apply"><code class="docutils literal notranslate"><span class="pre">Edit.apply()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.Fix"><code class="docutils literal notranslate"><span class="pre">Fix</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.problems.Fix.apply"><code class="docutils literal notranslate"><span class="pre">Fix.apply()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.Problem"><code class="docutils literal notranslate"><span class="pre">Problem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.problems.Problem.prefixed"><code class="docutils literal notranslate"><span class="pre">Problem.prefixed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.fixes"><code class="docutils literal notranslate"><span class="pre">fixes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.is_error"><code class="docutils literal notranslate"><span class="pre">is_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.problems.severity"><code class="docutils literal notranslate"><span class="pre">severity()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.seammrc">seamm.seammrc module</a><ul>
@@ -1254,6 +1276,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_open.TkOpen.zenodo_callback"><code class="docutils literal notranslate"><span class="pre">TkOpen.zenodo_callback()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.tk_problems">seamm.tk_problems module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.apply"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.apply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.cancel"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.cancel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.errors"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.layout"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.show"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.show()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm.html#seamm.tk_problems.ProblemsDialog.submit"><code class="docutils literal notranslate"><span class="pre">ProblemsDialog.submit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm.html#seamm.tk_problems.WRAP"><code class="docutils literal notranslate"><span class="pre">WRAP</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="seamm.html#module-seamm.tk_publish">seamm.tk_publish module</a><ul>

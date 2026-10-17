@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.15 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.17 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=6d569a1a"></script>
+    <script src="_static/documentation_options.js?v=fed69469"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.15" />
+  <meta name="docsearch:version" content="2026.10.17" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.17 – Fixes for the problems found when checking a flowchart</dt><dd><ul class="simple">
+<li><p>The checks of a flowchart can now give warnings, which do not stop a job, as
+well as errors, and can offer fixes: changes to the parameters of steps. When
+you submit a job, the editor lists the problems with a button for each fix;
+errors must be fixed before the job can be submitted, while with only warnings
+left it can be submitted anyway.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">validate</span></code> prints the warnings and each fix as the
+<code class="docutils literal notranslate"><span class="pre">seamm-flowchart</span> <span class="pre">set</span></code> commands that make it; <code class="docutils literal notranslate"><span class="pre">--fix</span></code> applies the fixes, one
+at a time, checking again after each. The MCP tool <code class="docutils literal notranslate"><span class="pre">validate_flowchart</span></code>
+returns the warnings and the fixes as data.</p></li>
+<li><p>Bugfix: in the iterations of a parallel loop, the sub-steps of a step with its
+own flowchart (the LAMMPS, ORCA or MOPAC sub-steps, or the MD of an analysis
+step) wrote their citations and job-level files in the job’s directory rather
+than their iteration’s. Iterations running together could then fail on the
+shared citations (“UNIQUE constraint failed: citation.doi”). A step’s
+sub-flowchart now uses the job directory of the step’s flowchart, so each
+iteration keeps its own files and they are merged into the job one iteration at
+a time.</p></li>
+</ul>
+</dd>
 <dt>2026.10.15 – Checking a flowchart as a whole before it runs</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">seamm.builder.validate</span></code> asks each step that has a <code class="docutils literal notranslate"><span class="pre">check_flowchart</span></code> method to
 check itself against the steps that run before it. Analysis steps use this to
