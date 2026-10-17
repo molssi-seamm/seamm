@@ -1,14 +1,24 @@
 =======
 History
 =======
-2026.10.17 -- Bugfix: steps inside a parallel loop's iterations used the job's files
-    * In the iterations of a parallel loop, the sub-steps of a step with its own
-      flowchart (the LAMMPS, ORCA or MOPAC sub-steps, or the MD of an analysis step)
-      wrote their citations and job-level files in the job's directory rather than
-      their iteration's. Iterations running together could then fail on the shared
-      citations ("UNIQUE constraint failed: citation.doi"). A step's sub-flowchart now
-      uses the job directory of the step's flowchart, so each iteration keeps its own
-      files and they are merged into the job one iteration at a time.
+2026.10.17 -- Fixes for the problems found when checking a flowchart
+    * The checks of a flowchart can now give warnings, which do not stop a job, as
+      well as errors, and can offer fixes: changes to the parameters of steps. When
+      you submit a job, the editor lists the problems with a button for each fix;
+      errors must be fixed before the job can be submitted, while with only warnings
+      left it can be submitted anyway.
+    * ``seamm-flowchart validate`` prints the warnings and each fix as the
+      ``seamm-flowchart set`` commands that make it; ``--fix`` applies the fixes, one
+      at a time, checking again after each. The MCP tool ``validate_flowchart``
+      returns the warnings and the fixes as data.
+    * Bugfix: in the iterations of a parallel loop, the sub-steps of a step with its
+      own flowchart (the LAMMPS, ORCA or MOPAC sub-steps, or the MD of an analysis
+      step) wrote their citations and job-level files in the job's directory rather
+      than their iteration's. Iterations running together could then fail on the
+      shared citations ("UNIQUE constraint failed: citation.doi"). A step's
+      sub-flowchart now uses the job directory of the step's flowchart, so each
+      iteration keeps its own files and they are merged into the job one iteration at
+      a time.
 
 2026.10.15 -- Checking a flowchart as a whole before it runs
     * ``seamm.builder.validate`` asks each step that has a ``check_flowchart`` method to

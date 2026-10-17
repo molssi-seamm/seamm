@@ -299,6 +299,35 @@ def _steps_data(items, layout, prefix, positions):
     return result
 
 
+def addresses(flowchart):
+    """The address of each step, as the edit tools give it ("3", "3.2", ...).
+
+    Parameters
+    ----------
+    flowchart : seamm.Flowchart
+
+    Returns
+    -------
+    {seamm.Node: str}
+        The steps, including those in loop bodies and sub-flowcharts, and their
+        addresses; steps not connected to the flowchart are left out.
+    """
+    result = {}
+
+    def walk(items, prefix):
+        for n, item in enumerate(items, start=1):
+            path = f"{prefix}{n}"
+            result[item.node] = path
+            if item.body is not None:
+                walk(item.body, path + ".")
+            sub = subflowchart(item.node)
+            if sub is not None:
+                walk(tree(sub)[0], path + ".")
+
+    walk(tree(flowchart)[0], "")
+    return result
+
+
 def _position(node):
     return [node.x, node.y] if node.x is not None and node.y is not None else None
 

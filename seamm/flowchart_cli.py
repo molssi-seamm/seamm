@@ -306,22 +306,65 @@ def move_command(args):
 
 
 def validate_command(args):
-    """Check a flowchart."""
+    """Check a flowchart, and with --fix apply the fixes the checks offer."""
     from . import edit
+    from .problems import is_error
 
     try:
         flowchart = edit.read(args.flowchart)
     except Exception as e:
         problems = [f"Could not read the flowchart: {e}"]
+        flowchart = None
     else:
-        problems = edit.validate(flowchart)
+        problems = edit.validate(flowchart, warnings=True)
+
+    applied = []
+    if args.fix and flowchart is not None:
+        applied, problems = edit.fix(flowchart)
+        if len(applied) > 0:
+            output = args.output or args.flowchart
+            _write_output(flowchart.to_text(format=args.format), output)
+
+    errors = [p for p in problems if is_error(p)]
     if args.json:
-        print(json.dumps({"valid": not problems, "problems": problems}, indent=4))
-    elif problems:
-        print("\n".join(problems))
-    else:
+        described = edit.describe_problems(flowchart, problems) if flowchart else []
+        print(
+            json.dumps(
+                {
+                    "valid": not errors,
+                    "problems": [str(p) for p in errors],
+                    "warnings": [str(p) for p in problems if not is_error(p)],
+                    "fixes": [d for d in described if d["fixes"]],
+                    "applied": applied,
+                },
+                indent=4,
+            )
+        )
+        return 1 if errors else 0
+
+    for label in applied:
+        print(f"Fixed: {label}")
+    described = edit.describe_problems(flowchart, problems) if flowchart else []
+    if not described:
+        described = [{"problem": p, "severity": "error", "fixes": []} for p in problems]
+    for item in described:
+        prefix = "" if item["severity"] == "error" else "Warning: "
+        print(prefix + item["problem"])
+        for fix in item["fixes"]:
+            print(f"    Fix -- {fix['label']}:")
+            for edit_ in fix["set"]:
+                value = edit_["value"]
+                if "units" in edit_:
+                    value = f"{value} {edit_['units']}"
+                print(
+                    f"        seamm-flowchart set {args.flowchart} {edit_['step']} "
+                    f"'{edit_['parameter']}={value}'"
+                )
+    if not problems:
         print("No problems found.")
-    return 1 if problems else 0
+    elif any(item["fixes"] for item in described):
+        print("\n'--fix' applies the first fix of each, checking again after each fix.")
+    return 1 if errors else 0
 
 
 def mcp_command(args):
@@ -445,6 +488,18 @@ def main(argv=None):
     )
     p.add_argument("flowchart", help="The flowchart, or - for standard input")
     p.add_argument("--json", action="store_true", help="Output JSON")
+    p.add_argument(
+        "--fix",
+        action="store_true",
+        help="Apply the first fix offered for each problem and write the flowchart",
+    )
+    p.add_argument("-o", "--output", help="Write the fixed flowchart here instead")
+    p.add_argument(
+        "--format",
+        default="3.0",
+        choices=("3.0", "2.0"),
+        help="The format of the fixed flowchart (default 3.0)",
+    )
     p.set_defaults(func=validate_command)
 
     p = subparsers.add_parser(

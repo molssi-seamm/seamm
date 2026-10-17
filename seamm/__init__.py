@@ -40,6 +40,7 @@ from seamm.builtins import JoinStep  # noqa: F401
 from seamm.tk_job_handler import TkJobHandler  # noqa: F401
 from .dashboard_handler import DashboardHandler  # noqa: F401
 from .seammrc import SEAMMrc  # noqa: F401
+from .problems import Edit, Fix, Problem  # noqa: F401
 
 wrap_text = textwrap.TextWrapper(width=120)
 wrap_stdout = textwrap.TextWrapper(width=120)

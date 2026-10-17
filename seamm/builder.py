@@ -621,7 +621,7 @@ def _main_line(flowchart):
     return nodes
 
 
-def validate(flowchart):
+def validate(flowchart, warnings=False):
     """Check a flowchart as a whole, beyond the individual parameter values.
 
     Checks that a step using the model chemistry (its "use model chemistry"
@@ -633,16 +633,25 @@ def validate(flowchart):
     list of problems. Analysis steps use it to check that the MD before them will
     sample what they need, so that a job stops before the MD rather than after it.
 
+    A check may return warnings as well as errors, and fixes for them (see
+    :mod:`seamm.problems`).
+
     Parameters
     ----------
     flowchart : seamm.Flowchart
         The main flowchart.
+    warnings : bool
+        Include the warnings. By default only the errors, which stop a job, are
+        returned.
 
     Returns
     -------
     [str]
-        A description of each problem found; empty if none.
+        A description of each problem found, as a :class:`seamm.Problem` where the
+        check gives its severity or fixes; empty if none.
     """
+    from .problems import is_error
+
     problems = []
 
     def uses_model_chemistry(node):
@@ -680,4 +689,6 @@ def validate(flowchart):
         return have_model_chemistry
 
     check(flowchart, False, "")
-    return problems
+    if warnings:
+        return problems
+    return [p for p in problems if is_error(p)]
