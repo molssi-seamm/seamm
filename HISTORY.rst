@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.17 -- Bugfix: steps inside a parallel loop's iterations used the job's files
+    * In the iterations of a parallel loop, the sub-steps of a step with its own
+      flowchart (the LAMMPS, ORCA or MOPAC sub-steps, or the MD of an analysis step)
+      wrote their citations and job-level files in the job's directory rather than
+      their iteration's. Iterations running together could then fail on the shared
+      citations ("UNIQUE constraint failed: citation.doi"). A step's sub-flowchart now
+      uses the job directory of the step's flowchart, so each iteration keeps its own
+      files and they are merged into the job one iteration at a time.
+
 2026.10.15 -- Checking a flowchart as a whole before it runs
     * ``seamm.builder.validate`` asks each step that has a ``check_flowchart`` method to
       check itself against the steps that run before it. Analysis steps use this to

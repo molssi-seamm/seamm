@@ -169,11 +169,16 @@ class Flowchart(object):
 
         The same as :attr:`root_directory`, where the steps' directories are,
         except for the evaluator of one iteration of a parallel loop, whose step
-        directories are in the job's tree but whose own files are kept apart.
+        directories are in the job's tree but whose own files are kept apart. A
+        step's sub-flowchart is in the same job as the step, so unless it is given
+        one it has the job directory of the step's flowchart.
         """
-        if getattr(self, "_job_directory", None) is None:
-            return self.root_directory
-        return self._job_directory
+        if getattr(self, "_job_directory", None) is not None:
+            return self._job_directory
+        flowchart = getattr(self.parent, "flowchart", None)
+        if flowchart is not None and flowchart is not self:
+            return flowchart.job_directory
+        return self.root_directory
 
     @job_directory.setter
     def job_directory(self, value):
