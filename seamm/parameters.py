@@ -688,8 +688,16 @@ class Parameters(collections.abc.MutableMapping):
         for key, value in self.defaults.items():
             self[key] = Parameter(value)
 
+    #: Parameters the step had once and has dropped: an older flowchart that
+    #: stores them can still be read, and they are ignored. Any other unknown
+    #: parameter is an error. A plug-in's Parameters class sets this.
+    retired = ()
+
     def update(self, data):
         for key in data:
+            if key not in self and key in self.retired:
+                logger.info(f"Ignoring '{key}', which is no longer a parameter.")
+                continue
             self[key].update(data[key])
         self._translate_legacy_values()
 

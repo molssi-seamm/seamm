@@ -178,6 +178,26 @@ def test_unknown_parameter_is_an_error():
         read(text)
 
 
+def test_retired_parameters_are_ignored():
+    """A parameter the plug-in has retired, stored by an older flowchart, is
+    ignored; any other unknown parameter is still an error."""
+    import seamm
+
+    text = (
+        "format: MolSSI flowchart 3.0\nsteps:\n"
+        "- step: CalcStep\n  parameters: {method: DFT, old setting: 3}\n"
+    )
+    with pytest.raises(KeyError):
+        read(text)
+    seamm.Parameters.retired = ("old setting",)
+    try:
+        calc = read(text).get_nodes()[1]
+        assert calc.parameters["method"].value == "DFT"
+        assert "old setting" not in calc.parameters
+    finally:
+        seamm.Parameters.retired = ()
+
+
 def test_missing_parameters_get_defaults():
     text = (
         "format: MolSSI flowchart 3.0\nsteps:\n"
