@@ -405,15 +405,22 @@ def tree(flowchart):
     return lines
 
 
-def validate(flowchart):
+def validate(flowchart, warnings=False):
     """Check a flowchart: its structure and every stored value.
+
+    Parameters
+    ----------
+    flowchart : seamm.Flowchart
+    warnings : bool
+        Include the warnings, which do not stop a job; by default only errors.
 
     Returns
     -------
     [str]
-        A description of each problem; empty if none.
+        A description of each problem; empty if none. A check that gives its
+        severity or fixes returns a :class:`seamm.Problem`.
     """
-    problems = list(_validate_flowchart(flowchart))
+    problems = list(_validate_flowchart(flowchart, warnings=warnings))
     data = _data(flowchart)
 
     def walk(level):
@@ -456,3 +463,82 @@ def validate(flowchart):
 
     walk(_Level(data["steps"], Catalog(flowchart), ""))
     return problems
+
+
+def describe_problems(flowchart, problems):
+    """Problems as data: their text, severity and fixes.
+
+    Each fix is given as the parameters to set in which steps, by the steps'
+    addresses, so that :func:`set_parameters` (or the ``set_parameters`` tool)
+    applies it.
+
+    Parameters
+    ----------
+    flowchart : seamm.Flowchart
+        The flowchart that was checked.
+    problems : [str]
+        The problems, from :func:`validate`.
+
+    Returns
+    -------
+    [dict]
+        ``{"problem": str, "severity": "error" or "warning", "fixes": [{"label":
+        str, "set": [{"step": address, "parameter": name, "value": value}]}]}``,
+        with ``"units"`` too where a fix gives them.
+    """
+    from .problems import fixes, severity
+
+    addresses = format3.addresses(flowchart)
+    result = []
+    for problem in problems:
+        item = {"problem": str(problem), "severity": severity(problem), "fixes": []}
+        for fix in fixes(problem):
+            edits = []
+            for edit in fix.edits:
+                data = {
+                    "step": addresses.get(edit.node, edit.node.title),
+                    "parameter": edit.parameter,
+                    "value": edit.value,
+                }
+                if edit.units is not None:
+                    data["units"] = edit.units
+                edits.append(data)
+            item["fixes"].append({"label": fix.label, "set": edits})
+        result.append(item)
+    return result
+
+
+def fix(flowchart, choice=0, rounds=50):
+    """Apply the fixes the checks offer, one at a time, checking again after each.
+
+    Fixes can overlap -- two analysis steps needing the same MD sampled at
+    different intervals each offer to set it -- so each fix is applied to the
+    flowchart as the earlier ones left it: a problem already solved offers nothing.
+
+    Parameters
+    ----------
+    flowchart : seamm.Flowchart
+        The flowchart to change.
+    choice : int
+        Which of a problem's fixes to apply, the first by default.
+    rounds : int
+        At most this many fixes, in case fixes undo each other.
+
+    Returns
+    -------
+    ([str], [str])
+        The labels of the fixes applied, and the problems that remain (errors and
+        warnings).
+    """
+    from .problems import fixes
+
+    applied = []
+    problems = validate(flowchart, warnings=True)
+    for _ in range(rounds):
+        todo = [fixes(p)[choice] for p in problems if len(fixes(p)) > choice]
+        if len(todo) == 0:
+            break
+        todo[0].apply()
+        applied.append(todo[0].label)
+        problems = validate(flowchart, warnings=True)
+    return applied, problems

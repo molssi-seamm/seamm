@@ -46,7 +46,7 @@ first, which takes several seconds.
     seamm-flowchart insert my.flow Energy method=MP2 --after ORCA/Optimization
     seamm-flowchart remove my.flow 3.2
     seamm-flowchart move my.flow 4 --before 2
-    seamm-flowchart validate my.flow
+    seamm-flowchart validate my.flow [--fix]          # see Checking a flowchart
     seamm-flowchart convert old.flow -o new.flow    # e.g. 2.0 to 3.0
     seamm-flowchart migrate --root ~/SEAMM          # see below
     seamm-flowchart mcp                             # the MCP server, see below
@@ -56,6 +56,53 @@ given. Values are ``name=value``, read as YAML, so ``10``, ``[1, 2]`` and
 ``{energy: {table: table1, column: E}}`` work; quote names with spaces or use
 underscores. A step is addressed by position (``3``, ``3.2`` for the second step inside
 step 3), by name (``ORCA/Energy``), or both (``3/Energy``).
+
+Checking a flowchart
+--------------------
+
+``seamm-flowchart validate`` checks a flowchart's structure and every value, and asks
+the steps to check themselves against the steps before them: an analysis step, for
+example, checks that the MD before it samples what it needs. It reports two kinds of
+problem:
+
+- **Errors** stop a job: it is not submitted, and ``run_flowchart`` stops before any
+  step runs.
+- **Warnings** do not. A parallel Loop warns about a step in its body that writes its
+  structure over the configuration all the iterations share, since that usually
+  stops the job when the iterations are merged.
+
+Where a check knows how to fix a problem, it gives the fix as parameters to set, and
+``validate`` prints each as the ``seamm-flowchart set`` commands that make it.
+``--fix`` applies the first fix offered for each problem and writes the flowchart back
+(or to ``-o``). It applies one fix at a time and checks again after each, since fixes
+can overlap: here both analysis steps need the same MD, sampled at least every 0.5 ps
+and every 1 ps, and the first fix meets both needs:
+
+.. code-block:: text
+
+    $ seamm-flowchart validate nacl.flow
+    'Dielectric Constant': all/position is not sampled in LAMMPS / NVT dynamics, but is
+    needed for the dipole.
+        Fix -- Turn on sampling of all/position every 500 fs in NVT dynamics:
+            seamm-flowchart set nacl.flow 3.1.4 'atomic positions=by time interval'
+            seamm-flowchart set nacl.flow 3.1.4 'atomic positions rate=500 fs'
+    'Ionic Conductivity': all/position is not sampled in LAMMPS / NVT dynamics, but is
+    needed for the displacement of the ions.
+        Fix -- Turn on sampling of all/position every 1000 fs in NVT dynamics:
+            seamm-flowchart set nacl.flow 3.1.4 'atomic positions=by time interval'
+            seamm-flowchart set nacl.flow 3.1.4 'atomic positions rate=1000 fs'
+
+    '--fix' applies the first fix of each, checking again after each fix.
+    $ seamm-flowchart validate --fix nacl.flow
+    Fixed: Turn on sampling of all/position every 500 fs in NVT dynamics
+    No problems found.
+
+The editor runs the same checks when you submit a job. It lists the problems with a
+button for each fix; errors must be fixed before the job can be submitted, while with
+only warnings left it can be submitted anyway. The MCP tool ``validate_flowchart``
+returns the errors, the warnings and the fixes, each as the step's address, the
+parameter and its value, which ``set_parameters`` applies; check again after
+applying one.
 
 Specs
 -----

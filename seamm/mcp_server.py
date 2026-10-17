@@ -251,17 +251,30 @@ def validate_flowchart(path: str) -> dict:
     Args:
         path: The flowchart (.flow).
 
-    Returns whether it is valid, and a description of each problem.
+    Returns whether it is valid; each problem, which stops a job; each warning,
+    which does not; and the fixes the checks offer, each a list of parameters to
+    set in steps by their address -- apply one with set_parameters, after asking
+    the user which when there is more than one, then validate again: fixes can
+    overlap, and one may solve another problem too.
     """
     from . import edit
+    from .problems import is_error
 
     with _lock:
         try:
             flowchart = _read(_path(path))
         except ValueError as e:
-            return {"valid": False, "problems": [str(e)]}
-        problems = edit.validate(flowchart)
-        return {"valid": not problems, "problems": problems}
+            return {"valid": False, "problems": [str(e)], "warnings": [], "fixes": []}
+        problems = edit.validate(flowchart, warnings=True)
+        errors = [str(p) for p in problems if is_error(p)]
+        return {
+            "valid": not errors,
+            "problems": errors,
+            "warnings": [str(p) for p in problems if not is_error(p)],
+            "fixes": [
+                d for d in edit.describe_problems(flowchart, problems) if d["fixes"]
+            ],
+        }
 
 
 def set_parameters(

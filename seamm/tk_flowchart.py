@@ -48,7 +48,6 @@ import pprint  # nopep8
 import sys
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
-import tkinter.messagebox as tk_messagebox
 import tkinter.ttk as ttk
 
 from PIL import ImageTk, Image
@@ -1275,18 +1274,22 @@ class TkFlowchart(object):
         flowchart = self.update_flowchart()
 
         # Check the flowchart as a whole before submitting: the job would stop
-        # at the start anyway
+        # at the start anyway. Errors stop it here; warnings may be overridden; and
+        # the fixes the checks offer can be applied with a button.
         from seamm.builder import validate
+        from seamm.tk_problems import ProblemsDialog
 
-        problems = validate(flowchart)
+        problems = validate(flowchart, warnings=True)
         if len(problems) > 0:
-            tk_messagebox.showerror(
-                title="The flowchart has problems",
-                message="The job was not submitted, because:\n\n"
-                + "\n\n".join(problems),
-                parent=self.toplevel,
-            )
-            return
+
+            def revalidate():
+                # A fix changed the steps' parameters, which the flowchart shares
+                return validate(self.update_flowchart(), warnings=True)
+
+            dialog = ProblemsDialog(self.toplevel, problems, revalidate)
+            if not dialog.show():
+                return
+            flowchart = self.update_flowchart()
 
         # Do the graphical "stuff"
         self._job_handler.submit_with_dialog(flowchart=flowchart)
