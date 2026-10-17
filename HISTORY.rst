@@ -1,6 +1,12 @@
 =======
 History
 =======
+2026.10.17.1 -- Reading flowcharts with parameters a plug-in has retired
+    * A plug-in can list the parameters it has dropped (``retired`` in its Parameters
+      class). An older flowchart that stores them can still be read and checked, and
+      they are ignored; any other unknown parameter is still an error. The MD analysis
+      steps use this for the parameters of the MD they no longer run themselves.
+
 2026.10.17 -- Fixes for the problems found when checking a flowchart
     * The checks of a flowchart can now give warnings, which do not stop a job, as
       well as errors, and can offer fixes: changes to the parameters of steps. When
