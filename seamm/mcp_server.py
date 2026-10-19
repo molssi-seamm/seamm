@@ -87,7 +87,11 @@ failed iterations: look for "Caught exception in loop iteration" in job.out.
 To stop a job that is waiting or running, use kill_job, only when the user asks and
 after confirming which job: its JobServer stops it and marks it "killed", keeping its
 files and record. Do not stop jobs with the queueing system (scancel) instead: the
-JobServer takes that for an interruption and runs the job again.
+JobServer takes that for an interruption and runs the job again. A job that was
+killed or failed can be run again with resume_job, which continues from the last
+step it completed; the step it stopped in runs again from its start. Confirm with the
+user first, since it starts a calculation, and follow it with job_status: job.out
+says whether it resumed, and from where.
 """
 
 # SEAMM's objects are not thread safe, and the tools run in worker threads.
@@ -714,6 +718,58 @@ def kill_job(dashboard: str, job_id: int) -> dict:
     return _job_summary(_job(client, job_id))
 
 
+#: The statuses of the jobs that can be resumed: they stopped without finishing
+RESUMABLE_STATUSES = ("killed", "error", "startup error")
+
+
+def resume_job(dashboard: str, job_id: int) -> dict:
+    """Run a job that was killed or failed again, continuing from its checkpoint:
+    the last step it completed. The step it stopped in runs again from its start.
+    The job's JobServer starts it in its own directory and queue; the flowchart
+    checks that the checkpoint still matches, and runs from the top, saying why in
+    job.out, if it does not. A job that is waiting, running or finished is
+    refused. This starts a calculation, so confirm the job with the user first.
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        job_id: The job's id.
+
+    Returns the job's id and status: "submitted" until its JobServer starts it.
+    """
+    client = _dashboard(dashboard)
+    job = _job(client, job_id)
+    status = job.get("status")
+    if status not in RESUMABLE_STATUSES:
+        raise ValueError(
+            f"Job {job_id} on '{dashboard}' is {status!r}: only a job that was "
+            "killed, failed or never started can be resumed."
+        )
+    with _lock:
+        response = client._url_post(f"/api/jobs/{int(job_id)}/resume", headers={})
+    if response.status_code in (401, 403):
+        raise ValueError(
+            f"Your account on '{dashboard}' may not change job {job_id}, so it was "
+            "not resumed."
+        )
+    if response.status_code == 404:
+        raise ValueError(
+            f"The dashboard '{dashboard}' cannot resume jobs: its web UI is older "
+            "than this request."
+        )
+    if response.status_code == 400:
+        try:
+            detail = response.json().get("detail", "")
+        except Exception:
+            detail = response.text
+        raise ValueError(f"Job {job_id} on '{dashboard}' was not resumed: {detail}")
+    if response.status_code != 200:
+        raise ValueError(
+            f"Could not resume job {job_id} on '{dashboard}' (code "
+            f"{response.status_code})."
+        )
+    return _job_summary(_job(client, job_id))
+
+
 def list_jobs(dashboard: str, limit: int = 10) -> list[dict]:
     """The most recent jobs on a dashboard, newest first.
 
@@ -935,6 +991,15 @@ def create_server():
         )
     server.add_tool(
         _guarded(submit_job),
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=False,
+            idempotentHint=False,
+            openWorldHint=True,
+        ),
+    )
+    server.add_tool(
+        _guarded(resume_job),
         annotations=ToolAnnotations(
             readOnlyHint=False,
             destructiveHint=False,

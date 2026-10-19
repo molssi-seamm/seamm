@@ -100,6 +100,7 @@ def test_tools_listed():
         "dashboard_info",
         "submit_job",
         "kill_job",
+        "resume_job",
         "job_status",
         "list_jobs",
         "list_job_files",
@@ -299,7 +300,7 @@ class FakeDashboard:
         self.posted.append(url)
         code, data = self.response
         if code == 200:
-            self.status_of_job = "kill"
+            self.status_of_job = "submitted" if url.endswith("/resume") else "kill"
         return SimpleNamespace(status_code=code, json=lambda: data, text=str(data))
 
 
@@ -468,3 +469,29 @@ def test_kill_through_the_client(fake):
     client.status_of_job = "finished"
     is_error, message = call("kill_job", {"dashboard": "fake", "job_id": 7})
     assert is_error and "nothing to stop" in message
+
+
+def test_resume_a_killed_job(fake):
+    client = fake()
+    for status in ("killed", "error", "startup error"):
+        client.status_of_job = status
+        result = mcp_server.resume_job("fake", 7)
+        assert result["status"] == "submitted"
+    assert client.posted == ["/api/jobs/7/resume"] * 3
+
+
+def test_resume_refuses_a_job_that_did_not_stop(fake):
+    client = fake()
+    for status in ("submitted", "running", "finished", "kill"):
+        client.status_of_job = status
+        with pytest.raises(ValueError, match="only a job that was killed"):
+            mcp_server.resume_job("fake", 7)
+    assert client.posted == []
+
+
+def test_resume_on_an_older_web_ui(fake):
+    client = fake()
+    client.status_of_job = "killed"
+    client.response = (404, {})
+    with pytest.raises(ValueError, match="cannot resume jobs"):
+        mcp_server.resume_job("fake", 7)
