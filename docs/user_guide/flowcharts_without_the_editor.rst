@@ -226,7 +226,11 @@ JobServer to stop it -- the local process, or the job in the queueing system, as
 user the JobServer runs as -- and the job is marked "killed", keeping its files and
 record. A job that has finished, failed or been killed is refused. Stopping a job with
 the queueing system directly (``scancel``) does not work as well: the JobServer takes
-it for an interruption and runs the job again. There is no tool to delete a job.
+it for an interruption and runs the job again. A job that was killed or failed can be
+run again with ``resume_job``: it continues from the last step it completed, and the
+step it stopped in runs again from its start. If the flowchart's checkpoint no longer
+matches -- the flowchart or its command line has changed -- it runs from the top, and
+``job.out`` says why. There is no tool to delete a job.
 
 The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers -- after

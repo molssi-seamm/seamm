@@ -1,6 +1,12 @@
 =======
 History
 =======
+2026.10.19.1 -- A resume_job tool in the MCP server
+    * The MCP server has a new tool, resume_job, which runs a job that was killed or
+      failed again, continuing from the last step it completed. A job that is waiting,
+      running or finished is refused. It needs a web UI and JobServer of 2026.10.19 or
+      later.
+
 2026.10.19 -- A kill_job tool in the MCP server
     * The MCP server has a new tool, kill_job, which stops a job that is waiting or
       running: its JobServer stops it -- the local process, or the job in the queueing
