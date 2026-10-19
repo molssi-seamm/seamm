@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.19 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.19.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=b2b4b3b2"></script>
+    <script src="_static/documentation_options.js?v=a5793183"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19" />
+  <meta name="docsearch:version" content="2026.10.19.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.19.1 – A resume_job tool in the MCP server</dt><dd><ul class="simple">
+<li><p>The MCP server has a new tool, resume_job, which runs a job that was killed or
+failed again, continuing from the last step it completed. A job that is waiting,
+running or finished is refused. It needs a web UI and JobServer of 2026.10.19 or
+later.</p></li>
+</ul>
+</dd>
 <dt>2026.10.19 – A kill_job tool in the MCP server</dt><dd><ul class="simple">
 <li><p>The MCP server has a new tool, kill_job, which stops a job that is waiting or
 running: its JobServer stops it – the local process, or the job in the queueing
