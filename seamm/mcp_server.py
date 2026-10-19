@@ -83,6 +83,11 @@ submit_job, which starts a real calculation. Then follow it with job_status, and
 its output with read_job_file ("job.out", a table's .csv, ...); list_job_files lists
 what it has written. Loops carry on past errors, so a finished job can still have
 failed iterations: look for "Caught exception in loop iteration" in job.out.
+
+To stop a job that is waiting or running, use kill_job, only when the user asks and
+after confirming which job: its JobServer stops it and marks it "killed", keeping its
+files and record. Do not stop jobs with the queueing system (scancel) instead: the
+JobServer takes that for an interruption and runs the job again.
 """
 
 # SEAMM's objects are not thread safe, and the tools run in worker threads.
@@ -662,6 +667,53 @@ def job_status(dashboard: str, job_id: int) -> dict:
     return _job_summary(_job(_dashboard(dashboard), job_id))
 
 
+#: The statuses of the jobs a JobServer can stop: waiting or running
+KILLABLE_STATUSES = ("submitted", "running")
+
+
+def kill_job(dashboard: str, job_id: int) -> dict:
+    """Stop a job that is waiting or running. The JobServer that runs it stops it
+    -- the local process, or the job in the queueing system, as the user the
+    JobServer runs as -- and marks it "killed". Its files and record are kept; this
+    never deletes a job. A job that has finished, failed or already been killed is
+    refused. This stops a calculation, so confirm the job with the user first.
+
+    Args:
+        dashboard: The dashboard (see list_dashboards).
+        job_id: The job's id.
+
+    Returns the job's id and status: "kill" while its JobServer stops it, then
+    "killed".
+    """
+    client = _dashboard(dashboard)
+    job = _job(client, job_id)
+    status = job.get("status")
+    if status not in KILLABLE_STATUSES:
+        raise ValueError(
+            f"Job {job_id} on '{dashboard}' is {status!r}, not waiting or running, "
+            "so there is nothing to stop."
+        )
+    with _lock:
+        response = client._url_post(f"/api/jobs/{int(job_id)}/kill", headers={})
+    if response.status_code in (401, 403):
+        raise ValueError(
+            f"Your account on '{dashboard}' may not change job {job_id}, so it was "
+            "not stopped."
+        )
+    if response.status_code == 400:
+        try:
+            detail = response.json().get("detail", "")
+        except Exception:
+            detail = response.text
+        raise ValueError(f"Job {job_id} on '{dashboard}' was not stopped: {detail}")
+    if response.status_code not in (200, 204):
+        raise ValueError(
+            f"Could not stop job {job_id} on '{dashboard}' (code "
+            f"{response.status_code})."
+        )
+    return _job_summary(_job(client, job_id))
+
+
 def list_jobs(dashboard: str, limit: int = 10) -> list[dict]:
     """The most recent jobs on a dashboard, newest first.
 
@@ -886,6 +938,15 @@ def create_server():
         annotations=ToolAnnotations(
             readOnlyHint=False,
             destructiveHint=False,
+            idempotentHint=False,
+            openWorldHint=True,
+        ),
+    )
+    server.add_tool(
+        _guarded(kill_job),
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=True,
             idempotentHint=False,
             openWorldHint=True,
         ),
