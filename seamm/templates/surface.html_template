@@ -90,11 +90,7 @@
 		    },
 		    "scene": {
 			{%- for axis in axes %}    
-			"{{ axis.name[:-1] }}": {
-			    "domain": [
-				{{ axis.start }},
-				{{ axis.stop }}
-			    ],
+			"{{ axis.short_name[0] }}axis": {
 			    {%- if 'range' in axis %}
 			    "range": {{ axis.range|jsonify }},
 			    {%- endif %}

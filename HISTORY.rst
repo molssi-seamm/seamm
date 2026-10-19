@@ -1,6 +1,11 @@
 =======
 History
 =======
+2026.10.19.2 -- Bugfix: graphs of surfaces could not be shown
+    * The template for 3-D surfaces, e.g. the energy of a 2-D Energy Scan, wrote the
+      axes of the scene as 'xaxi', 'yaxi' and 'zaxi', with an empty range for the z
+      axis, which is not valid JSON, so the web interface could not show the graph.
+
 2026.10.19.1 -- A resume_job tool in the MCP server
     * The MCP server has a new tool, resume_job, which runs a job that was killed or
       failed again, continuing from the last step it completed. A job that is waiting,
