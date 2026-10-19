@@ -174,8 +174,29 @@ def test_unknown_parameter_is_an_error():
         "format: MolSSI flowchart 3.0\nsteps:\n"
         "- step: CalcStep\n  parameters: {no such thing: 1}\n"
     )
-    with pytest.raises(KeyError):
+    with pytest.raises(
+        format3.FlowchartFormatError,
+        match="Step 1 .* has the parameter 'no such thing'",
+    ):
         read(text)
+
+
+def test_unknown_parameter_from_a_newer_plugin():
+    """A flowchart made with a newer version of a plug-in, whose parameter the
+    installed one does not have, says so and what to do (2026-10-19: flowcharts
+    built with lammps-step 2026.10.19 failed on an older installation with only
+    KeyError: 'scale ion charges')."""
+    flowchart = read("format: MolSSI flowchart 3.0\nsteps:\n- step: CalcStep\n")
+    package = type(flowchart.get_nodes()[1]).__module__.split(".")[0]
+    text = (
+        f"format: MolSSI flowchart 3.0\nrequires: {{{package}: 2099.1.1}}\nsteps:\n"
+        "- step: CalcStep\n  parameters: {scale ion charges: 0.8}\n"
+    )
+    with pytest.raises(format3.FlowchartFormatError) as e:
+        read(text)
+    message = str(e.value)
+    assert "has the parameter 'scale ion charges'" in message
+    assert f"The flowchart was made with {package} 2099.1.1: update" in message
 
 
 def test_retired_parameters_are_ignored():
@@ -187,7 +208,7 @@ def test_retired_parameters_are_ignored():
         "format: MolSSI flowchart 3.0\nsteps:\n"
         "- step: CalcStep\n  parameters: {method: DFT, old setting: 3}\n"
     )
-    with pytest.raises(KeyError):
+    with pytest.raises(format3.FlowchartFormatError, match="'old setting'"):
         read(text)
     seamm.Parameters.retired = ("old setting",)
     try:

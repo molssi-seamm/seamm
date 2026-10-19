@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.19.3 -- Bugfix: a clear error for a flowchart made with a newer plug-in
+    * A flowchart made with a newer version of a plug-in can have parameters that an
+      older version does not know. Reading it stopped with only a KeyError naming the
+      parameter, e.g. KeyError: 'scale ion charges'. The error now names the step,
+      the parameter, the installed version of the plug-in and the version the
+      flowchart was made with, and says to update the plug-in or run the flowchart
+      where that version is installed.
+
 2026.10.19.2 -- Bugfix: graphs of surfaces could not be shown
     * The template for 3-D surfaces, e.g. the energy of a 2-D Energy Scan, wrote the
       axes of the scene as 'xaxi', 'yaxi' and 'zaxi', with an empty range for the z

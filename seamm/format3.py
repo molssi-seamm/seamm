@@ -44,6 +44,7 @@ import json
 import logging
 import re
 
+from packaging.version import InvalidVersion, Version
 import yaml
 
 import seamm
@@ -491,13 +492,25 @@ class FlowchartFormatError(ValueError):
     """A 3.0 flowchart that cannot be read."""
 
 
-def apply_parameters(node, parameters):
+def apply_parameters(node, parameters, path=None, requires=None):
     """Set a node's parameters from 3.0 data, as format 2.0 would restore them.
 
     As in 2.0, a new object of the node's parameters class is made from the data, so
     the fixes plug-ins make in ``__init__`` for renamed or replaced parameters apply
     (e.g. lammps_step's NPT turns 'keep orthorhombic' into 'allow shear'), and a
-    parameter the plug-in does not have is an error.
+    parameter the plug-in does not have is an error, which names the plug-in and its
+    versions: usually the flowchart was made with a newer version than is installed.
+
+    Parameters
+    ----------
+    node : seamm.Node
+        The step.
+    parameters : dict or None
+        The step's parameters from the file.
+    path : str, optional
+        The step's address in the flowchart, e.g. "3.1", for the error message.
+    requires : dict, optional
+        The file's ``requires``: package -> the version the flowchart was made with.
     """
     if parameters is None:
         return
@@ -522,7 +535,62 @@ def apply_parameters(node, parameters):
         ):
             value, units = value
         data[key] = {"value": value, "units": units}
-    node.parameters = type(node.parameters)(data=data)
+    try:
+        node.parameters = type(node.parameters)(data=data)
+    except KeyError as e:
+        key = e.args[0] if e.args else None
+        if key not in data:
+            raise
+        raise FlowchartFormatError(
+            unknown_parameter_message(node, key, path, requires)
+        ) from None
+
+
+def _installed(package):
+    """The distribution providing an importable package and its installed version,
+    or (None, None)."""
+    distribution = _packages_distributions().get(package, [package])[0]
+    try:
+        return distribution, importlib.metadata.version(distribution)
+    except importlib.metadata.PackageNotFoundError:
+        return None, None
+
+
+def unknown_parameter_message(node, key, path=None, requires=None):
+    """Why a step cannot take a parameter in a flowchart, and what to do about it.
+
+    The usual cause is a flowchart made with a newer version of the plug-in than is
+    installed, which has parameters the older one does not know.
+    """
+    package = type(node).__module__.split(".")[0]
+    distribution, installed = _installed(package)
+    name = distribution or package
+    try:
+        title = node.title
+    except Exception:
+        title = node.extension
+    where = f"Step {path} ({title})" if path else f"The step '{title}'"
+    text = f"{where} has the parameter '{key}', which {name}"
+    text += f" {installed}" if installed else ""
+    text += " installed here does not have."
+    written = (requires or {}).get(package)
+    if written is None:
+        return text + " The flowchart may have been made with a different version."
+    newer = True
+    if installed is not None:
+        try:
+            newer = Version(str(written)) > Version(installed)
+        except InvalidVersion:
+            newer = str(written) != installed
+    if newer:
+        text += (
+            f" The flowchart was made with {name} {written}: update {name} here "
+            f"(e.g. 'seamm-manager update {name}') or run the flowchart where "
+            f"{written} or later is installed."
+        )
+    else:
+        text += f" The flowchart was made with {name} {written}."
+    return text
 
 
 def _create(flowchart, extension):
@@ -542,7 +610,7 @@ def _connect(flowchart, node1, node2, subtype):
         flowchart.add_edge(node1, node2, edge_type="execution", edge_subtype=subtype)
 
 
-def _build(flowchart, steps, after, subtype, layout, prefix):
+def _build(flowchart, steps, after, subtype, layout, prefix, requires=None):
     """Create the nodes for a list of 3.0 steps after a node. Returns the last node
     and the subtype of the edge that should leave it."""
     last = after
@@ -556,17 +624,23 @@ def _build(flowchart, steps, after, subtype, layout, prefix):
             _connect(flowchart, last, join, subtype)
             layout.setdefault("nodes", {})[path + ".join"] = join
             node = _create(flowchart, extension)
-            apply_parameters(node, step.get("parameters"))
+            apply_parameters(node, step.get("parameters"), path, requires)
             _connect(flowchart, join, node, "next")
             end, end_subtype = _build(
-                flowchart, step["body"] or [], node, "loop", layout, path + "."
+                flowchart,
+                step["body"] or [],
+                node,
+                "loop",
+                layout,
+                path + ".",
+                requires,
             )
             if end is not node:
                 _connect(flowchart, end, join, end_subtype)
             last, subtype = node, "exit"
         else:
             node = _create(flowchart, extension)
-            apply_parameters(node, step.get("parameters"))
+            apply_parameters(node, step.get("parameters"), path, requires)
             _connect(flowchart, last, node, subtype)
             last, subtype = node, "next"
         layout.setdefault("nodes", {})[path] = node
@@ -580,9 +654,10 @@ def _build(flowchart, steps, after, subtype, layout, prefix):
                 "next",
                 layout,
                 path + ".",
+                requires,
             )
             for i, chain in enumerate(step.get("unconnected") or [], start=1):
-                _build(sub, chain, None, "next", layout, f"{path}.u{i}.")
+                _build(sub, chain, None, "next", layout, f"{path}.u{i}.", requires)
         elif step.get("steps"):
             raise FlowchartFormatError(
                 f"The step '{extension}' ({path}) does not take sub-steps."
@@ -633,9 +708,10 @@ def from_data(flowchart, data):
     layout = {"nodes": nodes}
     start = flowchart.get_node("1")
     nodes["0"] = start
-    _build(flowchart, data.get("steps") or [], start, "next", layout, "")
+    requires = data.get("requires") or {}
+    _build(flowchart, data.get("steps") or [], start, "next", layout, "", requires)
     for i, chain in enumerate(data.get("unconnected") or [], start=1):
-        _build(flowchart, chain, None, "next", layout, f"u{i}.")
+        _build(flowchart, chain, None, "next", layout, f"u{i}.", requires)
 
     restore_tables(flowchart)
 
