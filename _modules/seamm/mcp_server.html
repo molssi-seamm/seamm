@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.mcp_server &#8212; SEAMM 2026.10.17.1 documentation</title>
+    <title>seamm.mcp_server &#8212; SEAMM 2026.10.19 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=62bfd45e"></script>
+    <script src="../../_static/documentation_options.js?v=b2b4b3b2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.17.1" />
+  <meta name="docsearch:version" content="2026.10.19" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -571,6 +571,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="s2">its output with read_job_file ("job.out", a table's .csv, ...); list_job_files lists</span>
 <span class="s2">what it has written. Loops carry on past errors, so a finished job can still have</span>
 <span class="s2">failed iterations: look for "Caught exception in loop iteration" in job.out.</span>
+
+<span class="s2">To stop a job that is waiting or running, use kill_job, only when the user asks and</span>
+<span class="s2">after confirming which job: its JobServer stops it and marks it "killed", keeping its</span>
+<span class="s2">files and record. Do not stop jobs with the queueing system (scancel) instead: the</span>
+<span class="s2">JobServer takes that for an interruption and runs the job again.</span>
 <span class="s2">"""</span>
 
 <span class="c1"># SEAMM's objects are not thread safe, and the tools run in worker threads.</span>
@@ -1198,6 +1203,56 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
+<span class="c1">#: The statuses of the jobs a JobServer can stop: waiting or running</span>
+<span class="n">KILLABLE_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"submitted"</span><span class="p">,</span> <span class="s2">"running"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="kill_job">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.kill_job">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">kill_job</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Stop a job that is waiting or running. The JobServer that runs it stops it</span>
+<span class="sd">    -- the local process, or the job in the queueing system, as the user the</span>
+<span class="sd">    JobServer runs as -- and marks it "killed". Its files and record are kept; this</span>
+<span class="sd">    never deletes a job. A job that has finished, failed or already been killed is</span>
+<span class="sd">    refused. This stops a calculation, so confirm the job with the user first.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dashboard: The dashboard (see list_dashboards).</span>
+<span class="sd">        job_id: The job's id.</span>
+
+<span class="sd">    Returns the job's id and status: "kill" while its JobServer stops it, then</span>
+<span class="sd">    "killed".</span>
+<span class="sd">    """</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_dashboard</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_job</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">job_id</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">KILLABLE_STATUSES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' is </span><span class="si">{</span><span class="n">status</span><span class="si">!r}</span><span class="s2">, not waiting or running, "</span>
+            <span class="s2">"so there is nothing to stop."</span>
+        <span class="p">)</span>
+    <span class="k">with</span> <span class="n">_lock</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_url_post</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/api/jobs/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span><span class="si">}</span><span class="s2">/kill"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{})</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">401</span><span class="p">,</span> <span class="mi">403</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Your account on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' may not change job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">, so it was "</span>
+            <span class="s2">"not stopped."</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"detail"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' was not stopped: </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">204</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Could not stop job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> on '</span><span class="si">{</span><span class="n">dashboard</span><span class="si">}</span><span class="s2">' (code "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">)."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_job_summary</span><span class="p">(</span><span class="n">_job</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">job_id</span><span class="p">))</span></div>
+
+
+
 <div class="viewcode-block" id="list_jobs">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.mcp_server.list_jobs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_jobs</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
@@ -1433,6 +1488,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span>
             <span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">destructiveHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">idempotentHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">add_tool</span><span class="p">(</span>
+        <span class="n">_guarded</span><span class="p">(</span><span class="n">kill_job</span><span class="p">),</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="n">ToolAnnotations</span><span class="p">(</span>
+            <span class="n">readOnlyHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">destructiveHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">idempotentHint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">openWorldHint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>

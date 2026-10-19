@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.17.1 documentation</title>
+    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.19 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=62bfd45e"></script>
+    <script src="../_static/documentation_options.js?v=b2b4b3b2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.17.1" />
+  <meta name="docsearch:version" content="2026.10.19" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -704,6 +704,12 @@ queue when the dashboard has queues. The dashboards and credentials are read fro
 installation’s <code class="docutils literal notranslate"><span class="pre">dashboards.ini</span></code> and <code class="docutils literal notranslate"><span class="pre">~/.seamm.d/seammrc</span></code>, never written, and the
 credentials are never shown. An assistant should confirm the dashboard, project and
 queue with you before submitting, since a submission starts a real calculation.</p>
+<p>A job that is waiting or running can be stopped with <code class="docutils literal notranslate"><span class="pre">kill_job</span></code>. It asks the job’s
+JobServer to stop it – the local process, or the job in the queueing system, as the
+user the JobServer runs as – and the job is marked “killed”, keeping its files and
+record. A job that has finished, failed or been killed is refused. Stopping a job with
+the queueing system directly (<code class="docutils literal notranslate"><span class="pre">scancel</span></code>) does not work as well: the JobServer takes
+it for an interruption and runs the job again. There is no tool to delete a job.</p>
 <p>The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers – after
 giving any known values and their source – to calculate it with SEAMM, in a line or
