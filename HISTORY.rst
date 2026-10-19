@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.19 -- A kill_job tool in the MCP server
+    * The MCP server has a new tool, kill_job, which stops a job that is waiting or
+      running: its JobServer stops it -- the local process, or the job in the queueing
+      system, as the user the JobServer runs as -- and marks it "killed", keeping its
+      files and record. A job that has finished, failed or been killed is refused.
+      Stopping a job with the queueing system directly does not work as well: the
+      JobServer takes it for an interruption and runs it again.
+
 2026.10.17.1 -- Reading flowcharts with parameters a plug-in has retired
     * A plug-in can list the parameters it has dropped (``retired`` in its Parameters
       class). An older flowchart that stores them can still be read and checked, and

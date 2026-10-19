@@ -5,6 +5,7 @@
 Skipped without the optional 'mcp' package or the plug-ins the flowcharts use."""
 
 import asyncio
+from types import SimpleNamespace
 import json
 import os
 
@@ -98,6 +99,7 @@ def test_tools_listed():
         "list_dashboards",
         "dashboard_info",
         "submit_job",
+        "kill_job",
         "job_status",
         "list_jobs",
         "list_job_files",
@@ -108,6 +110,8 @@ def test_tools_listed():
     assert tools["describe_step"].annotations.read_only_hint
     assert not tools["set_parameters"].annotations.read_only_hint
     assert tools["remove_step"].annotations.destructive_hint
+    assert tools["kill_job"].annotations.destructive_hint
+    assert not tools["kill_job"].annotations.read_only_hint
     assert "spec" in tools["build_flowchart"].input_schema["properties"]
 
 
@@ -128,6 +132,8 @@ def test_build(flow):
     assert ok("validate_flowchart", {"path": str(flow)}) == {
         "valid": True,
         "problems": [],
+        "warnings": [],
+        "fixes": [],
     }
     tree = ok("flowchart_tree", {"path": str(flow)})
     assert any("MOPAC" in line for line in tree)
@@ -265,6 +271,9 @@ class FakeDashboard:
         self.name = "fake"
         self.queues = list(queues)
         self.submitted = None
+        self.status_of_job = "submitted"
+        self.posted = []
+        self.response = (200, {})
 
     def status(self):
         return "running"
@@ -280,7 +289,18 @@ class FakeDashboard:
         return 42
 
     def job(self, job_id):
-        return {"id": job_id, "status": "submitted", "parameters": {"queue": "q"}}
+        return {
+            "id": job_id,
+            "status": self.status_of_job,
+            "parameters": {"queue": "q"},
+        }
+
+    def _url_post(self, url, headers={}, json_data={}, **kw):
+        self.posted.append(url)
+        code, data = self.response
+        if code == 200:
+            self.status_of_job = "kill"
+        return SimpleNamespace(status_code=code, json=lambda: data, text=str(data))
 
 
 @pytest.fixture
@@ -411,3 +431,40 @@ steps:
     client = fake()
     mcp_server.submit_job(str(path), "fake", values={"SMILES": "CCO"})
     assert client.submitted["values"] == {"SMILES": "CCO"}
+
+
+def test_kill_a_running_job(fake):
+    client = fake()
+    client.status_of_job = "running"
+    result = mcp_server.kill_job("fake", 7)
+    assert client.posted == ["/api/jobs/7/kill"]
+    assert result["id"] == 7 and result["status"] == "kill"
+
+
+def test_kill_refuses_a_finished_job(fake):
+    client = fake()
+    for status in ("finished", "error", "killed", "kill"):
+        client.status_of_job = status
+        with pytest.raises(ValueError, match=f"is '{status}', not waiting or running"):
+            mcp_server.kill_job("fake", 7)
+    assert client.posted == []
+
+
+def test_kill_reports_what_the_dashboard_refuses(fake):
+    client = fake()
+    client.response = (403, {})
+    with pytest.raises(ValueError, match="may not change job 7"):
+        mcp_server.kill_job("fake", 7)
+    client.response = (400, {"detail": "Cannot kill a job with status 'finished'"})
+    with pytest.raises(ValueError, match="was not stopped: Cannot kill"):
+        mcp_server.kill_job("fake", 7)
+    client.response = (500, {})
+    with pytest.raises(ValueError, match="code 500"):
+        mcp_server.kill_job("fake", 7)
+
+
+def test_kill_through_the_client(fake):
+    client = fake()
+    client.status_of_job = "finished"
+    is_error, message = call("kill_job", {"dashboard": "fake", "job_id": 7})
+    assert is_error and "nothing to stop" in message

@@ -221,6 +221,13 @@ installation's ``dashboards.ini`` and ``~/.seamm.d/seammrc``, never written, and
 credentials are never shown. An assistant should confirm the dashboard, project and
 queue with you before submitting, since a submission starts a real calculation.
 
+A job that is waiting or running can be stopped with ``kill_job``. It asks the job's
+JobServer to stop it -- the local process, or the job in the queueing system, as the
+user the JobServer runs as -- and the job is marked "killed", keeping its files and
+record. A job that has finished, failed or been killed is refused. Stopping a job with
+the queueing system directly (``scancel``) does not work as well: the JobServer takes
+it for an interruption and runs the job again. There is no tool to delete a job.
+
 The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers -- after
 giving any known values and their source -- to calculate it with SEAMM, in a line or
