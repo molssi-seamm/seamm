@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.19.2 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.19.3 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=9281bbe9"></script>
+    <script src="../_static/documentation_options.js?v=36f93ff0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19.2" />
+  <meta name="docsearch:version" content="2026.10.19.3" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -2338,12 +2338,23 @@ addresses; steps not connected to the flowchart are left out.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.format3.apply_parameters">
-<span class="sig-prename descclassname"><span class="pre">seamm.format3.</span></span><span class="sig-name descname"><span class="pre">apply_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/format3.html#apply_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.format3.apply_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.format3.</span></span><span class="sig-name descname"><span class="pre">apply_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/format3.html#apply_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.format3.apply_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Set a node’s parameters from 3.0 data, as format 2.0 would restore them.</p>
 <p>As in 2.0, a new object of the node’s parameters class is made from the data, so
 the fixes plug-ins make in <code class="docutils literal notranslate"><span class="pre">__init__</span></code> for renamed or replaced parameters apply
 (e.g. lammps_step’s NPT turns ‘keep orthorhombic’ into ‘allow shear’), and a
-parameter the plug-in does not have is an error.</p>
+parameter the plug-in does not have is an error, which names the plug-in and its
+versions: usually the flowchart was made with a newer version than is installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>seamm.Node</em>) – The step.</p></li>
+<li><p><strong>parameters</strong> (<em>dict</em><em> or </em><em>None</em>) – The step’s parameters from the file.</p></li>
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – The step’s address in the flowchart, e.g. “3.1”, for the error message.</p></li>
+<li><p><strong>requires</strong> (<em>dict</em><em>, </em><em>optional</em>) – The file’s <code class="docutils literal notranslate"><span class="pre">requires</span></code>: package -&gt; the version the flowchart was made with.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -2485,6 +2496,14 @@ to the flowchart.</p>
 <dd class="field-odd"><p>([<a class="reference internal" href="#seamm.format3.Item" title="seamm.format3.Item">Item</a>], [[<a class="reference internal" href="#seamm.format3.Item" title="seamm.format3.Item">Item</a>]])</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.format3.unknown_parameter_message">
+<span class="sig-prename descclassname"><span class="pre">seamm.format3.</span></span><span class="sig-name descname"><span class="pre">unknown_parameter_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/format3.html#unknown_parameter_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.format3.unknown_parameter_message" title="Link to this definition">#</a></dt>
+<dd><p>Why a step cannot take a parameter in a flowchart, and what to do about it.</p>
+<p>The usual cause is a flowchart made with a newer version of the plug-in than is
+installed, which has parameters the older one does not know.</p>
 </dd></dl>
 
 </section>
@@ -7043,6 +7062,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.to_data"><code class="docutils literal notranslate"><span class="pre">to_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.to_text"><code class="docutils literal notranslate"><span class="pre">to_text()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.tree"><code class="docutils literal notranslate"><span class="pre">tree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.format3.unknown_parameter_message"><code class="docutils literal notranslate"><span class="pre">unknown_parameter_message()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm.graph">seamm.graph module</a><ul class="pst-show_toc_level nav section-nav flex-column">

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.format3 &#8212; SEAMM 2026.10.19.2 documentation</title>
+    <title>seamm.format3 &#8212; SEAMM 2026.10.19.3 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=9281bbe9"></script>
+    <script src="../../_static/documentation_options.js?v=36f93ff0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19.2" />
+  <meta name="docsearch:version" content="2026.10.19.3" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -532,6 +532,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidVersion</span><span class="p">,</span> <span class="n">Version</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">seamm</span>
@@ -1032,13 +1033,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="apply_parameters">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.format3.apply_parameters">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Set a node's parameters from 3.0 data, as format 2.0 would restore them.</span>
 
 <span class="sd">    As in 2.0, a new object of the node's parameters class is made from the data, so</span>
 <span class="sd">    the fixes plug-ins make in ``__init__`` for renamed or replaced parameters apply</span>
 <span class="sd">    (e.g. lammps_step's NPT turns 'keep orthorhombic' into 'allow shear'), and a</span>
-<span class="sd">    parameter the plug-in does not have is an error.</span>
+<span class="sd">    parameter the plug-in does not have is an error, which names the plug-in and its</span>
+<span class="sd">    versions: usually the flowchart was made with a newer version than is installed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : seamm.Node</span>
+<span class="sd">        The step.</span>
+<span class="sd">    parameters : dict or None</span>
+<span class="sd">        The step's parameters from the file.</span>
+<span class="sd">    path : str, optional</span>
+<span class="sd">        The step's address in the flowchart, e.g. "3.1", for the error message.</span>
+<span class="sd">    requires : dict, optional</span>
+<span class="sd">        The file's ``requires``: package -&gt; the version the flowchart was made with.</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
@@ -1063,7 +1076,65 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="p">):</span>
             <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">"units"</span><span class="p">:</span> <span class="n">units</span><span class="p">}</span>
-    <span class="n">node</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span><span class="p">)(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">parameters</span><span class="p">)(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">raise</span> <span class="n">FlowchartFormatError</span><span class="p">(</span>
+            <span class="n">unknown_parameter_message</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_installed</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The distribution providing an importable package and its installed version,</span>
+<span class="sd">    or (None, None)."""</span>
+    <span class="n">distribution</span> <span class="o">=</span> <span class="n">_packages_distributions</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="p">[</span><span class="n">package</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="unknown_parameter_message">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.format3.unknown_parameter_message">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unknown_parameter_message</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Why a step cannot take a parameter in a flowchart, and what to do about it.</span>
+
+<span class="sd">    The usual cause is a flowchart made with a newer version of the plug-in than is</span>
+<span class="sd">    installed, which has parameters the older one does not know.</span>
+<span class="sd">    """</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">distribution</span><span class="p">,</span> <span class="n">installed</span> <span class="o">=</span> <span class="n">_installed</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">distribution</span> <span class="ow">or</span> <span class="n">package</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">title</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">extension</span>
+    <span class="n">where</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Step </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"The step '</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">'"</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2"> has the parameter '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">', which </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">installed</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">installed</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="s2">" installed here does not have."</span>
+    <span class="n">written</span> <span class="o">=</span> <span class="p">(</span><span class="n">requires</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">written</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="s2">" The flowchart may have been made with a different version."</span>
+    <span class="n">newer</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">installed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">newer</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">written</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="p">(</span><span class="n">installed</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidVersion</span><span class="p">:</span>
+            <span class="n">newer</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">written</span><span class="p">)</span> <span class="o">!=</span> <span class="n">installed</span>
+    <span class="k">if</span> <span class="n">newer</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">" The flowchart was made with </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">written</span><span class="si">}</span><span class="s2">: update </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> here "</span>
+            <span class="sa">f</span><span class="s2">"(e.g. 'seamm-manager update </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">') or run the flowchart where "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">written</span><span class="si">}</span><span class="s2"> or later is installed."</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" The flowchart was made with </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">written</span><span class="si">}</span><span class="s2">."</span>
+    <span class="k">return</span> <span class="n">text</span></div>
 
 
 
@@ -1084,7 +1155,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">flowchart</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="s2">"execution"</span><span class="p">,</span> <span class="n">edge_subtype</span><span class="o">=</span><span class="n">subtype</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">after</span><span class="p">,</span> <span class="n">subtype</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">after</span><span class="p">,</span> <span class="n">subtype</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Create the nodes for a list of 3.0 steps after a node. Returns the last node</span>
 <span class="sd">    and the subtype of the edge that should leave it."""</span>
     <span class="n">last</span> <span class="o">=</span> <span class="n">after</span>
@@ -1098,17 +1169,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="n">_connect</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">subtype</span><span class="p">)</span>
             <span class="n">layout</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"nodes"</span><span class="p">,</span> <span class="p">{})[</span><span class="n">path</span> <span class="o">+</span> <span class="s2">".join"</span><span class="p">]</span> <span class="o">=</span> <span class="n">join</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">_create</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
-            <span class="n">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">))</span>
+            <span class="n">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
             <span class="n">_connect</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">)</span>
             <span class="n">end</span><span class="p">,</span> <span class="n">end_subtype</span> <span class="o">=</span> <span class="n">_build</span><span class="p">(</span>
-                <span class="n">flowchart</span><span class="p">,</span> <span class="n">step</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">node</span><span class="p">,</span> <span class="s2">"loop"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">"."</span>
+                <span class="n">flowchart</span><span class="p">,</span>
+                <span class="n">step</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[],</span>
+                <span class="n">node</span><span class="p">,</span>
+                <span class="s2">"loop"</span><span class="p">,</span>
+                <span class="n">layout</span><span class="p">,</span>
+                <span class="n">path</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">,</span>
+                <span class="n">requires</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
                 <span class="n">_connect</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">end_subtype</span><span class="p">)</span>
             <span class="n">last</span><span class="p">,</span> <span class="n">subtype</span> <span class="o">=</span> <span class="n">node</span><span class="p">,</span> <span class="s2">"exit"</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">_create</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
-            <span class="n">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">))</span>
+            <span class="n">apply_parameters</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
             <span class="n">_connect</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">subtype</span><span class="p">)</span>
             <span class="n">last</span><span class="p">,</span> <span class="n">subtype</span> <span class="o">=</span> <span class="n">node</span><span class="p">,</span> <span class="s2">"next"</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"nodes"</span><span class="p">,</span> <span class="p">{})[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
@@ -1122,9 +1199,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="s2">"next"</span><span class="p">,</span>
                 <span class="n">layout</span><span class="p">,</span>
                 <span class="n">path</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">,</span>
+                <span class="n">requires</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unconnected"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-                <span class="n">_build</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+                <span class="n">_build</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">."</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"steps"</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">FlowchartFormatError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"The step '</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">' (</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">) does not take sub-steps."</span>
@@ -1180,9 +1258,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">layout</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"nodes"</span><span class="p">:</span> <span class="n">nodes</span><span class="p">}</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">flowchart</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span>
     <span class="n">nodes</span><span class="p">[</span><span class="s2">"0"</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span>
-    <span class="n">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"steps"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">start</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">requires</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"requires"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"steps"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">start</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unconnected"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="n">_build</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"next"</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">."</span><span class="p">,</span> <span class="n">requires</span><span class="p">)</span>
 
     <span class="n">restore_tables</span><span class="p">(</span><span class="n">flowchart</span><span class="p">)</span>
 
