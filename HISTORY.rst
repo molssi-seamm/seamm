@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.20 -- Bugfix: a newer plug-in stopped a job from resuming
+    * Whether a job can resume depends on its flowchart being unchanged. That was
+      judged from every parameter of every step, so a newer version of a plug-in that
+      added a parameter made an unchanged flowchart look changed, and the resume was
+      refused (job 5276: lammps-step had gained 'scale ion charges'). Only the
+      parameters that are not at their defaults now count. Checkpoints written by
+      earlier versions are still accepted when nothing has changed.
+
 2026.10.19.3 -- Bugfix: a clear error for a flowchart made with a newer plug-in
     * A flowchart made with a newer version of a plug-in can have parameters that an
       older version does not know. Reading it stopped with only a KeyError naming the

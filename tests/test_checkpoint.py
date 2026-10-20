@@ -534,3 +534,79 @@ def test_write_child_needs_the_loop_in_the_position(job):
     checkpointer.start(flowchart.get_node("1"))
     with pytest.raises(CheckpointError, match="not in the position"):
         checkpointer.write_child(root / "child.db", loop, {}, first)
+
+
+# ---- a newer plug-in adding a parameter is not a change of the flowchart ----------
+
+
+def _param_step(flowchart, title, extra=False):
+    """A step with parameters; ``extra`` adds one, as a newer version of its
+    plug-in would."""
+    defaults = {
+        "temperature": {
+            "default": 298.15,
+            "kind": "float",
+            "default_units": "K",
+            "enumeration": tuple(),
+            "format_string": ".2f",
+            "description": "T",
+            "help_text": "",
+        }
+    }
+    if extra:
+        defaults["scale ion charges"] = {
+            "default": "no",
+            "kind": "boolean",
+            "default_units": "",
+            "enumeration": ("yes", "no"),
+            "format_string": "s",
+            "description": "scale",
+            "help_text": "",
+        }
+    step = Step(flowchart, title=title)
+    step.parameters = seamm.Parameters(defaults=defaults)
+    return step
+
+
+def _param_flowchart(extra=False, temperature=None):
+    flowchart = seamm.Flowchart()
+    step = _param_step(flowchart, "MD", extra=extra)
+    if temperature is not None:
+        step.parameters["temperature"].value = temperature
+    flowchart.add_node(step)
+    flowchart.add_edge(flowchart.get_node("1"), step, edge_type="execution")
+    flowchart.set_ids()
+    return flowchart
+
+
+def test_fingerprint_ignores_a_new_parameter_at_its_default():
+    """SEAMM job 5276, 2026-10-20: lammps-step had added 'scale ion charges', so
+    the unchanged flowchart's resume was refused."""
+    from seamm.checkpoint import flowchart_fingerprints
+
+    before = flowchart_fingerprint(_param_flowchart(temperature=350.0))
+    after = flowchart_fingerprint(_param_flowchart(extra=True, temperature=350.0))
+    assert after == before
+    # A value the flowchart sets still counts
+    assert flowchart_fingerprint(_param_flowchart(temperature=300.0)) != before
+    # The fingerprint earlier versions wrote changed with the new parameter
+    old = flowchart_fingerprint(_param_flowchart(temperature=350.0), legacy=True)
+    assert old != flowchart_fingerprint(
+        _param_flowchart(extra=True, temperature=350.0), legacy=True
+    )
+    # Both are offered, so a checkpoint written by an earlier version still works
+    assert flowchart_fingerprints(_param_flowchart(temperature=350.0)) == [
+        before,
+        old,
+    ]
+
+
+def test_resumable_accepts_any_of_several_fingerprints(job):
+    root, db = job
+    flowchart, nodes = make_flowchart(Step(title="A"), Step(title="B", fail=True))
+    with pytest.raises(RuntimeError):
+        evaluate(flowchart, db, root)
+    checkpoint = read_checkpoint(root / "seamm.db")
+    digest = flowchart_fingerprint(flowchart)
+    assert resumable(checkpoint, ["something else", digest], [])[0]
+    assert not resumable(checkpoint, ["something else"], [])[0]

@@ -403,6 +403,16 @@ def describe_position(checkpoint):
 def resumable(checkpoint, digest, command_line):
     """Whether a checkpoint can be resumed by this flowchart and command line.
 
+    Parameters
+    ----------
+    checkpoint : dict or None
+        The checkpoint.
+    digest : str or [str]
+        The flowchart's fingerprint, or several that are each acceptable, e.g.
+        also the one earlier versions wrote (see :func:`flowchart_fingerprints`).
+    command_line : [str]
+        The command line, without --resume.
+
     Returns
     -------
     (bool, str)
@@ -418,7 +428,8 @@ def resumable(checkpoint, digest, command_line):
         return False, checkpoint.get(
             "why not resumable", "the checkpoint is marked not resumable"
         )
-    if checkpoint.get("flowchart_fingerprint") != digest:
+    digests = [digest] if isinstance(digest, str) else list(digest)
+    if checkpoint.get("flowchart_fingerprint") not in digests:
         return False, "the flowchart has changed since the checkpoint was written"
     if list(checkpoint.get("command_line", [])) != list(command_line):
         return False, "the command line differs from the one checkpointed"
@@ -432,8 +443,8 @@ def resumable(checkpoint, digest, command_line):
 # --------------------------------------------------------------------------
 
 
-def flowchart_fingerprint(flowchart):
-    """A hash of every step's parameters and of how the steps are connected.
+def flowchart_fingerprint(flowchart, legacy=False):
+    """A hash of the steps' parameters and of how the steps are connected.
 
     What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it
     covers the whole graph (the digest follows the steps and stops at the first
@@ -441,15 +452,26 @@ def flowchart_fingerprint(flowchart):
     run and its resume. Steps are identified by their ids from the flowchart's
     numbering (``set_ids``), not their uuids, which are new each time the
     flowchart is read.
+
+    Only the parameters that are not at their defaults count: a newer version of
+    a plug-in that adds a parameter must not make an unchanged flowchart look
+    changed (SEAMM job 5276, 2026-10-20: lammps-step had gained 'scale ion
+    charges', so its resume was refused). ``legacy`` gives the fingerprint
+    earlier versions wrote, with every parameter, so that their checkpoints can
+    still be resumed when nothing has changed.
     """
 
     def name(node):
         return ".".join(_id(node)) if node._id is not None else "-"
 
+    def digest(node):
+        if legacy:
+            return node.digest(strict=False)
+        return _node_fingerprint(node)
+
     hasher = hashlib.sha256()
     nodes = sorted(
-        (name(node), type(node).__name__, node.digest(strict=False))
-        for node in flowchart
+        (name(node), type(node).__name__, digest(node)) for node in flowchart
     )
     hasher.update(json.dumps(nodes).encode())
     edges = sorted(
@@ -457,6 +479,34 @@ def flowchart_fingerprint(flowchart):
         for e in flowchart.edges()
     )
     hasher.update(json.dumps(edges).encode())
+    return hasher.hexdigest()
+
+
+def flowchart_fingerprints(flowchart):
+    """The fingerprints a checkpoint of this flowchart may hold: this version's,
+    then the one earlier versions wrote."""
+    return [flowchart_fingerprint(flowchart), flowchart_fingerprint(flowchart, True)]
+
+
+def _node_fingerprint(node):
+    """A hash of a step's parameters that are not at their defaults, and of its
+    sub-flowchart, if any."""
+    hasher = hashlib.sha256()
+    subflowchart = getattr(node, "subflowchart", None)
+    if subflowchart is not None:
+        hasher.update(flowchart_fingerprint(subflowchart).encode())
+    P = getattr(node, "parameters", None)
+    if P is not None:
+        stated = {}
+        for key in P:
+            parameter = P[key]
+            value, units = parameter.value, parameter.units
+            at_default = str(value) == str(parameter.default) and str(units) == str(
+                parameter.default_units
+            )
+            if not at_default:
+                stated[key] = [str(value), str(units)]
+        hasher.update(json.dumps(stated, sort_keys=True).encode())
     return hasher.hexdigest()
 
 
