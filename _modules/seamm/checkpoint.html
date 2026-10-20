@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.checkpoint &#8212; SEAMM 2026.10.19.3 documentation</title>
+    <title>seamm.checkpoint &#8212; SEAMM 2026.10.20 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=36f93ff0"></script>
+    <script src="../../_static/documentation_options.js?v=980f7468"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19.3" />
+  <meta name="docsearch:version" content="2026.10.20" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -926,6 +926,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="k">def</span><span class="w"> </span><span class="nf">resumable</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">digest</span><span class="p">,</span> <span class="n">command_line</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Whether a checkpoint can be resumed by this flowchart and command line.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    checkpoint : dict or None</span>
+<span class="sd">        The checkpoint.</span>
+<span class="sd">    digest : str or [str]</span>
+<span class="sd">        The flowchart's fingerprint, or several that are each acceptable, e.g.</span>
+<span class="sd">        also the one earlier versions wrote (see :func:`flowchart_fingerprints`).</span>
+<span class="sd">    command_line : [str]</span>
+<span class="sd">        The command line, without --resume.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    (bool, str)</span>
@@ -941,7 +951,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s2">"why not resumable"</span><span class="p">,</span> <span class="s2">"the checkpoint is marked not resumable"</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"flowchart_fingerprint"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">digest</span><span class="p">:</span>
+    <span class="n">digests</span> <span class="o">=</span> <span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"flowchart_fingerprint"</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">digests</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the flowchart has changed since the checkpoint was written"</span>
     <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"command_line"</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_line</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the command line differs from the one checkpointed"</span>
@@ -958,8 +969,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="flowchart_fingerprint">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.flowchart_fingerprint">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A hash of every step's parameters and of how the steps are connected.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A hash of the steps' parameters and of how the steps are connected.</span>
 
 <span class="sd">    What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it</span>
 <span class="sd">    covers the whole graph (the digest follows the steps and stops at the first</span>
@@ -967,15 +978,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    run and its resume. Steps are identified by their ids from the flowchart's</span>
 <span class="sd">    numbering (``set_ids``), not their uuids, which are new each time the</span>
 <span class="sd">    flowchart is read.</span>
+
+<span class="sd">    Only the parameters that are not at their defaults count: a newer version of</span>
+<span class="sd">    a plug-in that adds a parameter must not make an unchanged flowchart look</span>
+<span class="sd">    changed (SEAMM job 5276, 2026-10-20: lammps-step had gained 'scale ion</span>
+<span class="sd">    charges', so its resume was refused). ``legacy`` gives the fingerprint</span>
+<span class="sd">    earlier versions wrote, with every parameter, so that their checkpoints can</span>
+<span class="sd">    still be resumed when nothing has changed.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_id</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"-"</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">digest</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">legacy</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
     <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
     <span class="n">nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">name</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">digest</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">flowchart</span>
     <span class="p">)</span>
     <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -985,6 +1007,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
+
+
+<div class="viewcode-block" id="flowchart_fingerprints">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.flowchart_fingerprints">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprints</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The fingerprints a checkpoint of this flowchart may hold: this version's,</span>
+<span class="sd">    then the one earlier versions wrote."""</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">),</span> <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="kc">True</span><span class="p">)]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A hash of a step's parameters that are not at their defaults, and of its</span>
+<span class="sd">    sub-flowchart, if any."""</span>
+    <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="n">subflowchart</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"subflowchart"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subflowchart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"parameters"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stated</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">P</span><span class="p">:</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">parameter</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">at_default</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">at_default</span><span class="p">:</span>
+                <span class="n">stated</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)]</span>
+        <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">stated</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_id</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>

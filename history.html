@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.19.3 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.20 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=36f93ff0"></script>
+    <script src="_static/documentation_options.js?v=980f7468"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19.3" />
+  <meta name="docsearch:version" content="2026.10.20" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.20 – Bugfix: a newer plug-in stopped a job from resuming</dt><dd><ul class="simple">
+<li><p>Whether a job can resume depends on its flowchart being unchanged. That was
+judged from every parameter of every step, so a newer version of a plug-in that
+added a parameter made an unchanged flowchart look changed, and the resume was
+refused (job 5276: lammps-step had gained ‘scale ion charges’). Only the
+parameters that are not at their defaults now count. Checkpoints written by
+earlier versions are still accepted when nothing has changed.</p></li>
+</ul>
+</dd>
 <dt>2026.10.19.3 – Bugfix: a clear error for a flowchart made with a newer plug-in</dt><dd><ul class="simple">
 <li><p>A flowchart made with a newer version of a plug-in can have parameters that an
 older version does not know. Reading it stopped with only a KeyError naming the
