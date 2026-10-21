@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.21 -- Bugfix: flowcharts with an analysis step's old MD sub-flowchart can be read
+    * A flowchart saved when Diffusivity (or another analysis step) still ran its own MD
+      in a sub-flowchart could not be opened at all with the current steps -- "The step
+      'Diffusivity' does not take sub-steps" -- so the check that explains what
+      replaces it never ran. Such a flowchart now reads, without those sub-steps, and
+      the check before the job stops it, naming the sub-steps that were left out and
+      saying how to restructure the flowchart.
+
 2026.10.20 -- Bugfix: a newer plug-in stopped a job from resuming
     * Whether a job can resume depends on its flowchart being unchanged. That was
       judged from every parameter of every step, so a newer version of a plug-in that

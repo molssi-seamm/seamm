@@ -219,6 +219,28 @@ def test_retired_parameters_are_ignored():
         seamm.Parameters.retired = ()
 
 
+def test_sub_steps_of_a_step_without_them_are_left_out():
+    """A step that no longer has a sub-flowchart -- e.g. Diffusivity, which ran its
+    own MD before 2026.10.17 -- still reads, and the check before a job says its
+    sub-steps were left out (2026-10-21: such flowcharts could not be read at
+    all, so the check that explains what replaces them never ran)."""
+    from seamm.builder import validate
+
+    text = (
+        "format: MolSSI flowchart 3.0\nsteps:\n"
+        "- step: CalcStep\n  parameters: {method: DFT}\n"
+        "  steps:\n  - step: Energy\n  - step: Energy\n"
+    )
+    flowchart = read(text)
+    calc = flowchart.get_nodes()[1]
+    assert calc.parameters["method"].value == "DFT"
+    assert calc.dropped_substeps == ["Energy", "Energy"]
+    problems = validate(flowchart)
+    assert len(problems) == 1
+    assert "no longer has sub-steps, so the 2 sub-steps in the flowchart" in problems[0]
+    assert "(Energy, Energy) were left out" in problems[0]
+
+
 def test_missing_parameters_get_defaults():
     text = (
         "format: MolSSI flowchart 3.0\nsteps:\n"
