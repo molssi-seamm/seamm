@@ -659,8 +659,13 @@ def _build(flowchart, steps, after, subtype, layout, prefix, requires=None):
             for i, chain in enumerate(step.get("unconnected") or [], start=1):
                 _build(sub, chain, None, "next", layout, f"{path}.u{i}.", requires)
         elif step.get("steps"):
-            raise FlowchartFormatError(
-                f"The step '{extension}' ({path}) does not take sub-steps."
+            # A step that no longer has a subflowchart, e.g. an analysis step that
+            # used to run its own MD. Read the rest of the flowchart, so the check
+            # before a job can say what replaces them, rather than refusing the file.
+            node.dropped_substeps = [s.get("step", "?") for s in step["steps"]]
+            logger.warning(
+                f"The step '{extension}' ({path}) no longer takes sub-steps, so "
+                f"{', '.join(node.dropped_substeps)} in it were left out."
             )
     return last, subtype
 

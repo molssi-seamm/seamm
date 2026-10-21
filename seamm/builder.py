@@ -673,6 +673,18 @@ def validate(flowchart, warnings=False):
                     "Chemistry step comes before it. Add one, or set 'use model "
                     "chemistry' to 'no' and choose the method explicitly."
                 )
+            dropped = getattr(node, "dropped_substeps", None)
+            if dropped:
+                these = (
+                    "the sub-step in the flowchart ({}) was"
+                    if len(dropped) == 1
+                    else f"the {len(dropped)} sub-steps in the flowchart ({{}}) were"
+                ).format(", ".join(dropped))
+                problems.append(
+                    f"'{where}{node.title}' no longer has sub-steps, so {these} left "
+                    "out when it was read. Put what they did before the step, or use "
+                    "a current standard flowchart."
+                )
             hook = getattr(node, "check_flowchart", None)
             if callable(hook):
                 try:
