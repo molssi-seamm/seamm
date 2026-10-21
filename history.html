@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.20 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.21 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=980f7468"></script>
+    <script src="_static/documentation_options.js?v=3c77f071"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.20" />
+  <meta name="docsearch:version" content="2026.10.21" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.21 – Bugfix: flowcharts with an analysis step’s old MD sub-flowchart can be read</dt><dd><ul class="simple">
+<li><p>A flowchart saved when Diffusivity (or another analysis step) still ran its own MD
+in a sub-flowchart could not be opened at all with the current steps – “The step
+‘Diffusivity’ does not take sub-steps” – so the check that explains what
+replaces it never ran. Such a flowchart now reads, without those sub-steps, and
+the check before the job stops it, naming the sub-steps that were left out and
+saying how to restructure the flowchart.</p></li>
+</ul>
+</dd>
 <dt>2026.10.20 – Bugfix: a newer plug-in stopped a job from resuming</dt><dd><ul class="simple">
 <li><p>Whether a job can resume depends on its flowchart being unchanged. That was
 judged from every parameter of every step, so a newer version of a plug-in that
