@@ -391,6 +391,29 @@ def test_expressions_pass(value):
     assert node.parameters["method"].value == value
 
 
+@pytest.mark.parametrize("value", ["$T degC", ("$T", "degC"), ["$T", "degC"]])
+def test_variable_with_units(value):
+    """'$T degC' is the variable with its units, not the value '$T degC', which
+    fails when the job runs (Diffusivity.flow, 2026-10-22: '$t ps')."""
+    node = calc_node()
+    set_parameters(node, temperature=value)
+    assert node.parameters["temperature"].value == "$T"
+    assert node.parameters["temperature"].units == "degC"
+
+
+def test_variable_syntax_checked():
+    """A '$' value is Python too: one that is not fails now, not in the job."""
+    with pytest.raises(FlowchartBuildError, match="not valid Python"):
+        set_parameters(calc_node(), method="$a b")
+    # Not units, so not split, and not Python either
+    with pytest.raises(FlowchartBuildError, match="not valid Python"):
+        set_parameters(calc_node(), temperature="$T sideways")
+    # An expression with units is still one expression
+    node = calc_node()
+    set_parameters(node, temperature="$T * 2")
+    assert node.parameters["temperature"].value == "$T * 2"
+
+
 @pytest.mark.parametrize("value", [(300, "degC"), "300 degC"])
 def test_units(value):
     node = calc_node()

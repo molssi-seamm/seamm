@@ -52,6 +52,9 @@ _number_and_units = re.compile(
     r"\s*(?![eE][-+]?\d)([A-Za-z\u00b5\u03bc\u00c5\u00b0%].*?)\s*$"
 )
 
+# A variable or expression without spaces followed by units, e.g. "$t ps"
+_expression_and_units = re.compile(r"^\s*(\$\S+)\s+(\S.*?)\s*$")
+
 
 def _choices_text(choices, value, n=40):
     """The allowed choices for an error message, shortened if there are many."""
@@ -74,6 +77,54 @@ def is_expression(value):
         and value[0] in ("$", "=")
         and value != "=="
     )
+
+
+def _is_python(text):
+    """Whether text is a valid Python expression."""
+    try:
+        compile(text, "<expression>", "eval")
+    except SyntaxError:
+        return False
+    return True
+
+
+def _are_units(text):
+    """Whether text is units that SEAMM knows."""
+    try:
+        ureg.Unit(text)
+    except Exception:
+        return False
+    return True
+
+
+def check_expression(value, name="parameter"):
+    """Check the syntax of a variable or expression, such as '$t' or '=2 * n'.
+
+    Both are Python evaluated with the variables when the job runs: '$t' as ``t``,
+    so a value such as '$t ps' fails then, not when it is set.
+
+    Raises
+    ------
+    FlowchartBuildError
+        If it is not valid Python.
+    """
+    try:
+        compile(value[1:], "<expression>", "eval")
+    except SyntaxError as e:
+        what = "expression" if value[0] == "=" else "variable"
+        text = f"The {what} {value!r} for '{name}' is not valid Python: {e.msg}"
+        if value[0] == "=" and "$" in value:
+            text += (
+                ". In an '=' expression, use variables by their bare names, "
+                "e.g. '=2 * n' rather than '=2 * $n'"
+            )
+        match = _expression_and_units.match(value)
+        if match is not None and _are_units(match.group(2)):
+            text += (
+                f". Give the units separately: {match.group(1)!r} with units "
+                f"{match.group(2)!r}"
+            )
+        raise FlowchartBuildError(text)
 
 
 def _is_number(value, integer=False):
@@ -142,6 +193,21 @@ def check_value(parameter, value, name="parameter", units=None):
         match = _number_and_units.match(value)
         if match is not None:
             value, units = match.group(1), match.group(2)
+    elif (
+        has_units
+        and units is None
+        and isinstance(value, str)
+        and value.startswith("$")
+        and not _is_python(value[1:])
+    ):
+        # A variable and its units, e.g. "$t ps"
+        match = _expression_and_units.match(value)
+        if (
+            match is not None
+            and _is_python(match.group(1)[1:])
+            and _are_units(match.group(2))
+        ):
+            value, units = match.group(1), match.group(2)
 
     if units is not None:
         if not has_units:
@@ -163,22 +229,9 @@ def check_value(parameter, value, name="parameter", units=None):
             )
 
     if is_expression(value):
-        if value[0] == "=":
-            # A Python expression, evaluated with the variables as bare names. Check
-            # the syntax now rather than when the job runs.
-            try:
-                compile(value[1:], "<expression>", "eval")
-            except SyntaxError as e:
-                text = (
-                    f"The expression {value!r} for '{name}' is not valid Python: "
-                    f"{e.msg}"
-                )
-                if "$" in value:
-                    text += (
-                        ". In an '=' expression, use variables by their bare names, "
-                        "e.g. '=2 * n' rather than '=2 * $n'"
-                    )
-                raise FlowchartBuildError(text)
+        # Python, evaluated with the variables when the job runs: check the syntax
+        # now rather than then.
+        check_expression(value, name)
         return value, units
 
     # A Python bool for a yes/no choice, whatever its kind

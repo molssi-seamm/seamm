@@ -66,8 +66,8 @@ To make a flowchart:
            steps:
            - Optimization
    'steps:' holds a code step's sub-steps; 'body:' holds a Loop's steps (the Join is
-   added). Units as "300 K"; variables as "$name"; an "=" expression is Python with
-   bare variable names.
+   added). Units as "300 K"; variables as "$name", with units "$T K"; an "="
+   expression is Python with bare variable names.
 3. build_flowchart the spec; an error names the step and the closest choices. Fix the
    spec and build again.
 4. validate_flowchart, then show the user show_flowchart's summary.

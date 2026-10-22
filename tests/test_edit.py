@@ -145,6 +145,14 @@ def test_validate_finds_stale_values(flowchart):
     )
 
 
+def test_validate_finds_broken_variables(flowchart):
+    """A stored '$' value that is not Python, e.g. '$t ps', would fail in the job."""
+    flowchart.get_nodes()[2].parameters["temperature"].value = "$t ps"
+    problems = edit.validate(flowchart)
+    assert len(problems) == 1 and "not valid Python" in problems[0]
+    assert "Give the units separately: '$t' with units 'ps'" in problems[0]
+
+
 def test_edits_keep_unconnected_steps_and_update_the_digest(flowchart):
     stray = flowchart.create_node("CalcStep")
     flowchart.add_node(stray)
