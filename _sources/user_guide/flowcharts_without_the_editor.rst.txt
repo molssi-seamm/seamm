@@ -233,7 +233,8 @@ matches -- the flowchart or its command line has changed -- nothing is run, the 
 files are left as they were, and ``job.out`` says why; resubmit it without asking to
 resume to run it from the top. Settings that say only how a step runs, not what it
 computes -- e.g. a parallel Loop's cores, memory and time per iteration -- may be
-changed before resuming. There is no tool to delete a job.
+changed before resuming, except for a job checkpointed before seamm 2026.10.22, which
+needs them as they were. There is no tool to delete a job.
 
 The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers -- after

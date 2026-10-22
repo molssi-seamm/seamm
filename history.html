@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.22 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.22.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=0b8f7a1b"></script>
+    <script src="_static/documentation_options.js?v=3804f50c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22" />
+  <meta name="docsearch:version" content="2026.10.22.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.22.1 – Bugfix: jobs checkpointed before 2026.10.22 could not resume</dt><dd><ul class="simple">
+<li><p>Checkpoints written before 2026.10.22 count the settings of how a step runs, with
+the defaults of then. A plug-in that changed such a default – loop-step’s cores
+per iteration, from 1 to automatic – made those jobs refuse to resume, even
+unchanged. A parameter can now list its former defaults, which count as
+defaults for such checkpoints, so the unchanged flowchart resumes again.</p></li>
+<li><p>When such a checkpoint is refused, the message now says that the settings of
+how steps run must also be as they were.</p></li>
+</ul>
+</dd>
 <dt>2026.10.22 – A resume survives changing how a step runs</dt><dd><ul class="simple">
 <li><p>Whether a job can resume depends on its flowchart being unchanged. Parameters
 that say only how a step runs, not what it computes – marked as resources,

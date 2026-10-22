@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.22 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.22.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0b8f7a1b"></script>
+    <script src="../_static/documentation_options.js?v=3804f50c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22" />
+  <meta name="docsearch:version" content="2026.10.22.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1408,7 +1408,9 @@ iteration of a parallel Loop), which say how a step runs, not what it computes,
 so they can be changed for a resume (SEAMM job 5368, 2026-10-22).</p>
 <p><code class="docutils literal notranslate"><span class="pre">resources</span></code> gives the fingerprint of seamm 2026.10.20, which included those,
 and <code class="docutils literal notranslate"><span class="pre">legacy</span></code> that of earlier versions, with every parameter, so that their
-checkpoints can still be resumed when nothing has changed.</p>
+checkpoints can still be resumed when nothing has changed. A parameter’s
+<code class="docutils literal notranslate"><span class="pre">&quot;former</span> <span class="pre">defaults&quot;</span></code> count as defaults in the fingerprint of 2026.10.20, so a
+flowchart saved with the default of then still matches (SEAMM job 5368).</p>
 </dd></dl>
 
 <dl class="py function">

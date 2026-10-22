@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.22 documentation</title>
+    <title>Flowcharts without the editor &#8212; SEAMM 2026.10.22.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0b8f7a1b"></script>
+    <script src="../_static/documentation_options.js?v=3804f50c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22" />
+  <meta name="docsearch:version" content="2026.10.22.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -716,7 +716,8 @@ matches – the flowchart or its command line has changed – nothing is run, th
 files are left as they were, and <code class="docutils literal notranslate"><span class="pre">job.out</span></code> says why; resubmit it without asking to
 resume to run it from the top. Settings that say only how a step runs, not what it
 computes – e.g. a parallel Loop’s cores, memory and time per iteration – may be
-changed before resuming. There is no tool to delete a job.</p>
+changed before resuming, except for a job checkpointed before seamm 2026.10.22, which
+needs them as they were. There is no tool to delete a job.</p>
 <p>The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers – after
 giving any known values and their source – to calculate it with SEAMM, in a line or

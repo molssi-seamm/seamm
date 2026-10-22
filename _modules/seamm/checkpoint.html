@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.checkpoint &#8212; SEAMM 2026.10.22 documentation</title>
+    <title>seamm.checkpoint &#8212; SEAMM 2026.10.22.1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=0b8f7a1b"></script>
+    <script src="../../_static/documentation_options.js?v=3804f50c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22" />
+  <meta name="docsearch:version" content="2026.10.22.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -953,7 +953,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="p">)</span>
     <span class="n">digests</span> <span class="o">=</span> <span class="p">[</span><span class="n">digest</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"flowchart_fingerprint"</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">digests</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the flowchart has changed since the checkpoint was written"</span>
+        <span class="n">why</span> <span class="o">=</span> <span class="s2">"the flowchart has changed since the checkpoint was written"</span>
+        <span class="n">written_by</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"versions"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"seamm"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">written_by</span> <span class="ow">and</span> <span class="n">_version_tuple</span><span class="p">(</span><span class="n">written_by</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">22</span><span class="p">):</span>
+            <span class="n">why</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">". seamm </span><span class="si">{</span><span class="n">written_by</span><span class="si">}</span><span class="s2"> wrote the checkpoint, so the settings of how "</span>
+                <span class="s2">"steps run, such as a Loop's cores per iteration, must also be as "</span>
+                <span class="s2">"they were"</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">why</span>
     <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"command_line"</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_line</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"the command line differs from the one checkpointed"</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"position"</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -989,7 +997,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="sd">    ``resources`` gives the fingerprint of seamm 2026.10.20, which included those,</span>
 <span class="sd">    and ``legacy`` that of earlier versions, with every parameter, so that their</span>
-<span class="sd">    checkpoints can still be resumed when nothing has changed.</span>
+<span class="sd">    checkpoints can still be resumed when nothing has changed. A parameter's</span>
+<span class="sd">    ``"former defaults"`` count as defaults in the fingerprint of 2026.10.20, so a</span>
+<span class="sd">    flowchart saved with the default of then still matches (SEAMM job 5368).</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
@@ -1044,7 +1054,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="k">if</span> <span class="ow">not</span> <span class="n">resources</span> <span class="ow">and</span> <span class="n">parameter</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"resource"</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">parameter</span><span class="o">.</span><span class="n">units</span>
-            <span class="n">at_default</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">resources</span><span class="p">:</span>
+                <span class="c1"># The defaults when 2026.10.20 wrote the checkpoint, e.g. a Loop's</span>
+                <span class="c1"># cores per iteration was 1, and is now "automatic"</span>
+                <span class="n">defaults</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"former defaults"</span><span class="p">,</span> <span class="p">())]</span>
+            <span class="n">at_default</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span>
                 <span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">at_default</span><span class="p">:</span>
@@ -1055,6 +1070,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_id</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
     <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_version_tuple</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The leading numbers of a version, e.g. (2026, 10, 21) for '2026.10.21.1'."""</span>
+    <span class="n">numbers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">part</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">numbers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">part</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">numbers</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 
 
 <div class="viewcode-block" id="find_node">
