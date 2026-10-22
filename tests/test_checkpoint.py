@@ -610,3 +610,51 @@ def test_resumable_accepts_any_of_several_fingerprints(job):
     digest = flowchart_fingerprint(flowchart)
     assert resumable(checkpoint, ["something else", digest], [])[0]
     assert not resumable(checkpoint, ["something else"], [])[0]
+
+
+def test_fingerprint_leaves_out_resource_parameters():
+    """A parameter marked as a resource -- how a step runs, e.g. a parallel Loop's
+    cores per iteration -- can change without the resume being refused (SEAMM job
+    5368, 2026-10-22: its replicas ran on one core each); the fingerprint
+    2026.10.20 wrote, with it, is still offered."""
+    from seamm.checkpoint import flowchart_fingerprints
+
+    def flowchart(cores):
+        f = seamm.Flowchart()
+        step = Step(f, title="Loop")
+        step.parameters = seamm.Parameters(
+            defaults={
+                "cores": {
+                    "default": 1,
+                    "kind": "integer",
+                    "default_units": "",
+                    "enumeration": tuple(),
+                    "format_string": "",
+                    "description": "cores",
+                    "help_text": "",
+                    "resource": True,
+                },
+                "temperature": {
+                    "default": 298.15,
+                    "kind": "float",
+                    "default_units": "K",
+                    "enumeration": tuple(),
+                    "format_string": ".2f",
+                    "description": "T",
+                    "help_text": "",
+                },
+            }
+        )
+        step.parameters["cores"].value = cores
+        f.add_node(step)
+        f.add_edge(f.get_node("1"), step, edge_type="execution")
+        f.set_ids()
+        return f
+
+    assert flowchart_fingerprint(flowchart(8)) == flowchart_fingerprint(flowchart(1))
+    # The 2026.10.20 fingerprint counted it: a checkpoint written then with the
+    # default is matched by the new fingerprint of the changed flowchart
+    then = flowchart_fingerprint(flowchart(1), resources=True)
+    assert then == flowchart_fingerprint(flowchart(8))
+    assert flowchart_fingerprint(flowchart(8), resources=True) != then
+    assert flowchart_fingerprints(flowchart(8))[0] == then

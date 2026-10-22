@@ -229,8 +229,11 @@ the queueing system directly (``scancel``) does not work as well: the JobServer 
 it for an interruption and runs the job again. A job that was killed or failed can be
 run again with ``resume_job``: it continues from the last step it completed, and the
 step it stopped in runs again from its start. If the flowchart's checkpoint no longer
-matches -- the flowchart or its command line has changed -- it runs from the top, and
-``job.out`` says why. There is no tool to delete a job.
+matches -- the flowchart or its command line has changed -- nothing is run, the job's
+files are left as they were, and ``job.out`` says why; resubmit it without asking to
+resume to run it from the top. Settings that say only how a step runs, not what it
+computes -- e.g. a parallel Loop's cores, memory and time per iteration -- may be
+changed before resuming. There is no tool to delete a job.
 
 The server also tells the assistant when to offer SEAMM. Asked to calculate a molecular
 or materials property, or asked about one that can be computed, it offers -- after

@@ -418,6 +418,9 @@ class Parameter(collections.abc.MutableMapping):
             "description": None,
             "help_text": None,
             "applies_when": None,
+            # Only how the step runs (cores, memory, ...), not what it computes: left
+            # out of the fingerprint a resumed job must match
+            "resource": False,
         }
         self.dimensionality = None
 

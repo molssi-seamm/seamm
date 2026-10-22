@@ -1,6 +1,16 @@
 =======
 History
 =======
+2026.10.22 -- A resume survives changing how a step runs
+    * Whether a job can resume depends on its flowchart being unchanged. Parameters
+      that say only how a step runs, not what it computes -- marked as resources,
+      such as a parallel Loop's cores per iteration -- no longer count, so they can be
+      changed before resuming, e.g. to give a loop's replicas more cores (job 5368).
+      Checkpoints written by earlier versions are still accepted.
+    * The documentation of resuming a job now says that a resume that cannot match
+      the checkpoint stops without running anything, as it has since seamm-exec
+      2026.10.20.
+
 2026.10.21 -- Bugfix: flowcharts with an analysis step's old MD sub-flowchart can be read
     * A flowchart saved when Diffusivity (or another analysis step) still ran its own MD
       in a sub-flowchart could not be opened at all with the current steps -- "The step

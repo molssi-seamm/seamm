@@ -443,7 +443,7 @@ def resumable(checkpoint, digest, command_line):
 # --------------------------------------------------------------------------
 
 
-def flowchart_fingerprint(flowchart, legacy=False):
+def flowchart_fingerprint(flowchart, legacy=False, resources=False):
     """A hash of the steps' parameters and of how the steps are connected.
 
     What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it
@@ -456,9 +456,14 @@ def flowchart_fingerprint(flowchart, legacy=False):
     Only the parameters that are not at their defaults count: a newer version of
     a plug-in that adds a parameter must not make an unchanged flowchart look
     changed (SEAMM job 5276, 2026-10-20: lammps-step had gained 'scale ion
-    charges', so its resume was refused). ``legacy`` gives the fingerprint
-    earlier versions wrote, with every parameter, so that their checkpoints can
-    still be resumed when nothing has changed.
+    charges', so its resume was refused). Nor do the parameters marked as
+    resources (``"resource": True`` in their definition: e.g. the cores per
+    iteration of a parallel Loop), which say how a step runs, not what it computes,
+    so they can be changed for a resume (SEAMM job 5368, 2026-10-22).
+
+    ``resources`` gives the fingerprint of seamm 2026.10.20, which included those,
+    and ``legacy`` that of earlier versions, with every parameter, so that their
+    checkpoints can still be resumed when nothing has changed.
     """
 
     def name(node):
@@ -467,7 +472,7 @@ def flowchart_fingerprint(flowchart, legacy=False):
     def digest(node):
         if legacy:
             return node.digest(strict=False)
-        return _node_fingerprint(node)
+        return _node_fingerprint(node, resources)
 
     hasher = hashlib.sha256()
     nodes = sorted(
@@ -484,22 +489,30 @@ def flowchart_fingerprint(flowchart, legacy=False):
 
 def flowchart_fingerprints(flowchart):
     """The fingerprints a checkpoint of this flowchart may hold: this version's,
-    then the one earlier versions wrote."""
-    return [flowchart_fingerprint(flowchart), flowchart_fingerprint(flowchart, True)]
+    then those earlier versions wrote."""
+    fingerprints = [
+        flowchart_fingerprint(flowchart),
+        flowchart_fingerprint(flowchart, resources=True),
+        flowchart_fingerprint(flowchart, legacy=True),
+    ]
+    # The same when the flowchart sets no resource parameter
+    return list(dict.fromkeys(fingerprints))
 
 
-def _node_fingerprint(node):
+def _node_fingerprint(node, resources=False):
     """A hash of a step's parameters that are not at their defaults, and of its
-    sub-flowchart, if any."""
+    sub-flowchart, if any; without the resource parameters unless ``resources``."""
     hasher = hashlib.sha256()
     subflowchart = getattr(node, "subflowchart", None)
     if subflowchart is not None:
-        hasher.update(flowchart_fingerprint(subflowchart).encode())
+        hasher.update(flowchart_fingerprint(subflowchart, resources=resources).encode())
     P = getattr(node, "parameters", None)
     if P is not None:
         stated = {}
         for key in P:
             parameter = P[key]
+            if not resources and parameter._data.get("resource"):
+                continue
             value, units = parameter.value, parameter.units
             at_default = str(value) == str(parameter.default) and str(units) == str(
                 parameter.default_units
