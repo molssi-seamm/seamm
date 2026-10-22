@@ -421,6 +421,9 @@ class Parameter(collections.abc.MutableMapping):
             # Only how the step runs (cores, memory, ...), not what it computes: left
             # out of the fingerprint a resumed job must match
             "resource": False,
+            # Defaults of earlier versions, so that a flowchart saved with one of them
+            # still resumes a checkpoint written then
+            "former defaults": (),
         }
         self.dimensionality = None
 

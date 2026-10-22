@@ -430,7 +430,15 @@ def resumable(checkpoint, digest, command_line):
         )
     digests = [digest] if isinstance(digest, str) else list(digest)
     if checkpoint.get("flowchart_fingerprint") not in digests:
-        return False, "the flowchart has changed since the checkpoint was written"
+        why = "the flowchart has changed since the checkpoint was written"
+        written_by = checkpoint.get("versions", {}).get("seamm", "")
+        if written_by and _version_tuple(written_by) < (2026, 10, 22):
+            why += (
+                f". seamm {written_by} wrote the checkpoint, so the settings of how "
+                "steps run, such as a Loop's cores per iteration, must also be as "
+                "they were"
+            )
+        return False, why
     if list(checkpoint.get("command_line", [])) != list(command_line):
         return False, "the command line differs from the one checkpointed"
     if len(checkpoint.get("position", [])) == 0:
@@ -463,7 +471,9 @@ def flowchart_fingerprint(flowchart, legacy=False, resources=False):
 
     ``resources`` gives the fingerprint of seamm 2026.10.20, which included those,
     and ``legacy`` that of earlier versions, with every parameter, so that their
-    checkpoints can still be resumed when nothing has changed.
+    checkpoints can still be resumed when nothing has changed. A parameter's
+    ``"former defaults"`` count as defaults in the fingerprint of 2026.10.20, so a
+    flowchart saved with the default of then still matches (SEAMM job 5368).
     """
 
     def name(node):
@@ -514,7 +524,12 @@ def _node_fingerprint(node, resources=False):
             if not resources and parameter._data.get("resource"):
                 continue
             value, units = parameter.value, parameter.units
-            at_default = str(value) == str(parameter.default) and str(units) == str(
+            defaults = [str(parameter.default)]
+            if resources:
+                # The defaults when 2026.10.20 wrote the checkpoint, e.g. a Loop's
+                # cores per iteration was 1, and is now "automatic"
+                defaults += [str(x) for x in parameter._data.get("former defaults", ())]
+            at_default = str(value) in defaults and str(units) == str(
                 parameter.default_units
             )
             if not at_default:
@@ -525,6 +540,16 @@ def _node_fingerprint(node, resources=False):
 
 def _id(node):
     return None if node is None else [str(x) for x in node._id]
+
+
+def _version_tuple(version):
+    """The leading numbers of a version, e.g. (2026, 10, 21) for '2026.10.21.1'."""
+    numbers = []
+    for part in str(version).split("."):
+        if not part.isdigit():
+            break
+        numbers.append(int(part))
+    return tuple(numbers[:3])
 
 
 def find_node(flowchart, node_id):

@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.22.1 -- Bugfix: jobs checkpointed before 2026.10.22 could not resume
+    * Checkpoints written before 2026.10.22 count the settings of how a step runs, with
+      the defaults of then. A plug-in that changed such a default -- loop-step's cores
+      per iteration, from 1 to automatic -- made those jobs refuse to resume, even
+      unchanged. A parameter can now list its former defaults, which count as
+      defaults for such checkpoints, so the unchanged flowchart resumes again.
+    * When such a checkpoint is refused, the message now says that the settings of
+      how steps run must also be as they were.
+
 2026.10.22 -- A resume survives changing how a step runs
     * Whether a job can resume depends on its flowchart being unchanged. Parameters
       that say only how a step runs, not what it computes -- marked as resources,
