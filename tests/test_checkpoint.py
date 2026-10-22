@@ -658,3 +658,77 @@ def test_fingerprint_leaves_out_resource_parameters():
     assert then == flowchart_fingerprint(flowchart(8))
     assert flowchart_fingerprint(flowchart(8), resources=True) != then
     assert flowchart_fingerprints(flowchart(8))[0] == then
+
+
+def test_fingerprint_former_default_of_a_resource():
+    """A resource parameter whose default changed, with another resource parameter
+    not at its default (SEAMM job 5368, 2026-10-22: the Loop's cores per iteration
+    went from 1 to automatic, and iterations at once was set): the unchanged
+    flowchart, or one with the new default, resumes the checkpoint 2026.10.20
+    wrote."""
+    from seamm.checkpoint import flowchart_fingerprints
+
+    def flowchart(cores, default, former=None):
+        f = seamm.Flowchart()
+        step = Step(f, title="Loop")
+        definition = {
+            "default": default,
+            "kind": "string",
+            "default_units": "",
+            "enumeration": ("automatic",),
+            "format_string": "",
+            "description": "cores",
+            "help_text": "",
+            "resource": True,
+        }
+        if former is not None:
+            definition["former defaults"] = former
+        step.parameters = seamm.Parameters(
+            defaults={
+                "cores": definition,
+                "at once": {
+                    "default": "1",
+                    "kind": "string",
+                    "default_units": "",
+                    "enumeration": ("as many as fit",),
+                    "format_string": "",
+                    "description": "at once",
+                    "help_text": "",
+                    "resource": True,
+                },
+            }
+        )
+        step.parameters["cores"].value = cores
+        step.parameters["at once"].value = "as many as fit"
+        f.add_node(step)
+        f.add_edge(f.get_node("1"), step, edge_type="execution")
+        f.set_ids()
+        return f
+
+    # What 2026.10.20 wrote, when the default was 1
+    then = flowchart_fingerprint(flowchart("1", "1"), resources=True)
+    # Without the former default only the new default matches ...
+    assert then not in flowchart_fingerprints(flowchart("1", "automatic"))
+    assert then in flowchart_fingerprints(flowchart("automatic", "automatic"))
+    # ... with it the unchanged flowchart does too, but not another number
+    assert then in flowchart_fingerprints(flowchart("1", "automatic", ("1",)))
+    assert then in flowchart_fingerprints(flowchart("automatic", "automatic", ("1",)))
+    assert then not in flowchart_fingerprints(flowchart("8", "automatic", ("1",)))
+
+
+def test_refusal_names_older_checkpoints():
+    """Refusing a checkpoint from before 2026.10.22 says that how steps run counts."""
+    from seamm.checkpoint import resumable
+
+    checkpoint = {
+        "format": seamm.checkpoint.FORMAT,
+        "flowchart_fingerprint": "old",
+        "versions": {"seamm": "2026.10.21"},
+        "command_line": [],
+        "position": ["1"],
+    }
+    ok, why = resumable(checkpoint, ["new"], [])
+    assert not ok and "seamm 2026.10.21 wrote the checkpoint" in why
+    checkpoint["versions"]["seamm"] = "2026.10.22"
+    ok, why = resumable(checkpoint, ["new"], [])
+    assert why == "the flowchart has changed since the checkpoint was written"
