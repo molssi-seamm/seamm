@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.edit &#8212; SEAMM 2026.10.22.1 documentation</title>
+    <title>seamm.edit &#8212; SEAMM 2026.10.22.2 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=3804f50c"></script>
+    <script src="../../_static/documentation_options.js?v=0ffc7f66"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22.1" />
+  <meta name="docsearch:version" content="2026.10.22.2" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -517,7 +517,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">format3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.builder</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FlowchartBuildError</span><span class="p">,</span>
+    <span class="n">check_expression</span><span class="p">,</span>
     <span class="n">check_value</span><span class="p">,</span>
+    <span class="n">is_expression</span><span class="p">,</span>
     <span class="n">set_parameters</span> <span class="k">as</span> <span class="n">_set_node_parameters</span><span class="p">,</span>
     <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate_flowchart</span><span class="p">,</span>
 <span class="p">)</span>
@@ -963,6 +965,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     <span class="p">):</span>
                         <span class="k">continue</span>  <span class="c1"># no effect, so its value does not matter</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span>
+                    <span class="k">if</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="c1"># Python when the job runs, e.g. not '$t ps'</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">check_expression</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">FlowchartBuildError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="k">continue</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">choices_are_strict</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
                         <span class="c1"># Only choices are worth checking again: numbers and units</span>
                         <span class="c1"># were checked when set, and may be expressions.</span>

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.builder &#8212; SEAMM 2026.10.22.1 documentation</title>
+    <title>seamm.builder &#8212; SEAMM 2026.10.22.2 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=3804f50c"></script>
+    <script src="../../_static/documentation_options.js?v=0ffc7f66"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22.1" />
+  <meta name="docsearch:version" content="2026.10.22.2" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -543,6 +543,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="sa">r</span><span class="s2">"\s*(?![eE][-+]?\d)([A-Za-z\u00b5\u03bc\u00c5\u00b0%].*?)\s*$"</span>
 <span class="p">)</span>
 
+<span class="c1"># A variable or expression without spaces followed by units, e.g. "$t ps"</span>
+<span class="n">_expression_and_units</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^\s*(\$\S+)\s+(\S.*?)\s*$"</span><span class="p">)</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_choices_text</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The allowed choices for an error message, shortened if there are many."""</span>
@@ -567,6 +570,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"$"</span><span class="p">,</span> <span class="s2">"="</span><span class="p">)</span>
         <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">"=="</span>
     <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_python</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether text is a valid Python expression."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">compile</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">"&lt;expression&gt;"</span><span class="p">,</span> <span class="s2">"eval"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_are_units</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Whether text is units that SEAMM knows."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="check_expression">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.builder.check_expression">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_expression</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"parameter"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Check the syntax of a variable or expression, such as '$t' or '=2 * n'.</span>
+
+<span class="sd">    Both are Python evaluated with the variables when the job runs: '$t' as ``t``,</span>
+<span class="sd">    so a value such as '$t ps' fails then, not when it is set.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    FlowchartBuildError</span>
+<span class="sd">        If it is not valid Python.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">compile</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s2">"&lt;expression&gt;"</span><span class="p">,</span> <span class="s2">"eval"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="s2">"expression"</span> <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"="</span> <span class="k">else</span> <span class="s2">"variable"</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' is not valid Python: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"="</span> <span class="ow">and</span> <span class="s2">"$"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">". In an '=' expression, use variables by their bare names, "</span>
+                <span class="s2">"e.g. '=2 * n' rather than '=2 * $n'"</span>
+            <span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">_expression_and_units</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_are_units</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)):</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">". Give the units separately: </span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> with units "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 
 
@@ -638,6 +692,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">match</span> <span class="o">=</span> <span class="n">_number_and_units</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">has_units</span>
+        <span class="ow">and</span> <span class="n">units</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"$"</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_python</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="p">):</span>
+        <span class="c1"># A variable and its units, e.g. "$t ps"</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">_expression_and_units</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">_is_python</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="ow">and</span> <span class="n">_are_units</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_units</span><span class="p">:</span>
@@ -659,22 +728,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_expression</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"="</span><span class="p">:</span>
-            <span class="c1"># A Python expression, evaluated with the variables as bare names. Check</span>
-            <span class="c1"># the syntax now rather than when the job runs.</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">compile</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s2">"&lt;expression&gt;"</span><span class="p">,</span> <span class="s2">"eval"</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">"The expression </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> for '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' is not valid Python: "</span>
-                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="s2">"$"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-                    <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span>
-                        <span class="s2">". In an '=' expression, use variables by their bare names, "</span>
-                        <span class="s2">"e.g. '=2 * n' rather than '=2 * $n'"</span>
-                    <span class="p">)</span>
-                <span class="k">raise</span> <span class="n">FlowchartBuildError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="c1"># Python, evaluated with the variables when the job runs: check the syntax</span>
+        <span class="c1"># now rather than then.</span>
+        <span class="n">check_expression</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span>
 
     <span class="c1"># A Python bool for a yes/no choice, whatever its kind</span>
