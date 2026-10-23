@@ -29,7 +29,9 @@ import seamm
 from . import format3
 from .builder import (
     FlowchartBuildError,
+    check_expression,
     check_value,
+    is_expression,
     set_parameters as _set_node_parameters,
     validate as _validate_flowchart,
 )
@@ -449,6 +451,13 @@ def validate(flowchart, warnings=False):
                     ):
                         continue  # no effect, so its value does not matter
                     value = parameter.value
+                    if is_expression(value):
+                        # Python when the job runs, e.g. not '$t ps'
+                        try:
+                            check_expression(value, name=key)
+                        except FlowchartBuildError as e:
+                            problems.append(f"{label}: {e}")
+                        continue
                     if not choices_are_strict(parameter):
                         # Only choices are worth checking again: numbers and units
                         # were checked when set, and may be expressions.

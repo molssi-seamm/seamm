@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.22.2 -- Bugfix: a variable with units was stored as one value
+    * Setting a parameter that has units to a variable and its units, e.g. '$t ps',
+      with the flowchart tools (seamm-flowchart, the MCP server or the builder)
+      stored '$t ps' as the value, which the job could not evaluate when it reached
+      the step. The variable and its units are now set separately, as '[$t, ps]'
+      already did.
+    * Variables, like '=' expressions, are now checked as Python when they are set,
+      and validating a flowchart checks the variables and expressions it holds.
+
 2026.10.22.1 -- Bugfix: jobs checkpointed before 2026.10.22 could not resume
     * Checkpoints written before 2026.10.22 count the settings of how a step runs, with
       the defaults of then. A plug-in that changed such a default -- loop-step's cores
