@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.10.22.2 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.10.24 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=0ffc7f66"></script>
+    <script src="../../_static/documentation_options.js?v=647e6ecf"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22.2" />
+  <meta name="docsearch:version" content="2026.10.24" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1337,20 +1337,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new configuration"</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">system</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">system</span> <span class="o">=</span> <span class="n">system_db</span><span class="o">.</span><span class="n">create_system</span><span class="p">()</span>
-                <span class="c1"># See if sharing atoms, bonds and/or cell</span>
+                <span class="c1"># See if sharing atoms, bonds and/or cell. A copy keeps the name</span>
+                <span class="c1"># of the configuration it copies, for "keep current name" and</span>
+                <span class="c1"># "{current name}" (see standard_parameters.set_names).</span>
                 <span class="k">if</span> <span class="n">same_as</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">create_configuration</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">copy_configuration</span><span class="p">(</span>
-                        <span class="n">configuration</span><span class="o">=</span><span class="n">same_as</span><span class="p">,</span> <span class="n">make_current</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="n">configuration</span><span class="o">=</span><span class="n">same_as</span><span class="p">,</span> <span class="n">make_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">same_as</span><span class="o">.</span><span class="n">name</span>
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
+                <span class="n">previous</span> <span class="o">=</span> <span class="n">system</span>
                 <span class="n">system</span> <span class="o">=</span> <span class="n">system_db</span><span class="o">.</span><span class="n">create_system</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span>
                 <span class="k">if</span> <span class="n">same_as</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">create_configuration</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">copy_configuration</span><span class="p">(</span>
-                        <span class="n">configuration</span><span class="o">=</span><span class="n">same_as</span><span class="p">,</span> <span class="n">make_current</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="n">configuration</span><span class="o">=</span><span class="n">same_as</span><span class="p">,</span> <span class="n">make_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">same_as</span><span class="o">.</span><span class="n">name</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.standard_parameters &#8212; SEAMM 2026.10.22.2 documentation</title>
+    <title>seamm.standard_parameters &#8212; SEAMM 2026.10.24 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=0ffc7f66"></script>
+    <script src="../../_static/documentation_options.js?v=647e6ecf"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22.2" />
+  <meta name="docsearch:version" content="2026.10.24" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -637,7 +637,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="p">),</span>
         <span class="s2">"format_string"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
         <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Configuration name:"</span><span class="p">,</span>
-        <span class="s2">"help_text"</span><span class="p">:</span> <span class="s2">"The name for the new configuration"</span><span class="p">,</span>
+        <span class="s2">"help_text"</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"The name for the new configuration. Text may include {current name}, "</span>
+            <span class="s2">"the configuration's name before, e.g. '{current name}/optimized'."</span>
+        <span class="p">),</span>
     <span class="p">},</span>
 <span class="p">}</span>
 
@@ -658,6 +661,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    str</span>
 <span class="sd">        The text for printing.</span>
 <span class="sd">    """</span>
+    <span class="c1"># Not known until the structure is named: shown as &lt;current name&gt;</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"current name"</span><span class="p">:</span> <span class="s2">"&lt;current name&gt;"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
 
     <span class="n">text</span> <span class="o">=</span> <span class="s2">""</span>
 
@@ -824,6 +829,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="sd">    kwargs : {str: str}</span>
 <span class="sd">        keyword arguments providing values that may be substituted in the names.</span>
+<span class="sd">        ``{current name}`` is the system's or configuration's name before it is</span>
+<span class="sd">        renamed, e.g. '{current name}/optimized' keeps a title read from a file.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -833,6 +840,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">if</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"structure handling"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Discard the structure"</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">"The structure was discarded."</span>
 
+    <span class="n">sys_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"current name"</span><span class="p">:</span> <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
+    <span class="n">conf_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"current name"</span><span class="p">:</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
     <span class="n">sysname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"system name"</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
         <span class="k">pass</span>
@@ -853,7 +862,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">elif</span> <span class="n">sysname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
         <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">sysname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">__system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">sysname</span><span class="p">,</span> <span class="o">**</span><span class="n">sys_kwargs</span><span class="p">)</span>
 
     <span class="n">confname</span> <span class="o">=</span> <span class="n">__P</span><span class="p">[</span><span class="s2">"configuration name"</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"keep current name"</span><span class="p">:</span>
@@ -875,7 +884,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">elif</span> <span class="n">confname</span> <span class="o">==</span> <span class="s2">"use chemical formula"</span><span class="p">:</span>
         <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">__configuration</span><span class="o">.</span><span class="n">formula</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">__configuration</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">safe_format</span><span class="p">(</span><span class="n">confname</span><span class="p">,</span> <span class="o">**</span><span class="n">conf_kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_first</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">=</span> <span class="s2">"The structure "</span>

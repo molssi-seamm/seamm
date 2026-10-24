@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.22.2 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.24 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=0ffc7f66"></script>
+    <script src="_static/documentation_options.js?v=647e6ecf"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.22.2" />
+  <meta name="docsearch:version" content="2026.10.24" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.24 – ‘{current name}’ in the names steps give structures</dt><dd><ul class="simple">
+<li><p>The name a step gives a system or configuration – e.g. an optimization’s
+result – may now include ‘{current name}’, its name before, so that names
+read from a file survive: ‘{current name} optimized with {model}’ gives
+‘DMC_cc optimized with PM7’. Previously every structure an optimization
+wrote was renamed ‘optimized’ (or ‘optimized with &lt;model&gt;’), losing the
+titles of an SDF file’s molecules. The optimizing steps use it in their new
+defaults.</p></li>
+<li><p>A new configuration (or system) made from the current one now keeps its name,
+so ‘keep current name’ no longer leaves the copy without a name.</p></li>
+</ul>
+</dd>
 <dt>2026.10.22.2 – Bugfix: a variable with units was stored as one value</dt><dd><ul class="simple">
 <li><p>Setting a parameter that has units to a variable and its units, e.g. ‘$t ps’,
 with the flowchart tools (seamm-flowchart, the MCP server or the builder)
