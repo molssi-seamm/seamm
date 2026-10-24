@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.24.1 -- Bugfix: jobs checkpointed before 2026.10.24 could not resume
+    * The steps' new default names (e.g. '{current name} simulated with {model}' in
+      LAMMPS, '{current name} optimized with {model}' in ORCA) made a flowchart
+      saved with the earlier default look changed, so a job checkpointed before
+      the update was refused when resumed (SEAMM job 5366). The earlier defaults
+      of the system and configuration names now count as defaults when a
+      checkpoint is compared, as declared "former defaults" already did for
+      checkpoints of 2026.10.20.
+
 2026.10.24 -- '{current name}' in the names steps give structures
     * The name a step gives a system or configuration -- e.g. an optimization's
       result -- may now include '{current name}', its name before, so that names

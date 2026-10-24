@@ -451,7 +451,18 @@ def resumable(checkpoint, digest, command_line):
 # --------------------------------------------------------------------------
 
 
-def flowchart_fingerprint(flowchart, legacy=False, resources=False):
+# The defaults of the standard naming parameters before 2026.10.24, when the
+# steps' defaults gained '{current name}' (plug-ins of that day, which did not
+# declare "former defaults"): a checkpoint written with them still resumes.
+FORMER_NAME_DEFAULTS = {
+    "{current name} optimized with {model}": ("optimized", "optimized with {model}"),
+    "{current name} optimized with {Hamiltonian}": ("optimized with {Hamiltonian}",),
+    "{current name} simulated with {model}": ("simulated with {model}",),
+}
+NAME_PARAMETERS = ("system name", "configuration name")
+
+
+def flowchart_fingerprint(flowchart, legacy=False, resources=False, former=False):
     """A hash of the steps' parameters and of how the steps are connected.
 
     What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it
@@ -474,6 +485,10 @@ def flowchart_fingerprint(flowchart, legacy=False, resources=False):
     checkpoints can still be resumed when nothing has changed. A parameter's
     ``"former defaults"`` count as defaults in the fingerprint of 2026.10.20, so a
     flowchart saved with the default of then still matches (SEAMM job 5368).
+    ``former`` counts them in this version's fingerprint too, so a checkpoint
+    written before a plug-in changed a default still resumes (SEAMM job 5366,
+    2026-10-24: lammps-step's configuration name became '{current name}
+    simulated with {model}').
     """
 
     def name(node):
@@ -482,7 +497,7 @@ def flowchart_fingerprint(flowchart, legacy=False, resources=False):
     def digest(node):
         if legacy:
             return node.digest(strict=False)
-        return _node_fingerprint(node, resources)
+        return _node_fingerprint(node, resources, former)
 
     hasher = hashlib.sha256()
     nodes = sorted(
@@ -499,9 +514,11 @@ def flowchart_fingerprint(flowchart, legacy=False, resources=False):
 
 def flowchart_fingerprints(flowchart):
     """The fingerprints a checkpoint of this flowchart may hold: this version's,
-    then those earlier versions wrote."""
+    the same with former defaults as defaults, then those earlier versions
+    wrote."""
     fingerprints = [
         flowchart_fingerprint(flowchart),
+        flowchart_fingerprint(flowchart, former=True),
         flowchart_fingerprint(flowchart, resources=True),
         flowchart_fingerprint(flowchart, legacy=True),
     ]
@@ -509,13 +526,28 @@ def flowchart_fingerprints(flowchart):
     return list(dict.fromkeys(fingerprints))
 
 
-def _node_fingerprint(node, resources=False):
+def former_defaults(key, parameter):
+    """The earlier defaults of a parameter: its declared "former defaults", and
+    for the standard naming parameters those of before 2026.10.24."""
+    defaults = [str(x) for x in parameter._data.get("former defaults", ())]
+    if key in NAME_PARAMETERS:
+        defaults += FORMER_NAME_DEFAULTS.get(str(parameter.default), ())
+    return defaults
+
+
+def _node_fingerprint(node, resources=False, former=False):
     """A hash of a step's parameters that are not at their defaults, and of its
-    sub-flowchart, if any; without the resource parameters unless ``resources``."""
+    sub-flowchart, if any; without the resource parameters unless ``resources``,
+    and with former defaults counting as defaults if ``resources`` or
+    ``former``."""
     hasher = hashlib.sha256()
     subflowchart = getattr(node, "subflowchart", None)
     if subflowchart is not None:
-        hasher.update(flowchart_fingerprint(subflowchart, resources=resources).encode())
+        hasher.update(
+            flowchart_fingerprint(
+                subflowchart, resources=resources, former=former
+            ).encode()
+        )
     P = getattr(node, "parameters", None)
     if P is not None:
         stated = {}
@@ -525,10 +557,10 @@ def _node_fingerprint(node, resources=False):
                 continue
             value, units = parameter.value, parameter.units
             defaults = [str(parameter.default)]
-            if resources:
-                # The defaults when 2026.10.20 wrote the checkpoint, e.g. a Loop's
-                # cores per iteration was 1, and is now "automatic"
-                defaults += [str(x) for x in parameter._data.get("former defaults", ())]
+            if resources or former:
+                # The defaults when an earlier version wrote the checkpoint, e.g.
+                # a Loop's cores per iteration was 1, and is now "automatic"
+                defaults += former_defaults(key, parameter)
             at_default = str(value) in defaults and str(units) == str(
                 parameter.default_units
             )
