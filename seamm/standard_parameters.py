@@ -149,7 +149,10 @@ structure_handling_parameters = {
         ),
         "format_string": "s",
         "description": "Configuration name:",
-        "help_text": "The name for the new configuration",
+        "help_text": (
+            "The name for the new configuration. Text may include {current name}, "
+            "the configuration's name before, e.g. '{current name}/optimized'."
+        ),
     },
 }
 
@@ -168,6 +171,8 @@ def structure_handling_description(__P, **kwargs):
     str
         The text for printing.
     """
+    # Not known until the structure is named: shown as <current name>
+    kwargs = {"current name": "<current name>", **kwargs}
 
     text = ""
 
@@ -328,6 +333,8 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
 
     kwargs : {str: str}
         keyword arguments providing values that may be substituted in the names.
+        ``{current name}`` is the system's or configuration's name before it is
+        renamed, e.g. '{current name}/optimized' keeps a title read from a file.
 
     Returns
     -------
@@ -337,6 +344,8 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
     if __P["structure handling"] == "Discard the structure":
         return "The structure was discarded."
 
+    sys_kwargs = {"current name": __system.name or "", **kwargs}
+    conf_kwargs = {"current name": __configuration.name or "", **kwargs}
     sysname = __P["system name"]
     if sysname == "keep current name":
         pass
@@ -357,7 +366,7 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
     elif sysname == "use chemical formula":
         __system.name = __configuration.formula[0]
     else:
-        __system.name = safe_format(sysname, **kwargs)
+        __system.name = safe_format(sysname, **sys_kwargs)
 
     confname = __P["configuration name"]
     if confname == "keep current name":
@@ -379,7 +388,7 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
     elif confname == "use chemical formula":
         __configuration.name = __configuration.formula[0]
     else:
-        __configuration.name = safe_format(confname, **kwargs)
+        __configuration.name = safe_format(confname, **conf_kwargs)
 
     if _first:
         text = "The structure "

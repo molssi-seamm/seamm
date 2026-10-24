@@ -815,20 +815,25 @@ class Node(collections.abc.Hashable):
             elif handling == "Create a new configuration":
                 if system is None:
                     system = system_db.create_system()
-                # See if sharing atoms, bonds and/or cell
+                # See if sharing atoms, bonds and/or cell. A copy keeps the name
+                # of the configuration it copies, for "keep current name" and
+                # "{current name}" (see standard_parameters.set_names).
                 if same_as is None:
                     configuration = system.create_configuration()
                 else:
                     configuration = system.copy_configuration(
-                        configuration=same_as, make_current=True
+                        configuration=same_as, make_current=True, name=same_as.name
                     )
             elif handling == "Create a new system and configuration":
+                previous = system
                 system = system_db.create_system()
+                if previous is not None and previous.name:
+                    system.name = previous.name
                 if same_as is None:
                     configuration = system.create_configuration()
                 else:
                     configuration = system.copy_configuration(
-                        configuration=same_as, make_current=True
+                        configuration=same_as, make_current=True, name=same_as.name
                     )
             else:
                 raise ValueError(

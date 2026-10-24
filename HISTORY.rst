@@ -1,6 +1,17 @@
 =======
 History
 =======
+2026.10.24 -- '{current name}' in the names steps give structures
+    * The name a step gives a system or configuration -- e.g. an optimization's
+      result -- may now include '{current name}', its name before, so that names
+      read from a file survive: '{current name} optimized with {model}' gives
+      'DMC_cc optimized with PM7'. Previously every structure an optimization
+      wrote was renamed 'optimized' (or 'optimized with <model>'), losing the
+      titles of an SDF file's molecules. The optimizing steps use it in their new
+      defaults.
+    * A new configuration (or system) made from the current one now keeps its name,
+      so 'keep current name' no longer leaves the copy without a name.
+
 2026.10.22.2 -- Bugfix: a variable with units was stored as one value
     * Setting a parameter that has units to a variable and its units, e.g. '$t ps',
       with the flowchart tools (seamm-flowchart, the MCP server or the builder)
