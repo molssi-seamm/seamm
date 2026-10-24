@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.24 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.24.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=647e6ecf"></script>
+    <script src="../_static/documentation_options.js?v=c78a4e9b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.24" />
+  <meta name="docsearch:version" content="2026.10.24.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -1404,7 +1404,7 @@ the ids of its body for each iteration.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.checkpoint.flowchart_fingerprint">
-<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">flowchart_fingerprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legacy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#flowchart_fingerprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.flowchart_fingerprint" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">flowchart_fingerprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legacy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">former</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#flowchart_fingerprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.flowchart_fingerprint" title="Link to this definition">#</a></dt>
 <dd><p>A hash of the steps’ parameters and of how the steps are connected.</p>
 <p>What a checkpoint must match to be resumed. Unlike <code class="docutils literal notranslate"><span class="pre">Flowchart.digest</span></code> it
 covers the whole graph (the digest follows the steps and stops at the first
@@ -1423,14 +1423,26 @@ so they can be changed for a resume (SEAMM job 5368, 2026-10-22).</p>
 and <code class="docutils literal notranslate"><span class="pre">legacy</span></code> that of earlier versions, with every parameter, so that their
 checkpoints can still be resumed when nothing has changed. A parameter’s
 <code class="docutils literal notranslate"><span class="pre">&quot;former</span> <span class="pre">defaults&quot;</span></code> count as defaults in the fingerprint of 2026.10.20, so a
-flowchart saved with the default of then still matches (SEAMM job 5368).</p>
+flowchart saved with the default of then still matches (SEAMM job 5368).
+<code class="docutils literal notranslate"><span class="pre">former</span></code> counts them in this version’s fingerprint too, so a checkpoint
+written before a plug-in changed a default still resumes (SEAMM job 5366,
+2026-10-24: lammps-step’s configuration name became ‘{current name}
+simulated with {model}’).</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="seamm.checkpoint.flowchart_fingerprints">
 <span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">flowchart_fingerprints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flowchart</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#flowchart_fingerprints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.flowchart_fingerprints" title="Link to this definition">#</a></dt>
 <dd><p>The fingerprints a checkpoint of this flowchart may hold: this version’s,
-then those earlier versions wrote.</p>
+the same with former defaults as defaults, then those earlier versions
+wrote.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm.checkpoint.former_defaults">
+<span class="sig-prename descclassname"><span class="pre">seamm.checkpoint.</span></span><span class="sig-name descname"><span class="pre">former_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/checkpoint.html#former_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.checkpoint.former_defaults" title="Link to this definition">#</a></dt>
+<dd><p>The earlier defaults of a parameter: its declared “former defaults”, and
+for the standard naming parameters those of before 2026.10.24.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6969,6 +6981,7 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.find_node"><code class="docutils literal notranslate"><span class="pre">find_node()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.flowchart_fingerprint"><code class="docutils literal notranslate"><span class="pre">flowchart_fingerprint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.flowchart_fingerprints"><code class="docutils literal notranslate"><span class="pre">flowchart_fingerprints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.former_defaults"><code class="docutils literal notranslate"><span class="pre">former_defaults()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.get_checkpointer"><code class="docutils literal notranslate"><span class="pre">get_checkpointer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.package_versions"><code class="docutils literal notranslate"><span class="pre">package_versions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.checkpoint.read_checkpoint"><code class="docutils literal notranslate"><span class="pre">read_checkpoint()</span></code></a></li>

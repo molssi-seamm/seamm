@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.checkpoint &#8212; SEAMM 2026.10.24 documentation</title>
+    <title>seamm.checkpoint &#8212; SEAMM 2026.10.24.1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=647e6ecf"></script>
+    <script src="../../_static/documentation_options.js?v=c78a4e9b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.24" />
+  <meta name="docsearch:version" content="2026.10.24.1" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -975,9 +975,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="c1"># --------------------------------------------------------------------------</span>
 
 
+<span class="c1"># The defaults of the standard naming parameters before 2026.10.24, when the</span>
+<span class="c1"># steps' defaults gained '{current name}' (plug-ins of that day, which did not</span>
+<span class="c1"># declare "former defaults"): a checkpoint written with them still resumes.</span>
+<span class="n">FORMER_NAME_DEFAULTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"{current name} optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"optimized"</span><span class="p">,</span> <span class="s2">"optimized with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">),</span>
+    <span class="s2">"{current name} optimized with </span><span class="si">{Hamiltonian}</span><span class="s2">"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"optimized with </span><span class="si">{Hamiltonian}</span><span class="s2">"</span><span class="p">,),</span>
+    <span class="s2">"{current name} simulated with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"simulated with </span><span class="si">{model}</span><span class="s2">"</span><span class="p">,),</span>
+<span class="p">}</span>
+<span class="n">NAME_PARAMETERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"system name"</span><span class="p">,</span> <span class="s2">"configuration name"</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="flowchart_fingerprint">
 <a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.flowchart_fingerprint">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">former</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A hash of the steps' parameters and of how the steps are connected.</span>
 
 <span class="sd">    What a checkpoint must match to be resumed. Unlike ``Flowchart.digest`` it</span>
@@ -1000,6 +1011,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    checkpoints can still be resumed when nothing has changed. A parameter's</span>
 <span class="sd">    ``"former defaults"`` count as defaults in the fingerprint of 2026.10.20, so a</span>
 <span class="sd">    flowchart saved with the default of then still matches (SEAMM job 5368).</span>
+<span class="sd">    ``former`` counts them in this version's fingerprint too, so a checkpoint</span>
+<span class="sd">    written before a plug-in changed a default still resumes (SEAMM job 5366,</span>
+<span class="sd">    2026-10-24: lammps-step's configuration name became '{current name}</span>
+<span class="sd">    simulated with {model}').</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
@@ -1008,7 +1023,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">def</span><span class="w"> </span><span class="nf">digest</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">legacy</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">resources</span><span class="p">,</span> <span class="n">former</span><span class="p">)</span>
 
     <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
     <span class="n">nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -1028,9 +1043,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.flowchart_fingerprints">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">flowchart_fingerprints</span><span class="p">(</span><span class="n">flowchart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The fingerprints a checkpoint of this flowchart may hold: this version's,</span>
-<span class="sd">    then those earlier versions wrote."""</span>
+<span class="sd">    the same with former defaults as defaults, then those earlier versions</span>
+<span class="sd">    wrote."""</span>
     <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">),</span>
+        <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">former</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">flowchart</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="p">]</span>
@@ -1039,13 +1056,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="former_defaults">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.checkpoint.former_defaults">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">former_defaults</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The earlier defaults of a parameter: its declared "former defaults", and</span>
+<span class="sd">    for the standard naming parameters those of before 2026.10.24."""</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"former defaults"</span><span class="p">,</span> <span class="p">())]</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">NAME_PARAMETERS</span><span class="p">:</span>
+        <span class="n">defaults</span> <span class="o">+=</span> <span class="n">FORMER_NAME_DEFAULTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default</span><span class="p">),</span> <span class="p">())</span>
+    <span class="k">return</span> <span class="n">defaults</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_node_fingerprint</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">former</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""A hash of a step's parameters that are not at their defaults, and of its</span>
-<span class="sd">    sub-flowchart, if any; without the resource parameters unless ``resources``."""</span>
+<span class="sd">    sub-flowchart, if any; without the resource parameters unless ``resources``,</span>
+<span class="sd">    and with former defaults counting as defaults if ``resources`` or</span>
+<span class="sd">    ``former``."""</span>
     <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
     <span class="n">subflowchart</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"subflowchart"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">subflowchart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flowchart_fingerprint</span><span class="p">(</span><span class="n">subflowchart</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">flowchart_fingerprint</span><span class="p">(</span>
+                <span class="n">subflowchart</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span> <span class="n">former</span><span class="o">=</span><span class="n">former</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="p">)</span>
     <span class="n">P</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">"parameters"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stated</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1055,10 +1090,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="k">continue</span>
             <span class="n">value</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">parameter</span><span class="o">.</span><span class="n">units</span>
             <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">default</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="n">resources</span><span class="p">:</span>
-                <span class="c1"># The defaults when 2026.10.20 wrote the checkpoint, e.g. a Loop's</span>
-                <span class="c1"># cores per iteration was 1, and is now "automatic"</span>
-                <span class="n">defaults</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"former defaults"</span><span class="p">,</span> <span class="p">())]</span>
+            <span class="k">if</span> <span class="n">resources</span> <span class="ow">or</span> <span class="n">former</span><span class="p">:</span>
+                <span class="c1"># The defaults when an earlier version wrote the checkpoint, e.g.</span>
+                <span class="c1"># a Loop's cores per iteration was 1, and is now "automatic"</span>
+                <span class="n">defaults</span> <span class="o">+=</span> <span class="n">former_defaults</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
             <span class="n">at_default</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span>
                 <span class="n">parameter</span><span class="o">.</span><span class="n">default_units</span>
             <span class="p">)</span>
