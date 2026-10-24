@@ -732,3 +732,47 @@ def test_refusal_names_older_checkpoints():
     checkpoint["versions"]["seamm"] = "2026.10.22"
     ok, why = resumable(checkpoint, ["new"], [])
     assert why == "the flowchart has changed since the checkpoint was written"
+
+
+def test_fingerprint_naming_default_changed():
+    """SEAMM job 5366, 2026-10-24: lammps-step 2026.10.24 changed the default
+    configuration name from 'simulated with {model}' to '{current name} simulated
+    with {model}', so a checkpoint written with the old default was refused."""
+    from seamm.checkpoint import flowchart_fingerprints
+
+    def flowchart(default, value):
+        f = seamm.Flowchart()
+        step = Step(f, title="NVT")
+        step.parameters = seamm.Parameters(
+            defaults={
+                "configuration name": {
+                    "default": default,
+                    "kind": "string",
+                    "default_units": "",
+                    "enumeration": (default, "keep current name"),
+                    "format_string": "",
+                    "description": "Configuration name:",
+                    "help_text": "",
+                },
+            }
+        )
+        step.parameters["configuration name"].value = value
+        f.add_node(step)
+        f.add_edge(f.get_node("1"), step, edge_type="execution")
+        f.set_ids()
+        return f
+
+    old, new = "simulated with {model}", "{current name} simulated with {model}"
+    # Written by the earlier version, with its default
+    then = flowchart_fingerprint(flowchart(old, old))
+    # The same flowchart read by the new version
+    assert flowchart_fingerprint(flowchart(new, old)) != then
+    assert then in flowchart_fingerprints(flowchart(new, old))
+    # A name the user chose still counts
+    chosen = flowchart_fingerprint(flowchart(old, "keep current name"))
+    assert chosen in flowchart_fingerprints(flowchart(new, "keep current name"))
+    assert then not in flowchart_fingerprints(flowchart(new, "keep current name"))
+    # ORCA's default was plain 'optimized'
+    then = flowchart_fingerprint(flowchart("optimized", "optimized"))
+    current = "{current name} optimized with {model}"
+    assert then in flowchart_fingerprints(flowchart(current, "optimized"))
