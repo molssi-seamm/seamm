@@ -1,6 +1,22 @@
 =======
 History
 =======
+2026.10.28 -- Steps can store fingerprints of their calculations' settings, and chosen properties
+    * New ``Node.store_calculation_record()`` stores, with a step's results, the
+      fingerprints of the settings of the calculation that gave them, so that one can
+      tell whether stored results, such as the energies of the species of a reaction,
+      come from the same kind of calculation: ``settings fingerprint#<code>#<model>``,
+      ``element fingerprints#<code>#<model>`` (basis sets and ECPs written per
+      element) and ``calculation#<code>#<model>`` (the whole record, for finding the
+      cause of a mismatch), or ``frequency fingerprint`` etc. for a frequency
+      calculation. The codes' steps make the record from the input they generated
+      with ``seamm_util.fingerprint``.
+    * New ``Node.store_properties()`` stores chosen results as properties whether or
+      not the user selected them, so that results other steps rely on, such as the
+      energies, zero-point energies and enthalpies under the names the QC plug-ins
+      share, are always in the database.
+    * Requires seamm-util 2026.10.28.1.
+
 2026.10.24.1 -- Bugfix: jobs checkpointed before 2026.10.24 could not resume
     * The steps' new default names (e.g. '{current name} simulated with {model}' in
       LAMMPS, '{current name} optimized with {model}' in ORCA) made a flowchart

@@ -16,6 +16,6 @@ pyuca
 pyyaml
 reference_handler
 seamm-dashboard-client>=2026.10.1
-seamm-util>=2026.9.27.1
+seamm-util>=2026.10.28.1
 seamm-widgets
 stevedore

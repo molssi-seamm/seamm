@@ -1668,6 +1668,151 @@ class Node(collections.abc.Hashable):
                     json_data, fd, indent=4, sort_keys=True, cls=CompactJSONEncoder
                 )
 
+    def store_properties(self, configuration, data, keys):
+        """Store results as properties of the configuration whether or not the
+        user selected them, e.g. the energies that other steps rely on finding
+        under the names the QC plug-ins share (``total energy``, ``ZPE``, ``H``,
+        ``T``, ``H(298.15 K)``).
+
+        Results the user selected are skipped, since :meth:`store_results` stores
+        them. Only properties are stored, not variables or tables.
+
+        Parameters
+        ----------
+        configuration : molsystem._Configuration
+            The configuration to store the properties on.
+        data : dict
+            The results of the step.
+        keys : [str]
+            The keys of the results, as in the step's metadata.
+        """
+        if configuration is None:
+            return
+        selected = {}
+        if "results" in self.parameters:
+            selected = self.parameters["results"].value or {}
+        metadata = self.metadata["results"]
+        properties = configuration.properties
+        for key in keys:
+            if key in selected or key not in metadata or data.get(key) is None:
+                continue
+            result_metadata = metadata[key]
+            if not result_metadata.get("property"):
+                continue
+            _property = result_metadata["property"].format(model=self.model)
+            try:
+                if properties.exists(_property):
+                    units = properties.units(_property)
+                else:
+                    try:
+                        info = properties.metadata(result_metadata["property"])
+                    except KeyError:
+                        info = None
+                    if info is None:
+                        # Not a defined property: as the result describes it
+                        value = data[key]
+                        if isinstance(value, bool):
+                            _type = "bool"
+                        elif isinstance(value, int):
+                            _type = "int"
+                        elif isinstance(value, float):
+                            _type = "float"
+                        elif isinstance(value, str):
+                            _type = "str"
+                        else:
+                            _type = "json"
+                        units = result_metadata.get("units") or ""
+                        description = result_metadata.get("description", "")
+                    else:
+                        _type, units, description = info
+                    properties.add(
+                        _property,
+                        _type=_type,
+                        units=units,
+                        description=description.format(model=self.model),
+                    )
+                value = data[key]
+                current_units = result_metadata.get("units") or ""
+                if (
+                    units
+                    and current_units
+                    and units != current_units
+                    and result_metadata.get("dimensionality") == "scalar"
+                ):
+                    value = Q_(value, current_units).m_as(units)
+                properties.put(_property, value)
+            except Exception as e:
+                self.logger.warning(f"Could not store the property '{_property}': {e}")
+
+    def store_calculation_record(
+        self, configuration, code, record, kind="settings", model=None
+    ):
+        """Store the fingerprints of a calculation's settings with its results.
+
+        The record comes from :func:`seamm_util.fingerprint.calculation_record`,
+        made by the code's step from the input it generated. Three properties are
+        stored on the configuration, under the same ``<code>#<model>`` as the
+        results they describe:
+
+        * ``settings fingerprint#<code>#<model>`` (str): the fingerprint of the
+          settings, to compare between species;
+        * ``element fingerprints#<code>#<model>`` (json): {element: fingerprint} of
+          the basis sets and ECPs written per element;
+        * ``calculation#<code>#<model>`` (json): the whole record -- program, full
+          version, fingerprints, geometry fingerprint and the hashed text -- for
+          finding the cause of a mismatch.
+
+        A frequency calculation (``kind="frequency"``) stores ``frequency
+        fingerprint``, ``frequency element fingerprints`` and ``frequency
+        calculation`` instead, since its level may differ from the energy's.
+
+        Parameters
+        ----------
+        configuration : molsystem._Configuration
+            The configuration the results are stored on.
+        code : str
+            The code, as in the results' property names, e.g. "ORCA".
+        record : dict
+            The calculation record.
+        kind : str = "settings"
+            "settings" for the energy, or "frequency".
+        model : str = None
+            The model; by default the step's.
+        """
+        if model is None:
+            model = self.model
+        if kind == "settings":
+            names = {
+                "settings fingerprint": ("str", record["fingerprint"]),
+                "element fingerprints": ("json", record["element fingerprints"]),
+                "calculation": ("json", record),
+            }
+            what = "the settings of the calculation"
+        elif kind == "frequency":
+            names = {
+                "frequency fingerprint": ("str", record["fingerprint"]),
+                "frequency element fingerprints": (
+                    "json",
+                    record["element fingerprints"],
+                ),
+                "frequency calculation": ("json", record),
+            }
+            what = "the settings of the frequency calculation"
+        else:
+            raise ValueError(f"kind must be 'settings' or 'frequency', not '{kind}'")
+
+        properties = configuration.properties
+        for name, (_type, value) in names.items():
+            _property = f"{name}#{code}#{model}"
+            if not properties.exists(_property):
+                properties.add(
+                    _property,
+                    _type=_type,
+                    units="",
+                    description=f"The {name} of {what} with {code}/{model}",
+                )
+            properties.put(_property, value)
+
     def create_figure(
         self,
         title="",
