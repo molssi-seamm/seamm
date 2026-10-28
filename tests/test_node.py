@@ -358,3 +358,92 @@ def test_job_path_of_a_flowchart_without_job_directory(tmp_path):
     node = _FakeNode(wd=tmp_path / "1", job_path=tmp_path)
     node.flowchart = types.SimpleNamespace(root_directory=str(tmp_path))
     assert seamm.Node.job_path.fget(node) == tmp_path
+
+
+def test_store_calculation_record():
+    """The fingerprints of a calculation are stored with its results."""
+    import molsystem
+    from seamm_util.fingerprint import calculation_record
+
+    db = molsystem.SystemDB(filename="file:seamm_db?mode=memory&cache=shared")
+    try:
+        configuration = db.create_system().create_configuration()
+        configuration.from_smiles("C")
+        record = calculation_record(
+            "ORCA", "6.1.1", {"orca.inp": "! B3LYP"}, element_blocks={"H": "S 1"}
+        )
+        node = types.SimpleNamespace(model="B3LYP/def2-SVP")
+        seamm.Node.store_calculation_record(node, configuration, "ORCA", record)
+        properties = configuration.properties
+        key = "ORCA#B3LYP/def2-SVP"
+        assert properties.get(f"settings fingerprint#{key}")[
+            f"settings fingerprint#{key}"
+        ]["value"] == (record["fingerprint"])
+        stored = properties.get(f"calculation#{key}")[f"calculation#{key}"]["value"]
+        assert stored["version"] == "6.1.1"
+        assert stored["fingerprint"] == record["fingerprint"]
+        elements = properties.get(f"element fingerprints#{key}")
+        assert elements[f"element fingerprints#{key}"]["value"] == (
+            record["element fingerprints"]
+        )
+
+        seamm.Node.store_calculation_record(
+            node, configuration, "ORCA", record, kind="frequency", model="HF/STO-3G"
+        )
+        name = "frequency fingerprint#ORCA#HF/STO-3G"
+        assert properties.get(name)[name]["value"] == record["fingerprint"]
+        with pytest.raises(ValueError):
+            seamm.Node.store_calculation_record(
+                node, configuration, "ORCA", record, kind="hessian"
+            )
+    finally:
+        db.close()
+
+
+def test_store_properties():
+    """Results are stored as properties whether or not they were selected."""
+    import molsystem
+
+    db = molsystem.SystemDB(filename="file:seamm_db?mode=memory&cache=shared")
+    try:
+        configuration = db.create_system().create_configuration()
+        configuration.from_smiles("C")
+        metadata = {
+            "results": {
+                "energy": {
+                    "property": "total energy#Test#{model}",
+                    "dimensionality": "scalar",
+                    "units": "E_h",
+                },
+                "ZPE": {
+                    "property": "ZPE#Test#{model}",
+                    "dimensionality": "scalar",
+                    "units": "E_h",
+                },
+                "picked": {
+                    "property": "total energy#Other#{model}",
+                    "dimensionality": "scalar",
+                    "units": "E_h",
+                },
+            }
+        }
+        properties = configuration.properties
+        properties.add("ZPE#Test#HF", _type="float", units="kJ/mol")
+        node = types.SimpleNamespace(
+            model="HF",
+            metadata=metadata,
+            parameters={"results": types.SimpleNamespace(value={"picked": {}})},
+            logger=logging.getLogger("test"),
+        )
+        data = {"energy": -40.0, "ZPE": 0.01, "picked": -1.0, "missing": None}
+        seamm.Node.store_properties(
+            node, configuration, data, ["energy", "ZPE", "picked", "missing", "x"]
+        )
+        stored = properties.get("*")
+        assert stored["total energy#Test#HF"]["value"] == -40.0
+        # converted to the property's units
+        assert stored["ZPE#Test#HF"]["value"] == pytest.approx(26.255, abs=1e-3)
+        # selected results are left to store_results()
+        assert "total energy#Other#HF" not in stored
+    finally:
+        db.close()
