@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.10.24.1 documentation</title>
+    <title>History &#8212; SEAMM 2026.10.28 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=c78a4e9b"></script>
+    <script src="_static/documentation_options.js?v=bb9c4767"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.24.1" />
+  <meta name="docsearch:version" content="2026.10.28" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,6 +506,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.28 – Steps can store fingerprints of their calculations’ settings, and chosen properties</dt><dd><ul class="simple">
+<li><p>New <code class="docutils literal notranslate"><span class="pre">Node.store_calculation_record()</span></code> stores, with a step’s results, the
+fingerprints of the settings of the calculation that gave them, so that one can
+tell whether stored results, such as the energies of the species of a reaction,
+come from the same kind of calculation: <code class="docutils literal notranslate"><span class="pre">settings</span> <span class="pre">fingerprint#&lt;code&gt;#&lt;model&gt;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">element</span> <span class="pre">fingerprints#&lt;code&gt;#&lt;model&gt;</span></code> (basis sets and ECPs written per
+element) and <code class="docutils literal notranslate"><span class="pre">calculation#&lt;code&gt;#&lt;model&gt;</span></code> (the whole record, for finding the
+cause of a mismatch), or <code class="docutils literal notranslate"><span class="pre">frequency</span> <span class="pre">fingerprint</span></code> etc. for a frequency
+calculation. The codes’ steps make the record from the input they generated
+with <code class="docutils literal notranslate"><span class="pre">seamm_util.fingerprint</span></code>.</p></li>
+<li><p>New <code class="docutils literal notranslate"><span class="pre">Node.store_properties()</span></code> stores chosen results as properties whether or
+not the user selected them, so that results other steps rely on, such as the
+energies, zero-point energies and enthalpies under the names the QC plug-ins
+share, are always in the database.</p></li>
+<li><p>Requires seamm-util 2026.10.28.1.</p></li>
+</ul>
+</dd>
 <dt>2026.10.24.1 – Bugfix: jobs checkpointed before 2026.10.24 could not resume</dt><dd><ul class="simple">
 <li><p>The steps’ new default names (e.g. ‘{current name} simulated with {model}’ in
 LAMMPS, ‘{current name} optimized with {model}’ in ORCA) made a flowchart

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.10.24.1 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.10.28 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=c78a4e9b"></script>
+    <script src="../../_static/documentation_options.js?v=bb9c4767"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.24.1" />
+  <meta name="docsearch:version" content="2026.10.28" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -2285,6 +2285,157 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
                     <span class="n">json_data</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CompactJSONEncoder</span>
                 <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.store_properties">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.store_properties">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Store results as properties of the configuration whether or not the</span>
+<span class="sd">        user selected them, e.g. the energies that other steps rely on finding</span>
+<span class="sd">        under the names the QC plug-ins share (``total energy``, ``ZPE``, ``H``,</span>
+<span class="sd">        ``T``, ``H(298.15 K)``).</span>
+
+<span class="sd">        Results the user selected are skipped, since :meth:`store_results` stores</span>
+<span class="sd">        them. Only properties are stored, not variables or tables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        configuration : molsystem._Configuration</span>
+<span class="sd">            The configuration to store the properties on.</span>
+<span class="sd">        data : dict</span>
+<span class="sd">            The results of the step.</span>
+<span class="sd">        keys : [str]</span>
+<span class="sd">            The keys of the results, as in the step's metadata.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">configuration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">"results"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"results"</span><span class="p">]</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">selected</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metadata</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">result_metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"property"</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">_property</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="p">[</span><span class="s2">"property"</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">properties</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_property</span><span class="p">):</span>
+                    <span class="n">units</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">units</span><span class="p">(</span><span class="n">_property</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">info</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">metadata</span><span class="p">(</span><span class="n">result_metadata</span><span class="p">[</span><span class="s2">"property"</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># Not a defined property: as the result describes it</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                            <span class="n">_type</span> <span class="o">=</span> <span class="s2">"bool"</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                            <span class="n">_type</span> <span class="o">=</span> <span class="s2">"int"</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                            <span class="n">_type</span> <span class="o">=</span> <span class="s2">"float"</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                            <span class="n">_type</span> <span class="o">=</span> <span class="s2">"str"</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">_type</span> <span class="o">=</span> <span class="s2">"json"</span>
+                        <span class="n">units</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"units"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+                        <span class="n">description</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"description"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_type</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="n">info</span>
+                    <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                        <span class="n">_property</span><span class="p">,</span>
+                        <span class="n">_type</span><span class="o">=</span><span class="n">_type</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
+                        <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">current_units</span> <span class="o">=</span> <span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"units"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">units</span>
+                    <span class="ow">and</span> <span class="n">current_units</span>
+                    <span class="ow">and</span> <span class="n">units</span> <span class="o">!=</span> <span class="n">current_units</span>
+                    <span class="ow">and</span> <span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dimensionality"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"scalar"</span>
+                <span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">Q_</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">current_units</span><span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+                <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not store the property '</span><span class="si">{</span><span class="n">_property</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.store_calculation_record">
+<a class="viewcode-back" href="../../api/seamm.html#seamm.node.Node.store_calculation_record">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_calculation_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"settings"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Store the fingerprints of a calculation's settings with its results.</span>
+
+<span class="sd">        The record comes from :func:`seamm_util.fingerprint.calculation_record`,</span>
+<span class="sd">        made by the code's step from the input it generated. Three properties are</span>
+<span class="sd">        stored on the configuration, under the same ``&lt;code&gt;#&lt;model&gt;`` as the</span>
+<span class="sd">        results they describe:</span>
+
+<span class="sd">        * ``settings fingerprint#&lt;code&gt;#&lt;model&gt;`` (str): the fingerprint of the</span>
+<span class="sd">          settings, to compare between species;</span>
+<span class="sd">        * ``element fingerprints#&lt;code&gt;#&lt;model&gt;`` (json): {element: fingerprint} of</span>
+<span class="sd">          the basis sets and ECPs written per element;</span>
+<span class="sd">        * ``calculation#&lt;code&gt;#&lt;model&gt;`` (json): the whole record -- program, full</span>
+<span class="sd">          version, fingerprints, geometry fingerprint and the hashed text -- for</span>
+<span class="sd">          finding the cause of a mismatch.</span>
+
+<span class="sd">        A frequency calculation (``kind="frequency"``) stores ``frequency</span>
+<span class="sd">        fingerprint``, ``frequency element fingerprints`` and ``frequency</span>
+<span class="sd">        calculation`` instead, since its level may differ from the energy's.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        configuration : molsystem._Configuration</span>
+<span class="sd">            The configuration the results are stored on.</span>
+<span class="sd">        code : str</span>
+<span class="sd">            The code, as in the results' property names, e.g. "ORCA".</span>
+<span class="sd">        record : dict</span>
+<span class="sd">            The calculation record.</span>
+<span class="sd">        kind : str = "settings"</span>
+<span class="sd">            "settings" for the energy, or "frequency".</span>
+<span class="sd">        model : str = None</span>
+<span class="sd">            The model; by default the step's.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"settings"</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"settings fingerprint"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"str"</span><span class="p">,</span> <span class="n">record</span><span class="p">[</span><span class="s2">"fingerprint"</span><span class="p">]),</span>
+                <span class="s2">"element fingerprints"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">record</span><span class="p">[</span><span class="s2">"element fingerprints"</span><span class="p">]),</span>
+                <span class="s2">"calculation"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">record</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="s2">"the settings of the calculation"</span>
+        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"frequency"</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"frequency fingerprint"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"str"</span><span class="p">,</span> <span class="n">record</span><span class="p">[</span><span class="s2">"fingerprint"</span><span class="p">]),</span>
+                <span class="s2">"frequency element fingerprints"</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s2">"json"</span><span class="p">,</span>
+                    <span class="n">record</span><span class="p">[</span><span class="s2">"element fingerprints"</span><span class="p">],</span>
+                <span class="p">),</span>
+                <span class="s2">"frequency calculation"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">record</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">what</span> <span class="o">=</span> <span class="s2">"the settings of the frequency calculation"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"kind must be 'settings' or 'frequency', not '</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">properties</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">_type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_property</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">#</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">#</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">properties</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_property</span><span class="p">):</span>
+                <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                    <span class="n">_property</span><span class="p">,</span>
+                    <span class="n">_type</span><span class="o">=</span><span class="n">_type</span><span class="p">,</span>
+                    <span class="n">units</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_property</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Node.create_figure">

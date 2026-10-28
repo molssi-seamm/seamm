@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.10.24.1 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.10.28 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=c78a4e9b"></script>
+    <script src="../_static/documentation_options.js?v=bb9c4767"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.24.1" />
+  <meta name="docsearch:version" content="2026.10.28" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -3904,6 +3904,59 @@ options</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.store_calculation_record">
+<span class="sig-name descname"><span class="pre">store_calculation_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'settings'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.store_calculation_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.store_calculation_record" title="Link to this definition">#</a></dt>
+<dd><p>Store the fingerprints of a calculation’s settings with its results.</p>
+<p>The record comes from <code class="xref py py-func docutils literal notranslate"><span class="pre">seamm_util.fingerprint.calculation_record()</span></code>,
+made by the code’s step from the input it generated. Three properties are
+stored on the configuration, under the same <code class="docutils literal notranslate"><span class="pre">&lt;code&gt;#&lt;model&gt;</span></code> as the
+results they describe:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">settings</span> <span class="pre">fingerprint#&lt;code&gt;#&lt;model&gt;</span></code> (str): the fingerprint of the
+settings, to compare between species;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">element</span> <span class="pre">fingerprints#&lt;code&gt;#&lt;model&gt;</span></code> (json): {element: fingerprint} of
+the basis sets and ECPs written per element;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calculation#&lt;code&gt;#&lt;model&gt;</span></code> (json): the whole record – program, full
+version, fingerprints, geometry fingerprint and the hashed text – for
+finding the cause of a mismatch.</p></li>
+</ul>
+<p>A frequency calculation (<code class="docutils literal notranslate"><span class="pre">kind=&quot;frequency&quot;</span></code>) stores <code class="docutils literal notranslate"><span class="pre">frequency</span>
+<span class="pre">fingerprint</span></code>, <code class="docutils literal notranslate"><span class="pre">frequency</span> <span class="pre">element</span> <span class="pre">fingerprints</span></code> and <code class="docutils literal notranslate"><span class="pre">frequency</span>
+<span class="pre">calculation</span></code> instead, since its level may differ from the energy’s.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>configuration</strong> (<em>molsystem._Configuration</em>) – The configuration the results are stored on.</p></li>
+<li><p><strong>code</strong> (<em>str</em>) – The code, as in the results’ property names, e.g. “ORCA”.</p></li>
+<li><p><strong>record</strong> (<em>dict</em>) – The calculation record.</p></li>
+<li><p><strong>kind</strong> (<em>str = &quot;settings&quot;</em>) – “settings” for the energy, or “frequency”.</p></li>
+<li><p><strong>model</strong> (<em>str = None</em>) – The model; by default the step’s.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seamm.node.Node.store_properties">
+<span class="sig-name descname"><span class="pre">store_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.store_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.store_properties" title="Link to this definition">#</a></dt>
+<dd><p>Store results as properties of the configuration whether or not the
+user selected them, e.g. the energies that other steps rely on finding
+under the names the QC plug-ins share (<code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">energy</span></code>, <code class="docutils literal notranslate"><span class="pre">ZPE</span></code>, <code class="docutils literal notranslate"><span class="pre">H</span></code>,
+<code class="docutils literal notranslate"><span class="pre">T</span></code>, <code class="docutils literal notranslate"><span class="pre">H(298.15</span> <span class="pre">K)</span></code>).</p>
+<p>Results the user selected are skipped, since <a class="reference internal" href="#seamm.node.Node.store_results" title="seamm.node.Node.store_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">store_results()</span></code></a> stores
+them. Only properties are stored, not variables or tables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>configuration</strong> (<em>molsystem._Configuration</em>) – The configuration to store the properties on.</p></li>
+<li><p><strong>data</strong> (<em>dict</em>) – The results of the step.</p></li>
+<li><p><strong>keys</strong> (<em>[</em><em>str</em><em>]</em>) – The keys of the results, as in the step’s metadata.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="seamm.node.Node.store_results">
 <span class="sig-name descname"><span class="pre">store_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_tables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm/node.html#Node.store_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.node.Node.store_results" title="Link to this definition">#</a></dt>
 <dd><p>Store results in the database, as variables,and in tables.</p>
@@ -7254,6 +7307,8 @@ Simulation Environment for Atomistic and Molecular Modeling.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.setup_printing"><code class="docutils literal notranslate"><span class="pre">Node.setup_printing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.spin_state"><code class="docutils literal notranslate"><span class="pre">Node.spin_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.step_type"><code class="docutils literal notranslate"><span class="pre">Node.step_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.store_calculation_record"><code class="docutils literal notranslate"><span class="pre">Node.store_calculation_record()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.store_properties"><code class="docutils literal notranslate"><span class="pre">Node.store_properties()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.store_results"><code class="docutils literal notranslate"><span class="pre">Node.store_results()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.tables"><code class="docutils literal notranslate"><span class="pre">Node.tables</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm.node.Node.tag"><code class="docutils literal notranslate"><span class="pre">Node.tag</span></code></a></li>
