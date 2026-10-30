@@ -442,6 +442,7 @@ class Parameter(collections.abc.MutableMapping):
                 pass
 
         labeltext = kwargs.pop("labeltext", self.description)
+        tooltip = kwargs.pop("tooltip", self.help_text)
 
         if self.kind == "special":
             module_name, class_name = self["widget"].split(".")
@@ -489,6 +490,13 @@ class Parameter(collections.abc.MutableMapping):
                 logger.debug("   making UnitEntry")
                 w = sw.UnitEntry(frame, labeltext=labeltext, **kwargs)
                 w.set(self.value, self.units)
+
+        # The help text pops up when the pointer rests on the widget
+        if tooltip:
+            if isinstance(w, sw.LabeledWidget):
+                w.tooltip = tooltip
+            else:
+                sw.Tooltip(w, tooltip)
 
         self._widget = w
 
