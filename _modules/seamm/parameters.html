@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2026.10.28 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2026.10.30 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="../../_static/documentation_options.js?v=fcc0a42c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.30" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -952,6 +952,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="k">pass</span>
 
         <span class="n">labeltext</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"labeltext"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="n">tooltip</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"tooltip"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_text</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">"special"</span><span class="p">:</span>
             <span class="n">module_name</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">"widget"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
@@ -999,6 +1000,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"   making UnitEntry"</span><span class="p">)</span>
                 <span class="n">w</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">UnitEntry</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="n">labeltext</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+        <span class="c1"># The help text pops up when the pointer rests on the widget</span>
+        <span class="k">if</span> <span class="n">tooltip</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledWidget</span><span class="p">):</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">tooltip</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sw</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span> <span class="o">=</span> <span class="n">w</span>
 

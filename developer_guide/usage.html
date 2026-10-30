@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Usage &#8212; SEAMM 2026.10.28 documentation</title>
+    <title>Usage &#8212; SEAMM 2026.10.30 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=bb9c4767"></script>
+    <script src="../_static/documentation_options.js?v=fcc0a42c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.28" />
+  <meta name="docsearch:version" content="2026.10.30" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -533,6 +533,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seamm</span>
 </pre></div>
 </div>
+<section id="help-text-and-tooltips">
+<h2>Help text and tooltips<a class="headerlink" href="#help-text-and-tooltips" title="Link to this heading">#</a></h2>
+<p>Each parameter in a step’s <code class="docutils literal notranslate"><span class="pre">*_parameters.py</span></code> has a short <code class="docutils literal notranslate"><span class="pre">description</span></code>, which is the
+label of its widget in the dialog, and a longer <code class="docutils literal notranslate"><span class="pre">help_text</span></code>. <code class="docutils literal notranslate"><span class="pre">Parameter.widget()</span></code>
+shows the <code class="docutils literal notranslate"><span class="pre">help_text</span></code> as a tooltip: it pops up when the pointer rests on the label or
+the field for a moment. Write it for the user of the dialog: what the setting does, its
+units or valid values, and when it matters. Line breaks and indentation in the text do
+not matter, since the tooltip reflows it; a blank line starts a new paragraph.</p>
+<p>A dialog can override the text, or give a hand-built widget a tooltip, with the
+<code class="docutils literal notranslate"><span class="pre">tooltip</span></code> option of the <code class="docutils literal notranslate"><span class="pre">seamm_widgets</span></code> labeled widgets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="p">[</span><span class="s2">"basis"</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="s2">"basis"</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Only used when ..."</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">LabeledEntry</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">labeltext</span><span class="o">=</span><span class="s2">"Charge:"</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">"The total charge."</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -573,6 +588,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#help-text-and-tooltips">Help text and tooltips</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
