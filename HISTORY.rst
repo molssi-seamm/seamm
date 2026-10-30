@@ -1,6 +1,11 @@
 =======
 History
 =======
+2026.10.30 -- Tooltips with the help text of each parameter
+    * The dialogs of all steps now show each parameter's help text as a tooltip when
+      the pointer rests on the label or the field for a moment. Requires
+      seamm-widgets 2026.10.30 or later.
+
 2026.10.28 -- Steps can store fingerprints of their calculations' settings, and chosen properties
     * New ``Node.store_calculation_record()`` stores, with a step's results, the
       fingerprints of the settings of the calculation that gave them, so that one can
