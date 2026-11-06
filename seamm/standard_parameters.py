@@ -24,6 +24,8 @@ structure_handling_parameters : dict(str, dict(str, str))
 import fnmatch
 import re
 
+from . import templates
+
 structure_selection_parameters = {
     "source systems": {
         "default": "current",
@@ -423,12 +425,33 @@ def set_names(__system, __configuration, __P, _first=True, **kwargs):
 def safe_format(__s, *args, **kwargs):
     # The text may be e.g. a Path, from a file parameter (seamm#220).
     __s = str(__s)
+    # '${...}' is a flowchart variable, expanded when the job runs; a description
+    # written before then shows it as is
+    if templates.has_template(__s):
+        try:
+            pieces = templates.parse(__s)
+        except templates.TemplateError:
+            pieces = None
+        if pieces is not None:
+            return "".join(
+                "${" + piece + "}" if is_field else _format(piece, args, kwargs)
+                for piece, is_field in pieces
+            )
+    return _format(__s, args, kwargs)
+
+
+def _format(text, args, kwargs):
+    """str.format, leaving unknown fields as they are, and the text unchanged if
+    it cannot be formatted (e.g. a lone '{')."""
+    kwargs = dict(kwargs)
     while True:
         try:
-            return __s.format(*args, **kwargs)
+            return text.format(*args, **kwargs)
         except KeyError as e:
             e = e.args[0]
             kwargs[e] = "{%s}" % e
+        except (AttributeError, IndexError, ValueError):
+            return text
 
 
 def _name_filter(items, how, name, what):

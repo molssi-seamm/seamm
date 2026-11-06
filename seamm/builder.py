@@ -36,6 +36,7 @@ import re
 from seamm_util import Q_, ureg
 
 import seamm
+from . import templates
 from .catalog import Catalog, choices_are_strict, enumeration_of, normalize, suggestions
 from .layout import layout
 
@@ -70,7 +71,10 @@ def _choices_text(choices, value, n=40):
 
 
 def is_expression(value):
-    """Whether a value is a variable or expression, such as '$SMILES' or '=2*$n'."""
+    """Whether a value is a variable or expression, such as '$SMILES' or '=2*$n',
+    or text with variables in it, such as '/data/${name}.sdf'."""
+    if templates.has_template(value):
+        return True
     return (
         isinstance(value, str)
         and len(value) > 0
@@ -108,6 +112,13 @@ def check_expression(value, name="parameter"):
     FlowchartBuildError
         If it is not valid Python.
     """
+    if templates.whole_expression(value) is not None or templates.is_inline(value):
+        # '${expression}', or text with '${...}' in it
+        try:
+            templates.check(value)
+        except templates.TemplateError as e:
+            raise FlowchartBuildError(f"The value {value!r} for '{name}': {e}")
+        return
     try:
         compile(value[1:], "<expression>", "eval")
     except SyntaxError as e:
@@ -232,6 +243,14 @@ def check_value(parameter, value, name="parameter", units=None):
         # Python, evaluated with the variables when the job runs: check the syntax
         # now rather than then.
         check_expression(value, name)
+        if templates.is_inline(value) and not (
+            parameter.kind in ("string", "str") and parameter._data.get("expand", True)
+        ):
+            raise FlowchartBuildError(
+                f"'${{...}}' inside the value {value!r} for '{name}' is not expanded: "
+                "that works only for text parameters. Use a whole-value variable "
+                "or expression, e.g. '$n' or '=2 * n'."
+            )
         return value, units
 
     # A Python bool for a yes/no choice, whatever its kind

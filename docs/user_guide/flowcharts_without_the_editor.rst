@@ -134,8 +134,9 @@ holds the sub-steps of a code step, and ``body:`` the steps of a loop (the Join 
 needs is added). Units are written ``300 K`` or ``[300, K]``, and SEAMM's conversions
 between energy, temperature, wavenumbers and frequency are allowed. ``$name`` uses a
 variable, with units as ``$T K`` or ``[$T, K]``; an ``=`` expression is Python with
-bare variable names. Both are checked as Python when set, so a mistake is reported then
-rather than when the job runs. A spec is never run itself: it is always built into a
+bare variable names. In text, ``${...}`` puts a variable inside a value, e.g.
+``file: /data/${name}.sdf`` (see :ref:`variables-in-parameters`). All are checked as
+Python when set, so a mistake is reported then rather than when the job runs. A spec is never run itself: it is always built into a
 complete flowchart first.
 
 From Python
