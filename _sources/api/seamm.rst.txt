@@ -212,6 +212,14 @@ seamm.table module
    :show-inheritance:
    :undoc-members:
 
+seamm.templates module
+----------------------
+
+.. automodule:: seamm.templates
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm.tk\_edge module
 ---------------------
 
