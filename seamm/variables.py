@@ -8,6 +8,7 @@ executing flowchart.
 import collections.abc
 import logging
 import seamm
+from . import templates
 import pprint
 
 logger = logging.getLogger(__name__)
@@ -68,13 +69,22 @@ class Variables(collections.abc.MutableMapping):
         """Return the value of the variable or expression if it is an
         expression, i.e. starts with a $ or =
 
-        If it is not a variable, return the original string unchanged
+        If it is not a variable, return the original string unchanged, except that
+        any '${...}' in it is replaced by its value, e.g. 'E_${method}'.
         """
-        if isinstance(string, str) and string[0] in ("$", "=") and string != "==":
-            result = eval(string[1:], seamm.flowchart_variables._data)
-            return result
-        else:
+        if not isinstance(string, str) or string == "" or string == "==":
             return string
+        context = seamm.flowchart_variables._data
+        expression = templates.whole_expression(string)
+        if expression is not None:
+            return eval(expression, context)
+        if string.startswith("${"):
+            return templates.expand(string, context)
+        if string[0] in ("$", "="):
+            return eval(string[1:], context)
+        if templates.has_template(string):
+            return templates.expand(string, context)
+        return string
 
     def set_variable(self, variable, value, origin=None):
         """Set the value of the variable. The variable may be a simple string

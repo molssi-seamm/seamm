@@ -1,6 +1,22 @@
 =======
 History
 =======
+2026.11.6 -- Variables inside text: ${...}
+    * In a text parameter, such as a file or system name, each ``${...}`` is now replaced
+      by its value when the job runs, e.g. ``/data/${name}.sdf`` or ``C${n:02d}.sdf``.
+      What is inside the braces is a Python expression with the variables by their
+      bare names, with an optional format as in an f-string; ``$${`` gives a literal
+      ``${``. A variable that does not exist stops the step with a message naming the
+      parameter. Before, ``$`` worked only at the start of a value.
+    * The whole-value forms are unchanged: ``$name``, ``$expression`` and
+      ``=expression``. A value that is exactly ``${expression}`` now gives its value
+      too; before, it gave a Python set holding the value.
+    * A parameter whose text goes to a program as written opts out with ``"expand":
+      False`` in its definition (the LAMMPS and Custom steps' scripts).
+    * Building or editing a flowchart without the editor checks the Python in each
+      ``${...}``, and refuses ``${...}`` inside a number or a choice.
+    * The user guide has a page on variables in parameters.
+
 2026.10.30 -- Tooltips with the help text of each parameter
     * The dialogs of all steps now show each parameter's help text as a tooltip when
       the pointer rests on the label or the field for a moment. Requires

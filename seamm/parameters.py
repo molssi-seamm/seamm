@@ -10,6 +10,8 @@ from seamm_util import Q_
 from seamm_util import ureg
 import pprint
 
+from . import templates
+
 logger = logging.getLogger(__name__)
 
 
@@ -316,22 +318,43 @@ class Parameter(collections.abc.MutableMapping):
 
     @property
     def is_expr(self):
-        """Is the current value a variable reference or
-        expression?"""
-        if isinstance(self.value, str) and len(self.value) > 0:
-            return self.value[0] in ("$", "=") and self.value != "=="
-        else:
+        """Is the current value a variable reference or expression, giving the
+        value itself: '$name', '$expression', '=expression', or exactly one
+        '${expression}'?"""
+        value = self.value
+        if not isinstance(value, str) or len(value) == 0 or value == "==":
             return False
+        if value[0] == "=":
+            return True
+        if value.startswith("${"):
+            return templates.whole_expression(value) is not None
+        return value[0] == "$"
+
+    @property
+    def expands(self):
+        """Whether '${...}' inside the value is expanded: text parameters, unless
+        their definition says "expand": False (e.g. a LAMMPS script)."""
+        return self.kind in ("string", "str") and self._data.get("expand", True)
+
+    @property
+    def is_template(self):
+        """Is the value text with '${...}' to expand, e.g. '/data/${name}.sdf'?"""
+        return self.expands and templates.is_inline(self.value)
 
     def get(self, context=None, formatted=False, units=True):
         """Return the value evaluated in the given context"""
-        if self.is_expr:
+        if self.is_expr or self.is_template:
             if context is None:
                 if root_context is None:
                     raise RuntimeError("No context available")
-                result = eval(self.value[1:], root_context)
-            else:
-                result = eval(self.value[1:], context)
+                context = root_context
+        if self.is_expr:
+            expression = templates.whole_expression(self.value)
+            if expression is None:
+                expression = self.value[1:]
+            result = eval(expression, context)
+        elif self.is_template:
+            result = templates.expand(self.value, context)
         else:
             result = self.value
 
@@ -424,6 +447,9 @@ class Parameter(collections.abc.MutableMapping):
             # Defaults of earlier versions, so that a flowchart saved with one of them
             # still resumes a checkpoint written then
             "former defaults": (),
+            # Whether '${...}' inside a text value is expanded; False for text such as
+            # a LAMMPS script, which has its own '${name}' variables
+            "expand": True,
         }
         self.dimensionality = None
 
@@ -755,7 +781,12 @@ class Parameters(collections.abc.MutableMapping):
 
         data = {}
         for key in self:
-            data[key] = self[key].get(context=context, formatted=formatted, units=units)
+            try:
+                data[key] = self[key].get(
+                    context=context, formatted=formatted, units=units
+                )
+            except templates.TemplateError as e:
+                raise templates.TemplateError(f"'{key}' = {self[key].value!r}: {e}")
 
         return data
 
@@ -797,6 +828,10 @@ class Parameters(collections.abc.MutableMapping):
 
     @staticmethod
     def _is_expr(value):
+        """Whether a value is only known when the job runs: a variable, an
+        expression or text with '${...}' in it."""
+        if templates.has_template(value):
+            return True
         return (
             isinstance(value, str)
             and len(value) > 0
