@@ -80,6 +80,20 @@ def test_a_new_system_keeps_the_names(db):
     assert copy.name == "DMC_cc"
 
 
+def test_a_new_empty_system_does_not_take_the_current_name(db):
+    """A new system for a new structure (Read Structure, same_as=None) is not a
+    copy, so it has no name yet and the file's title can name it (ChemAI 5755:
+    an O atom read into a new system was named 'SiF4', the current system)."""
+    system, configuration = named(db)
+    node = seamm.Node(flowchart=seamm.Flowchart())
+    P = values(**{"structure handling": "Create a new system and configuration"})
+    system2, empty = node.get_system_configuration(P, same_as=None)
+    assert system2.id != system.id
+    assert not system2.name
+    assert empty.n_atoms == 0
+    assert system.name == "EC-DMC"
+
+
 def test_descriptions_show_the_placeholder():
     """Before the run the name is not known: '<current name>', which the printer
     (FormattedText, which formats with the parameters) can take."""
