@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.node &#8212; SEAMM 2026.11.6 documentation</title>
+    <title>seamm.node &#8212; SEAMM 2026.11.15 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
@@ -47,12 +47,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=df937776"></script>
+    <script src="../../_static/documentation_options.js?v=7f90a600"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm/node';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
 
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.11.6" />
+  <meta name="docsearch:version" content="2026.11.15" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1349,11 +1349,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="k">elif</span> <span class="n">handling</span> <span class="o">==</span> <span class="s2">"Create a new system and configuration"</span><span class="p">:</span>
                 <span class="n">previous</span> <span class="o">=</span> <span class="n">system</span>
                 <span class="n">system</span> <span class="o">=</span> <span class="n">system_db</span><span class="o">.</span><span class="n">create_system</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                    <span class="n">system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span>
                 <span class="k">if</span> <span class="n">same_as</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># A new, empty structure (e.g. read from a file): it is not</span>
+                    <span class="c1"># the current system, so it does not take its name; "keep</span>
+                    <span class="c1"># current name" then uses the file's title (ChemAI 5755: an</span>
+                    <span class="c1"># O atom read into a new system was named "SiF4")</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">create_configuration</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># A copy keeps its source's names</span>
+                    <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                        <span class="n">system</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">previous</span><span class="o">.</span><span class="n">name</span>
                     <span class="n">configuration</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">copy_configuration</span><span class="p">(</span>
                         <span class="n">configuration</span><span class="o">=</span><span class="n">same_as</span><span class="p">,</span> <span class="n">make_current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">same_as</span><span class="o">.</span><span class="n">name</span>
                     <span class="p">)</span>
