@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.11.15 -- Bugfix: a structure read into a new system took the current system's name
+    * With "Create a new system and configuration" and the system name "keep current
+      name", the first structure read from a file (Read Structure) or otherwise
+      built from scratch was put in a new system named after the current system,
+      instead of taking the record's title: an O atom read after SiF4 was named
+      "SiF4", so a Loop over systems by name skipped it. Only a new system that
+      copies the current structure keeps the current name now (a regression in
+      2026.10.24).
+
 2026.11.6 -- Variables inside text: ${...}
     * In a text parameter, such as a file or system name, each ``${...}`` is now replaced
       by its value when the job runs, e.g. ``/data/${name}.sdf`` or ``C${n:02d}.sdf``.

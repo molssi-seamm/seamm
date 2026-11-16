@@ -827,11 +827,16 @@ class Node(collections.abc.Hashable):
             elif handling == "Create a new system and configuration":
                 previous = system
                 system = system_db.create_system()
-                if previous is not None and previous.name:
-                    system.name = previous.name
                 if same_as is None:
+                    # A new, empty structure (e.g. read from a file): it is not
+                    # the current system, so it does not take its name; "keep
+                    # current name" then uses the file's title (ChemAI 5755: an
+                    # O atom read into a new system was named "SiF4")
                     configuration = system.create_configuration()
                 else:
+                    # A copy keeps its source's names
+                    if previous is not None and previous.name:
+                        system.name = previous.name
                     configuration = system.copy_configuration(
                         configuration=same_as, make_current=True, name=same_as.name
                     )
