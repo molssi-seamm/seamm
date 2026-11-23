@@ -112,6 +112,41 @@ def test_builder_refuses_inline_in_a_number():
     assert value == "/data/${file}.sdf"
 
 
+BLOCK = "%scf\n  MaxIter ${n * 50}\nend\n%elprop\n  EField 0, 0, ${x:.3f}\nend"
+
+
+def test_special_kinds_expand_only_when_asked():
+    """Multi-line text with a special widget (ORCA's extra blocks) opts in with
+    "expand": True (Paul, 2026-11-23); without it a special value is left alone."""
+    context = CONTEXT | {"x": 0.0005}
+    p = parameter(BLOCK, kind="special", expand=True)
+    assert p.expands and p.is_template
+    assert p.get(context=context) == (
+        "%scf\n  MaxIter 350\nend\n%elprop\n  EField 0, 0, 0.001\nend"
+    )
+
+    p = parameter(BLOCK, kind="special")
+    assert not p.expands and not p.is_template
+    assert p.get(context=context) == BLOCK
+
+
+def test_expand_default_is_by_kind():
+    assert parameter("x").expands
+    assert parameter("x", kind="str").expands
+    assert not parameter("x", expand=False).expands
+    for kind in ("integer", "float", "boolean", "list", "dictionary", "special"):
+        assert not parameter("x", kind=kind).expands
+
+
+def test_builder_accepts_inline_in_text_that_expands():
+    value, _ = check_value(
+        parameter("", kind="special", expand=True), BLOCK, name="extra blocks"
+    )
+    assert value == BLOCK
+    with pytest.raises(FlowchartBuildError, match="only for text parameters"):
+        check_value(parameter("", kind="special"), BLOCK, name="extra blocks")
+
+
 def test_variables_value():
     variables = seamm.Variables()
     old = seamm.flowchart_variables

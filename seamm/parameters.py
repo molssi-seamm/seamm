@@ -332,9 +332,17 @@ class Parameter(collections.abc.MutableMapping):
 
     @property
     def expands(self):
-        """Whether '${...}' inside the value is expanded: text parameters, unless
-        their definition says "expand": False (e.g. a LAMMPS script)."""
-        return self.kind in ("string", "str") and self._data.get("expand", True)
+        """Whether '${...}' inside the value is expanded.
+
+        An explicit "expand": True or False in the definition decides, for any kind
+        of parameter: False for text with its own '${name}' variables (e.g. a LAMMPS
+        script), True for e.g. multi-line text edited with a special widget (ORCA's
+        extra blocks). Otherwise text parameters expand and others don't.
+        """
+        expand = self._data.get("expand")
+        if expand is not None:
+            return bool(expand)
+        return self.kind in ("string", "str")
 
     @property
     def is_template(self):
@@ -447,9 +455,10 @@ class Parameter(collections.abc.MutableMapping):
             # Defaults of earlier versions, so that a flowchart saved with one of them
             # still resumes a checkpoint written then
             "former defaults": (),
-            # Whether '${...}' inside a text value is expanded; False for text such as
-            # a LAMMPS script, which has its own '${name}' variables
-            "expand": True,
+            # Whether '${...}' inside the value is expanded: None for text parameters
+            # only; False for text such as a LAMMPS script, which has its own
+            # '${name}' variables; True for other kinds holding text (see expands)
+            "expand": None,
         }
         self.dimensionality = None
 
