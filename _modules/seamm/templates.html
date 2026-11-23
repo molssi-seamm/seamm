@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.templates &#8212; SEAMM 2026.11.15 documentation</title>
+    <title>seamm.templates &#8212; SEAMM 2026.11.23 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=7f90a600"></script>
+    <script src="../../_static/documentation_options.js?v=bd31c218"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.11.15" />
+  <meta name="docsearch:version" content="2026.11.23" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -499,9 +499,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">``$expression`` and ``=expression`` give the value itself, with its type. A value</span>
 <span class="sd">that is exactly one ``${expression}``, with no conversion or format, does the same.</span>
 
-<span class="sd">Only text parameters expand ``${...}`` inside a value, and a parameter can opt out</span>
-<span class="sd">with ``"expand": False`` in its definition (e.g. a LAMMPS script, whose own</span>
-<span class="sd">variables are written ``${name}``).</span>
+<span class="sd">Text parameters expand ``${...}`` inside a value. A parameter can opt out with</span>
+<span class="sd">``"expand": False`` in its definition (e.g. a LAMMPS script, whose own variables are</span>
+<span class="sd">written ``${name}``), and a parameter of another kind that holds text, such as</span>
+<span class="sd">multi-line text edited with a special widget, can opt in with ``"expand": True``.</span>
 <span class="sd">"""</span>
 
 

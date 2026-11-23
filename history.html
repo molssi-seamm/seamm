@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; SEAMM 2026.11.15 documentation</title>
+    <title>History &#8212; SEAMM 2026.11.23 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=7f90a600"></script>
+    <script src="_static/documentation_options.js?v=bd31c218"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.11.15" />
+  <meta name="docsearch:version" content="2026.11.23" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -506,7 +506,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
-<dt>2026.11.15 – Bugfix: a structure read into a new system took the current system’s name</dt><dd><ul class="simple">
+<dt>2026.11.23 – Variables inside multi-line text such as ORCA’s extra blocks</dt><dd><ul class="simple">
+<li><p>A parameter of any kind can now opt in to <code class="docutils literal notranslate"><span class="pre">${...}</span></code> expansion with
+<code class="docutils literal notranslate"><span class="pre">&quot;expand&quot;:</span> <span class="pre">True</span></code> in its definition, e.g. multi-line text edited with a special
+widget. Without it, only text parameters expand, as before, and
+<code class="docutils literal notranslate"><span class="pre">&quot;expand&quot;:</span> <span class="pre">False</span></code> still opts a text parameter out.</p></li>
+<li><p>The flowchart builder (and so the MCP tools) accept <code class="docutils literal notranslate"><span class="pre">${...}</span></code> in such
+parameters.</p></li>
+</ul>
+</dd>
+<dt>2026.11.15 –Bugfix: a structure read into a new system took the current system’s name</dt><dd><ul class="simple">
 <li><p>With “Create a new system and configuration” and the system name “keep current
 name”, the first structure read from a file (Read Structure) or otherwise
 built from scratch was put in a new system named after the current system,

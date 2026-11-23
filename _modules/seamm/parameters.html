@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm.parameters &#8212; SEAMM 2026.11.15 documentation</title>
+    <title>seamm.parameters &#8212; SEAMM 2026.11.23 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=7f90a600"></script>
+    <script src="../../_static/documentation_options.js?v=bd31c218"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.11.15" />
+  <meta name="docsearch:version" content="2026.11.23" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -831,9 +831,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">expands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Whether '${...}' inside the value is expanded: text parameters, unless</span>
-<span class="sd">        their definition says "expand": False (e.g. a LAMMPS script)."""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"string"</span><span class="p">,</span> <span class="s2">"str"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expand"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Whether '${...}' inside the value is expanded.</span>
+
+<span class="sd">        An explicit "expand": True or False in the definition decides, for any kind</span>
+<span class="sd">        of parameter: False for text with its own '${name}' variables (e.g. a LAMMPS</span>
+<span class="sd">        script), True for e.g. multi-line text edited with a special widget (ORCA's</span>
+<span class="sd">        extra blocks). Otherwise text parameters expand and others don't.</span>
+<span class="sd">        """</span>
+        <span class="n">expand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expand"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">expand</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">expand</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"string"</span><span class="p">,</span> <span class="s2">"str"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -954,9 +962,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="c1"># Defaults of earlier versions, so that a flowchart saved with one of them</span>
             <span class="c1"># still resumes a checkpoint written then</span>
             <span class="s2">"former defaults"</span><span class="p">:</span> <span class="p">(),</span>
-            <span class="c1"># Whether '${...}' inside a text value is expanded; False for text such as</span>
-            <span class="c1"># a LAMMPS script, which has its own '${name}' variables</span>
-            <span class="s2">"expand"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="c1"># Whether '${...}' inside the value is expanded: None for text parameters</span>
+            <span class="c1"># only; False for text such as a LAMMPS script, which has its own</span>
+            <span class="c1"># '${name}' variables; True for other kinds holding text (see expands)</span>
+            <span class="s2">"expand"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">=</span> <span class="kc">None</span></div>
 

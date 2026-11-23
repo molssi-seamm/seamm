@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm package &#8212; SEAMM 2026.11.15 documentation</title>
+    <title>seamm package &#8212; SEAMM 2026.11.23 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=7f90a600"></script>
+    <script src="../_static/documentation_options.js?v=bd31c218"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.11.15" />
+  <meta name="docsearch:version" content="2026.11.23" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -4099,13 +4099,11 @@ few words</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="seamm.parameters.Parameter.expands">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">expands</span></span><a class="headerlink" href="#seamm.parameters.Parameter.expands" title="Link to this definition">#</a></dt>
-<dd><p>text parameters, unless
-their definition says “expand”: False (e.g. a LAMMPS script).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Whether ‘${…}’ inside the value is expanded</p>
-</dd>
-</dl>
+<dd><p>Whether ‘${…}’ inside the value is expanded.</p>
+<p>An explicit “expand”: True or False in the definition decides, for any kind
+of parameter: False for text with its own ‘${name}’ variables (e.g. a LAMMPS
+script), True for e.g. multi-line text edited with a special widget (ORCA’s
+extra blocks). Otherwise text parameters expand and others don’t.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -5165,9 +5163,10 @@ with the flowchart’s variables and formatted as in an f-string (an optional
 <p>This complements the whole-value forms, which are unchanged: <code class="docutils literal notranslate"><span class="pre">$name</span></code> or
 <code class="docutils literal notranslate"><span class="pre">$expression</span></code> and <code class="docutils literal notranslate"><span class="pre">=expression</span></code> give the value itself, with its type. A value
 that is exactly one <code class="docutils literal notranslate"><span class="pre">${expression}</span></code>, with no conversion or format, does the same.</p>
-<p>Only text parameters expand <code class="docutils literal notranslate"><span class="pre">${...}</span></code> inside a value, and a parameter can opt out
-with <code class="docutils literal notranslate"><span class="pre">&quot;expand&quot;:</span> <span class="pre">False</span></code> in its definition (e.g. a LAMMPS script, whose own
-variables are written <code class="docutils literal notranslate"><span class="pre">${name}</span></code>).</p>
+<p>Text parameters expand <code class="docutils literal notranslate"><span class="pre">${...}</span></code> inside a value. A parameter can opt out with
+<code class="docutils literal notranslate"><span class="pre">&quot;expand&quot;:</span> <span class="pre">False</span></code> in its definition (e.g. a LAMMPS script, whose own variables are
+written <code class="docutils literal notranslate"><span class="pre">${name}</span></code>), and a parameter of another kind that holds text, such as
+multi-line text edited with a special widget, can opt in with <code class="docutils literal notranslate"><span class="pre">&quot;expand&quot;:</span> <span class="pre">True</span></code>.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="seamm.templates.TemplateError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">seamm.templates.</span></span><span class="sig-name descname"><span class="pre">TemplateError</span></span><a class="reference internal" href="../_modules/seamm/templates.html#TemplateError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm.templates.TemplateError" title="Link to this definition">#</a></dt>
