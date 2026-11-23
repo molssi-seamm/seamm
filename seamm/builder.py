@@ -243,9 +243,7 @@ def check_value(parameter, value, name="parameter", units=None):
         # Python, evaluated with the variables when the job runs: check the syntax
         # now rather than then.
         check_expression(value, name)
-        if templates.is_inline(value) and not (
-            parameter.kind in ("string", "str") and parameter._data.get("expand", True)
-        ):
+        if templates.is_inline(value) and not parameter.expands:
             raise FlowchartBuildError(
                 f"'${{...}}' inside the value {value!r} for '{name}' is not expanded: "
                 "that works only for text parameters. Use a whole-value variable "

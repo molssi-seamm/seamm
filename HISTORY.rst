@@ -1,7 +1,15 @@
 =======
 History
 =======
-2026.11.15 -- Bugfix: a structure read into a new system took the current system's name
+2026.11.23 -- Variables inside multi-line text such as ORCA's extra blocks
+    * A parameter of any kind can now opt in to ``${...}`` expansion with
+      ``"expand": True`` in its definition, e.g. multi-line text edited with a special
+      widget. Without it, only text parameters expand, as before, and
+      ``"expand": False`` still opts a text parameter out.
+    * The flowchart builder (and so the MCP tools) accept ``${...}`` in such
+      parameters.
+
+2026.11.15 --Bugfix: a structure read into a new system took the current system's name
     * With "Create a new system and configuration" and the system name "keep current
       name", the first structure read from a file (Read Structure) or otherwise
       built from scratch was put in a new system named after the current system,

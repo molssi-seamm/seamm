@@ -11,9 +11,10 @@ This complements the whole-value forms, which are unchanged: ``$name`` or
 ``$expression`` and ``=expression`` give the value itself, with its type. A value
 that is exactly one ``${expression}``, with no conversion or format, does the same.
 
-Only text parameters expand ``${...}`` inside a value, and a parameter can opt out
-with ``"expand": False`` in its definition (e.g. a LAMMPS script, whose own
-variables are written ``${name}``).
+Text parameters expand ``${...}`` inside a value. A parameter can opt out with
+``"expand": False`` in its definition (e.g. a LAMMPS script, whose own variables are
+written ``${name}``), and a parameter of another kind that holds text, such as
+multi-line text edited with a special widget, can opt in with ``"expand": True``.
 """
 
 
